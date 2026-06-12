@@ -1,0 +1,55 @@
+name: Cuma Videosu Hazirla
+
+# Videonuzu 'videos/' klasorune yukleyip push edince calisir.
+# Ayrica Actions sekmesinden elle de tetikleyebilirsiniz (Run workflow).
+on:
+  push:
+    paths:
+      - "videos/**"
+      - "scripts/make_friday_video.sh"
+      - ".github/workflows/friday-video.yml"
+  workflow_dispatch:
+    inputs:
+      top_text:
+        description: "Ust yazi"
+        default: "Cuma Mubarek"
+        required: false
+      bottom_text:
+        description: "Alt yazi"
+        default: "Hayirli Cumalar"
+        required: false
+      duration:
+        description: "Maksimum sure (saniye)"
+        default: "60"
+        required: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu indir
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: ffmpeg kur
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Cuma videosunu olustur
+        env:
+          TOP_TEXT: ${{ github.event.inputs.top_text || 'Cuma Mubarek' }}
+          BOTTOM_TEXT: ${{ github.event.inputs.bottom_text || 'Hayirli Cumalar' }}
+          DURATION: ${{ github.event.inputs.duration || '60' }}
+        run: |
+          chmod +x scripts/make_friday_video.sh
+          ./scripts/make_friday_video.sh "" output/cuma_video.mp4
+
+      - name: Hazir videoyu yukle (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuma-videosu
+          path: output/cuma_video.mp4
+          if-no-files-found: error
+          retention-days: 30

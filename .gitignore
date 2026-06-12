@@ -1,0 +1,8 @@
+# Gecici / sistem dosyalari
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Render ciktilari (isterseniz LFS ile tutabilirsiniz; varsayilan: yok sayilir)
+output/*.mp4
+!output/.gitkeep
