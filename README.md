@@ -3,7 +3,8 @@
 Elinizdeki videoyu (ör. Insta360 ile çekilmiş dikey video) **Instagram Reels / TikTok**
 için "Cuma Mübarek" temalı, hazır paylaşılabilir bir videoya dönüştürür.
 
-Videoyu GitHub'a yüklersiniz → GitHub kendi sunucusunda işler → hazır MP4'ü size verir.
+Videoyu GitHub'a yüklersiniz → GitHub kendi sunucusunda işler → hazır MP4'ü size verir
+**ve isterseniz otomatik olarak YouTube'a (Short olarak) yükler.**
 **Bilgisayarınıza hiçbir program kurmanıza gerek yok.**
 
 ---
@@ -65,6 +66,52 @@ MUSIC=assets/ilahi.mp3 MUSIC_VOL=0.5 \
 
 ---
 
+## ▶️ YouTube'a otomatik yükleme kurulumu (tek seferlik)
+
+Kurulumu bir kez yaparsınız; sonrasında her render edilen video **otomatik** YouTube'a
+(varsayılan **gizli/private**) yüklenir. Kimlik bilgileri yalnızca GitHub Secrets'ta durur,
+kodda hiçbir sır tutulmaz.
+
+**1) Google Cloud projesi ve API**
+- [Google Cloud Console](https://console.cloud.google.com/) → yeni proje oluşturun.
+- **APIs & Services → Library** → **YouTube Data API v3** → **Enable**.
+
+**2) OAuth izin ekranı**
+- **APIs & Services → OAuth consent screen** → **External** seçin.
+- **Test users** kısmına YouTube kanalınızın Gmail adresini ekleyin (yayın onayı beklemeden çalışır).
+
+**3) OAuth istemcisi (Desktop app)**
+- **APIs & Services → Credentials → Create Credentials → OAuth client ID → Desktop app**.
+- İnen JSON dosyasını `client_secret.json` adıyla bu deponun köküne kaydedin (kendi bilgisayarınızda).
+
+**4) Refresh token'ı alın (kendi bilgisayarınızda)**
+```bash
+pip install -r requirements-youtube.txt
+python scripts/get_youtube_token.py
+```
+Açılan tarayıcıda Google hesabınızla izin verin. Betik ekrana üç değer basar:
+`YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`.
+
+> `client_secret.json` ve token'ları **asla** depoya commit etmeyin — sadece GitHub Secrets'a girin.
+
+**5) GitHub Secrets ekleyin**
+- Depo → **Settings → Secrets and variables → Actions → New repository secret**.
+- Şu üç secret'ı ekleyin: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`.
+
+**6) Bitti! ✅**
+- Artık `videos/`'a video ekleyip push edince: otomatik render **+ YouTube'a yükleme**.
+- Varsayılan gizlilik **private**. Herkese açmak için: YouTube Studio'dan public yapın, ya da
+  **Actions → Run workflow** ile `privacy` girdisini `public` seçin.
+- Başlık/açıklama/etiketleri `youtube_meta.json` dosyasından düzenleyebilirsiniz. Dikey ≤60 sn
+  videolar YouTube tarafından **Short** olarak işlenir.
+
+> ⚠️ **Notlar:** İlk denemeleri **private** bırakmanız önerilir. YouTube Data API'nin günlük
+> yükleme kotası vardır (yeni projelerde düşük olabilir); çok sık yüklemede kota hatası alırsanız
+> Google Cloud'dan kota artışı talep edebilirsiniz. Secret'lar tanımlı değilse workflow yine
+> çalışır, sadece videoyu **artifact** olarak verir (yükleme adımı atlanır).
+
+---
+
 ## 📦 Büyük videolar için Git LFS kurulumu (tek seferlik)
 
 ```bash
@@ -83,9 +130,14 @@ git push
 ## 📁 Klasör yapısı
 
 ```
-videos/    → ham videolarınızı buraya koyun
-output/    → işlenmiş cuma videosu buraya çıkar
-assets/    → fon müziği, logo vb.
-scripts/   → make_friday_video.sh (ffmpeg betiği)
-.github/   → otomatik render iş akışı
+videos/                → ham videolarınızı buraya koyun
+output/                → işlenmiş cuma videosu buraya çıkar
+assets/                → fon müziği, logo vb.
+scripts/
+  make_friday_video.sh → ffmpeg render betiği
+  youtube_upload.py    → YouTube'a otomatik yükleme
+  get_youtube_token.py → refresh token alma (tek seferlik, yerelde)
+youtube_meta.json      → YouTube başlık/açıklama/etiket
+requirements-youtube.txt → YouTube yükleme için Python paketleri
+.github/               → otomatik render + YouTube iş akışı
 ```

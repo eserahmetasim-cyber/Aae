@@ -7,25 +7,47 @@ on:
     paths:
       - "videos/**"
       - "scripts/make_friday_video.sh"
+      - "scripts/youtube_upload.py"
+      - "youtube_meta.json"
       - ".github/workflows/friday-video.yml"
   workflow_dispatch:
     inputs:
       top_text:
-        description: "Ust yazi"
+        description: "Ust yazi (video uzerindeki)"
         default: "Cuma Mubarek"
         required: false
       bottom_text:
-        description: "Alt yazi"
+        description: "Alt yazi (video uzerindeki)"
         default: "Hayirli Cumalar"
         required: false
       duration:
         description: "Maksimum sure (saniye)"
         default: "60"
         required: false
+      title:
+        description: "YouTube baslik"
+        default: ""
+        required: false
+      description:
+        description: "YouTube aciklama"
+        default: ""
+        required: false
+      privacy:
+        description: "YouTube gizlilik"
+        default: "private"
+        type: choice
+        options:
+          - private
+          - unlisted
+          - public
+        required: false
 
 jobs:
   render:
     runs-on: ubuntu-latest
+    # secrets 'if:' icinde dogrudan kullanilamaz; job-seviyesi env'e maplenir.
+    env:
+      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
     steps:
       - name: Depoyu indir
         uses: actions/checkout@v4
@@ -53,3 +75,32 @@ jobs:
           path: output/cuma_video.mp4
           if-no-files-found: error
           retention-days: 30
+
+      # --- YouTube otomatik yukleme -----------------------------------------
+      # Yalnizca 3 secret tanimliysa calisir; yoksa zarifce atlanir (is yesil kalir).
+      - name: Python kur
+        if: ${{ env.YT_REFRESH_TOKEN != '' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: YouTube kutuphanelerini kur
+        if: ${{ env.YT_REFRESH_TOKEN != '' }}
+        run: pip install -r requirements-youtube.txt
+
+      - name: YouTube'a yukle
+        if: ${{ env.YT_REFRESH_TOKEN != '' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_TITLE: ${{ github.event.inputs.title }}
+          YT_DESC: ${{ github.event.inputs.description }}
+          YT_PRIVACY: ${{ github.event.inputs.privacy || 'private' }}
+        run: python scripts/youtube_upload.py output/cuma_video.mp4
+
+      - name: YouTube kurulumu yok (bilgi)
+        if: ${{ env.YT_REFRESH_TOKEN == '' }}
+        run: |
+          echo "::notice::YouTube secret'lari (YT_CLIENT_ID/SECRET/REFRESH_TOKEN) tanimli degil."
+          echo "::notice::Video artifact olarak hazir; otomatik yukleme icin README'deki kuruluma bakin."

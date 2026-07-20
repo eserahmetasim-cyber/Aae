@@ -6,3 +6,14 @@ Thumbs.db
 # Render ciktilari (isterseniz LFS ile tutabilirsiniz; varsayilan: yok sayilir)
 output/*.mp4
 !output/.gitkeep
+
+# YouTube kimlik bilgileri — ASLA commit etmeyin
+client_secret.json
+client_secret*.json
+*token*.json
+token.pickle
+.env
+
+# Python cache
+__pycache__/
+*.pyc
