@@ -1,0 +1,49 @@
+# Ders 01 — örnek olarak dolduruldu; kendi metinlerinle değiştir.
+ders_no: 1
+slug: acil-fren
+baslik: "Acil Frende Ağırlık Transferi"
+alt_baslik: "Ön fren neden kurtarır"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""                 # videos/ içindeki ilk video
+sure: 45
+muzik: ""
+muzik_ses: 0.25
+
+kapanis: "Ön fren %70 durdurur · Takip et"
+
+adimlar:
+  - { t: 3,  sure: 5, metin: "1 · Gaz kapanır, vücut hazırlanır" }
+  - { t: 9,  sure: 5, metin: "2 · Ön frene kademeli bas, sıkıştırma" }
+  - { t: 15, sure: 5, metin: "3 · Ağırlık öne gider, lastik tutar" }
+  - { t: 21, sure: 5, metin: "4 · Arka fren sadece dengeler" }
+  - { t: 27, sure: 6, metin: "5 · Gidonu düz tut, fren düz çizgide" }
+
+youtube:
+  baslik: "Acil Frende Ağırlık Transferi | Motosiklet Yol Okulu Ders 1"
+  aciklama: |
+    Acil frende motosikleti durduran şey ön frendir — ama ani basınç lastiği kilitler.
+    Bu derste ağırlık transferini kademeli fren basıncıyla nasıl kullanacağını anlatıyoruz.
+
+    0:03 Gaz kapanır
+    0:09 Kademeli ön fren
+    0:15 Ağırlık öne
+    0:21 Arka frenin işi
+    0:27 Düz çizgide fren
+
+    @aae_motorcycle
+  etiketler: [motosiklet, sürüş eğitimi, acil fren, ön fren, motosiklet eğitimi, yol okulu]
+  kategori: "2"
+  gizlilik: private
+
+instagram:
+  caption: |
+    Acil frende motosikleti durduran ön frendir — ama ani basınç lastiği kilitler.
+    Kademeli sıkıştır: ağırlık öne gider, lastik tutar.
+
+    Kaydet, bir sonraki sürüşte dene.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #acilfren #motovlog #yolokulu
+  feed_de_paylas: true

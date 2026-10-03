@@ -1,0 +1,10 @@
+# Ders dosyalari (content/dersler/*.yml)
+PyYAML
+
+# YouTube yukleme
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+
+# Instagram yukleme ek paket istemez (Python standart kutuphanesi kullanilir).

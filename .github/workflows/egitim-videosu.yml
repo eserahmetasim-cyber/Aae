@@ -1,0 +1,138 @@
+name: Egitim Videosu
+
+# Ham cekimi videos/ icine, ders metnini content/dersler/ icine koyup push edince
+# otomatik render alir. Yayin adimlari KURALLAR.md'ye uyar:
+#   - YouTube : varsayilan private
+#   - Instagram: ASLA kendiliginden calismaz; Run workflow'dan bilincli secilir
+#     (yayinlanan Reel aninda herkese acik olur ve geri alinamaz).
+on:
+  push:
+    paths:
+      - "videos/**"
+      - "content/dersler/**"
+      - "scripts/**"
+      - ".github/workflows/egitim-videosu.yml"
+  workflow_dispatch:
+    inputs:
+      ders:
+        description: "Ders dosyasi (bos = en kucuk numarali ders)"
+        default: ""
+        required: false
+      yayin:
+        description: "Nereye yuklensin"
+        default: "youtube"
+        type: choice
+        options: [yok, youtube, instagram, hepsi]
+        required: false
+      gizlilik:
+        description: "YouTube gizliligi"
+        default: "private"
+        type: choice
+        options: [private, unlisted, public]
+        required: false
+      ig_yolu:
+        description: "Instagram yukleme yolu (resumable calismazsa release-url)"
+        default: "resumable"
+        type: choice
+        options: [resumable, release-url]
+        required: false
+
+permissions:
+  contents: write        # release-url yolu icin gerekli
+
+jobs:
+  uret:
+    runs-on: ubuntu-latest
+    # secrets 'if:' icinde dogrudan kullanilamaz; job env'e maplenir.
+    env:
+      YT_VAR: ${{ secrets.YT_REFRESH_TOKEN != '' }}
+      IG_VAR: ${{ secrets.IG_ACCESS_TOKEN != '' }}
+      YAYIN: ${{ inputs.yayin || 'youtube' }}
+      IG_YOLU: ${{ inputs.ig_yolu || 'resumable' }}
+    steps:
+      - name: Depoyu indir
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Araclari kur
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg jq fonts-dejavu-core
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Paketleri kur
+        run: pip install -r requirements-publish.txt
+
+      - name: Dersi sec ve dogrula
+        run: |
+          DERS="${{ inputs.ders }}"
+          if [ -z "$DERS" ]; then DERS="$(python3 scripts/lesson.py --ilk)"; fi
+          echo "Secilen ders: $DERS"
+          CIKTI="$(python3 scripts/lesson.py "$DERS" --json | jq -r .cikti)"
+          {
+            echo "DERS=$DERS"
+            echo "CIKTI=$CIKTI"
+          } >> "$GITHUB_ENV"
+
+      - name: Videoyu render et
+        run: |
+          chmod +x scripts/make_training_video.sh
+          ./scripts/make_training_video.sh "$DERS" "$CIKTI"
+
+      - name: Hazir videoyu artifact olarak ver
+        uses: actions/upload-artifact@v4
+        with:
+          name: egitim-videosu
+          path: ${{ env.CIKTI }}
+          if-no-files-found: error
+          retention-days: 30
+
+      # --- YouTube -----------------------------------------------------------
+      - name: YouTube'a yukle
+        if: ${{ env.YT_VAR == 'true' && (env.YAYIN == 'youtube' || env.YAYIN == 'hepsi') }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_GIZLILIK: ${{ inputs.gizlilik || 'private' }}
+        run: python3 scripts/publish_youtube.py "$CIKTI" --ders "$DERS"
+
+      - name: YouTube atlandi (bilgi)
+        if: ${{ env.YT_VAR != 'true' && (env.YAYIN == 'youtube' || env.YAYIN == 'hepsi') }}
+        run: |
+          echo "::warning::YouTube secret'lari tanimli degil (YT_CLIENT_ID/SECRET/REFRESH_TOKEN)."
+          echo "::notice::Video artifact olarak hazir; kurulum icin README'ye bakin."
+
+      # --- Instagram (yalnizca elle secilince) --------------------------------
+      - name: Instagram icin public adres hazirla (release-url yolu)
+        if: ${{ env.IG_VAR == 'true' && env.IG_YOLU == 'release-url' && (env.YAYIN == 'instagram' || env.YAYIN == 'hepsi') }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ETIKET="yayin-$(date -u +%Y%m%d-%H%M%S)"
+          DOSYA="$(basename "$CIKTI")"
+          gh release create "$ETIKET" "$CIKTI" \
+            --title "$ETIKET" \
+            --notes "Instagram yuklemesi icin gecici public adres."
+          echo "IG_VIDEO_URL=${{ github.server_url }}/${{ github.repository }}/releases/download/$ETIKET/$DOSYA" >> "$GITHUB_ENV"
+          echo "::notice::Release olusturuldu: $ETIKET (video bu adresten herkese acik indirilebilir)"
+
+      - name: Instagram'a yukle
+        if: ${{ env.IG_VAR == 'true' && (env.YAYIN == 'instagram' || env.YAYIN == 'hepsi') }}
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          echo "::warning::Instagram Reel yayinlaniyor — aninda herkese acik olacak."
+          python3 scripts/publish_instagram.py "$CIKTI" --ders "$DERS"
+
+      - name: Instagram atlandi (bilgi)
+        if: ${{ env.IG_VAR != 'true' && (env.YAYIN == 'instagram' || env.YAYIN == 'hepsi') }}
+        run: |
+          echo "::warning::Instagram secret'lari tanimli degil (IG_USER_ID / IG_ACCESS_TOKEN)."
+          echo "::notice::Kurulum icin README'deki 'Instagram kurulumu' bolumune bakin."
