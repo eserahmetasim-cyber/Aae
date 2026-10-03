@@ -1,49 +1,87 @@
-# Ders 01 — örnek olarak dolduruldu; kendi metinlerinle değiştir.
+# Ders 01 · Acil frende ağırlık transferi
+# Kaynaklar (teknik doğrulama):
+#   https://www.insurance.harley-davidson.com/resources/mastering-motorcycle-braking
+#   https://en.wikipedia.org/wiki/Motorcycle_braking_systems
+#   https://www.motorcular.com/tr/surus-teknikleri/motosiklet-fren-teknikleri
+
 ders_no: 1
 slug: acil-fren
 baslik: "Acil Frende Ağırlık Transferi"
-alt_baslik: "Ön fren neden kurtarır"
+alt_baslik: "Sık — kapma"
 seri: "MOTOSİKLET YOL OKULU"
 surum: 1
 
-kaynak: ""                 # videos/ içindeki ilk video
-sure: 45
+kaynak: ""
+sure: 55
 muzik: ""
-muzik_ses: 0.25
+muzik_ses: 0.2
 
-kapanis: "Ön fren %70 durdurur · Takip et"
+kapanis: "Kuruda ön fren %80 · Sık, kapma"
 
 adimlar:
-  - { t: 3,  sure: 5, metin: "1 · Gaz kapanır, vücut hazırlanır" }
-  - { t: 9,  sure: 5, metin: "2 · Ön frene kademeli bas, sıkıştırma" }
-  - { t: 15, sure: 5, metin: "3 · Ağırlık öne gider, lastik tutar" }
-  - { t: 21, sure: 5, metin: "4 · Arka fren sadece dengeler" }
-  - { t: 27, sure: 6, metin: "5 · Gidonu düz tut, fren düz çizgide" }
+  - { t: 4,  sure: 6, metin: "1 · Gazı kapat, dizlerinle depoyu sık" }
+  - { t: 11, sure: 7, metin: "2 · Ön frene ÖNCE hafif bas: çatal çöker" }
+  - { t: 19, sure: 7, metin: "3 · Yük öne oturunca basıncı artır" }
+  - { t: 27, sure: 6, metin: "4 · Arka fren hafif — sadece dengeler" }
+  - { t: 34, sure: 6, metin: "5 · Gidon düz: sert fren dik konumda" }
+  - { t: 41, sure: 7, metin: "6 · Debriyaj son anda, bakış ileride" }
 
 youtube:
-  baslik: "Acil Frende Ağırlık Transferi | Motosiklet Yol Okulu Ders 1"
+  baslik: "Acil Frende Ağırlık Transferi — Sık, Kapma | Yol Okulu #1"
   aciklama: |
-    Acil frende motosikleti durduran şey ön frendir — ama ani basınç lastiği kilitler.
-    Bu derste ağırlık transferini kademeli fren basıncıyla nasıl kullanacağını anlatıyoruz.
+    Acil frende motosikleti durduran asıl şey ön frendir. Ama frene ani "kapmak"
+    lastik daha yüklenmeden tutuş isteyeceği için tekerleği kilitler. Doğrusu
+    kademeli sıkmak: önce hafif basınçla çatalı çöktürüp ağırlığı öne alırsın,
+    ön lastiğin yere basan alanı büyür, tutuş artar — sonra basıncı yükseltirsin.
 
-    0:03 Gaz kapanır
-    0:09 Kademeli ön fren
-    0:15 Ağırlık öne
-    0:21 Arka frenin işi
-    0:27 Düz çizgide fren
+    0:04 Gazı kapat, dizlerinle depoyu sık
+    0:11 Ön frene önce hafif bas — çatal çöker
+    0:19 Yük öne oturunca basıncı artır
+    0:27 Arka fren hafif, sadece dengeler
+    0:34 Gidon düz — sert fren dik konumda
+    0:41 Debriyaj son anda, bakış ileride
+
+    Rakamlar: kuru ve iyi asfaltta frenlemenin yaklaşık %70-80'i ön tekerlekten
+    gelir, sert acil frende bu oran daha da yükselir. Islak zeminde dağılım
+    50-50'ye yaklaşır — ıslakta ön frene aynı şekilde yüklenme.
+
+    Notlar:
+    • ABS'li motosiklette fren kararlı ve sert basılır; sistem titreşim verdiğinde
+      bırakma, basmaya devam et.
+    • Arka teker kilitlenir ve motosiklet düz gidiyorsa freni bırakma, düz tutup
+      durana kadar götür. Motosiklet açılanmışken arka freni ani bırakmak
+      tehlikelidir.
+    • Fren öğrenilen bir beceridir, refleks değil. Boş ve güvenli bir alanda,
+      tam koruyucu ekipmanla, düşük hızdan başlayarak çalış.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
 
     @aae_motorcycle
-  etiketler: [motosiklet, sürüş eğitimi, acil fren, ön fren, motosiklet eğitimi, yol okulu]
+  etiketler:
+    - motosiklet
+    - sürüş eğitimi
+    - acil fren
+    - ön fren
+    - motosiklet eğitimi
+    - ağırlık transferi
+    - yol okulu
+    - motovlog
   kategori: "2"
   gizlilik: private
 
 instagram:
   caption: |
-    Acil frende motosikleti durduran ön frendir — ama ani basınç lastiği kilitler.
-    Kademeli sıkıştır: ağırlık öne gider, lastik tutar.
+    Acil frende seni durduran ön frendir — ama frene kapmak tekerleği kilitler.
 
-    Kaydet, bir sonraki sürüşte dene.
+    Önce hafif bas: çatal çöker, ağırlık öne gider, ön lastiğin temas alanı
+    büyür. Tutuş geldikten SONRA basıncı artır. Kuru asfaltta işin %70-80'i
+    ön frendedir; ıslakta bu oran düşer.
+
+    Arka fren sadece dengeler. Gidon düz, motosiklet dik olsun.
+
+    Boş bir alanda, tam ekipmanla, düşük hızdan başlayarak çalış.
+    Kaydet — bir sonraki sürüşte dene.
 
     @aae_motorcycle
-    #motosiklet #sürüşeğitimi #acilfren #motovlog #yolokulu
+    #motosiklet #sürüşeğitimi #acilfren #frenleme #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş
   feed_de_paylas: true
