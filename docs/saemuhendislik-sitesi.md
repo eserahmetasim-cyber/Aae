@@ -9,6 +9,70 @@
 
 ---
 
+## 0. GÜNCEL DURUM — 03.10.2026 (bulut oturumu tespiti)
+
+Gmail (eserahmetasim@gmail.com) üzerinden doğrulandı. **12.09'dan beri kimsenin
+görmediği iki uyarı var** — AAE'nin bilgisayarı 13.09'dan beri erişilemez olduğu
+için `adsense-gunluk-kontrol` görevi ~3 haftadır çalışmamış.
+
+### 🔴 Search Console: düzeltme BAŞARISIZ + iki yeni sorun
+
+**16.09.2026 20:29 — `sc-noreply@google.com` [WNC-10031170]:**
+> "Sayfayı dizine ekleme sorunlarıyla ilgili bazı düzeltmeler **başarısız oldu**.
+> İstenen düzeltme şu sorunla ilgiliydi: *Yönlendirmeli sayfa*. Sayfalarınızdan
+> bazıları bu sorundan etkilenmeye devam ediyor."
+
+→ 07.09'daki temiz-URL düzeltmesi **kısmen tutmamış**.
+
+**16.09.2026 20:29 + 20:37 — `sc-noreply@google.com` [WNC-20237597]:** iki YENİ neden:
+> * "Kopya, Google kullanıcıdan farklı bir standart sayfa seçti"
+> * "Kullanıcı tarafından seçilen standart sayfa olmadan kopya"
+
+16.09'dan bugüne yeni Search Console maili yok → **durum hâlâ bu.**
+
+#### Teşhis hipotezleri (canlı doğrulama bekliyor, sırayla bakılacak)
+1. **`www` vs apex — en güçlü şüpheli.** 10.09'da `www.saemuhendislik.com/ads.txt`
+   **200** dönüyordu. Eğer `www` apex'e yönlendirmiyor, içeriği doğrudan sunuyorsa
+   Google iki özdeş site görüyor — "Google farklı bir standart sayfa seçti"nin
+   klasik sebebi. Kontrol:
+   `curl -sS --ssl-no-revoke -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.saemuhendislik.com/`
+   200 ise zone'da `www.saemuhendislik.com/*` → `https://saemuhendislik.com/$1`
+   **301 Redirect Rule** kurulacak (`dokum-pdf-yonlendirme` deseni).
+2. **Canonical'ı olmayan sayfalar.** 07.09 betiğinin `DOKUNMA` kümesi
+   `{404.html, google19071191ddf4150f.html}` idi → bu ikisinde canonical YOK.
+   Doğrulama dosyası dizine giriyorsa "standart sayfa olmadan kopya" tam bu.
+   Çözüm: robots.txt `Disallow` (dosya **silinmeyecek**, içeriği değiştirilmeyecek).
+3. **`gizlilik.html` ↔ `gizlilik-politikasi.html` ikizliği.** 3662 / 4144 bayt,
+   içerik neredeyse aynı. Özdeş içerikli iki URL = kopya kümesi. Play Console'a
+   verilen adres korunacak; Play'de kayıtlı olan kanonik yapılacak.
+
+> ⚠ Teşhis **tahminle değil**, Search Console "Dizine ekleme" raporundaki örnek
+> URL listesiyle kesinleştirilecek.
+
+### 🟡 AdSense: 36. gün, hâlâ "Hazırlanıyor"
+Başvuru 28.08 → bugün **36 gün**. Google'ın normal aralığı 1–14 gün; reçetedeki
+**21 gün eşiği çoktan aşıldı** → panelden **yeniden inceleme talebi** gönderilmeli.
+Bu hesaba (eserahmetasim) hiç AdSense maili gelmedi — beklenen, 008'e gidiyor.
+
+### 🟢 Mini Mühendis: Play production access VERİLDİ
+**12.09.2026 — `no-reply-googleplay-developer@google.com`:**
+> "Congratulations! Your app has been granted Google Play production access"
+> (`com.saemuhendislik.mini_muhendis`)
+
+→ Ana sayfadaki "Uygulamalarımız" bandında Mini Mühendis'in
+**"YAKINDA GOOGLE PLAY'DE" rozeti artık yanlış** — gerçek Play Store linkine
+çevrilmeli (TR+EN).
+
+### Bu tespitlerle ne yapıldı
+03.10'da yerel oturuma (`Saemuhendislik sistem düzenlemesi`,
+`session_014mvmA2G5DBuuSRYtxDLTwk`) 7 maddelik iş emri **kuyruğa alındı**:
+AdSense durumu/yeniden inceleme → SC raporundan URL listesi → üç hipotezin
+doğrulanması → düzeltme + dağıtım + 200 doğrulama → SC'de "Düzeltmeyi doğrula" →
+Mini Mühendis Play linki → wiki/hafıza güncellemesi.
+AAE'nin bilgisayarı bağlanınca çalışacak.
+
+---
+
 ## 1. Künye
 
 | | |
@@ -279,7 +343,10 @@ Sitemap yeniden gönderildi, iki hata için **"Düzeltmeyi doğrula"** başlatı
   bu yetki 12.09'da açıkça verildi.
 - Durum değişmezse tek satır bildirir, log'a yazmaz. 21 günü geçerse yeniden
   inceleme ister. Oturum düşerse şifre girmez, 008 ile giriş istenmesini bildirir.
-- ⚠ **Görev yalnızca uygulama AÇIKKEN çalışır.** Panelin ekran görüntüsü sık sık
+- ⚠ **Görev yalnızca uygulama AÇIKKEN çalışır.** Nitekim 13.09–03.10 arasında
+  bilgisayar erişilemez olduğu için **hiç çalışmadı** ve 16.09'daki iki Search
+  Console uyarısı 17 gün boyunca görülmedi (bkz. §0). Takibin tek dayanağı bu
+  görev olmamalı. Panelin ekran görüntüsü sık sık
   "0 width"/timeout veriyor → screenshot yerine JS / `get_page_text` kullanılıyor.
 
 Gmail bağlayıcısı **eserahmetasim@gmail.com**'a bağlı: AdSense maili oraya
@@ -306,14 +373,16 @@ Gmail bağlayıcısı **eserahmetasim@gmail.com**'a bağlı: AdSense maili oraya
 ## 10. Bekleyen işler
 
 ### Siteyle ilgili
-1. **AdSense onayı** — 12.09'dan sonraki durum doğrulanmalı. Onay geldiyse
-   Auto ads + CMP (bkz. §6). 21 günü geçtiyse yeniden inceleme talebi.
-2. **Search Console doğrulama sonucu** — 07.09'da başlatılan iki "Düzeltmeyi
-   doğrula" işleminin sonucu okunmalı; kalan 10 "keşfedildi, taranmadı" sayfa takip.
+1. **AdSense — yeniden inceleme talebi** (36. gün, 21 eşiği aşıldı). Onay
+   geldiyse Auto ads + CMP (bkz. §6). → *iş emri kuyrukta, bkz. §0*
+2. **Search Console — düzeltme başarısız oldu + iki yeni "Kopya" sorunu**
+   (16.09). Rapordan URL listesi alınıp üç hipotez doğrulanacak, düzeltilip
+   yeniden "Düzeltmeyi doğrula" başlatılacak. → *iş emri kuyrukta, bkz. §0*
 3. **Patent ve Ar-Ge Danışmanlığı sayfası** — AAE sıcak, henüz yapılmadı.
 4. **"YENİ" rozeti** — bir sonraki yayında taşınmalı ya da kaldırılmalı.
-5. **Uygulama bandı rozetleri** — Mini Mühendis / Malzeme Bilgisi Play'de
-   yayınlanınca "YAKINDA" yerine mağaza linki; Moto Bakım eklenebilir.
+5. **Uygulama bandı rozetleri** — **Mini Mühendis'e 12.09'da production access
+   verildi**, "YAKINDA" rozeti artık yanlış → Play Store linkine çevrilecek
+   (TR+EN). Malzeme Bilgisi hâlâ bekliyor; Moto Bakım eklenebilir.
 6. **Blog** — trafik için önerildi, yapılmadı.
 7. `info@` e-postası — hosting askıda; gerekirse Cloudflare Email Routing.
 8. Eski sunucudaki çöp (artık erişilmiyor): `parca1-site.zip/.tar.gz`,
@@ -321,7 +390,8 @@ Gmail bağlayıcısı **eserahmetasim@gmail.com**'a bağlı: AdSense maili oraya
 9. `dovme1.pdf` / `dovme2.pdf` eski sunucuda da yoktu — hâlâ kayıp.
 
 ### Yan projeler (aynı oturumda geçen, site dışı)
-- **Mini Mühendis** — Play incelemesinde (v1.0.0); onaylanınca v1.1.0 kapalı test.
+- **Mini Mühendis** — ✅ **Play production access verildi (12.09.2026)**,
+  `com.saemuhendislik.mini_muhendis`. Sıradaki: yayına alma + site bandındaki link.
 - **Malzeme Bilgisi** + **Moto Bakım** — mağaza paketleri hazır, Play Console'da
   uygulama oluşturma bekliyor. (`MalzemeBilgisi-v1.3.1-playstore.aab` hazır.)
 - **Yayın 0125-05** — normalize grup testleri + SEM kayıtları bekliyor.
