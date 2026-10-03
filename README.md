@@ -7,6 +7,9 @@ Videoyu GitHub'a yüklersiniz → GitHub kendi sunucusunda işler → hazır MP4
 **ve isterseniz otomatik olarak YouTube'a (Short olarak) yükler.**
 **Bilgisayarınıza hiçbir program kurmanıza gerek yok.**
 
+> 📋 Kanal kimliği, Drive'daki kurgu kuyruğu, haftalık raporlar ve açık işlerin
+> tamamı tek dosyada: [**AAE · Video Üretimi — Tek Dosya Bağlam**](AAE-VIDEO-URETIMI.md)
+
 ---
 
 ## 🚀 En kolay yol (GitHub üzerinden)
