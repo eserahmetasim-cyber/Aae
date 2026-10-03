@@ -1,0 +1,98 @@
+# Ders 02 · Virajda bakış
+# Kaynaklar (teknik doğrulama):
+#   https://www.bennetts.co.uk/bikesocial/news-and-views/advice/biking-tips/motorcycle-vision-cornering
+#   https://adventuremotorcycle.com/tech-tips/vanishing-point
+#   https://motorhikayesi.com/motosiklet-baktigin-yere-gider.html
+
+ders_no: 2
+slug: viraj-bakisi
+baslik: "Virajda Bakış"
+alt_baslik: "Baktığın yere gidersin"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""
+sure: 55
+muzik: ""
+muzik_ses: 0.2
+
+kapanis: "Çeneni çevir · Nokta yaklaşıyorsa yavaşla"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Gözünle değil, çeneni çevir" }
+  - { t: 11, sure: 7, metin: "2 · Kenarların birleştiği noktayı bul" }
+  - { t: 19, sure: 7, metin: "3 · Nokta uzaklaşıyorsa viraj açılıyor" }
+  - { t: 27, sure: 7, metin: "4 · Sana yaklaşıyorsa kapanıyor: yavaşla" }
+  - { t: 35, sure: 6, metin: "5 · Engele değil, kaçış boşluğuna bak" }
+  - { t: 42, sure: 6, metin: "6 · 10-12 saniye ileriyi tara" }
+
+youtube:
+  baslik: "Virajda Bakış: Baktığın Yere Gidersin | Yol Okulu #2"
+  aciklama: |
+    Motosiklet baktığın yere gider. Virajda gidonu değil, önce bakışını
+    yönetirsin — doğru yere bakmak hem motosikleti yatırmanı kolaylaştırır
+    hem de virajın nasıl bittiğini sana önceden söyler.
+
+    0:04 Gözünle değil, çeneni çevir
+    0:11 Kenarların birleştiği noktayı bul
+    0:19 Nokta uzaklaşıyorsa viraj açılıyor
+    0:27 Sana yaklaşıyorsa kapanıyor — yavaşla
+    0:35 Engele değil, kaçış boşluğuna bak
+    0:42 10-12 saniye ileriyi tara
+
+    KAYBOLUŞ NOKTASI (limit point)
+    Yolun iki kenarının görüş alanında birleştiği yer. Virajın hikâyesini
+    sana o anlatır:
+    • Nokta senden uzaklaşıyorsa viraj açılıyor — gazı açabilirsin.
+    • Nokta sana yaklaşıyorsa viraj kapanıyor (daralan yarıçap) — hızını
+      düşür, dönüşü geç yap.
+    • Nokta sabit mesafede duruyorsa viraj sabit yarıçapta, hızını koru.
+
+    HEDEF SABİTLEMESİ
+    En sık yapılan hata: korktuğun şeye bakmak. Bakışını kilitlediğin yere
+    gidersin. Çakıla, bariyere ya da karşıdan gelene değil, aradaki kaçış
+    boşluğuna bak.
+
+    BAKIŞ KATMANLARI
+    Ana bakış ileride, kayboluş noktasında durur; ikinci bakış kısa kısa
+    dönüş noktasına, viraj içine ve çıkışa uğrar; çevresel görüşün de zemini,
+    çukurları ve yan yolları tarar. Baş yatmaz, ufukla aynı hizada kalır.
+
+    Hızını viraja girmeden al. Bakış sana zaman kazandırır, kaybettiğin
+    hızı geri getirmez.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez. Önce
+    tanıdığın, trafiği sakin bir yolda, koruyucu ekipmanla çalış.
+
+    @aae_motorcycle
+  etiketler:
+    - motosiklet
+    - sürüş eğitimi
+    - viraj
+    - viraj tekniği
+    - bakış tekniği
+    - hedef sabitlemesi
+    - motosiklet eğitimi
+    - yol okulu
+    - motovlog
+  kategori: "2"
+  gizlilik: private
+
+instagram:
+  caption: |
+    Motosiklet baktığın yere gider. Virajda ilk yönettiğin şey gidon değil,
+    bakışın.
+
+    Gözünü kaydırma — çeneni viraj çıkışına çevir.
+    Sonra yolun iki kenarının birleştiği noktayı bul: uzaklaşıyorsa viraj
+    açılıyor, sana yaklaşıyorsa kapanıyor, yavaşla.
+
+    En sık yapılan hata korktuğun şeye bakmak. Bariyere değil, aradaki
+    boşluğa bak — bakışını kilitlediğin yere gidersin.
+
+    Önce tanıdığın sakin bir yolda, tam ekipmanla çalış.
+    Kaydet — bir sonraki virajda dene.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #viraj #virajtekniği #bakıştekniği #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş
+  feed_de_paylas: true
