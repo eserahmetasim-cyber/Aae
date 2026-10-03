@@ -40,7 +40,10 @@ Doldurulacak alanlar:
 | `ders_no`, `slug`, `baslik` | Zorunlu. Açılış kartı, üst bant ve dosya adı. (`no` YAML'da boolean olduğu için `ders_no`) |
 | `alt_baslik` | Açılış kartında tek cümlelik özet |
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
+| `baslangic` | Uzun çekimden parça seç: kaçıncı saniyeden başlasın (örn. `150`) |
 | `sure` | Saniye (1–90) |
+| `kaynak_ses` | Motorun gerçek ses seviyesi (0 = sustur, 1 = olduğu gibi) |
+| `muzik` / `muzik_ses` | Fon müziği dosyası ve seviyesi |
 | `adimlar` | **Eğitimin özü:** `t` saniyesinde başlayıp `sure` saniye ekranda kalan maddeler |
 | `kapanis` | Son 3 saniyedeki çıkarım + takip çağrısı |
 | `youtube:` | başlık, açıklama, etiketler, gizlilik |
@@ -115,6 +118,28 @@ python3 scripts/publish_instagram.py --ders content/dersler/01-acil-fren.yml --k
 
 ---
 
+## 🎵 Müzik
+
+Fon müziği depoda hazır: `assets/muzik/aae_yol_okulu.mp3` — 82 BPM, A minor,
+koyu phonk/trap yatağı. **Parça tamamen `scripts/muzik_uret.py` ile sentezlendi**,
+hiçbir yerden örnek alınmadı; YouTube ve Instagram'da telif iddiası yemezsin.
+
+Yeni varyasyon üretmek için:
+
+```bash
+pip install numpy
+python3 scripts/muzik_uret.py --bpm 76 --sure 90 --tohum 9         --cikti assets/muzik/aae_yavas.mp3
+```
+
+`--tohum` değeri varyasyonu, `--bpm` tempoyu değiştirir. Ürettiğin dosyayı ders
+dosyasındaki `muzik:` alanına yaz.
+
+**Ses dengesi:** motorun gerçek sesi `kaynak_ses` (varsayılan 0.30) ile altta
+tutulur, müzik `muzik_ses` (0.35) ile üstte durur, toplam miks otomatik olarak
+-14 LUFS'a oturtulur. Motor sesini tamamen susturmak için `kaynak_ses: 0`.
+
+---
+
 ## ▶️ YouTube kurulumu (tek seferlik)
 
 1. [Google Cloud Console](https://console.cloud.google.com/) → yeni proje →
@@ -174,7 +199,7 @@ Reels: MP4/MOV, H.264/HEVC + AAC, 23–60 fps, **≤ 300 MB**, 9:16 önerilir, `
 content/dersler/        → ders dosyaları (_sablon.yml kopyala)
 videos/                 → ham çekimler (Git LFS)
 output/                 → render edilmiş videolar
-assets/muzik/           → fon müziği
+assets/muzik/           → fon müziği (aae_yol_okulu.mp3 hazır gelir)
 scripts/
   lesson.py                 → ders dosyasını okur/doğrular, drawtext metinlerini üretir
   make_training_video.sh    → ffmpeg render
@@ -182,6 +207,7 @@ scripts/
   publish_instagram.py      → Instagram (Reels) yükleme
   get_youtube_token.py      → YT refresh token (tek seferlik, yerelde)
   get_instagram_ids.py      → IG user id + uzun ömürlü jeton (tek seferlik, yerelde)
+  muzik_uret.py             → telifsiz fon müziği besteler (numpy gerekir)
 .github/workflows/egitim-videosu.yml
 KURALLAR.md             → format, marka, yayın ve sır kuralları
 ```

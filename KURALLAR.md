@@ -24,6 +24,16 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
 3. **Adımlar:** ekranda zamanlı geçen 3–6 madde (`adimlar:` listesi). Eğitim içeriğinin özü bu.
 4. **Kapanış** (son 3 sn): tek cümle çıkarım + takip çağrısı.
 
+## Ses
+- Son miks **-14 LUFS**'a normalize edilir (platformların normalize ettiği hedef),
+  tepe -1.5 dBTP. Daha kısık bırakırsan platform sesi yükseltirken gürültüyü de yükseltir.
+- **Motorun gerçek sesi altta kalır** (`kaynak_ses`, varsayılan 0.30), müzik üstte
+  (`muzik_ses`, varsayılan 0.35). Oranı sen kurarsın, toplam seviyeyi render oturtur.
+- Kaynakta ses yoksa sessiz ses kanalı eklenir — platformlar ses kanalı bekler.
+- **Müzik telifi:** yalnızca `scripts/muzik_uret.py` ile üretilmiş parçalar ya da
+  hakkı net şekilde temizlenmiş müzik kullanılır. Hazır parça indirip koyma —
+  YouTube ve Instagram'da ayrı ayrı iddia yersin.
+
 ## İsimlendirme
 ```
 output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4

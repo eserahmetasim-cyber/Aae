@@ -10,9 +10,11 @@ tarih: ""                  # boş = render günü
 surum: 1                   # v1, v2... yeniden kurgu yaparken artır
 
 kaynak: ""                 # boş = videos/ içindeki ilk video
+baslangic: 0               # uzun klipten parça seç: kaçıncı saniyeden başlasın
 sure: 60                   # saniye (1-90, KURALLAR.md)
-muzik: ""                  # assets/muzik/....mp3 — eğitimde kısık tut
-muzik_ses: 0.25
+kaynak_ses: 0.30           # motorun gerçek sesi (0 = sustur, 1 = olduğu gibi)
+muzik: "assets/muzik/aae_yol_okulu.mp3"
+muzik_ses: 0.35
 
 kapanis: "Çıkarım tek cümle · Takip et"   # son 3 saniyede görünür
 

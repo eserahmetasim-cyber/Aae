@@ -12,9 +12,11 @@ seri: "MOTOSİKLET YOL OKULU"
 surum: 1
 
 kaynak: ""
+baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
-muzik: ""
-muzik_ses: 0.2
+kaynak_ses: 0.30        # motorun gerçek sesi — altta, kısık
+muzik: "assets/muzik/aae_yol_okulu.mp3"
+muzik_ses: 0.35
 
 kapanis: "Çeneni çevir · Nokta yaklaşıyorsa yavaşla"
 

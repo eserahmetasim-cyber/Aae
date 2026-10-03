@@ -127,6 +127,12 @@ def yukle(yol: str) -> dict:
             f"{yol}: caption'da {_etiket_sayisi(caption)} etiket var — sinir {IG_ETIKET_SINIR}.")
 
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
+    baslangic = float(ham.get("baslangic", 0))
+    if baslangic < 0:
+        raise DersHatasi(f"{yol}: 'baslangic' negatif olamaz.")
+    kaynak_ses = float(ham.get("kaynak_ses", 1.0))
+    if not 0.0 <= kaynak_ses <= 2.0:
+        raise DersHatasi(f"{yol}: 'kaynak_ses' 0-2 arasinda olmali.")
     surum = int(ham.get("surum", 1))
     tarih = str(ham.get("tarih") or dt.date.today().isoformat())
     cikti_adi = f"{tarih}_ders{no:02d}_{slug}_v{surum}.mp4"
@@ -141,6 +147,8 @@ def yukle(yol: str) -> dict:
         "handle": HANDLE,
         "kapanis": str(ham.get("kapanis") or "").strip(),
         "kaynak": kaynak,
+        "baslangic": baslangic,
+        "kaynak_ses": kaynak_ses,
         "sure": sure,
         "muzik": str(ham.get("muzik") or "").strip(),
         "muzik_ses": float(ham.get("muzik_ses", 0.25)),
@@ -291,7 +299,10 @@ def main() -> None:
             print(f"Ders {ders['no']:02d} · {ders['baslik']}")
             print(f"  kaynak : {ders['kaynak'] or '(videos/ bos)'}")
             print(f"  cikti  : {ders['cikti']}")
-            print(f"  sure   : {ders['sure']} sn · {len(ders['adimlar'])} adim")
+            print(f"  sure   : {ders['sure']} sn · {len(ders['adimlar'])} adim"
+                  f" · baslangic {ders['baslangic']} sn")
+            print(f"  ses    : motor {ders['kaynak_ses']} · muzik "
+                  f"{ders['muzik_ses'] if ders['muzik'] else '(yok)'}")
             print(f"  youtube: {ders['youtube']['baslik']} [{ders['youtube']['gizlilik']}]")
     except DersHatasi as exc:
         print(f"HATA: {exc}", file=sys.stderr)

@@ -24,6 +24,11 @@ KREM="0xF5F0E8"
 ZEMIN="0x07090E"
 INTRO="${INTRO:-2.6}"
 OUTRO="${OUTRO:-3}"
+# Platformlar sesi ~-14 LUFS'a normalize eder. Miksi bu hedefe getirmezsek
+# platform sesi yukseltirken gurultuyu de yukseltir. Oran (motor/muzik)
+# kaynak_ses ve muzik_ses ile kurulur; bu sadece toplam seviyeyi oturtur.
+HEDEF_LUFS="${HEDEF_LUFS:--14}"
+LOUDNORM="loudnorm=I=${HEDEF_LUFS}:TP=-1.5:LRA=11"
 
 command -v ffmpeg >/dev/null 2>&1 || { echo "HATA: ffmpeg yok (sudo apt install ffmpeg)." >&2; exit 1; }
 command -v jq     >/dev/null 2>&1 || { echo "HATA: jq yok (sudo apt install jq)." >&2; exit 1; }
@@ -46,6 +51,8 @@ CIKTI="${2:-$(j '.ders.cikti')}"
 SURE="$(j '.ders.sure')"
 MUZIK="$(j '.ders.muzik')"
 MUZIK_SES="$(j '.ders.muzik_ses')"
+BASLANGIC="$(j '.ders.baslangic')"
+KAYNAK_SES="$(j '.ders.kaynak_ses')"
 M="${TMP}/m"
 
 if [[ -z "${KAYNAK}" || ! -f "${KAYNAK}" ]]; then
@@ -69,6 +76,19 @@ fi
 # --- Sure: kaynak ile ders siniri hangisi kucukse ---------------------------
 KAYNAK_SURE="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "${KAYNAK}" | cut -d. -f1)"
 [[ -z "${KAYNAK_SURE}" || "${KAYNAK_SURE}" == "N/A" ]] && KAYNAK_SURE=0
+# 'baslangic' verildiyse klibin o anindan itibaren kullanilir (uzun surus
+# cekiminden konuya uyan parcayi secmek icin).
+KALAN="$(python3 -c "print(max(0, int(${KAYNAK_SURE} - ${BASLANGIC})))")"
+if (( KALAN == 0 )); then
+  echo "HATA: 'baslangic' (${BASLANGIC}s) kaynagin suresinden (${KAYNAK_SURE}s) buyuk." >&2
+  exit 1
+fi
+KAYNAK_SURE="${KALAN}"
+SS_ARG=()
+if python3 -c "import sys; sys.exit(0 if ${BASLANGIC} > 0 else 1)"; then
+  SS_ARG=(-ss "${BASLANGIC}")
+  echo ">> Baslangic: ${BASLANGIC}s"
+fi
 if (( KAYNAK_SURE > 0 && KAYNAK_SURE < SURE )); then SON="${KAYNAK_SURE}"; else SON="${SURE}"; fi
 (( SON < 2 )) && { echo "HATA: kaynak video cok kisa (${KAYNAK_SURE}s)." >&2; exit 1; }
 FADE_OUT=$(( SON - 1 ))
@@ -156,27 +176,28 @@ mkdir -p "$(dirname "${CIKTI}")"
 echo ">> Ders   : $(j '.ders.no') · $(j '.ders.baslik')"
 echo ">> Kaynak : ${KAYNAK} (${KAYNAK_SURE}s)"
 echo ">> Cikti  : ${CIKTI}"
-echo ">> Sure   : ${SON}s · $(jq -r '.plan.adimlar | length' "${TMP}/plan.json") adim · ses=${SES_VAR} muzik=${MUZIK_VAR}"
+echo ">> Sure   : ${SON}s · $(jq -r '.plan.adimlar | length' "${TMP}/plan.json") adim"
+echo ">> Ses    : motor=${KAYNAK_SES} (var=${SES_VAR}) · muzik=${MUZIK_SES} (var=${MUZIK_VAR})"
 
 VIDEO_KODEK=(-c:v libx264 -profile:v high -preset medium -crf 20 -pix_fmt yuv420p
              -c:a aac -b:a 160k -ar 44100 -ac 2 -movflags +faststart)
 
 if (( SES_VAR && MUZIK_VAR )); then
-  ffmpeg -y -v warning -stats -i "${KAYNAK}" -stream_loop -1 -i "${MUZIK}" \
-    -filter_complex "[0:v]${VF}[v];[1:a]volume=${MUZIK_SES},afade=t=out:st=${FADE_OUT}:d=1[m];[0:a][m]amix=inputs=2:duration=first:dropout_transition=2[a]" \
+  ffmpeg -y -v warning -stats "${SS_ARG[@]}" -i "${KAYNAK}" -stream_loop -1 -i "${MUZIK}" \
+    -filter_complex "[0:v]${VF}[v];[0:a]volume=${KAYNAK_SES}[k];[1:a]volume=${MUZIK_SES},afade=t=out:st=${FADE_OUT}:d=1[m];[k][m]amix=inputs=2:duration=first:dropout_transition=2:normalize=0,${LOUDNORM}[a]" \
     -map "[v]" -map "[a]" -t "${SON}" "${VIDEO_KODEK[@]}" "${CIKTI}"
 elif (( MUZIK_VAR )); then
-  ffmpeg -y -v warning -stats -i "${KAYNAK}" -stream_loop -1 -i "${MUZIK}" \
-    -filter_complex "[0:v]${VF}[v];[1:a]volume=${MUZIK_SES},afade=t=out:st=${FADE_OUT}:d=1[a]" \
+  ffmpeg -y -v warning -stats "${SS_ARG[@]}" -i "${KAYNAK}" -stream_loop -1 -i "${MUZIK}" \
+    -filter_complex "[0:v]${VF}[v];[1:a]volume=${MUZIK_SES},afade=t=out:st=${FADE_OUT}:d=1,${LOUDNORM}[a]" \
     -map "[v]" -map "[a]" -t "${SON}" "${VIDEO_KODEK[@]}" "${CIKTI}"
 elif (( SES_VAR )); then
-  ffmpeg -y -v warning -stats -i "${KAYNAK}" \
-    -filter_complex "[0:v]${VF}[v];[0:a]afade=t=out:st=${FADE_OUT}:d=1[a]" \
+  ffmpeg -y -v warning -stats "${SS_ARG[@]}" -i "${KAYNAK}" \
+    -filter_complex "[0:v]${VF}[v];[0:a]volume=${KAYNAK_SES},afade=t=out:st=${FADE_OUT}:d=1,${LOUDNORM}[a]" \
     -map "[v]" -map "[a]" -t "${SON}" "${VIDEO_KODEK[@]}" "${CIKTI}"
 else
   # Sessiz kaynak: platformlar ses kanali bekler, sessiz pist ekle
   echo "   (kaynakta ses yok — sessiz ses kanali eklendi)"
-  ffmpeg -y -v warning -stats -i "${KAYNAK}" -f lavfi -i anullsrc=r=44100:cl=stereo \
+  ffmpeg -y -v warning -stats "${SS_ARG[@]}" -i "${KAYNAK}" -f lavfi -i anullsrc=r=44100:cl=stereo \
     -filter_complex "[0:v]${VF}[v]" \
     -map "[v]" -map 1:a -t "${SON}" "${VIDEO_KODEK[@]}" "${CIKTI}"
 fi

@@ -8,3 +8,7 @@ google-auth-oauthlib
 google-auth-httplib2
 
 # Instagram yukleme ek paket istemez (Python standart kutuphanesi kullanilir).
+
+# Fon muzigi uretmek icin (scripts/muzik_uret.py). Render ve yayin icin gerekmez;
+# uretilmis mp3 depoda hazir duruyor.
+numpy
