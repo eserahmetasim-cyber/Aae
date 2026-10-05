@@ -422,18 +422,22 @@ def motor_sesi(sure, sahne):
     devir = 42 + 86 * hiz                          # ateşleme temel frekansı (Hz)
     faz = np.cumsum(2 * np.pi * devir / SR)
     ses = np.zeros(n)
-    for h, agirlik in ((1, 1.0), (2, 0.62), (3, 0.34), (4, 0.2), (6, 0.1), (8, 0.05)):
+    # Tiz harmonikler (6., 8.) metalik bir vizilti yapiyordu; kaldirildi ve
+    # kalanlarin agirligi dusuruldu. Sonucta uzaktan gelen bogukca bir gurultu.
+    for h, agirlik in ((1, 1.0), (2, 0.45), (3, 0.18), (4, 0.08)):
         ses += agirlik * np.sin(faz * h + h * 0.7)
-    ses = np.tanh(ses * 0.9) * (0.35 + 0.5 * hiz)  # gaz arttıkça sertleşir
+    ses = np.tanh(ses * 0.55) * (0.35 + 0.5 * hiz)
 
     emme = rng.normal(0, 1, n)                     # emme/egzoz gürültüsü
     emme = np.convolve(emme, np.ones(90) / 90, mode="same")
-    ses += emme * (0.18 + 0.3 * hiz)
+    ses += emme * (0.22 + 0.26 * hiz)
 
     ruzgar = rng.normal(0, 1, n)
     ruzgar = np.convolve(ruzgar, np.ones(16) / 16, mode="same")
-    ses += ruzgar * 0.1 * hiz ** 1.5
+    ses += ruzgar * 0.06 * hiz ** 1.5
 
+    # Alcak geciren: kalan tizleri de yumusat
+    ses = np.convolve(ses, np.ones(28) / 28, mode="same")
     ses /= max(1e-9, np.abs(ses).max())
     ses *= 0.72
     gecis = int(0.4 * SR)

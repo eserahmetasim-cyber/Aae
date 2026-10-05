@@ -172,24 +172,35 @@ biner. Gerçek çekim koyduğunda onun kendi sesi kullanılır.
 
 ## 🎵 Müzik
 
-Fon müziği depoda hazır: `assets/muzik/aae_yol_okulu.mp3` — 82 BPM, A minor,
-koyu phonk/trap yatağı. **Parça tamamen `scripts/muzik_uret.py` ile sentezlendi**,
-hiçbir yerden örnek alınmadı; YouTube ve Instagram'da telif iddiası yemezsin.
+Parçaların **hepsi `scripts/muzik_uret.py` ile sentezlendi** — hiçbir yerden
+örnek alınmadı, YouTube ve Instagram'da telif iddiası yemezsin.
 
-Yeni varyasyon üretmek için:
+| Dosya | Karakter |
+|---|---|
+| `aae_piyano.mp3` | **Varsayılan.** 64 BPM; sakin piyano ezgisi (kısmi sesleri hafif akortsuz, başta çekiç gürültüsü) + çok kısık yaylı + oda yankısı. Ritim yok. |
+| `aae_sade.mp3` | 70 BPM; Karplus-Strong telli çalgı + bas hattı + fırça vuruşu. Boş başlar, açılır, sonda incelir. |
+| `aae_yol_okulu.mp3` | 82 BPM; koyu phonk/trap yatağı (808 bas + cowbell). |
+| `aae_lofi.mp3` ✻ | 76 BPM; Rhodes benzeri akorlar + yumuşak beat + plak çatırtısı. |
+| `aae_atmosfer.mp3` ✻ | 60 BPM; sadece derin pad + bas, ritimsiz. En arkada durur. |
+
+✻ Depoda hazır gelmez, aşağıdaki komutla üretilir.
 
 ```bash
 pip install numpy
-python3 scripts/muzik_uret.py --bpm 76 --sure 90 --tohum 9         --cikti assets/muzik/aae_yavas.mp3
+python3 scripts/muzik_uret.py --stil lofi --sure 70
+python3 scripts/muzik_uret.py --stil piyano --bpm 60 --tohum 9 \
+        --cikti assets/muzik/aae_yavas.mp3
 ```
 
-`--tohum` değeri varyasyonu, `--bpm` tempoyu değiştirir. Ürettiğin dosyayı ders
-dosyasındaki `muzik:` alanına yaz.
+`--stil` (piyano / sade / lofi / atmosfer / phonk) karakteri, `--tohum`
+varyasyonu, `--bpm` tempoyu değiştirir. Ürettiğin dosyayı ders dosyasındaki
+`muzik:` alanına yaz. Her parça -16 LUFS'a oturtulur, böylece stiller arasında
+seviye farkı olmaz.
 
-**Ses dengesi:** motorun gerçek sesi `kaynak_ses` (varsayılan 0.30) ile altta
-tutulur, müzik `muzik_ses` (0.35) ile üstte durur, toplam miks otomatik olarak
--14 LUFS'a oturtulur. Motor sesini tamamen susturmak için `kaynak_ses: 0`.
-Derslerin varsayılanı `kaynak_ses: 0.07` — motor yalnızca hafif bir uğultu olarak kalır.
+**Ses dengesi:** motorun gerçek sesi `kaynak_ses` ile çok geride tutulur
+(derslerin varsayılanı **0.035** — zar zor duyulan bir uğultu), müzik
+`muzik_ses` (0.36) ile üstte durur, toplam miks otomatik olarak -14 LUFS'a
+oturtulur. Motoru tamamen susturmak için `kaynak_ses: 0`.
 
 ---
 
@@ -252,7 +263,7 @@ Reels: MP4/MOV, H.264/HEVC + AAC, 23–60 fps, **≤ 300 MB**, 9:16 önerilir, `
 content/dersler/        → ders dosyaları (_sablon.yml kopyala)
 videos/                 → ham çekimler (Git LFS)
 output/                 → render edilmiş videolar
-assets/muzik/           → fon müziği (aae_yol_okulu.mp3 hazır gelir)
+assets/muzik/           → fon müziği (aae_piyano.mp3 varsayılan)
 scripts/
   lesson.py                 → ders dosyasını okur/doğrular, drawtext metinlerini üretir
   make_training_video.sh    → ffmpeg render

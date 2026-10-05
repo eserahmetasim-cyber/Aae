@@ -15,6 +15,7 @@ Kullanım:
 -------------------------------------------------------------------
 """
 import argparse
+import math
 import os
 import subprocess
 import tempfile
@@ -311,6 +312,103 @@ def uret_sade(bpm: float, sure: float, tohum: int) -> np.ndarray:
     return mix
 
 
+
+# ---------------------------------------------------------------------------
+#  Baska karakterler: piyano / lofi / atmosfer
+# ---------------------------------------------------------------------------
+def piyano_nota(frekans, sure, guc=1.0):
+    """Toplamsal piyano: kismi sesler hafif akortsuz (inharmonisite) ve
+    yukseklere gidildikce daha hizli soner; basta cekic gurultusu var."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    s = np.zeros(n)
+    B = 0.0004
+    for h in range(1, 13):
+        f = frekans * h * math.sqrt(1 + B * h * h)
+        if f > 12000:
+            break
+        a = (1.0 / h ** 1.35) * (0.85 if h % 2 == 0 else 1.0)
+        s += a * np.sin(2 * np.pi * f * t) * np.exp(-t * (1.1 + 0.42 * h))
+    cekic = np.random.default_rng(int(frekans) % 97).normal(0, 1, n) * np.exp(-t * 150)
+    s = s / 2.1 + cekic * 0.05
+    return s * zarf(n, 0.002, 0.03, 0.92, 0.12) * guc
+
+
+def uret_piyano(bpm, sure, tohum):
+    vurus_s, n = 60.0 / bpm, int(sure * SR)
+    bar = 4 * vurus_s
+    yatak = np.zeros(n)
+    ezgi = [(0.0, 0), (1.0, 2), (2.0, 1), (3.0, 3), (3.5, 2)]
+    for b in range(int(np.ceil(sure / bar))):
+        t0 = b * bar
+        kok, akor = SADE_ILERLEME[b % len(SADE_ILERLEME)]
+        ekle(yatak, yayli(akor, int(bar * SR)) * 0.55, t0)            # cok kisik yayli
+        ekle(yatak, piyano_nota(kok / 2, bar * 0.9, 0.5), t0)          # sol el
+        if b >= 1:
+            for k, (konum, idx) in enumerate(ezgi):
+                if b % 4 == 3 and k > 2:
+                    continue
+                ekle(yatak, piyano_nota(akor[idx] * (2 if (b + k) % 5 == 2 else 1),
+                                        2.6, 0.30 if k % 2 else 0.38),
+                     t0 + konum * vurus_s)
+    mix = yanki_uygula(yatak, oda_yankisi(2.2), islak=0.34)
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.62
+
+
+def uret_lofi(bpm, sure, tohum):
+    rng = np.random.default_rng(tohum)
+    vurus_s, n = 60.0 / bpm, int(sure * SR)
+    bar = 4 * vurus_s
+    yatak, alt = np.zeros(n), np.zeros(n)
+    for b in range(int(np.ceil(sure / bar))):
+        t0 = b * bar
+        kok, akor = SADE_ILERLEME[b % len(SADE_ILERLEME)]
+        # Rhodes benzeri: sinus + hafif can kismi, yavas tremolo
+        m = int(bar * SR)
+        tt = np.arange(m) / SR
+        rh = np.zeros(m)
+        for f in akor:
+            rh += np.sin(2 * np.pi * f * tt) * np.exp(-tt * 1.3)
+            rh += 0.18 * np.sin(2 * np.pi * f * 4.1 * tt) * np.exp(-tt * 3.4)
+        rh *= (1 + 0.16 * np.sin(2 * np.pi * 4.6 * tt)) / len(akor)     # tremolo
+        ekle(yatak, rh * 0.5, t0)
+        ekle(alt, bas_cal(kok / 2, bar * 0.55) * 0.5, t0)
+        ekle(alt, kick() * 0.5, t0)
+        ekle(alt, kick() * 0.34, t0 + 2.5 * vurus_s)
+        ekle(alt, trampet() * 0.26, t0 + 2 * vurus_s)
+        for i in range(8):
+            ekle(alt, hihat() * (0.05 if i % 2 else 0.08), t0 + i * vurus_s / 2)
+    catirti = rng.normal(0, 1, n) * (rng.random(n) < 0.0016) * 0.35     # plak catirtisi
+    mix = yanki_uygula(yatak, oda_yankisi(1.3), islak=0.2) * 0.9 + alt + catirti
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.62
+
+
+def uret_atmosfer(bpm, sure, tohum):
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    mix = np.zeros(n)
+    bar = 8.0
+    for b in range(int(np.ceil(sure / bar))):
+        kok, akor = SADE_ILERLEME[b % len(SADE_ILERLEME)]
+        m = int(bar * 1.7 * SR)
+        tt = np.arange(m) / SR
+        kat = np.zeros(m)
+        for f in akor:
+            for d in (-0.7, 0.0, 0.8):
+                kat += np.sin(2 * np.pi * (f / 2 + d) * tt) / (len(akor) * 3)
+            kat += 0.25 * np.sin(2 * np.pi * (f * 2) * tt) / len(akor)
+        kat *= zarf(m, 2.2, 1.6, 0.7, 2.6)
+        ekle(mix, kat * 0.55, b * bar)
+        ekle(mix, bas_cal(kok / 2, bar * 0.8) * 0.3, b * bar)
+    mix = np.convolve(mix, np.ones(12) / 12, mode="same")               # tizleri kis
+    mix = yanki_uygula(mix, oda_yankisi(2.8), islak=0.42)
+    mix *= 0.85 + 0.15 * np.sin(2 * np.pi * t / 26.0)                   # yavas nefes
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.6
+
+
 def wav_yaz(yol: str, mono: np.ndarray) -> None:
     # Hafif genislik: sag kanali 11 ms geciktir
     gecikme = int(0.011 * SR)
@@ -326,18 +424,24 @@ def wav_yaz(yol: str, mono: np.ndarray) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="AAE fon muzigi uretici")
-    ap.add_argument("--stil", choices=("sade", "phonk"), default="sade",
-                    help="sade = sakin yatak (varsayilan), phonk = koyu ritim")
+    ap.add_argument("--stil",
+                    choices=("sade", "phonk", "piyano", "lofi", "atmosfer"),
+                    default="sade",
+                    help="sade | piyano | lofi | atmosfer | phonk")
     ap.add_argument("--bpm", type=float, default=0.0, help="0 = stile gore secilir")
     ap.add_argument("--sure", type=float, default=64.0, help="saniye")
     ap.add_argument("--tohum", type=int, default=3, help="varyasyon icin")
     ap.add_argument("--cikti", default="")
     args = ap.parse_args()
 
-    bpm = args.bpm or (70.0 if args.stil == "sade" else 82.0)
-    cikti = args.cikti or (f"assets/muzik/aae_{'sade' if args.stil == 'sade' else 'yol_okulu'}.mp3")
+    VARSAYILAN_BPM = {"sade": 70.0, "piyano": 64.0, "lofi": 76.0,
+                      "atmosfer": 60.0, "phonk": 82.0}
+    URETICI = {"sade": uret_sade, "piyano": uret_piyano, "lofi": uret_lofi,
+               "atmosfer": uret_atmosfer, "phonk": uret}
+    bpm = args.bpm or VARSAYILAN_BPM[args.stil]
+    cikti = args.cikti or f"assets/muzik/aae_{args.stil}.mp3"
     print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
-    mix = (uret_sade if args.stil == "sade" else uret)(bpm, args.sure, args.tohum)
+    mix = URETICI[args.stil](bpm, args.sure, args.tohum)
     args.cikti = cikti
 
     os.makedirs(os.path.dirname(args.cikti) or ".", exist_ok=True)
@@ -353,6 +457,9 @@ def main() -> None:
                      "alimiter=limit=0.92") if args.stil == "sade" else
                     ("highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
                      "alimiter=limit=0.92"),
+             # Stiller arasi seviye farki karsilastirmayi bozuyordu: hepsi
+             # ayni hedefe (-16 LUFS) oturtulur, son miks zaten -14'e normalize.
+             "-af:a", "loudnorm=I=-16:TP=-1.5:LRA=11",
              "-c:a", "libmp3lame", "-b:a", "192k", args.cikti],
             check=True)
     finally:

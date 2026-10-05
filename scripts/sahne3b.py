@@ -39,6 +39,7 @@ LASTIK = (26, 26, 28)
 JANT = (205, 170, 85)
 GOVDE = (58, 70, 84)
 KAMERA_MODU = "yan"       # yan | kask | takip | degisken
+FREN_SERIT = 2.0          # fren sahnesinde motosikletin serit ici konumu (m)
 GUNDUZ = False
 
 # Gunduz paleti: gokyuzu acik, sis cok daha geride baslar ki UZAK secilir kalsin.
@@ -177,13 +178,16 @@ def _fren_kamera(t, fren, kask_n, yat, pivot):
     if mod == "kask":
         # Gercek kask kamerasi gibi: biraz asagi bakar, genis acilidir. Daha
         # dar aci ve yatay bakisla gidon kadrajin disinda kaliyordu.
-        kask_d = yat @ kask_n + (pivot - yat @ pivot)
+        kask_d = yat @ kask_n + (pivot - yat @ pivot) + np.array([FREN_SERIT, 0.0, 0.0])
         goz = kask_d + np.array([0.0, 0.05, 0.06])
         ileri = yat @ np.array([0.0, -0.28, 1.0])
         return Kamera(goz, goz + ileri * 12.0, G, Y, fov=76), mod
-    return Kamera([2.62 + 0.20 * math.sin(t * 0.21), 1.92 + 0.08 * math.sin(t * 0.13),
-                   -3.25 + 0.26 * math.cos(t * 0.17)],
-                  [0.05, 0.80, 0.35], G, Y, fov=50), mod
+    # Motosiklet sag seritte (x = FREN_SERIT); kamera da onunla kayar, yoksa
+    # motosiklet kadrajin disinda kaliyor.
+    return Kamera([FREN_SERIT + 2.72 + 0.18 * math.sin(t * 0.21),
+                   1.94 + 0.08 * math.sin(t * 0.13),
+                   -3.45 + 0.24 * math.cos(t * 0.17)],
+                  [FREN_SERIT + 0.02, 0.78, 0.10], G, Y, fov=53), mod
 
 
 def kare_fren3b(t):
@@ -222,7 +226,8 @@ def kare_fren3b(t):
     model, _, kask_n = motosiklet(fren, _tek_aci)
     yat = donus([1, 0, 0], 0.085 * fren)
     pivot = np.array([0, 0.31, 0.70])
-    s.ekle(model, R=yat, t=pivot - yat @ pivot)
+    s.ekle(model, R=yat,
+           t=pivot - yat @ pivot + np.array([FREN_SERIT, 0.0, 0.0]))
 
     kamera, mod = _fren_kamera(t, fren, kask_n, yat, pivot)
     s.ciz(d, kamera, gok)
@@ -251,14 +256,60 @@ def kare_fren3b(t):
 # ---------------------------------------------------------------------------
 #  VIRAJ (surucu gozunden, gercek 3B yol)
 # ---------------------------------------------------------------------------
+# Orta cizgi parabolik: x = k*z^2, k = egri*0.006. Virajin yaricapi R = 1/(2k):
+# egri 0.35 -> R ~ 240 m (genis kavis), egri 2.0 -> R ~ 42 m (keskin viraj).
+# Eski katsayi (0.0019) her virajı otoyol kavisine cevirir, keskin viraj cikmazdi.
+VIRAJ_K = 0.006
+
+
 def _merkez_x(z, egri):
     """Yolun orta cizgisinin mesafeye gore yanal kaymasi."""
-    return egri * (z ** 2) * 0.0019
+    return egri * (z ** 2) * VIRAJ_K
 
 
 def _egim(z, egri):
     """Orta cizginin o noktadaki yonu (radyan)."""
-    return math.atan(egri * 2 * z * 0.0019)
+    return math.atan(egri * 2 * z * VIRAJ_K)
+
+
+def _limit_mesafe(goz_x, egri, ic, azami=150.0):
+    """Gercek limit noktasi: yolun hala gorunen EN UZAK noktasi. Bakis cizgisi
+    virajin IC tarafindaki yamaci kesiyorsa oradan otesi gorunmez.
+    Onceki surumde bu bir parametreyle elle kaydiriliyordu — bu yuzden tepe
+    sahnede ileri geri yuruyordu."""
+    d, son = 6.0, 6.0
+    while d < azami:
+        px = _merkez_x(d, egri)
+        kapali = False
+        for z in np.linspace(1.0, d * 0.97, 26):
+            x_cizgi = goz_x + (px - goz_x) * (z / d)
+            if (x_cizgi - (_merkez_x(z, egri) + ic * 4.3)) * ic > 0:
+                kapali = True
+                break
+        if kapali:
+            break
+        son = d
+        d += 2.0
+    return son
+
+
+def _yamac(s, egri, ic, kayma, renk, ust_renk):
+    """Virajin ic tarafini izleyen SUREKLI sed. Sahneye sabit cakili durur,
+    yolla birlikte akar; kaybolus noktasini yaratan sey budur."""
+    z = -12.0
+    while z < 150:
+        z2 = z + 7.0
+        for zz, zn in ((z, z2),):
+            x1 = _merkez_x(zz, egri) + ic * 4.5
+            x2 = _merkez_x(zn, egri) + ic * 4.5
+            h = 9.5
+            w = ic * 13.0
+            s.yuzey([[x1, 0, zz], [x1 + w, h, zz], [x2 + w, h, zn], [x2, 0, zn]],
+                    renk, katman=3)                                  # egim
+            s.yuzey([[x1 + w, h, zz], [x1 + w * 2.4, h + 1.5, zz],
+                     [x2 + w * 2.4, h + 1.5, zn], [x2 + w, h, zn]],
+                    ust_renk, katman=3)                              # tepe duzlugu
+        z = z2
 
 
 def _tepe(s, x, z, genislik, derinlik, yukseklik, renk):
@@ -292,10 +343,10 @@ def kare_viraj3b(t, toplam=55.0):
         derinlik, bukum, (etiket, renk) = s2.viraj_evre(t)
         engel = (t % s2.VIRAJ_DONGU) >= 11.0
 
-    # derinlik kucuk = nokta uzakta. Gorus mesafesine cevir.
-    gorus = 95.0 - 230.0 * derinlik
-    gorus = max(16.0, gorus)
-    egri = bukum * 1.15
+    # derinlik -> EGRILIK. Viraj keskinlestikce kaybolus noktasi kendiliginden
+    # yaklasir; artik elle kaydirilan bir "gorus mesafesi" yok.
+    egri = -(0.30 + derinlik * 5.6)          # 0.08 -> 0.75 ;  0.34 -> 2.2
+    ic = -1 if egri < 0 else 1
 
     gok, cim, asfalt = _palet()
     im = Image.new("RGB", (G, Y), gok)
@@ -341,15 +392,23 @@ def kare_viraj3b(t, toplam=55.0):
             s.kutu([x, 0.80, z0], [0.13, 0.16, 0.12],
                    TURUNCU if yan > 0 else KREM, katman=3)
 
-    # Gorus mesafesini kapatan ic taraf tepesi: kaybolus noktasini yaratir
-    tx = _merkez_x(gorus + 10, egri) + (-1 if egri < 0 else 1) * 10.0
-    _tepe(s, tx, gorus + 13, 34, 20, 11.0, (64, 96, 58) if GUNDUZ else (22, 30, 24))
+    _yamac(s, egri, ic, _vy,
+           (72, 104, 62) if GUNDUZ else (24, 34, 26),
+           (96, 128, 80) if GUNDUZ else (28, 40, 30))
 
     # Motosiklet sahnede: viraja giren surucuyu ARKADAN gormek konuyu
     # seviye POV'dan cok daha iyi anlatiyor. Seviye kamerada yakin asfalt
     # karenin %60'ini yutuyordu.
+    # SERIT ICI KONUM: yol +-3.9 m, orta cizgi 0'da -> sag serit 0..3.9.
+    # Orta cizginin uzerinde gitmek yanlisti. Konum ayrica viraja gore degisir:
+    # sola donen virajda sagda durmak gorusu acar, saga donende tersi.
+    # 1.0 = seridin solu, 1.95 = ortasi, 2.9 = sagi.
     mz = 7.0
-    mx = _merkez_x(mz, egri) + 1.1
+    hedef_serit = 1.95 - np.sign(egri) * 0.95 if abs(egri) > 0.05 else 1.95
+    global _serit
+    _serit = globals().get("_serit", 1.95)
+    _serit += (hedef_serit - _serit) * 0.022          # yumusak gecis
+    mx = _merkez_x(mz, egri) + _serit
     yon = _egim(mz, egri)
     yatis = -yon * 1.5                       # viraja yatis
     R = donus([0, 1, 0], yon) @ donus([0, 0, 1], yatis)
@@ -373,13 +432,14 @@ def kare_viraj3b(t, toplam=55.0):
             _tepe(s, mx2, 330 + (i % 3) * 40, 150, 90, 34 + (i % 4) * 11,
                   (104, 132, 140))
 
-    goz = np.array([_merkez_x(-6, egri) + 1.5, 3.05, -6.0])
-    bak = np.array([_merkez_x(34, egri) + 0.9, 1.05, 34.0])
+    goz = np.array([_merkez_x(-6, egri) + _serit + 0.4, 3.05, -6.0])
+    bak = np.array([_merkez_x(34, egri) + _serit * 0.55, 1.05, 34.0])
     kamera = Kamera(goz, bak, G, Y, fov=52)
     s.ciz(d, kamera, gok)
 
     # --- kaybolus noktasi isareti (3B noktanin ekrandaki yeri) ------------
-    nk = np.array([[_merkez_x(gorus, egri), 0.9, gorus]])
+    limit = _limit_mesafe(_serit, egri, ic)
+    nk = np.array([[_merkez_x(limit, egri), 0.9, limit]])
     kn = kamera.kameraya(nk)
     if kn[0, 2] > 0.3:
         mx, my = kamera.ekrana(kn)[0]
@@ -404,8 +464,8 @@ def kare_viraj3b(t, toplam=55.0):
         d.line([(G / 2, Y - 90), (mx, my)], fill=(255, 255, 255, 40), width=5)
 
     if engel:                                              # hedef sabitlemesi
-        for nokta, cizim in (([_merkez_x(24, egri) + 2.6, 0.05, 24.0], "engel"),
-                             ([_merkez_x(24, egri) + 0.3, 1.2, 24.0], "bosluk")):
+        for nokta, cizim in (([_merkez_x(34, egri) + 3.0, 0.05, 34.0], "engel"),
+                             ([_merkez_x(34, egri) + 0.9, 1.2, 34.0], "bosluk")):
             kn = kamera.kameraya(np.array([nokta]))
             if kn[0, 2] <= 0.3:
                 continue
