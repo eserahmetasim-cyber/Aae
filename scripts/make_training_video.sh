@@ -64,9 +64,14 @@ if [[ -z "${KAYNAK}" && -n "${SAHNE}" ]]; then
   URETICI="scripts/sahne_uret.py"
   [[ "${BOYUT}" == "3" ]] && URETICI="scripts/sahne3b.py"
   echo ">> Sahne uretiliyor: ${SAHNE} (${BOYUT} boyutlu)"
+  EK_SECENEK=()
+  if [[ "${BOYUT}" == "3" ]]; then
+    EK_SECENEK=(--kamera "$(j '.ders.kamera')" --gunduz "$(j '.ders.gunduz')")
+  fi
   python3 "${URETICI}" --sahne "${SAHNE}" \
           --sure "$(python3 -c "print(${SURE} + ${BASLANGIC} + 2)")" \
           --fazlar "$(j '.ders.sahne_fazlari')" \
+          "${EK_SECENEK[@]}" \
           --cikti "${KAYNAK}" >/dev/null
 fi
 if [[ -z "${KAYNAK}" || ! -f "${KAYNAK}" ]]; then

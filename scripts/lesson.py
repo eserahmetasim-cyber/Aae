@@ -129,6 +129,10 @@ def yukle(yol: str) -> dict:
     boyut = int(ham.get("boyut", 3))
     if boyut not in (2, 3):
         raise DersHatasi(f"{yol}: 'boyut' 2 ya da 3 olmali.")
+    kamera = str(ham.get("kamera") or "yan").strip()
+    if kamera not in ("yan", "kask", "takip", "degisken"):
+        raise DersHatasi(f"{yol}: 'kamera' yan|kask|takip|degisken olmali.")
+    gunduz = bool(ham.get("gunduz", False))
     sahne = str(ham.get("sahne") or "").strip()
     if sahne and sahne not in ("fren", "viraj"):
         raise DersHatasi(f"{yol}: 'sahne' fren|viraj olmali (ya da bos).")
@@ -155,6 +159,8 @@ def yukle(yol: str) -> dict:
         "kaynak": kaynak,
         "sahne": sahne,
         "boyut": boyut,
+        "kamera": kamera,
+        "gunduz": gunduz,
         "sahne_fazlari": str(ham.get("sahne_fazlari") or "").strip(),
         "baslangic": baslangic,
         "kaynak_ses": kaynak_ses,
@@ -309,7 +315,9 @@ def main() -> None:
             if ders["kaynak"]:
                 kaynak_satiri = ders["kaynak"]
             elif ders["sahne"]:
-                kaynak_satiri = f"uretilecek sahne: {ders['sahne']} ({ders['boyut']} boyutlu)"
+                kaynak_satiri = (f"uretilecek sahne: {ders['sahne']} "
+                                 f"({ders['boyut']}B, kamera {ders['kamera']}, "
+                                 f"{'gunduz' if ders['gunduz'] else 'gece'})")
             else:
                 kaynak_satiri = "(videos/ bos)"
             print(f"  kaynak : {kaynak_satiri}")

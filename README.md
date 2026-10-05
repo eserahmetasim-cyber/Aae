@@ -42,6 +42,8 @@ Doldurulacak alanlar:
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
 | `sahne` | Çekim yoksa arka planı çizimle üret: `fren` veya `viraj` |
 | `boyut` | `3` = 3 boyutlu sahne (varsayılan), `2` = düz çizim |
+| `kamera` | `yan` · `kask` (kask kamerası) · `takip` · `degisken` (dönüşümlü) |
+| `gunduz` | `true` = gündüz ışığı, uzak daha net; `false` = gece |
 | `sahne_fazlari` | Viraj sahnesindeki durumları adımlarla hizalar (aşağıda) |
 | `baslangic` | Uzun çekimden parça seç: kaçıncı saniyeden başlasın (örn. `150`) |
 | `sure` | Saniye (1–90) |
@@ -136,6 +138,15 @@ render sırasında üretilir. Her şey çizimle oluşur, telif sorunu yoktur.
 | `fren` | Motosikletin 3/4 görünümü. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
 | `viraj` | Viraja giren motosikletin arkadan görünümü. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
 
+**Kamera açıları.** `kamera: kask` sürücünün kaskından bakar — gidon, aynalar,
+gösterge paneli kadrajda, frende burun aşağı yattığında görüntü de yatar.
+`degisken` her fren denemesinde yan görünüm ile kask kamerası arasında geçiş
+yapar. `takip` motosikleti arkadan izler (viraj sahnesinin varsayılanı).
+
+**Gündüz / gece.** `gunduz: true` mavi gökyüzü, yeşil çim, açık asfalt,
+ufukta dağlar ve yol kenarında ağaçlar verir; sis çok daha geride başladığı
+için uzak seçilir kalır. Varsayılan gece.
+
 **Sahneyi adımlarla hizala.** Ekranda "nokta uzaklaşıyorsa açılıyor" yazarken
 animasyonun "KAPANIYOR" demesi izleyeni şaşırtır. `sahne_fazlari` bunu önler:
 
@@ -178,6 +189,7 @@ dosyasındaki `muzik:` alanına yaz.
 **Ses dengesi:** motorun gerçek sesi `kaynak_ses` (varsayılan 0.30) ile altta
 tutulur, müzik `muzik_ses` (0.35) ile üstte durur, toplam miks otomatik olarak
 -14 LUFS'a oturtulur. Motor sesini tamamen susturmak için `kaynak_ses: 0`.
+Derslerin varsayılanı `kaynak_ses: 0.14` — motor duyulur ama çok geride durur.
 
 ---
 

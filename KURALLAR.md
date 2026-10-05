@@ -27,8 +27,8 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
 ## Ses
 - Son miks **-14 LUFS**'a normalize edilir (platformların normalize ettiği hedef),
   tepe -1.5 dBTP. Daha kısık bırakırsan platform sesi yükseltirken gürültüyü de yükseltir.
-- **Motorun gerçek sesi altta kalır** (`kaynak_ses`, varsayılan 0.30), müzik üstte
-  (`muzik_ses`, varsayılan 0.35). Oranı sen kurarsın, toplam seviyeyi render oturtur.
+- **Motorun gerçek sesi çok geride kalır** (`kaynak_ses`, varsayılan 0.14), müzik
+  üstte (`muzik_ses`, varsayılan 0.34). Oranı sen kurarsın, toplam seviyeyi render oturtur.
 - Kaynakta ses yoksa sessiz ses kanalı eklenir — platformlar ses kanalı bekler.
 - **Müzik telifi:** yalnızca `scripts/muzik_uret.py` ile üretilmiş parçalar ya da
   hakkı net şekilde temizlenmiş müzik kullanılır. Hazır parça indirip koyma —
@@ -41,6 +41,8 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   Viraj sahnesinde `sahne_fazlari` ile hizalanır; aksi halde animasyon
   "KAPANIYOR" derken yazı "açılıyor" diyebiliyor.
 - İçerik 300–1400 px bandında durur: üstte ders bandı, altta adım kutuları var.
+- Kamera açısı `kamera:` ile seçilir (`yan` / `kask` / `takip` / `degisken`).
+- `gunduz: true` uzağı okunur kılar; gece sahnede sis yakında başlar.
 - Dışarıdan görüntü alınmaz. Stok klip kullanılacaksa lisansı ticari kullanıma
   ve her iki platforma açık olmalı.
 

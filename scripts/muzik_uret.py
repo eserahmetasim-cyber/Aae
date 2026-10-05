@@ -179,6 +179,68 @@ def uret(bpm: float, sure: float, tohum: int) -> np.ndarray:
     return mix
 
 
+# ---------------------------------------------------------------------------
+#  SADE stil: anlatimin onune gecmeyen, sakin bir yatak.
+#  Yumusak yayli + tek tek dusen tel sesi + cok hafif vurus. 808, cowbell,
+#  distortion yok — egitim videosunda phonk fazla one cikiyordu.
+# ---------------------------------------------------------------------------
+SADE_AKOR = [                      # Am - F - C - G
+    [220.00, 261.63, 329.63],
+    [174.61, 220.00, 261.63],
+    [261.63, 329.63, 392.00],
+    [196.00, 246.94, 293.66],
+]
+
+
+def tel(frekans, sure):
+    """Piyano/telli hissi: harmonikler farkli hizda soner."""
+    n = int(sure * SR)
+    s = np.zeros(n)
+    for h, agirlik, hiz in ((1, 1.0, 1.0), (2, 0.42, 1.7), (3, 0.20, 2.6), (5, 0.08, 4.0)):
+        zarf_h = np.exp(-np.linspace(0, sure, n) * 2.3 * hiz)
+        s += agirlik * np.sin(2 * np.pi * frekans * h * np.arange(n) / SR) * zarf_h
+    vurus = np.exp(-np.linspace(0, sure, n) * 60) * 0.25      # tirnak sesi
+    return (s / 1.7 + np.random.default_rng(3).normal(0, 1, n) * vurus) * zarf(
+        n, 0.004, 0.02, 0.9, 0.05)
+
+
+def yayli(frekanslar, n):
+    s = np.zeros(n)
+    for f in frekanslar:
+        for h, a in ((1, 1.0), (2, 0.3), (3, 0.14)):
+            s += a * np.sin(2 * np.pi * (f * h + 0.4) * np.arange(n) / SR) / len(frekanslar)
+    return s * zarf(n, 0.9, 0.5, 0.8, 1.1) * 0.3
+
+
+def uret_sade(bpm: float, sure: float, tohum: int) -> np.ndarray:
+    rng = np.random.default_rng(tohum)
+    vurus_s = 60.0 / bpm
+    bar = 4 * vurus_s
+    n = int(sure * SR)
+    mix = np.zeros(n)
+    desen = [0.0, 1.5, 2.0, 3.0, 3.5]
+
+    for b in range(int(np.ceil(sure / bar))):
+        t0 = b * bar
+        akor = SADE_AKOR[b % len(SADE_AKOR)]
+        ekle(mix, yayli(akor, int(bar * SR)), t0)
+        for k, konum in enumerate(desen):
+            nota = akor[(b + k) % len(akor)] * (2.0 if k % 3 == 1 else 1.0)
+            ekle(mix, tel(nota, 1.5) * (0.17 if k % 2 else 0.22), t0 + konum * vurus_s)
+        ekle(mix, kick() * 0.30, t0)                       # cok hafif vurus
+        ekle(mix, kick() * 0.20, t0 + 2 * vurus_s)
+        for i in range(8):                                  # shaker
+            ekle(mix, hihat() * (0.045 if i % 2 else 0.065), t0 + i * vurus_s / 2)
+
+    mix *= 1.0 + rng.normal(0, 0.006, n)
+    mix /= max(1e-9, np.abs(mix).max())
+    mix *= 0.6
+    gecis = int(1.2 * SR)
+    mix[:gecis] *= np.linspace(0, 1, gecis)
+    mix[-gecis:] *= np.linspace(1, 0, gecis)
+    return mix
+
+
 def wav_yaz(yol: str, mono: np.ndarray) -> None:
     # Hafif genislik: sag kanali 11 ms geciktir
     gecikme = int(0.011 * SR)
@@ -194,14 +256,19 @@ def wav_yaz(yol: str, mono: np.ndarray) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="AAE fon muzigi uretici")
-    ap.add_argument("--bpm", type=float, default=82.0)
+    ap.add_argument("--stil", choices=("sade", "phonk"), default="sade",
+                    help="sade = sakin yatak (varsayilan), phonk = koyu ritim")
+    ap.add_argument("--bpm", type=float, default=0.0, help="0 = stile gore secilir")
     ap.add_argument("--sure", type=float, default=64.0, help="saniye")
     ap.add_argument("--tohum", type=int, default=3, help="varyasyon icin")
-    ap.add_argument("--cikti", default="assets/muzik/aae_yol_okulu.mp3")
+    ap.add_argument("--cikti", default="")
     args = ap.parse_args()
 
-    print(f">> Besteleniyor: {args.bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
-    mix = uret(args.bpm, args.sure, args.tohum)
+    bpm = args.bpm or (72.0 if args.stil == "sade" else 82.0)
+    cikti = args.cikti or (f"assets/muzik/aae_{'sade' if args.stil == 'sade' else 'yol_okulu'}.mp3")
+    print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
+    mix = (uret_sade if args.stil == "sade" else uret)(bpm, args.sure, args.tohum)
+    args.cikti = cikti
 
     os.makedirs(os.path.dirname(args.cikti) or ".", exist_ok=True)
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
@@ -212,8 +279,10 @@ def main() -> None:
             ["ffmpeg", "-y", "-v", "error", "-i", gecici,
              # 30 Hz alti gereksiz, 9.5 kHz ustu tiz anlatimla cakisiyor;
              # 2.5 kHz civarini da biraz acalim ki konusma bandi bos kalsin.
-             "-af", "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
-                    "alimiter=limit=0.92",
+             "-af", ("highpass=f=38,lowpass=f=11000,equalizer=f=2800:t=q:w=1.4:g=-2.5,"
+                     "alimiter=limit=0.92") if args.stil == "sade" else
+                    ("highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
+                     "alimiter=limit=0.92"),
              "-c:a", "libmp3lame", "-b:a", "192k", args.cikti],
             check=True)
     finally:

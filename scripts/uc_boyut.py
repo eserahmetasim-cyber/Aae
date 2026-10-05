@@ -14,15 +14,27 @@ import math
 
 import numpy as np
 
+def birim(v):
+    n = np.linalg.norm(v)
+    return v / n if n > 1e-9 else v
+
+
 ISIK = np.array([0.45, 0.82, -0.35])
 ISIK = ISIK / np.linalg.norm(ISIK)
 ORTAM = 0.42                      # ortam ışığı payı
 SIS_BASLANGIC, SIS_BITIS = 22.0, 95.0
 
 
-def birim(v):
-    n = np.linalg.norm(v)
-    return v / n if n > 1e-9 else v
+def isik_ayarla(yon=None, ortam=None, sis=None):
+    """Gunduz/gece gibi farkli isik duzenleri icin. sis = (baslangic, bitis);
+    gunduzde uzagin secilir kalmasi icin sis cok daha geride baslatilir."""
+    global ISIK, ORTAM, SIS_BASLANGIC, SIS_BITIS
+    if yon is not None:
+        ISIK = birim(np.asarray(yon, dtype=float))
+    if ortam is not None:
+        ORTAM = float(ortam)
+    if sis is not None:
+        SIS_BASLANGIC, SIS_BITIS = float(sis[0]), float(sis[1])
 
 
 def donus(eksen, aci):

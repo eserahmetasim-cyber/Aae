@@ -27,7 +27,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from uc_boyut import Kamera, Sahne, donus            # noqa: E402
+from uc_boyut import Kamera, Sahne, donus, isik_ayarla   # noqa: E402
 import sahne_uret as s2                              # ses + 2B yardimcilar  # noqa: E402
 
 G, Y, FPS = s2.G, s2.Y, s2.FPS
@@ -38,118 +38,193 @@ TURUNCU, KREM, MAVI, KIRMIZI, YESIL = s2.TURUNCU, s2.KREM, s2.MAVI, s2.KIRMIZI, 
 LASTIK = (26, 26, 28)
 JANT = (205, 170, 85)
 GOVDE = (58, 70, 84)
+KAMERA_MODU = "yan"       # yan | kask | takip | degisken
+GUNDUZ = False
+
+# Gunduz paleti: gokyuzu acik, sis cok daha geride baslar ki UZAK secilir kalsin.
+GOK_GUNDUZ = (150, 188, 222)
+CIM_GUNDUZ = (94, 130, 78)
+ASFALT_GUNDUZ = (124, 128, 134)
+
+
+def _palet():
+    """Sahne renklerini ve isigi gunduz/gece durumuna gore ayarlar."""
+    if GUNDUZ:
+        isik_ayarla(yon=[0.30, 0.94, -0.16], ortam=0.64, sis=(120, 520))
+        return GOK_GUNDUZ, CIM_GUNDUZ, ASFALT_GUNDUZ
+    isik_ayarla(yon=[0.45, 0.82, -0.35], ortam=0.42, sis=(22, 95))
+    return GOK, CIM, ASFALT3
 MONT = (96, 112, 130)
 
 
 # ---------------------------------------------------------------------------
 #  Motosiklet modeli (yerel: X yan, Y yukari, Z ileri; orijin yerde, aks arasi)
 # ---------------------------------------------------------------------------
-def _tekerlek(s, z, aci, yaricap=0.31):
-    s.silindir([-0.07, yaricap, z], [0.07, yaricap, z], yaricap, LASTIK, segment=18)
-    s.silindir([-0.075, yaricap, z], [0.075, yaricap, z], yaricap * 0.55, (40, 40, 42), segment=14)
+DISK = (168, 176, 184)
+KROM = (196, 206, 214)
+
+
+def _tekerlek(s, z, aci, yaricap=0.31, disk=True):
+    """aci: tekerlegin donme acisi (radyan). Daha once sabit 0 geciliyordu,
+    bu yuzden tekerlekler hic donmuyordu."""
+    s.silindir([-0.075, yaricap, z], [0.075, yaricap, z], yaricap, LASTIK, segment=20)
+    s.silindir([-0.085, yaricap, z], [0.085, yaricap, z], yaricap * 0.72, (34, 34, 36),
+               segment=18)                                        # lastik yanagi
+    s.silindir([-0.07, yaricap, z], [0.07, yaricap, z], yaricap * 0.50, (44, 44, 48),
+               segment=16)                                        # jant tabani
     R = donus([1, 0, 0], aci)
-    for i in range(5):                                  # jant kollari: donus gorunur
-        a = 2 * math.pi * i / 5
+    for i in range(6):                                            # jant kollari
+        a = 2 * math.pi * i / 6
         yon = np.array([0.0, math.cos(a), math.sin(a)])
-        s.kutu([0, yaricap, z] + (R @ yon) * yaricap * 0.42,
-               [0.10, yaricap * 0.80, 0.045], JANT,
+        s.kutu([0, yaricap, z] + (R @ yon) * yaricap * 0.33,
+               [0.085, yaricap * 0.62, 0.05], JANT,
                R=R @ donus([1, 0, 0], -a))
+    s.silindir([-0.045, yaricap, z], [0.045, yaricap, z], 0.055, KROM, segment=10)  # gobek
+    if disk:
+        for yan in (-1, 1):                                       # fren diski
+            s.silindir([yan * 0.10, yaricap, z], [yan * 0.115, yaricap, z],
+                       yaricap * 0.62, DISK, segment=18)
+        s.kutu([0.13, yaricap + 0.19, z - 0.03], [0.07, 0.13, 0.10], TURUNCU)  # kaliper
+        s.kutu([-0.13, yaricap + 0.19, z - 0.03], [0.07, 0.13, 0.10], TURUNCU)
 
 
-def motosiklet(fren):
+def motosiklet(fren, tekerlek_aci=0.0):
     """fren 0-1: catal cokmesi + surucunun one yuklenmesi."""
     s = Sahne()
     cokme = 0.085 * fren
     arka_z, on_z = -0.70, 0.70
 
-    s.silindir([0.10, 0.44, arka_z + 0.02], [0.14, 0.46, -0.05], 0.05, GOVDE)   # salincak
-    s.silindir([-0.10, 0.44, arka_z + 0.02], [-0.14, 0.46, -0.05], 0.05, GOVDE)
-    s.kutu([0, 0.55, -0.02], [0.34, 0.46, 0.60], (74, 86, 97))                  # motor
-    s.kutu([0, 0.86, 0.14], [0.30, 0.24, 0.62], TURUNCU)                        # depo
-    s.kutu([0, 0.84, -0.44], [0.26, 0.11, 0.55], (30, 30, 32))                  # sele
-    s.kutu([0, 0.88, -0.76], [0.22, 0.13, 0.30], (30, 30, 32))                  # kuyruk
-    s.kutu([0, 0.89, -0.90], [0.16, 0.07, 0.06], KIRMIZI)                       # stop
-    s.silindir([0.12, 0.44, -0.10], [0.21, 0.47, -0.92], 0.06, (168, 176, 182)) # egzoz
-    for yan in (-1, 1):                                                          # catal
-        s.silindir([yan * 0.11, 0.31, on_z],
-                   [yan * 0.10, 0.98 - cokme, on_z - 0.10], 0.038, JANT)
-    s.kutu([0, 1.00 - cokme, on_z - 0.12], [0.26, 0.09, 0.14], GOVDE)           # triple
-    s.silindir([-0.30, 1.06 - cokme, on_z - 0.18], [0.30, 1.06 - cokme, on_z - 0.18],
-               0.022, (190, 198, 205))                                           # gidon
-    s.kutu([0, 0.96 - cokme, on_z + 0.10], [0.24, 0.20, 0.12], KREM)            # far
-    s.kutu([0, 0.64 - cokme, on_z + 0.04], [0.17, 0.05, 0.46], TURUNCU)         # camurluk
+    # --- sasi / motor -----------------------------------------------------
+    s.kutu([0.095, 0.45, arka_z + 0.33], [0.05, 0.10, 0.80], (62, 72, 84))      # salincak
+    s.kutu([-0.095, 0.45, arka_z + 0.33], [0.05, 0.10, 0.80], (62, 72, 84))
+    s.silindir([0.0, 0.52, -0.52], [0.0, 0.86, -0.30], 0.045, (190, 70, 60))     # amortisor
+    s.silindir([0.11, 0.31, arka_z], [0.11, 0.31, arka_z], 0.12, (60, 60, 64))   # disli
+    for yan in (0.105, -0.105):                                                  # zincir
+        s.kutu([yan, 0.40, arka_z + 0.34], [0.02, 0.025, 0.72], (96, 100, 104))
+    s.kutu([0, 0.55, -0.02], [0.33, 0.44, 0.58], (72, 82, 94))                   # motor
+    s.kutu([0, 0.62, 0.26], [0.30, 0.34, 0.10], (108, 116, 124))                 # radyator
+    s.kutu([0, 0.33, 0.02], [0.30, 0.14, 0.46], (58, 64, 72))                    # karter
+    s.kutu([0, 0.84, 0.10], [0.30, 0.26, 0.66], TURUNCU)                         # depo
+    s.kutu([0, 0.95, 0.10], [0.22, 0.06, 0.52], (255, 128, 80))                  # depo ustu
+    s.kutu([0, 0.82, -0.44], [0.25, 0.10, 0.52], (28, 28, 30))                   # sele
+    s.kutu([0, 0.88, -0.76], [0.21, 0.13, 0.30], (28, 28, 30))                   # kuyruk
+    s.kutu([0, 0.89, -0.91], [0.15, 0.07, 0.05], KIRMIZI)                        # stop
+    s.kutu([0, 0.74, -0.95], [0.16, 0.11, 0.02], (222, 222, 216))                # plaka
+    s.silindir([0.11, 0.44, -0.12], [0.16, 0.48, -0.62], 0.033, (150, 158, 164)) # egzoz borusu
+    s.silindir([0.16, 0.48, -0.62], [0.18, 0.50, -0.93], 0.058, (124, 132, 140)) # susturucu
+
+    # --- on takim ---------------------------------------------------------
+    ucgen_y = 0.98 - cokme
+    for yan in (-1, 1):
+        s.silindir([yan * 0.105, 0.31, on_z], [yan * 0.095, ucgen_y, on_z - 0.11],
+                   0.040, JANT)                                                  # catal
+    s.kutu([0, ucgen_y + 0.03, on_z - 0.13], [0.24, 0.08, 0.13], (62, 72, 84))   # ucgen
+    s.kutu([0, ucgen_y + 0.15, on_z - 0.24], [0.21, 0.12, 0.07], (24, 26, 30),
+           R=donus([1, 0, 0], 0.5))                                              # gosterge govdesi
+    s.kutu([0, ucgen_y + 0.165, on_z - 0.21], [0.17, 0.08, 0.02], (30, 150, 180),
+           R=donus([1, 0, 0], 0.5))                                              # ekran
+    s.kutu([0, 0.62 - cokme, on_z + 0.06], [0.17, 0.05, 0.48], TURUNCU)         # camurluk
+    s.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], KREM)            # far
+    s.kutu([0, 1.16 - cokme, on_z + 0.06], [0.24, 0.17, 0.04], (146, 176, 196),
+           R=donus([1, 0, 0], 0.45))                                             # on cam
+    # Gidon: daha UZUN ve disa dogru — kask kamerasindan gorulebilsin
+    gid_y, gid_z = 1.07 - cokme, on_z - 0.16
+    s.silindir([-0.42, gid_y, gid_z], [0.42, gid_y, gid_z], 0.022, KROM)
+    for yan in (-1, 1):
+        s.silindir([yan * 0.26, gid_y, gid_z], [yan * 0.42, gid_y, gid_z + 0.03],
+                   0.032, (32, 32, 34))                                          # tutamak
+        s.kutu([yan * 0.455, gid_y, gid_z + 0.03], [0.05, 0.05, 0.05], KROM)     # agirlik
+        s.silindir([yan * 0.30, gid_y, gid_z + 0.02],
+                   [yan * 0.40, gid_y - 0.01, gid_z + 0.14], 0.012, (190, 190, 190))
+        s.silindir([yan * 0.34, gid_y + 0.02, gid_z],                             # ayna kolu
+                   [yan * 0.46, gid_y + 0.30, gid_z - 0.02], 0.016, (40, 40, 44))
+        s.kutu([yan * 0.47, gid_y + 0.33, gid_z - 0.02], [0.05, 0.13, 0.17],
+               (70, 86, 104), R=donus([0, 1, 0], yan * 0.35))                    # ayna
 
     # --- surucu -----------------------------------------------------------
     one = 0.12 * fren
     omuz_y, omuz_z = 1.50 - 0.10 * fren, -0.12 + one
     kalca_n = np.array([0.0, 1.02, -0.40])
     omuz_n = np.array([0.0, omuz_y, omuz_z])
-    s.kure(kalca_n, 0.19, MONT, dilim=12, halka=7)                              # kalca
-    s.silindir(kalca_n, omuz_n, 0.185, MONT, segment=14)                        # govde
-    s.kure(omuz_n, 0.19, MONT, dilim=12, halka=7)                               # omuz
+    s.kure(kalca_n, 0.19, MONT, dilim=12, halka=7)
+    s.silindir(kalca_n, omuz_n, 0.185, MONT, segment=14)
+    s.kure(omuz_n, 0.19, MONT, dilim=12, halka=7)
     for yan in (-1, 1):
-        s.silindir([yan * 0.19, omuz_y, omuz_z],
-                   [yan * 0.29, 1.07 - cokme, on_z - 0.18], 0.055, MONT)        # kol
+        s.silindir([yan * 0.19, omuz_y, omuz_z], [yan * 0.30, gid_y + 0.03, gid_z],
+                   0.055, MONT)                                                  # kol
+        s.kure([yan * 0.32, gid_y + 0.02, gid_z + 0.01], 0.055, (34, 34, 36))    # eldiven
         s.silindir([yan * 0.17, 0.98, -0.34], [yan * 0.25, 0.64, 0.10], 0.075, MONT)
         s.silindir([yan * 0.25, 0.64, 0.10], [yan * 0.23, 0.36, -0.02], 0.065, MONT)
+        s.kutu([yan * 0.23, 0.30, 0.02], [0.10, 0.09, 0.26], (26, 26, 28))       # bot
     boyun = omuz_n + np.array([0.0, 0.13, 0.05])
-    s.silindir(omuz_n, boyun, 0.085, (70, 80, 92), segment=10)                  # boyun
-    s.kure([0, omuz_y + 0.26, omuz_z + 0.06], 0.145, KREM, dilim=14, halka=9)   # kask
-    s.kutu([0, omuz_y + 0.25, omuz_z + 0.19], [0.17, 0.11, 0.05], (58, 70, 82)) # vizor
-    s.kutu([0, omuz_y + 0.38, omuz_z + 0.02], [0.16, 0.05, 0.16], TURUNCU)      # seritt
+    s.silindir(omuz_n, boyun, 0.085, (70, 80, 92), segment=10)
+    kask_n = np.array([0.0, omuz_y + 0.27, omuz_z + 0.07])
+    s.kure(kask_n, 0.148, KREM, dilim=16, halka=10)
+    s.kutu([0, kask_n[1] - 0.01, kask_n[2] + 0.12], [0.18, 0.11, 0.06], (52, 64, 78))
+    s.kutu([0, kask_n[1] + 0.12, kask_n[2] + 0.01], [0.17, 0.05, 0.17], TURUNCU)
 
-    _tekerlek(s, arka_z, 0.0)
-    _tekerlek(s, on_z, 0.0)
-    return s, cokme
+    _tekerlek(s, arka_z, tekerlek_aci)
+    _tekerlek(s, on_z, tekerlek_aci)
+    return s, cokme, kask_n
+
+
+def _fren_kamera(t, fren, kask_n, yat, pivot):
+    """kamera modu: yan (3/4) | kask (kask kamerasi) | degisken (donusumlu)."""
+    mod = KAMERA_MODU
+    if mod == "degisken":
+        mod = "kask" if int(max(0.0, t - 4.0) // 7.5) % 2 == 1 else "yan"
+    if mod == "kask":
+        # Gercek kask kamerasi gibi: biraz asagi bakar, genis acilidir. Daha
+        # dar aci ve yatay bakisla gidon kadrajin disinda kaliyordu.
+        kask_d = yat @ kask_n + (pivot - yat @ pivot)
+        goz = kask_d + np.array([0.0, 0.02, 0.08])
+        ileri = yat @ np.array([0.0, -0.34, 1.0])
+        return Kamera(goz, goz + ileri * 12.0, G, Y, fov=76), mod
+    return Kamera([2.62 + 0.20 * math.sin(t * 0.21), 1.92 + 0.08 * math.sin(t * 0.13),
+                   -3.25 + 0.26 * math.cos(t * 0.17)],
+                  [0.05, 0.80, 0.35], G, Y, fov=50), mod
 
 
 def kare_fren3b(t):
     hiz, fren = s2.fren_evre(t)
-    im = Image.new("RGB", (G, Y), GOK)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
     d = ImageDraw.Draw(im, "RGBA")
     s = Sahne()
 
-    global _yol_s
+    global _yol_s, _tek_aci
     _yol_s = (globals().get("_yol_s", 0.0) + hiz * 0.62) % 8.0
+    _tek_aci = (globals().get("_tek_aci", 0.0) + hiz * 0.45) % (2 * math.pi)
 
-    # Zemin SERITLERE bolunur: tek dev yuzey verince sis onu ortalama
-    # derinlige gore boyuyor ve yol arka planla ayni renge dusuyordu.
     z = -30.0
     while z < 150:
         z2 = z + 6.0
-        s.yuzey([[-60, 0, z], [60, 0, z], [60, 0, z2], [-60, 0, z2]], CIM, katman=0)
+        s.yuzey([[-60, 0, z], [60, 0, z], [60, 0, z2], [-60, 0, z2]], cim, katman=0)
         s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
-                ASFALT3, katman=1)
+                asfalt, katman=1)
         for yan in (-1, 1):
             s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
                      [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
                     (205, 205, 200), katman=2)
         z = z2
-    for i in range(-3, 22):                                # kesikli orta cizgi
+    for i in range(-3, 22):
         z = i * 8.0 - _yol_s
         s.yuzey([[-0.11, 0.02, z], [0.11, 0.02, z], [0.11, 0.02, z + 3.6],
                  [-0.11, 0.02, z + 3.6]], (210, 210, 205), katman=2)
-    for i in range(-2, 16):                                # binalar
+    for i in range(-2, 16):
         z = i * 11.0 - _yol_s * 0.92
         for yan in (-1, 1):
             h = 5 + ((i * 7 + (yan + 1) * 3) % 9) * 1.7
             s.kutu([yan * (7.5 + (i % 3) * 1.6), h / 2, z + 4], [5.0, h, 6.5],
-                   (26, 32, 42), katman=3)
+                   (26, 32, 42) if not GUNDUZ else (86, 96, 112), katman=3)
 
-    model, _ = motosiklet(fren)
-    # Fren: butun motosiklet on aks etrafinda burun asagi yatar
+    model, _, kask_n = motosiklet(fren, _tek_aci)
     yat = donus([1, 0, 0], 0.085 * fren)
     pivot = np.array([0, 0.31, 0.70])
     s.ekle(model, R=yat, t=pivot - yat @ pivot)
 
-    # Dikey kadrajda motosiklet orta banda otursun, yol alti doldursun diye
-    # kamera yukaridan ve geriden bakar; hafif salinim canlilik verir.
-    # Motosiklet ~1.85 m; 50 derece dikey acida karenin yarisini kaplamasi icin
-    # kamera hedefe yaklasik 4.5 m uzakta durmali.
-    kamera = Kamera([2.62 + 0.20 * math.sin(t * 0.21), 1.92 + 0.08 * math.sin(t * 0.13),
-                     -3.25 + 0.26 * math.cos(t * 0.17)],
-                    [0.05, 0.80, 0.35], G, Y, fov=50)
-    s.ciz(d, kamera, GOK)
+    kamera, mod = _fren_kamera(t, fren, kask_n, yat, pivot)
+    s.ciz(d, kamera, gok)
 
     # --- 2B gostergeler ---------------------------------------------------
     on_yuk = 0.5 + 0.32 * fren
@@ -167,6 +242,8 @@ def kare_fren3b(t):
     s2.yazi(d, (G - 196, 482), f"{int(hiz * 52)}", 82,
             KREM if hiz > 0.02 else YESIL, ortala=True)
     s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
+    if mod == "kask":
+        s2.yazi(d, (G - 320, 636), "KASK KAMERASI", 26, TURUNCU)
     return im
 
 
@@ -183,6 +260,29 @@ def _egim(z, egri):
     return math.atan(egri * 2 * z * 0.0019)
 
 
+def _tepe(s, x, z, genislik, derinlik, yukseklik, renk):
+    """Sirt seklinde tepe: kutu kullaninca gunduzde dumduz bir pano gibi
+    goruluyordu, gercek bir tepe gibi egimli olmali."""
+    x0, x1 = x - genislik / 2, x + genislik / 2
+    z0, z1 = z - derinlik / 2, z + derinlik / 2
+    xm = x
+    s.yuzey([[x0, 0, z0], [xm, yukseklik, z0], [xm, yukseklik, z1], [x0, 0, z1]], renk)
+    s.yuzey([[x1, 0, z0], [x1, 0, z1], [xm, yukseklik, z1], [xm, yukseklik, z0]], renk)
+    s.yuzey([[x0, 0, z0], [x1, 0, z0], [xm, yukseklik, z0]], renk)
+    s.yuzey([[x0, 0, z1], [xm, yukseklik, z1], [x1, 0, z1]], renk)
+
+
+def _agac(s, x, z, h, govde, yaprak):
+    s.kutu([x, h * 0.22, z], [0.26, h * 0.44, 0.26], govde)
+    tepe_y = h * 0.42
+    for i in range(4):                       # dort yuzlu basit tac
+        a0 = math.pi / 2 * i
+        a1 = a0 + math.pi / 2
+        s.yuzey([[x + math.cos(a0) * 0.95, tepe_y, z + math.sin(a0) * 0.95],
+                 [x + math.cos(a1) * 0.95, tepe_y, z + math.sin(a1) * 0.95],
+                 [x, h, z]], yaprak)
+
+
 def kare_viraj3b(t, toplam=55.0):
     if s2.VIRAJ_FAZLAR:
         derinlik, bukum, (etiket, renk) = s2.viraj_evre_fazli(t, toplam)
@@ -196,14 +296,15 @@ def kare_viraj3b(t, toplam=55.0):
     gorus = max(16.0, gorus)
     egri = bukum * 1.15
 
-    im = Image.new("RGB", (G, Y), GOK)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
     d = ImageDraw.Draw(im, "RGBA")
     s = Sahne()
 
     zc = -10.0                      # cim de seritlere bolunur (sis dogru calissin)
     while zc < 240:
         s.yuzey([[-200, 0, zc], [200, 0, zc], [200, 0, zc + 12], [-200, 0, zc + 12]],
-                CIM, katman=0)
+                cim, katman=0)
         zc += 12.0
     global _vy
     _vy = (globals().get("_vy", 0.0) + 0.60) % 9.0
@@ -214,7 +315,7 @@ def kare_viraj3b(t, toplam=55.0):
         z2 = z + adim
         x1, x2 = _merkez_x(z, egri), _merkez_x(z2, egri)
         s.yuzey([[x1 - 3.9, 0.01, z], [x1 + 3.9, 0.01, z],
-                 [x2 + 3.9, 0.01, z2], [x2 - 3.9, 0.01, z2]], ASFALT3, katman=1)
+                 [x2 + 3.9, 0.01, z2], [x2 - 3.9, 0.01, z2]], asfalt, katman=1)
         for yan in (-1, 1):
             s.yuzey([[x1 + yan * 3.9, 0.02, z], [x1 + yan * 3.74, 0.02, z],
                      [x2 + yan * 3.74, 0.02, z2], [x2 + yan * 3.9, 0.02, z2]],
@@ -234,13 +335,14 @@ def kare_viraj3b(t, toplam=55.0):
             continue
         for yan in (-1, 1):
             x = _merkez_x(z0, egri) + yan * 4.6
-            s.kutu([x, 0.45, z0], [0.10, 0.90, 0.10], (150, 155, 150), katman=3)
+            s.kutu([x, 0.45, z0], [0.10, 0.90, 0.10],
+                   (225, 228, 225) if GUNDUZ else (150, 155, 150), katman=3)
             s.kutu([x, 0.80, z0], [0.13, 0.16, 0.12],
                    TURUNCU if yan > 0 else KREM, katman=3)
 
     # Gorus mesafesini kapatan ic taraf tepesi: kaybolus noktasini yaratir
     tx = _merkez_x(gorus + 10, egri) + (-1 if egri < 0 else 1) * 10.0
-    s.kutu([tx, 5.0, gorus + 12], [26, 10.0, 16], (22, 30, 24), katman=3)
+    _tepe(s, tx, gorus + 13, 34, 20, 11.0, (64, 96, 58) if GUNDUZ else (22, 30, 24))
 
     # Motosiklet sahnede: viraja giren surucuyu ARKADAN gormek konuyu
     # seviye POV'dan cok daha iyi anlatiyor. Seviye kamerada yakin asfalt
@@ -250,13 +352,30 @@ def kare_viraj3b(t, toplam=55.0):
     yon = _egim(mz, egri)
     yatis = -yon * 1.5                       # viraja yatis
     R = donus([0, 1, 0], yon) @ donus([0, 0, 1], yatis)
-    model, _ = motosiklet(0.0)
+    global _vtek
+    _vtek = (globals().get("_vtek", 0.0) + 0.42) % (2 * math.pi)
+    model, _, _ = motosiklet(0.0, _vtek)
     s.ekle(model, R=R, t=[mx, 0.0, mz])
+
+    for i in range(-2, 16):                               # yol kenari agaclari
+        za = i * 13.0 - _vy * 0.8
+        if za < -20:
+            continue
+        for yan in (-1, 1):
+            xa = _merkez_x(za, egri) + yan * (9.0 + (i % 3) * 2.5)
+            _agac(s, xa, za, 5.0 + ((i * 5 + yan) % 4) * 1.4,
+                  (84, 66, 48) if GUNDUZ else (34, 30, 26),
+                  (54, 104, 52) if GUNDUZ else (24, 38, 26))
+    if GUNDUZ:                                            # ufuktaki daglar
+        for i in range(7):
+            mx2 = -220 + i * 78
+            _tepe(s, mx2, 330 + (i % 3) * 40, 150, 90, 34 + (i % 4) * 11,
+                  (104, 132, 140))
 
     goz = np.array([_merkez_x(-6, egri) - 1.5, 3.05, -6.0])
     bak = np.array([_merkez_x(34, egri) - 0.9, 1.05, 34.0])
     kamera = Kamera(goz, bak, G, Y, fov=52)
-    s.ciz(d, kamera, GOK)
+    s.ciz(d, kamera, gok)
 
     # --- kaybolus noktasi isareti (3B noktanin ekrandaki yeri) ------------
     nk = np.array([[_merkez_x(gorus, egri), 0.9, gorus]])
@@ -272,15 +391,15 @@ def kare_viraj3b(t, toplam=55.0):
         f = s2.font(40)
         tw = d.textlength(etiket, font=f)
         ex = min(max(mx - tw / 2 - 26, 40), G - tw - 66)
-        ey = my + 56
+        ey = my + (104 if engel else 56)     # engel isareti etiketi ezmesin
         d.rounded_rectangle([ex, ey, ex + tw + 52, ey + 64], 14,
                             fill=(0, 0, 0, 175), outline=renk, width=4)
         s2.yazi(d, (ex + 26, ey + 11), etiket, 40, renk)
         d.line([(G / 2, Y - 90), (mx, my)], fill=(255, 255, 255, 40), width=5)
 
     if engel:                                              # hedef sabitlemesi
-        for nokta, cizim in (([_merkez_x(30, egri) - 2.2, 0.05, 30.0], "engel"),
-                             ([_merkez_x(30, egri) + 2.0, 1.2, 30.0], "bosluk")):
+        for nokta, cizim in (([_merkez_x(20, egri) - 2.2, 0.05, 20.0], "engel"),
+                             ([_merkez_x(20, egri) + 2.0, 1.2, 20.0], "bosluk")):
             kn = kamera.kameraya(np.array([nokta]))
             if kn[0, 2] <= 0.3:
                 continue
@@ -303,8 +422,14 @@ def main():
     ap.add_argument("--fazlar", default="")
     ap.add_argument("--cikti", default=None)
     ap.add_argument("--sessiz", action="store_true")
+    ap.add_argument("--kamera", default="yan",
+                    choices=("yan", "kask", "takip", "degisken"))
+    ap.add_argument("--gunduz", default="")
     args = ap.parse_args()
 
+    global KAMERA_MODU, GUNDUZ
+    KAMERA_MODU = args.kamera
+    GUNDUZ = str(args.gunduz).lower() in ("1", "true", "evet", "yes")
     s2.fazlari_ayarla(args.fazlar)
     cikti = args.cikti or f"videos/sahne3b_{args.sahne}.mp4"
     os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)

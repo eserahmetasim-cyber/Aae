@@ -14,11 +14,13 @@ surum: 1
 kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
 sahne: fren
 boyut: 3                # 3 = 3 boyutlu sahne, 2 = düz çizim
+kamera: degisken        # yan görünüm ile kask kamerası dönüşümlü
+gunduz: false
 baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
-kaynak_ses: 0.30        # motorun gerçek sesi — altta, kısık
-muzik: "assets/muzik/aae_yol_okulu.mp3"
-muzik_ses: 0.35
+kaynak_ses: 0.14        # motor sesi — duyulsun ama çok geride
+muzik: "assets/muzik/aae_sade.mp3"
+muzik_ses: 0.34
 
 kapanis: "Kuruda ön fren %80 · Sık, kapma"
 
