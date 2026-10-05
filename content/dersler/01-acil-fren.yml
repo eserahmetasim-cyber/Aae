@@ -11,7 +11,8 @@ alt_baslik: "Sık — kapma"
 seri: "MOTOSİKLET YOL OKULU"
 surum: 1
 
-kaynak: ""
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: fren
 baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
 kaynak_ses: 0.30        # motorun gerçek sesi — altta, kısık

@@ -34,6 +34,15 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   hakkı net şekilde temizlenmiş müzik kullanılır. Hazır parça indirip koyma —
   YouTube ve Instagram'da ayrı ayrı iddia yersin.
 
+## Sahne
+- Uygun ham çekim yoksa arka plan `sahne:` ile çizilir (`fren` / `viraj`).
+- **Sahnedeki durum, o anda ekranda yazan adımla aynı şeyi anlatmalı.**
+  Viraj sahnesinde `sahne_fazlari` ile hizalanır; aksi halde animasyon
+  "KAPANIYOR" derken yazı "açılıyor" diyebiliyor.
+- İçerik 300–1400 px bandında durur: üstte ders bandı, altta adım kutuları var.
+- Dışarıdan görüntü alınmaz. Stok klip kullanılacaksa lisansı ticari kullanıma
+  ve her iki platforma açık olmalı.
+
 ## İsimlendirme
 ```
 output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4

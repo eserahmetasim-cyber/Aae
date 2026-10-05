@@ -40,6 +40,8 @@ Doldurulacak alanlar:
 | `ders_no`, `slug`, `baslik` | Zorunlu. Açılış kartı, üst bant ve dosya adı. (`no` YAML'da boolean olduğu için `ders_no`) |
 | `alt_baslik` | Açılış kartında tek cümlelik özet |
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
+| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` veya `viraj` |
+| `sahne_fazlari` | Viraj sahnesindeki durumları adımlarla hizalar (aşağıda) |
 | `baslangic` | Uzun çekimden parça seç: kaçıncı saniyeden başlasın (örn. `150`) |
 | `sure` | Saniye (1–90) |
 | `kaynak_ses` | Motorun gerçek ses seviyesi (0 = sustur, 1 = olduğu gibi) |
@@ -115,6 +117,40 @@ python3 scripts/publish_instagram.py --ders content/dersler/01-acil-fren.yml --k
 
 `--kuru` hiçbir istek göndermeden ne yapılacağını gösterir.
 `publish_instagram.py --sadece-hazirla` videoyu yükleyip işletir ama **yayınlamaz**.
+
+---
+
+## 🎬 Çizilen sahneler
+
+Elinde uygun çekim yoksa arka planı hat kendisi çizer. Ders dosyasına
+`sahne: fren` ya da `sahne: viraj` yazman yeterli — `kaynak` boşsa sahne
+render sırasında üretilir. Her şey çizimle oluşur, telif sorunu yoktur.
+
+| Sahne | Ne gösterir |
+|---|---|
+| `fren` | Yandan görünüm. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
+| `viraj` | Sürücü gözünden yol. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
+
+**Sahneyi adımlarla hizala.** Ekranda "nokta uzaklaşıyorsa açılıyor" yazarken
+animasyonun "KAPANIYOR" demesi izleyeni şaşırtır. `sahne_fazlari` bunu önler:
+
+```yaml
+sahne: viraj
+sahne_fazlari: "0:sabit, 11:uzak, 19:acilir, 27:kapanir, 35:engel, 42:uzak"
+```
+
+Her giriş `saniye:durum` biçiminde. Durumlar: `sabit`, `uzak`, `acilir`,
+`kapanir`, `engel`. Adımlarının saatlerini değiştirirsen bunu da güncelle.
+
+Sahneyi tek başına üretmek (denemek için):
+
+```bash
+python3 scripts/sahne_uret.py --sahne fren --sure 60 --cikti /tmp/dene.mp4
+```
+
+**Motor sesi de sentezlenir:** silindir ateşlemelerinden kurulmuş bir motor
+sesi, sahnenin gaz/fren durumuna göre devir değiştirir; üstüne rüzgâr uğultusu
+biner. Gerçek çekim koyduğunda onun kendi sesi kullanılır.
 
 ---
 
@@ -208,6 +244,7 @@ scripts/
   get_youtube_token.py      → YT refresh token (tek seferlik, yerelde)
   get_instagram_ids.py      → IG user id + uzun ömürlü jeton (tek seferlik, yerelde)
   muzik_uret.py             → telifsiz fon müziği besteler (numpy gerekir)
+  sahne_uret.py             → arka plan sahnesi + motor sesi çizer (numpy, pillow)
 .github/workflows/egitim-videosu.yml
 KURALLAR.md             → format, marka, yayın ve sır kuralları
 ```

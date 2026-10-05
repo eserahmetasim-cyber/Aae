@@ -12,3 +12,4 @@ google-auth-httplib2
 # Fon muzigi uretmek icin (scripts/muzik_uret.py). Render ve yayin icin gerekmez;
 # uretilmis mp3 depoda hazir duruyor.
 numpy
+pillow

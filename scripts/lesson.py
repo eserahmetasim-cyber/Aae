@@ -126,6 +126,9 @@ def yukle(yol: str) -> dict:
         raise DersHatasi(
             f"{yol}: caption'da {_etiket_sayisi(caption)} etiket var — sinir {IG_ETIKET_SINIR}.")
 
+    sahne = str(ham.get("sahne") or "").strip()
+    if sahne and sahne not in ("fren", "viraj"):
+        raise DersHatasi(f"{yol}: 'sahne' fren|viraj olmali (ya da bos).")
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
     baslangic = float(ham.get("baslangic", 0))
     if baslangic < 0:
@@ -147,6 +150,8 @@ def yukle(yol: str) -> dict:
         "handle": HANDLE,
         "kapanis": str(ham.get("kapanis") or "").strip(),
         "kaynak": kaynak,
+        "sahne": sahne,
+        "sahne_fazlari": str(ham.get("sahne_fazlari") or "").strip(),
         "baslangic": baslangic,
         "kaynak_ses": kaynak_ses,
         "sure": sure,
@@ -297,7 +302,7 @@ def main() -> None:
             print(json.dumps(ders, ensure_ascii=False, indent=2))
         else:
             print(f"Ders {ders['no']:02d} · {ders['baslik']}")
-            print(f"  kaynak : {ders['kaynak'] or '(videos/ bos)'}")
+            print(f"  kaynak : {ders['kaynak'] or ('uretilecek sahne: ' + ders['sahne'] if ders['sahne'] else '(videos/ bos)')}")
             print(f"  cikti  : {ders['cikti']}")
             print(f"  sure   : {ders['sure']} sn · {len(ders['adimlar'])} adim"
                   f" · baslangic {ders['baslangic']} sn")

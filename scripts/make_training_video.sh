@@ -55,9 +55,21 @@ BASLANGIC="$(j '.ders.baslangic')"
 KAYNAK_SES="$(j '.ders.kaynak_ses')"
 M="${TMP}/m"
 
+SAHNE="$(j '.ders.sahne')"
+if [[ -z "${KAYNAK}" && -n "${SAHNE}" ]]; then
+  # Ham cekim verilmediyse ders dosyasindaki sahne cizimle uretilir.
+  # Gercek cekim koymak icin ders dosyasina 'kaynak:' yazmak yeterli.
+  KAYNAK="${TMP}/sahne_${SAHNE}.mp4"
+  echo ">> Sahne uretiliyor: ${SAHNE}"
+  python3 scripts/sahne_uret.py --sahne "${SAHNE}" \
+          --sure "$(python3 -c "print(${SURE} + ${BASLANGIC} + 2)")" \
+          --fazlar "$(j '.ders.sahne_fazlari')" \
+          --cikti "${KAYNAK}" >/dev/null
+fi
 if [[ -z "${KAYNAK}" || ! -f "${KAYNAK}" ]]; then
   echo "HATA: kaynak video bulunamadi: '${KAYNAK}'" >&2
-  echo "      Ham cekimi videos/ icine koyun ya da ders dosyasinda 'kaynak:' verin." >&2
+  echo "      Ham cekimi videos/ icine koyun, ders dosyasinda 'kaynak:' verin" >&2
+  echo "      ya da 'sahne: fren|viraj' yazip cizimle uretilmesini saglayin." >&2
   exit 1
 fi
 
