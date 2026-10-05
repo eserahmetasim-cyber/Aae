@@ -21,9 +21,9 @@ gunduz: true            # gündüz: uzak net görünsün
 sahne_fazlari: "0:sabit, 11:uzak, 19:acilir, 27:kapanir, 35:engel, 42:uzak"
 baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
-kaynak_ses: 0.14        # motor sesi — duyulsun ama çok geride
+kaynak_ses: 0.07        # motor sesi — sadece hafif bir uğultu
 muzik: "assets/muzik/aae_sade.mp3"
-muzik_ses: 0.34
+muzik_ses: 0.36
 
 kapanis: "Çeneni çevir · Nokta yaklaşıyorsa yavaşla"
 

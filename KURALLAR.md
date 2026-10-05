@@ -27,8 +27,8 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
 ## Ses
 - Son miks **-14 LUFS**'a normalize edilir (platformların normalize ettiği hedef),
   tepe -1.5 dBTP. Daha kısık bırakırsan platform sesi yükseltirken gürültüyü de yükseltir.
-- **Motorun gerçek sesi çok geride kalır** (`kaynak_ses`, varsayılan 0.14), müzik
-  üstte (`muzik_ses`, varsayılan 0.34). Oranı sen kurarsın, toplam seviyeyi render oturtur.
+- **Motorun gerçek sesi çok geride kalır** (`kaynak_ses`, varsayılan 0.07), müzik
+  üstte (`muzik_ses`, varsayılan 0.36). Oranı sen kurarsın, toplam seviyeyi render oturtur.
 - Kaynakta ses yoksa sessiz ses kanalı eklenir — platformlar ses kanalı bekler.
 - **Müzik telifi:** yalnızca `scripts/muzik_uret.py` ile üretilmiş parçalar ya da
   hakkı net şekilde temizlenmiş müzik kullanılır. Hazır parça indirip koyma —

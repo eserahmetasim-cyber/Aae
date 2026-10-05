@@ -16,9 +16,9 @@ kamera: yan                # yan | kask | takip | degisken
 gunduz: false              # true = gündüz ışığı, uzak daha net
 baslangic: 0               # uzun klipten parça seç: kaçıncı saniyeden başlasın
 sure: 60                   # saniye (1-90, KURALLAR.md)
-kaynak_ses: 0.14           # motorun gerçek sesi (0 = sustur, 1 = olduğu gibi)
+kaynak_ses: 0.07           # motorun gerçek sesi (0 = sustur, 1 = olduğu gibi)
 muzik: "assets/muzik/aae_sade.mp3"
-muzik_ses: 0.35
+muzik_ses: 0.36
 
 kapanis: "Çıkarım tek cümle · Takip et"   # son 3 saniyede görünür
 

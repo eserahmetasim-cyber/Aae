@@ -189,7 +189,7 @@ dosyasındaki `muzik:` alanına yaz.
 **Ses dengesi:** motorun gerçek sesi `kaynak_ses` (varsayılan 0.30) ile altta
 tutulur, müzik `muzik_ses` (0.35) ile üstte durur, toplam miks otomatik olarak
 -14 LUFS'a oturtulur. Motor sesini tamamen susturmak için `kaynak_ses: 0`.
-Derslerin varsayılanı `kaynak_ses: 0.14` — motor duyulur ama çok geride durur.
+Derslerin varsayılanı `kaynak_ses: 0.07` — motor yalnızca hafif bir uğultu olarak kalır.
 
 ---
 

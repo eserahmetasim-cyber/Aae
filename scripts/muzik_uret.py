@@ -180,36 +180,92 @@ def uret(bpm: float, sure: float, tohum: int) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------
-#  SADE stil: anlatimin onune gecmeyen, sakin bir yatak.
-#  Yumusak yayli + tek tek dusen tel sesi + cok hafif vurus. 808, cowbell,
-#  distortion yok — egitim videosunda phonk fazla one cikiyordu.
+#  SADE stil — sakin, anlatimin onune gecmeyen yatak.
+#  Telli ses gercek bir tel gibi uretilir (Karplus-Strong: gurultu patlamasi
+#  bir gecikme hattinda donerken her turda yumusar), ustune bas hatti, yumusak
+#  yayli ve oda yankisi gelir. Duzenleme de var: parca bos baslar, acilir,
+#  sonda incelir — tek dongunun 64 saniye aynen tekrari cansiz duruyordu.
 # ---------------------------------------------------------------------------
-SADE_AKOR = [                      # Am - F - C - G
-    [220.00, 261.63, 329.63],
-    [174.61, 220.00, 261.63],
-    [261.63, 329.63, 392.00],
-    [196.00, 246.94, 293.66],
+SADE_ILERLEME = [                  # Am7 - Fmaj7 - Cmaj7 - G6  (kok, akor notalari)
+    (110.00, [220.00, 261.63, 329.63, 392.00]),
+    (87.31,  [174.61, 261.63, 329.63, 392.00]),
+    (130.81, [196.00, 261.63, 329.63, 440.00]),
+    (98.00,  [196.00, 246.94, 293.66, 392.00]),
 ]
+SADE_DESEN = [(0.0, 0), (1.0, 2), (1.75, 1), (2.5, 3), (3.25, 2)]   # (vurus, akor notasi)
 
 
-def tel(frekans, sure):
-    """Piyano/telli hissi: harmonikler farkli hizda soner."""
+def tel_cal(frekans, sure, parlaklik=0.42, tohum=0):
+    """Karplus-Strong: tel sesi. Donguyu periyot periyot vektorize ederiz,
+    ornek ornek Python dongusu cok yavas olurdu."""
     n = int(sure * SR)
-    s = np.zeros(n)
-    for h, agirlik, hiz in ((1, 1.0, 1.0), (2, 0.42, 1.7), (3, 0.20, 2.6), (5, 0.08, 4.0)):
-        zarf_h = np.exp(-np.linspace(0, sure, n) * 2.3 * hiz)
-        s += agirlik * np.sin(2 * np.pi * frekans * h * np.arange(n) / SR) * zarf_h
-    vurus = np.exp(-np.linspace(0, sure, n) * 60) * 0.25      # tirnak sesi
-    return (s / 1.7 + np.random.default_rng(3).normal(0, 1, n) * vurus) * zarf(
-        n, 0.004, 0.02, 0.9, 0.05)
+    N = max(8, int(round(SR / frekans)))
+    rng = np.random.default_rng(1000 + tohum)
+    tohum_blok = rng.uniform(-1, 1, N)
+    # Baslangic patlamasini yumusat: tiz tirmik sesi azalsin
+    tohum_blok = np.convolve(tohum_blok, np.ones(3) / 3, mode="same") * parlaklik \
+        + tohum_blok * (1 - parlaklik)
+    cikti = np.zeros(n + N)
+    cikti[:N] = tohum_blok
+    sonum = 0.994
+    i = N
+    while i < len(cikti):
+        uzunluk = min(N, len(cikti) - i)
+        onceki = cikti[i - N:i - N + uzunluk]
+        kaydirilmis = cikti[i - N - 1:i - N - 1 + uzunluk] if i - N - 1 >= 0 else onceki
+        cikti[i:i + uzunluk] = 0.5 * (onceki + kaydirilmis) * sonum
+        i += uzunluk
+    s = cikti[:n]
+    return s * np.exp(-np.linspace(0, sure, n) * 1.15)
+
+
+def bas_cal(frekans, sure):
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    s = (np.sin(2 * np.pi * frekans * t) * 0.8
+         + np.sin(2 * np.pi * frekans * 2 * t) * 0.14
+         + np.sin(2 * np.pi * frekans * 3 * t) * 0.05)
+    return s * zarf(n, 0.02, 0.35, 0.55, 0.5)
 
 
 def yayli(frekanslar, n):
+    """Hafif detone yigin — tek frekans duz ve sentetik duruyor."""
     s = np.zeros(n)
-    for f in frekanslar:
-        for h, a in ((1, 1.0), (2, 0.3), (3, 0.14)):
-            s += a * np.sin(2 * np.pi * (f * h + 0.4) * np.arange(n) / SR) / len(frekanslar)
-    return s * zarf(n, 0.9, 0.5, 0.8, 1.1) * 0.3
+    for k, f in enumerate(frekanslar):
+        for detune in (-0.5, 0.0, 0.6):
+            s += np.sin(2 * np.pi * (f + detune) * np.arange(n) / SR) / (len(frekanslar) * 3)
+        s += np.sin(2 * np.pi * (f * 2 + 0.3) * np.arange(n) / SR) * 0.12 / len(frekanslar)
+    return s * zarf(n, 1.1, 0.7, 0.85, 1.3) * 0.5
+
+
+def firca(n=None):
+    """Yumusak firca vurusu: beyaz gurultu yerine sunmus, kisik."""
+    n = n or int(0.22 * SR)
+    g = np.random.default_rng(23).normal(0, 1, n)
+    g = np.convolve(g, np.ones(5) / 5, mode="same")
+    return g * zarf(n, 0.006, 0.10, 0.0, 0.10)
+
+
+def oda_yankisi(sure=1.9):
+    """Sentetik oda tepkisi: sonumlenen gurultu + birkac erken yansima."""
+    n = int(sure * SR)
+    rng = np.random.default_rng(77)
+    ir = rng.normal(0, 1, n) * np.exp(-np.linspace(0, 1, n) * 5.2)
+    ir = np.convolve(ir, np.ones(9) / 9, mode="same")       # tizleri sondur
+    for gecikme, kazanc in ((0.011, 0.5), (0.023, 0.38), (0.037, 0.3), (0.053, 0.22)):
+        i = int(gecikme * SR)
+        ir[i] += kazanc
+    ir[0] = 1.0
+    return ir / np.abs(ir).max()
+
+
+def yanki_uygula(x, ir, islak=0.26):
+    """FFT ile konvolusyon — np.convolve bu uzunlukta cok yavas kalir."""
+    uzunluk = len(x) + len(ir) - 1
+    boyut = 1 << (uzunluk - 1).bit_length()
+    y = np.fft.irfft(np.fft.rfft(x, boyut) * np.fft.rfft(ir, boyut), boyut)[:len(x)]
+    y /= max(1e-9, np.abs(y).max())
+    return x * (1 - islak) + y * islak
 
 
 def uret_sade(bpm: float, sure: float, tohum: int) -> np.ndarray:
@@ -217,27 +273,41 @@ def uret_sade(bpm: float, sure: float, tohum: int) -> np.ndarray:
     vurus_s = 60.0 / bpm
     bar = 4 * vurus_s
     n = int(sure * SR)
-    mix = np.zeros(n)
-    desen = [0.0, 1.5, 2.0, 3.0, 3.5]
+    yatak = np.zeros(n)        # yayli + tel (yanki buraya)
+    alt = np.zeros(n)          # bas + vurus (kuru kalir, bulanmasin)
+    bar_sayisi = int(np.ceil(sure / bar))
 
-    for b in range(int(np.ceil(sure / bar))):
+    for b in range(bar_sayisi):
         t0 = b * bar
-        akor = SADE_AKOR[b % len(SADE_AKOR)]
-        ekle(mix, yayli(akor, int(bar * SR)), t0)
-        for k, konum in enumerate(desen):
-            nota = akor[(b + k) % len(akor)] * (2.0 if k % 3 == 1 else 1.0)
-            ekle(mix, tel(nota, 1.5) * (0.17 if k % 2 else 0.22), t0 + konum * vurus_s)
-        ekle(mix, kick() * 0.30, t0)                       # cok hafif vurus
-        ekle(mix, kick() * 0.20, t0 + 2 * vurus_s)
-        for i in range(8):                                  # shaker
-            ekle(mix, hihat() * (0.045 if i % 2 else 0.065), t0 + i * vurus_s / 2)
+        kok, akor = SADE_ILERLEME[b % len(SADE_ILERLEME)]
+        kalan = bar_sayisi - b
 
-    mix *= 1.0 + rng.normal(0, 0.006, n)
+        ekle(yatak, yayli(akor, int(bar * SR)), t0)                     # yayli hep var
+
+        if b >= 1:                                                      # tel 2. bardan
+            guc = min(1.0, (b - 1) / 3.0) * (0.55 if kalan <= 2 else 1.0)
+            for k, (konum, idx) in enumerate(SADE_DESEN):
+                if kalan <= 2 and k % 2:
+                    continue                                            # sonda incel
+                nota = akor[idx] * (2.0 if (b + k) % 7 == 3 else 1.0)
+                ekle(yatak, tel_cal(nota, 2.2, tohum=b * 7 + k)
+                     * 0.30 * guc * (0.78 if k % 2 else 1.0),
+                     t0 + konum * vurus_s)
+
+        if 3 <= b < bar_sayisi - 1:                                     # bas 4. bardan
+            ekle(alt, bas_cal(kok, bar * 0.62) * 0.46, t0)
+            ekle(alt, bas_cal(kok * 1.5, bar * 0.22) * 0.26, t0 + 2.6 * vurus_s)
+            ekle(alt, firca() * 0.11, t0 + vurus_s)
+            ekle(alt, firca() * 0.14, t0 + 3 * vurus_s)
+
+    yatak = yanki_uygula(yatak, oda_yankisi(), islak=0.30)
+    mix = yatak * 0.92 + alt
+    mix *= 1.0 + rng.normal(0, 0.004, n)
     mix /= max(1e-9, np.abs(mix).max())
-    mix *= 0.6
-    gecis = int(1.2 * SR)
-    mix[:gecis] *= np.linspace(0, 1, gecis)
-    mix[-gecis:] *= np.linspace(1, 0, gecis)
+    mix *= 0.62
+    gecis = int(1.6 * SR)
+    mix[:gecis] *= np.linspace(0, 1, gecis) ** 1.5
+    mix[-gecis:] *= np.linspace(1, 0, gecis) ** 1.5
     return mix
 
 
@@ -264,7 +334,7 @@ def main() -> None:
     ap.add_argument("--cikti", default="")
     args = ap.parse_args()
 
-    bpm = args.bpm or (72.0 if args.stil == "sade" else 82.0)
+    bpm = args.bpm or (70.0 if args.stil == "sade" else 82.0)
     cikti = args.cikti or (f"assets/muzik/aae_{'sade' if args.stil == 'sade' else 'yol_okulu'}.mp3")
     print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
     mix = (uret_sade if args.stil == "sade" else uret)(bpm, args.sure, args.tohum)
