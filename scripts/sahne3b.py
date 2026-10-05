@@ -119,13 +119,14 @@ def motosiklet(fren, tekerlek_aci=0.0):
         s.silindir([yan * 0.105, 0.31, on_z], [yan * 0.095, ucgen_y, on_z - 0.11],
                    0.040, JANT)                                                  # catal
     s.kutu([0, ucgen_y + 0.03, on_z - 0.13], [0.24, 0.08, 0.13], (62, 72, 84))   # ucgen
-    s.kutu([0, ucgen_y + 0.15, on_z - 0.24], [0.21, 0.12, 0.07], (24, 26, 30),
+    s.kutu([0, ucgen_y + 0.12, on_z - 0.22], [0.17, 0.09, 0.05], (24, 26, 30),
            R=donus([1, 0, 0], 0.5))                                              # gosterge govdesi
-    s.kutu([0, ucgen_y + 0.165, on_z - 0.21], [0.17, 0.08, 0.02], (30, 150, 180),
+    s.kutu([0, ucgen_y + 0.133, on_z - 0.195], [0.14, 0.06, 0.015], (30, 150, 180),
            R=donus([1, 0, 0], 0.5))                                              # ekran
     s.kutu([0, 0.62 - cokme, on_z + 0.06], [0.17, 0.05, 0.48], TURUNCU)         # camurluk
-    s.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], KREM)            # far
-    s.kutu([0, 1.16 - cokme, on_z + 0.06], [0.24, 0.17, 0.04], (146, 176, 196),
+    s.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], (46, 50, 56))    # far govdesi
+    s.kutu([0, 0.98 - cokme, on_z + 0.195], [0.22, 0.19, 0.02], KREM)           # far cami
+    s.kutu([0, 1.09 - cokme, on_z + 0.02], [0.19, 0.10, 0.03], (146, 176, 196),
            R=donus([1, 0, 0], 0.45))                                             # on cam
     # Gidon: daha UZUN ve disa dogru — kask kamerasindan gorulebilsin
     gid_y, gid_z = 1.07 - cokme, on_z - 0.16
@@ -177,8 +178,8 @@ def _fren_kamera(t, fren, kask_n, yat, pivot):
         # Gercek kask kamerasi gibi: biraz asagi bakar, genis acilidir. Daha
         # dar aci ve yatay bakisla gidon kadrajin disinda kaliyordu.
         kask_d = yat @ kask_n + (pivot - yat @ pivot)
-        goz = kask_d + np.array([0.0, 0.02, 0.08])
-        ileri = yat @ np.array([0.0, -0.34, 1.0])
+        goz = kask_d + np.array([0.0, 0.05, 0.06])
+        ileri = yat @ np.array([0.0, -0.28, 1.0])
         return Kamera(goz, goz + ileri * 12.0, G, Y, fov=76), mod
     return Kamera([2.62 + 0.20 * math.sin(t * 0.21), 1.92 + 0.08 * math.sin(t * 0.13),
                    -3.25 + 0.26 * math.cos(t * 0.17)],
@@ -348,7 +349,7 @@ def kare_viraj3b(t, toplam=55.0):
     # seviye POV'dan cok daha iyi anlatiyor. Seviye kamerada yakin asfalt
     # karenin %60'ini yutuyordu.
     mz = 7.0
-    mx = _merkez_x(mz, egri) - 1.1
+    mx = _merkez_x(mz, egri) + 1.1
     yon = _egim(mz, egri)
     yatis = -yon * 1.5                       # viraja yatis
     R = donus([0, 1, 0], yon) @ donus([0, 0, 1], yatis)
@@ -372,8 +373,8 @@ def kare_viraj3b(t, toplam=55.0):
             _tepe(s, mx2, 330 + (i % 3) * 40, 150, 90, 34 + (i % 4) * 11,
                   (104, 132, 140))
 
-    goz = np.array([_merkez_x(-6, egri) - 1.5, 3.05, -6.0])
-    bak = np.array([_merkez_x(34, egri) - 0.9, 1.05, 34.0])
+    goz = np.array([_merkez_x(-6, egri) + 1.5, 3.05, -6.0])
+    bak = np.array([_merkez_x(34, egri) + 0.9, 1.05, 34.0])
     kamera = Kamera(goz, bak, G, Y, fov=52)
     s.ciz(d, kamera, gok)
 
@@ -390,16 +391,21 @@ def kare_viraj3b(t, toplam=55.0):
                     mx + dx * (rr - 6), my + dy * (rr - 6)], fill=renk, width=5)
         f = s2.font(40)
         tw = d.textlength(etiket, font=f)
-        ex = min(max(mx - tw / 2 - 26, 40), G - tw - 66)
-        ey = my + (104 if engel else 56)     # engel isareti etiketi ezmesin
+        if engel:
+            # Engel ve kacis oku kaybolus noktasinin hemen altinda beliriyor;
+            # etiket orada kalirsa kirmizi carpi yaziyi kesiyordu.
+            ex, ey = (G - tw - 52) / 2, 268
+        else:
+            ex = min(max(mx - tw / 2 - 26, 40), G - tw - 66)
+            ey = my + 56
         d.rounded_rectangle([ex, ey, ex + tw + 52, ey + 64], 14,
                             fill=(0, 0, 0, 175), outline=renk, width=4)
         s2.yazi(d, (ex + 26, ey + 11), etiket, 40, renk)
         d.line([(G / 2, Y - 90), (mx, my)], fill=(255, 255, 255, 40), width=5)
 
     if engel:                                              # hedef sabitlemesi
-        for nokta, cizim in (([_merkez_x(20, egri) - 2.2, 0.05, 20.0], "engel"),
-                             ([_merkez_x(20, egri) + 2.0, 1.2, 20.0], "bosluk")):
+        for nokta, cizim in (([_merkez_x(24, egri) + 2.6, 0.05, 24.0], "engel"),
+                             ([_merkez_x(24, egri) + 0.3, 1.2, 24.0], "bosluk")):
             kn = kamera.kameraya(np.array([nokta]))
             if kn[0, 2] <= 0.3:
                 continue

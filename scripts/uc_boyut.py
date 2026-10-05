@@ -48,8 +48,10 @@ class Kamera:
     def __init__(self, konum, hedef, genislik, yukseklik, fov=52.0, yukari=(0, 1, 0)):
         self.konum = np.asarray(konum, dtype=float)
         ileri = birim(np.asarray(hedef, dtype=float) - self.konum)
-        sag = birim(np.cross(ileri, np.asarray(yukari, dtype=float)))
-        self.taban = np.stack([sag, np.cross(sag, ileri), ileri])   # 3x3
+        # DIKKAT: sag = ileri x yukari saggeleni TERS verir (sag ekseni -X'e
+        # bakar) ve butun sahne yatay aynalanmis cikar. Dogrusu yukari x ileri.
+        sag = birim(np.cross(np.asarray(yukari, dtype=float), ileri))
+        self.taban = np.stack([sag, np.cross(ileri, sag), ileri])   # 3x3
         self.cx, self.cy = genislik / 2, yukseklik / 2
         # fov DIKEY kenardan olculur. Yatay kenardan olculunce 9:16 karede
         # dikey aci devlesiyor ve yol butun ekrani yutuyordu.
