@@ -13,6 +13,7 @@ surum: 1
 
 kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
 sahne: viraj
+boyut: 3                # 3 = 3 boyutlu sahne, 2 = düz çizim
 # Sahnedeki durum ekranda yazan adımla aynı şeyi anlatsın diye hizalandı:
 # adım 3 (19. sn) "açılıyor", adım 4 (27. sn) "kapanıyor", adım 5 (35. sn) engel.
 sahne_fazlari: "0:sabit, 11:uzak, 19:acilir, 27:kapanir, 35:engel, 42:uzak"

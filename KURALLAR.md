@@ -35,7 +35,8 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   YouTube ve Instagram'da ayrı ayrı iddia yersin.
 
 ## Sahne
-- Uygun ham çekim yoksa arka plan `sahne:` ile çizilir (`fren` / `viraj`).
+- Uygun ham çekim yoksa arka plan `sahne:` ile çizilir (`fren` / `viraj`),
+  varsayılan **3 boyutlu** (`boyut: 3`).
 - **Sahnedeki durum, o anda ekranda yazan adımla aynı şeyi anlatmalı.**
   Viraj sahnesinde `sahne_fazlari` ile hizalanır; aksi halde animasyon
   "KAPANIYOR" derken yazı "açılıyor" diyebiliyor.

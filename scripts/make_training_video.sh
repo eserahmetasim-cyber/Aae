@@ -60,8 +60,11 @@ if [[ -z "${KAYNAK}" && -n "${SAHNE}" ]]; then
   # Ham cekim verilmediyse ders dosyasindaki sahne cizimle uretilir.
   # Gercek cekim koymak icin ders dosyasina 'kaynak:' yazmak yeterli.
   KAYNAK="${TMP}/sahne_${SAHNE}.mp4"
-  echo ">> Sahne uretiliyor: ${SAHNE}"
-  python3 scripts/sahne_uret.py --sahne "${SAHNE}" \
+  BOYUT="$(j '.ders.boyut')"
+  URETICI="scripts/sahne_uret.py"
+  [[ "${BOYUT}" == "3" ]] && URETICI="scripts/sahne3b.py"
+  echo ">> Sahne uretiliyor: ${SAHNE} (${BOYUT} boyutlu)"
+  python3 "${URETICI}" --sahne "${SAHNE}" \
           --sure "$(python3 -c "print(${SURE} + ${BASLANGIC} + 2)")" \
           --fazlar "$(j '.ders.sahne_fazlari')" \
           --cikti "${KAYNAK}" >/dev/null

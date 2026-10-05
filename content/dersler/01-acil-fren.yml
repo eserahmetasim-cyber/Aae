@@ -13,6 +13,7 @@ surum: 1
 
 kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
 sahne: fren
+boyut: 3                # 3 = 3 boyutlu sahne, 2 = düz çizim
 baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
 kaynak_ses: 0.30        # motorun gerçek sesi — altta, kısık

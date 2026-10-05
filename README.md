@@ -41,6 +41,7 @@ Doldurulacak alanlar:
 | `alt_baslik` | Açılış kartında tek cümlelik özet |
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
 | `sahne` | Çekim yoksa arka planı çizimle üret: `fren` veya `viraj` |
+| `boyut` | `3` = 3 boyutlu sahne (varsayılan), `2` = düz çizim |
 | `sahne_fazlari` | Viraj sahnesindeki durumları adımlarla hizalar (aşağıda) |
 | `baslangic` | Uzun çekimden parça seç: kaçıncı saniyeden başlasın (örn. `150`) |
 | `sure` | Saniye (1–90) |
@@ -122,14 +123,18 @@ python3 scripts/publish_instagram.py --ders content/dersler/01-acil-fren.yml --k
 
 ## 🎬 Çizilen sahneler
 
-Elinde uygun çekim yoksa arka planı hat kendisi çizer. Ders dosyasına
-`sahne: fren` ya da `sahne: viraj` yazman yeterli — `kaynak` boşsa sahne
+Elinde uygun çekim yoksa arka planı hat kendisi çizer — **varsayılan olarak
+3 boyutlu**: perspektif kamera, ışıklı yüzeyler, derinlik sisi. Motor
+`scripts/uc_boyut.py` içinde, dışarıdan 3B kütüphanesi gerekmez. Düz çizim
+istersen ders dosyasına `boyut: 2` yaz.
+
+Ders dosyasına `sahne: fren` ya da `sahne: viraj` yazman yeterli — `kaynak` boşsa sahne
 render sırasında üretilir. Her şey çizimle oluşur, telif sorunu yoktur.
 
 | Sahne | Ne gösterir |
 |---|---|
-| `fren` | Yandan görünüm. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
-| `viraj` | Sürücü gözünden yol. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
+| `fren` | Motosikletin 3/4 görünümü. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
+| `viraj` | Viraja giren motosikletin arkadan görünümü. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
 
 **Sahneyi adımlarla hizala.** Ekranda "nokta uzaklaşıyorsa açılıyor" yazarken
 animasyonun "KAPANIYOR" demesi izleyeni şaşırtır. `sahne_fazlari` bunu önler:
@@ -244,7 +249,9 @@ scripts/
   get_youtube_token.py      → YT refresh token (tek seferlik, yerelde)
   get_instagram_ids.py      → IG user id + uzun ömürlü jeton (tek seferlik, yerelde)
   muzik_uret.py             → telifsiz fon müziği besteler (numpy gerekir)
-  sahne_uret.py             → arka plan sahnesi + motor sesi çizer (numpy, pillow)
+  sahne_uret.py             → düz (2B) sahne + motor sesi (numpy, pillow)
+  sahne3b.py                → 3 boyutlu sahne (fren / viraj)
+  uc_boyut.py               → yazılımsal 3B motor: kamera, ışık, derinlik
 .github/workflows/egitim-videosu.yml
 KURALLAR.md             → format, marka, yayın ve sır kuralları
 ```
