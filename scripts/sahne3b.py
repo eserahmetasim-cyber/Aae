@@ -61,11 +61,11 @@ MONT = (96, 112, 130)
 # ---------------------------------------------------------------------------
 #  Motosiklet modeli (yerel: X yan, Y yukari, Z ileri; orijin yerde, aks arasi)
 # ---------------------------------------------------------------------------
-DISK = (168, 176, 184)
+DISK = (104, 112, 120)
 KROM = (196, 206, 214)
 
 
-def _tekerlek(s, z, aci, yaricap=0.31, disk=True):
+def _tekerlek(s, z, aci, yaricap=0.31, disk=True, on=True):
     """aci: tekerlegin donme acisi (radyan). Daha once sabit 0 geciliyordu,
     bu yuzden tekerlekler hic donmuyordu."""
     s.silindir([-0.075, yaricap, z], [0.075, yaricap, z], yaricap, LASTIK, segment=20)
@@ -80,13 +80,16 @@ def _tekerlek(s, z, aci, yaricap=0.31, disk=True):
         s.kutu([0, yaricap, z] + (R @ yon) * yaricap * 0.33,
                [0.085, yaricap * 0.62, 0.05], JANT,
                R=R @ donus([1, 0, 0], -a))
-    s.silindir([-0.045, yaricap, z], [0.045, yaricap, z], 0.055, KROM, segment=10)  # gobek
     if disk:
-        for yan in (-1, 1):                                       # fren diski
-            s.silindir([yan * 0.10, yaricap, z], [yan * 0.115, yaricap, z],
-                       yaricap * 0.62, DISK, segment=18)
-        s.kutu([0.13, yaricap + 0.19, z - 0.03], [0.07, 0.13, 0.10], TURUNCU)  # kaliper
-        s.kutu([-0.13, yaricap + 0.19, z - 0.03], [0.07, 0.13, 0.10], TURUNCU)
+        # Disk daha KUCUK ve KOYU; ayrica arka tekerlekte tek disk var ve o da
+        # kameranin ters tarafinda. Onceki parlak buyuk disk janti kapatiyor,
+        # tekerlege bir sey saplanmis gibi gorunuyordu.
+        yanlar = (-1, 1) if on else (-1,)
+        for yan in yanlar:
+            s.silindir([yan * 0.098, yaricap, z], [yan * 0.112, yaricap, z],
+                       yaricap * (0.54 if on else 0.44), DISK, segment=18)
+            s.kutu([yan * 0.125, yaricap + 0.17, z - 0.03], [0.055, 0.12, 0.09], TURUNCU)
+    s.silindir([-0.05, yaricap, z], [0.05, yaricap, z], 0.062, KROM, segment=10)  # gobek
 
 
 def motosiklet(fren, tekerlek_aci=0.0):
@@ -111,8 +114,12 @@ def motosiklet(fren, tekerlek_aci=0.0):
     s.kutu([0, 0.88, -0.76], [0.21, 0.13, 0.30], (28, 28, 30))                   # kuyruk
     s.kutu([0, 0.89, -0.91], [0.15, 0.07, 0.05], KIRMIZI)                        # stop
     s.kutu([0, 0.74, -0.95], [0.16, 0.11, 0.02], (222, 222, 216))                # plaka
-    s.silindir([0.11, 0.44, -0.12], [0.16, 0.48, -0.62], 0.033, (150, 158, 164)) # egzoz borusu
-    s.silindir([0.16, 0.48, -0.62], [0.18, 0.50, -0.93], 0.058, (124, 132, 140)) # susturucu
+    # Egzoz arka tekerlegin YANINDAN gecer. Onceki guzergah tekerlek duzlemine
+    # cok yakindi (x~0.17) ve aks hizasindaydi; lastige saplanmis gibi duruyordu.
+    s.silindir([0.10, 0.40, 0.02], [0.19, 0.46, -0.30], 0.032, (150, 158, 164))  # egzoz borusu
+    s.silindir([0.19, 0.46, -0.30], [0.26, 0.58, -0.58], 0.034, (150, 158, 164))
+    s.silindir([0.26, 0.58, -0.58], [0.28, 0.62, -1.00], 0.065, (124, 132, 140)) # susturucu
+    s.silindir([0.28, 0.62, -1.00], [0.285, 0.62, -1.03], 0.052, (40, 40, 44))   # cikis
 
     # --- on takim ---------------------------------------------------------
     ucgen_y = 0.98 - cokme
@@ -165,8 +172,8 @@ def motosiklet(fren, tekerlek_aci=0.0):
     s.kutu([0, kask_n[1] - 0.01, kask_n[2] + 0.12], [0.18, 0.11, 0.06], (52, 64, 78))
     s.kutu([0, kask_n[1] + 0.12, kask_n[2] + 0.01], [0.17, 0.05, 0.17], TURUNCU)
 
-    _tekerlek(s, arka_z, tekerlek_aci)
-    _tekerlek(s, on_z, tekerlek_aci)
+    _tekerlek(s, arka_z, tekerlek_aci, on=False)
+    _tekerlek(s, on_z, tekerlek_aci, on=True)
     return s, cokme, kask_n
 
 
@@ -345,7 +352,9 @@ def kare_viraj3b(t, toplam=55.0):
 
     # derinlik -> EGRILIK. Viraj keskinlestikce kaybolus noktasi kendiliginden
     # yaklasir; artik elle kaydirilan bir "gorus mesafesi" yok.
-    egri = -(0.30 + derinlik * 5.6)          # 0.08 -> 0.75 ;  0.34 -> 2.2
+    # derinlik -> egrilik. Araligi genislettik: 0.02 ~ dumduz (R~500 m),
+    # 0.36 ~ keskin viraj (R~28 m). Eskisi en acik halde bile kavisli kaliyordu.
+    egri = -(0.08 + derinlik * 8.0)
     ic = -1 if egri < 0 else 1
 
     gok, cim, asfalt = _palet()
@@ -404,7 +413,11 @@ def kare_viraj3b(t, toplam=55.0):
     # sola donen virajda sagda durmak gorusu acar, saga donende tersi.
     # 1.0 = seridin solu, 1.95 = ortasi, 2.9 = sagi.
     mz = 7.0
-    hedef_serit = 1.95 - np.sign(egri) * 0.95 if abs(egri) > 0.05 else 1.95
+    # Serit ici konum virajin KESKINLIGINE gore: viraj ne kadar keskinse
+    # o kadar disa (sola donen virajda seridin sagina) cikilir, duzlukte
+    # seridin soluna donulur. Seridin solu 1.78, ortasi ~2.3, sagi 2.90.
+    k = min(1.0, abs(egri) / 2.4)
+    hedef_serit = 1.78 + 1.12 * k
     global _serit
     _serit = globals().get("_serit", 1.95)
     _serit += (hedef_serit - _serit) * 0.022          # yumusak gecis
@@ -432,8 +445,13 @@ def kare_viraj3b(t, toplam=55.0):
             _tepe(s, mx2, 330 + (i % 3) * 40, 150, 90, 34 + (i % 4) * 11,
                   (104, 132, 140))
 
+    # Kamera motosikleti kadrajda tutmali: cok ileriye nisan alinca keskin
+    # virajda bakis yana savruluyor ve motosiklet kareden cikiyordu. Hedef,
+    # motosiklet ile yolun ilerisi arasinda harmanlanir.
+    bx = _merkez_x(mz, egri) + _serit
+    ax = _merkez_x(22, egri) + _serit * 0.8
     goz = np.array([_merkez_x(-6, egri) + _serit + 0.4, 3.05, -6.0])
-    bak = np.array([_merkez_x(34, egri) + _serit * 0.55, 1.05, 34.0])
+    bak = np.array([0.62 * bx + 0.38 * ax, 1.05, 18.0])
     kamera = Kamera(goz, bak, G, Y, fov=52)
     s.ciz(d, kamera, gok)
 

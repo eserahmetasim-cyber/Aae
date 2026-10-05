@@ -18,7 +18,7 @@ kamera: takip
 gunduz: true            # gündüz: uzak net görünsün
 # Sahnedeki durum ekranda yazan adımla aynı şeyi anlatsın diye hizalandı:
 # adım 3 (19. sn) "açılıyor", adım 4 (27. sn) "kapanıyor", adım 5 (35. sn) engel.
-sahne_fazlari: "0:sabit, 11:uzak, 19:acilir, 27:kapanir, 35:engel, 42:uzak"
+sahne_fazlari: "0:sabit, 19:acilir, 27:kapanir, 35:engel, 42:uzak"
 baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
 kaynak_ses: 0.035       # motor sesi — zar zor duyulan bir uğultu

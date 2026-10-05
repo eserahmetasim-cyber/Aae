@@ -246,12 +246,15 @@ VIRAJ_DONGU = 13.0
 # Sahnedeki durum, ekranda o anda yazan ders adimiyla CAKISMAMALI: etiket
 # "KAPANIYOR" derken adim "aciliyor" diyorsa izleyen kafasi karisir. Bu yuzden
 # fazlar disaridan (ders dosyasindan) verilebilir: "0:sabit,19:acilir,..."
+# Her faz bir HEDEF egrilik verir; deger onceki fazin biraktigi yerden bu
+# hedefe suruklenir. Boylece faz sinirinda ziplama olmaz ve "aciliyor" gercekten
+# duzlesme, "kapaniyor" gercekten keskinlesme olarak gorunur.
 VIRAJ_DURUM = {
-    "sabit":   (0.20, 0.20, "SABİT", MAVI),
-    "uzak":    (0.10, 0.07, "NOKTA UZAKTA", MAVI),
-    "acilir":  (0.30, 0.08, "AÇILIYOR", YESIL),
-    "kapanir": (0.08, 0.34, "KAPANIYOR", KIRMIZI),
-    "engel":   (0.20, 0.20, "ENGELE DEĞİL, BOŞLUĞA", TURUNCU),
+    "sabit":   (0.30, "SABİT", MAVI),
+    "uzak":    (0.05, "NOKTA UZAKTA", MAVI),
+    "acilir":  (0.02, "AÇILIYOR", YESIL),
+    "kapanir": (0.36, "KAPANIYOR", KIRMIZI),
+    "engel":   (0.16, "ENGELE DEĞİL, BOŞLUĞA", TURUNCU),
 }
 VIRAJ_FAZLAR = None          # [(baslangic_sn, durum_adi), ...]
 
@@ -280,11 +283,18 @@ def viraj_evre_fazli(t, toplam):
             aktif = (bas, durum)
             bitis = VIRAJ_FAZLAR[i + 1][0] if i + 1 < len(VIRAJ_FAZLAR) else toplam
     bas, durum = aktif
-    d0, d1, etiket, renk = VIRAJ_DURUM[durum]
+    hedef, etiket, renk = VIRAJ_DURUM[durum]
+    # Baslangic: bir onceki fazin hedefi (ilk fazda kendi hedefi)
+    sira = [d for _, d in VIRAJ_FAZLAR]
+    i = sira.index(durum) if durum in sira else 0
+    for j, (b2, d2) in enumerate(VIRAJ_FAZLAR):
+        if b2 == bas and d2 == durum:
+            i = j
+            break
+    baslangic = VIRAJ_DURUM[VIRAJ_FAZLAR[i - 1][1]][0] if i > 0 else hedef
     p = yumusak((t - bas) / max(0.5, bitis - bas))
-    derinlik = d0 + (d1 - d0) * p
-    # Nokta uzaklasirken viraj acilir, yaklasirken daralir: bukum de izler.
-    bukum = -0.30 - 0.55 * derinlik / 0.34 if durum == "kapanir" else -0.55 + 0.30 * p
+    derinlik = baslangic + (hedef - baslangic) * p
+    bukum = -(0.30 + derinlik * 1.6)          # 2B sahne icin geriye donuk uyum
     return derinlik, bukum, (etiket, renk)
 
 
