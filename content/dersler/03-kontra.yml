@@ -1,0 +1,102 @@
+# Ders 03 · Kontra tekniği (counter-steering)
+# Kaynaklar (teknik doğrulama):
+#   https://www.saint.cc/blogs/journal/counter-steering-explained-why-you-push-left-to-go-left
+#   https://www.arabam.com/blog/danisman/motosiklette-kontra-teknigi-nedir/
+#   https://motorhikayesi.com/motosiklet-kontrayla-doner.html
+
+ders_no: 3
+slug: kontra
+baslik: "Kontra: Motosiklet Nasıl Döner"
+alt_baslik: "Sola gitmek için sol gidonu it"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: kontra
+boyut: 3                # 3 = 3 boyutlu sahne, 2 = düz çizim
+kamera: onden           # önden bakar ("on" YAML icinde boolean olur)
+gunduz: true
+baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
+sure: 55
+kaynak_ses: 0.035       # motor sesi — zar zor duyulan bir uğultu
+muzik: "assets/muzik/aae_piyano.mp3"
+muzik_ses: 0.36
+
+kapanis: "Bas, yatar · Çok bas, çok yatar"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · 30 km/h üstünde gidon TERS çalışır" }
+  - { t: 11, sure: 7, metin: "2 · Sola gitmek için SOL gidonu ileri it" }
+  - { t: 19, sure: 7, metin: "3 · Ön teker bir an ters yöne döner" }
+  - { t: 27, sure: 7, metin: "4 · Motosiklet yatar — dönüş yatıştan gelir" }
+  - { t: 35, sure: 6, metin: "5 · Kolların gevşek, itiş nazik olsun" }
+  - { t: 42, sure: 7, metin: "6 · Virajda geniş kalıyorsan iç gidona daha bas" }
+
+youtube:
+  baslik: "Kontra Tekniği: Motosiklet Aslında Nasıl Döner | Yol Okulu #3"
+  aciklama: |
+    Motosiklet, araba gibi ön tekerleği gitmek istediğin yöne çevirerek dönmez.
+    Yatarak döner. Yatışı başlatan şey de gidona verdiğin ters yönlü itiştir:
+    sola gitmek için SOL gidonu ileri itersin. Ters gelir, adı da bu yüzden
+    kontra (counter-steering).
+
+    0:04 30 km/h üstünde gidon ters çalışır
+    0:11 Sola gitmek için sol gidonu ileri it
+    0:19 Ön teker bir an ters yöne döner
+    0:27 Motosiklet yatar — dönüş yatıştan gelir
+    0:35 Kolların gevşek, itiş nazik olsun
+    0:42 Virajda geniş kalıyorsan iç gidona daha bas
+
+    NEDEN BÖYLE?
+    Sol gidonu ittiğinde ön teker bir an için sağa döner. Lastiğin yere basan
+    noktası motosikletin ağırlık merkezinin altından sağa kayar, motosiklet de
+    sola devrilmeye başlar. Yani direksiyon yatışı başlatır, dönüşü yatış yapar.
+    İşin tamamında jiroskopik presesyon, trail ve kamber itişi de var; ama
+    sürerken aklında tutman gereken tek şey: itiş yatışı doğurur.
+
+    NE KADAR BASARSAN O KADAR YATAR
+    Virajın ortasında dışarı açılıyorsan çözüm gazı kesmek ya da fren yapmak
+    değil — iç gidona biraz daha bastırmaktır. Gaz kesmek motosikleti
+    doğrultur ve seni daha da dışarı taşır.
+
+    NOTLAR
+    • 30 km/h'in altında gidon normal çalışır; manevra hızlarında gidonu
+      gitmek istediğin yöne çevirirsin.
+    • Gidonu sıkı kavrama. Kollar gevşek, dirsekler aşağıda olsun; kasılmış
+      kollar farkında olmadan ters giriş yapar.
+    • Ani ve sert itiş dengeyi bozar — basınç kademeli artırılır.
+    • Bakışın her zaman gitmek istediğin yerde kalsın (bkz. Ders 2).
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez. Boş ve
+    güvenli bir alanda, tam koruyucu ekipmanla, düşük hızdan başlayarak çalış.
+
+    @aae_motorcycle
+  etiketler:
+    - motosiklet
+    - kontra tekniği
+    - counter steering
+    - sürüş eğitimi
+    - viraj
+    - motosiklet eğitimi
+    - yol okulu
+    - motovlog
+  kategori: "2"
+  gizlilik: private
+
+instagram:
+  caption: |
+    Motosiklet ön tekerleği çevirerek dönmez — yatarak döner.
+    Yatışı başlatan şey ters yönlü itiştir: sola gitmek için SOL gidonu ileri.
+
+    Sol gidonu ittiğinde ön teker bir an sağa döner, lastiğin temas noktası
+    ağırlık merkezinin altından kayar ve motosiklet sola devrilir.
+    Ne kadar basarsan o kadar yatar.
+
+    Virajda dışarı açılıyorsan gazı kesme, iç gidona biraz daha bas.
+    30 km/h altında gidon normal çalışır.
+
+    Boş bir alanda, tam ekipmanla, düşük hızdan başlayarak dene.
+
+    @aae_motorcycle
+    #motosiklet #kontratekniği #countersteering #sürüşeğitimi #viraj #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş
+  feed_de_paylas: true

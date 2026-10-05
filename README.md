@@ -40,9 +40,9 @@ Doldurulacak alanlar:
 | `ders_no`, `slug`, `baslik` | Zorunlu. Açılış kartı, üst bant ve dosya adı. (`no` YAML'da boolean olduğu için `ders_no`) |
 | `alt_baslik` | Açılış kartında tek cümlelik özet |
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
-| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` veya `viraj` |
+| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` · `viraj` · `kontra` |
 | `boyut` | `3` = 3 boyutlu sahne (varsayılan), `2` = düz çizim |
-| `kamera` | `yan` · `kask` (kask kamerası) · `takip` · `degisken` (dönüşümlü) |
+| `kamera` | `yan` · `kask` (kask kamerası) · `takip` · `onden` · `degisken` (dönüşümlü) |
 | `gunduz` | `true` = gündüz ışığı, uzak daha net; `false` = gece |
 | `sahne_fazlari` | Viraj sahnesindeki durumları adımlarla hizalar (aşağıda) |
 | `baslangic` | Uzun çekimden parça seç: kaçıncı saniyeden başlasın (örn. `150`) |
@@ -137,6 +137,7 @@ render sırasında üretilir. Her şey çizimle oluşur, telif sorunu yoktur.
 |---|---|
 | `fren` | Motosikletin 3/4 görünümü. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
 | `viraj` | Viraja giren motosikletin arkadan görünümü. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
+| `kontra` | Önden görünüm. Gidona verilen itiş, ön tekerin ters yöne dönmesi ve motosikletin yatması aynı karede: paneller "SOL GİDON İTİLİYOR · ÖN TEKER SAĞA · MOTOSİKLET SOLA 22°" olarak okunur. Yalnızca 3 boyutlu üretilir. |
 
 **Kamera açıları.** `kamera: kask` sürücünün kaskından bakar — gidon, aynalar,
 gösterge paneli kadrajda, frende burun aşağı yattığında görüntü de yatar.

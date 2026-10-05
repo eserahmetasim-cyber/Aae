@@ -130,12 +130,15 @@ def yukle(yol: str) -> dict:
     if boyut not in (2, 3):
         raise DersHatasi(f"{yol}: 'boyut' 2 ya da 3 olmali.")
     kamera = str(ham.get("kamera") or "yan").strip()
-    if kamera not in ("yan", "kask", "takip", "degisken"):
-        raise DersHatasi(f"{yol}: 'kamera' yan|kask|takip|degisken olmali.")
+    # NOT: "on" kullanilamaz - YAML'de on/off/yes/no boolean olarak okunur.
+    if kamera not in ("yan", "kask", "takip", "degisken", "onden"):
+        raise DersHatasi(f"{yol}: 'kamera' yan|kask|takip|degisken|onden olmali.")
     gunduz = bool(ham.get("gunduz", False))
     sahne = str(ham.get("sahne") or "").strip()
-    if sahne and sahne not in ("fren", "viraj"):
-        raise DersHatasi(f"{yol}: 'sahne' fren|viraj olmali (ya da bos).")
+    if sahne and sahne not in ("fren", "viraj", "kontra"):
+        raise DersHatasi(f"{yol}: 'sahne' fren|viraj|kontra olmali (ya da bos).")
+    if sahne == "kontra" and boyut != 3:
+        raise DersHatasi(f"{yol}: 'kontra' sahnesi yalnizca 3 boyutlu uretilir.")
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
     baslangic = float(ham.get("baslangic", 0))
     if baslangic < 0:
@@ -203,10 +206,23 @@ def _sar(metin: str, genislik: int) -> list:
     return textwrap.wrap(metin, genislik) or [""]
 
 
-def _punto(satirlar: list, maks_punto: int, kat: float = 0.60) -> int:
-    """DejaVu Sans Bold icin kaba genislik tahmini: karakter ~ 0.60 em."""
-    en_uzun = max((len(s) for s in satirlar), default=1) or 1
-    return max(22, min(maks_punto, int(GENISLIK_PX / (en_uzun * kat))))
+FONT_YOLU = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+
+def _punto(satirlar: list, maks_punto: int, kat: float = 0.70) -> int:
+    """Metnin sigdigi en buyuk puntoyu bulur. Karakter sayisindan TAHMIN
+    etmek yetmiyordu: buyuk harfler daha genis, 'DERS 03 · KONTRA: MOTOSIKLET
+    NASIL' ust banttan tasiyordu. Font varsa gercekten olculur."""
+    try:
+        from PIL import ImageFont
+        for punto in range(maks_punto, 21, -1):
+            f = ImageFont.truetype(FONT_YOLU, punto)
+            if max(f.getlength(s) for s in satirlar) <= GENISLIK_PX:
+                return punto
+        return 22
+    except Exception:
+        en_uzun = max((len(s) for s in satirlar), default=1) or 1
+        return max(22, min(maks_punto, int(GENISLIK_PX / (en_uzun * kat))))
 
 
 def metinleri_yaz(ders: dict, dizin: str) -> dict:
@@ -220,7 +236,7 @@ def metinleri_yaz(ders: dict, dizin: str) -> dict:
     seri = tr_upper(ders["seri"])
     ders_etiketi = f"DERS {ders['no']:02d}"
 
-    ust = _sar(f"{ders_etiketi} · {tr_upper(ders['baslik'])}", 36)
+    ust = _sar(f"{ders_etiketi} · {tr_upper(ders['baslik'])}", 32)
     intro_baslik = _sar(ders["baslik"], 17)
     intro_alt = _sar(ders["alt_baslik"], 28) if ders["alt_baslik"] else []
     kapanis = _sar(ders["kapanis"], 24) if ders["kapanis"] else []

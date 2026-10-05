@@ -29,6 +29,7 @@ from PIL import Image, ImageDraw
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from uc_boyut import Kamera, Sahne, donus, isik_ayarla   # noqa: E402
 import sahne_uret as s2                              # ses + 2B yardimcilar  # noqa: E402
+from sahne_uret import yumusak                       # noqa: E402
 
 G, Y, FPS = s2.G, s2.Y, s2.FPS
 GOK = (13, 18, 26)
@@ -92,7 +93,7 @@ def _tekerlek(s, z, aci, yaricap=0.31, disk=True, on=True):
     s.silindir([-0.05, yaricap, z], [0.05, yaricap, z], 0.062, KROM, segment=10)  # gobek
 
 
-def motosiklet(fren, tekerlek_aci=0.0):
+def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
     """fren 0-1: catal cokmesi + surucunun one yuklenmesi."""
     s = Sahne()
     cokme = 0.085 * fren
@@ -121,33 +122,36 @@ def motosiklet(fren, tekerlek_aci=0.0):
     s.silindir([0.26, 0.58, -0.58], [0.28, 0.62, -1.00], 0.065, (124, 132, 140)) # susturucu
     s.silindir([0.28, 0.62, -1.00], [0.285, 0.62, -1.03], 0.052, (40, 40, 44))   # cikis
 
-    # --- on takim ---------------------------------------------------------
+    # --- on takim (direksiyonla birlikte doner) ---------------------------
+    # Kontra dersi icin on takim AYRI bir sahnede kurulur: catal, teker,
+    # camurluk, far, cam, gosterge, gidon ve aynalar birlikte donmeli.
+    onk = Sahne()
     ucgen_y = 0.98 - cokme
     for yan in (-1, 1):
-        s.silindir([yan * 0.105, 0.31, on_z], [yan * 0.095, ucgen_y, on_z - 0.11],
+        onk.silindir([yan * 0.105, 0.31, on_z], [yan * 0.095, ucgen_y, on_z - 0.11],
                    0.040, JANT)                                                  # catal
-    s.kutu([0, ucgen_y + 0.03, on_z - 0.13], [0.24, 0.08, 0.13], (62, 72, 84))   # ucgen
-    s.kutu([0, ucgen_y + 0.12, on_z - 0.22], [0.17, 0.09, 0.05], (24, 26, 30),
+    onk.kutu([0, ucgen_y + 0.03, on_z - 0.13], [0.24, 0.08, 0.13], (62, 72, 84))   # ucgen
+    onk.kutu([0, ucgen_y + 0.12, on_z - 0.22], [0.17, 0.09, 0.05], (24, 26, 30),
            R=donus([1, 0, 0], 0.5))                                              # gosterge govdesi
-    s.kutu([0, ucgen_y + 0.133, on_z - 0.195], [0.14, 0.06, 0.015], (30, 150, 180),
+    onk.kutu([0, ucgen_y + 0.133, on_z - 0.195], [0.14, 0.06, 0.015], (30, 150, 180),
            R=donus([1, 0, 0], 0.5))                                              # ekran
-    s.kutu([0, 0.62 - cokme, on_z + 0.06], [0.17, 0.05, 0.48], TURUNCU)         # camurluk
-    s.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], (46, 50, 56))    # far govdesi
-    s.kutu([0, 0.98 - cokme, on_z + 0.195], [0.22, 0.19, 0.02], KREM)           # far cami
-    s.kutu([0, 1.09 - cokme, on_z + 0.02], [0.19, 0.10, 0.03], (146, 176, 196),
+    onk.kutu([0, 0.62 - cokme, on_z + 0.06], [0.17, 0.05, 0.48], TURUNCU)         # camurluk
+    onk.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], (46, 50, 56))    # far govdesi
+    onk.kutu([0, 0.98 - cokme, on_z + 0.195], [0.22, 0.19, 0.02], KREM)           # far cami
+    onk.kutu([0, 1.09 - cokme, on_z + 0.02], [0.19, 0.10, 0.03], (146, 176, 196),
            R=donus([1, 0, 0], 0.45))                                             # on cam
     # Gidon: daha UZUN ve disa dogru — kask kamerasindan gorulebilsin
     gid_y, gid_z = 1.07 - cokme, on_z - 0.16
-    s.silindir([-0.42, gid_y, gid_z], [0.42, gid_y, gid_z], 0.022, KROM)
+    onk.silindir([-0.42, gid_y, gid_z], [0.42, gid_y, gid_z], 0.022, KROM)
     for yan in (-1, 1):
-        s.silindir([yan * 0.26, gid_y, gid_z], [yan * 0.42, gid_y, gid_z + 0.03],
+        onk.silindir([yan * 0.26, gid_y, gid_z], [yan * 0.42, gid_y, gid_z + 0.03],
                    0.032, (32, 32, 34))                                          # tutamak
-        s.kutu([yan * 0.455, gid_y, gid_z + 0.03], [0.05, 0.05, 0.05], KROM)     # agirlik
-        s.silindir([yan * 0.30, gid_y, gid_z + 0.02],
+        onk.kutu([yan * 0.455, gid_y, gid_z + 0.03], [0.05, 0.05, 0.05], KROM)     # agirlik
+        onk.silindir([yan * 0.30, gid_y, gid_z + 0.02],
                    [yan * 0.40, gid_y - 0.01, gid_z + 0.14], 0.012, (190, 190, 190))
-        s.silindir([yan * 0.34, gid_y + 0.02, gid_z],                             # ayna kolu
+        onk.silindir([yan * 0.34, gid_y + 0.02, gid_z],                             # ayna kolu
                    [yan * 0.46, gid_y + 0.30, gid_z - 0.02], 0.016, (40, 40, 44))
-        s.kutu([yan * 0.47, gid_y + 0.33, gid_z - 0.02], [0.05, 0.13, 0.17],
+        onk.kutu([yan * 0.47, gid_y + 0.33, gid_z - 0.02], [0.05, 0.13, 0.17],
                (70, 86, 104), R=donus([0, 1, 0], yan * 0.35))                    # ayna
 
     # --- surucu -----------------------------------------------------------
@@ -173,7 +177,16 @@ def motosiklet(fren, tekerlek_aci=0.0):
     s.kutu([0, kask_n[1] + 0.12, kask_n[2] + 0.01], [0.17, 0.05, 0.17], TURUNCU)
 
     _tekerlek(s, arka_z, tekerlek_aci, on=False)
-    _tekerlek(s, on_z, tekerlek_aci, on=True)
+    _tekerlek(onk, on_z, tekerlek_aci, on=True)
+
+    # Direksiyon ekseni ucgen klempten gecer; kucuk acilarda Y ekseni etrafinda
+    # dondurmek yeterli dogrulukta.
+    if abs(direksiyon) > 1e-4:
+        eksen = np.array([0.0, 0.0, on_z - 0.13])
+        R = donus([0, 1, 0], direksiyon)
+        s.ekle(onk, R=R, t=eksen - R @ eksen)
+    else:
+        s.ekle(onk)
     return s, cokme, kask_n
 
 
@@ -257,6 +270,118 @@ def kare_fren3b(t):
     s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
     if mod == "kask":
         s2.yazi(d, (G - 320, 636), "KASK KAMERASI", 26, TURUNCU)
+    return im
+
+
+
+# ---------------------------------------------------------------------------
+#  KONTRA (counter-steering) - onden gorunum
+# ---------------------------------------------------------------------------
+KONTRA_DONGU = 7.6          # ders adimlarinin ritmi (4. sn'den itibaren)
+KONTRA_OFSET = 4.0
+
+
+def kontra_evre(t):
+    """(direksiyon, yatis, itis, yon) dondurur.
+    yon: -1 sola, +1 saga. direksiyon + ise on teker SAGA bakar.
+    Sola gitmek icin SOL gidon ileri itilir -> teker bir an SAGA doner."""
+    gecen = max(0.0, t - KONTRA_OFSET)
+    dongu = int(gecen // KONTRA_DONGU)
+    u = (gecen % KONTRA_DONGU) / KONTRA_DONGU
+    yon = -1.0 if dongu % 2 == 0 else 1.0
+
+    if u < 0.12:                                   # duz git
+        return 0.0, 0.0, 0.0, yon
+    if u < 0.26:                                   # ITIS: teker ters yone
+        p = yumusak((u - 0.12) / 0.14)
+        return -yon * 0.17 * p, yon * 0.40 * (p ** 2), p, yon
+    if u < 0.58:                                   # yatik seyir
+        p = yumusak((u - 0.26) / 0.32)
+        return (-yon * 0.17 * (1 - p) + yon * 0.05 * p), yon * 0.40, 1.0 - p, yon
+    if u < 0.76:                                   # duzeltme itisi
+        p = yumusak((u - 0.58) / 0.18)
+        return yon * (0.05 + 0.12 * p), yon * 0.40 * (1 - p), -p, yon
+    p = yumusak((u - 0.76) / 0.24)                 # duzeldi
+    return yon * 0.17 * (1 - p), 0.0, 0.0, yon
+
+
+def kare_kontra3b(t):
+    gok, cim, asfalt = _palet()
+    direksiyon, yatis, itis, yon = kontra_evre(t)
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _yol_k, _tek_k
+    _yol_k = (globals().get("_yol_k", 0.0) + 0.58) % 8.0
+    _tek_k = (globals().get("_tek_k", 0.0) + 0.42) % (2 * math.pi)
+
+    z = -150.0
+    while z < 60:
+        z2 = z + 6.0
+        s.yuzey([[-60, 0, z], [60, 0, z], [60, 0, z2], [-60, 0, z2]], cim, katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(-20, 9):
+        z = i * 8.0 - _yol_k
+        s.yuzey([[-0.11, 0.02, z], [0.11, 0.02, z], [0.11, 0.02, z + 3.6],
+                 [-0.11, 0.02, z + 3.6]], (210, 210, 205), katman=2)
+    for i in range(-14, 6):
+        za = i * 12.0 - _yol_k * 0.9
+        for yan in (-1, 1):
+            _agac(s, yan * (8.5 + (i % 3) * 2.0), za, 5.0 + ((i * 5 + yan) % 4) * 1.3,
+                  (84, 66, 48) if GUNDUZ else (34, 30, 26),
+                  (54, 104, 52) if GUNDUZ else (24, 38, 26))
+    if GUNDUZ:
+        for i in range(6):
+            _tepe(s, -200 + i * 86, -300 - (i % 3) * 40, 150, 90, 32 + (i % 4) * 10,
+                  (104, 132, 140))
+
+    gx = FREN_SERIT + yatis * 0.55                      # golge yatisla kayar
+    golge = [[gx + 0.40 * math.cos(a), 0.012, 1.15 * math.sin(a)]
+             for a in (math.pi * 2 * i / 10 for i in range(10))]
+    s.yuzey(golge, (64, 74, 62) if GUNDUZ else (20, 25, 22), isiksiz=True, katman=2)
+
+    model, _, _ = motosiklet(0.0, _tek_k, direksiyon)
+    s.ekle(model, R=donus([0, 0, 1], yatis), t=[FREN_SERIT, 0.0, 0.0])
+
+    # Motosiklet karenin ~%42'sini kaplasin: 1.85 m boy, 46 derece dikey aci
+    # -> hedefe yaklasik 5.2 m mesafe. 7.4 m'de kucuk kaliyordu.
+    kamera = Kamera([FREN_SERIT + 1.15, 1.95, 5.2],
+                    [FREN_SERIT + 0.05, 1.15, 0.3], G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B anlatim: itisin yonu ile yatisin yonu ayni karede --------------
+    sol_itiliyor = (itis > 0.05 and yon < 0) or (itis < -0.05 and yon > 0)
+    sag_itiliyor = (itis > 0.05 and yon > 0) or (itis < -0.05 and yon < 0)
+    # Paneller ust banda toplanir (300-520), motosiklet 560'tan asagida kalir
+    for etiket, aktif, x0 in (("SOL GİDON", sol_itiliyor, 62),
+                              ("SAĞ GİDON", sag_itiliyor, G - 62 - 330)):
+        renk = TURUNCU if aktif else (86, 92, 100)
+        d.rounded_rectangle([x0, 300, x0 + 330, 392], 14,
+                            fill=(0, 0, 0, 175 if aktif else 95),
+                            outline=renk, width=5 if aktif else 3)
+        s2.yazi(d, (x0 + 165, 310), etiket, 36, renk, ortala=True)
+        s2.yazi(d, (x0 + 165, 350), "İTİLİYOR" if aktif else "—", 28, renk, ortala=True)
+
+    kutular = []
+    if abs(itis) > 0.05 and abs(direksiyon) > 0.03:
+        kutular.append((f"ÖN TEKER {'SAĞA' if direksiyon > 0 else 'SOLA'}", TURUNCU))
+    if abs(yatis) > 0.02:
+        yon_ad = "SOLA" if yatis < 0 else "SAĞA"
+        kutular.append((f"MOTOSİKLET {yon_ad} {int(abs(math.degrees(yatis)))}°", MAVI))
+    for i, (metin, renk) in enumerate(kutular):
+        gen = 470
+        x0 = G / 2 - (len(kutular) * gen + (len(kutular) - 1) * 18) / 2 + i * (gen + 18)
+        d.rounded_rectangle([x0, 418, x0 + gen, 500], 14,
+                            fill=(0, 0, 0, 180), outline=renk, width=4)
+        s2.yazi(d, (x0 + gen / 2, 432), metin, 34, renk, ortala=True)
+
     return im
 
 
@@ -501,13 +626,13 @@ def kare_viraj3b(t, toplam=55.0):
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
-    ap.add_argument("--sahne", choices=("fren", "viraj"), required=True)
+    ap.add_argument("--sahne", choices=("fren", "viraj", "kontra"), required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
     ap.add_argument("--cikti", default=None)
     ap.add_argument("--sessiz", action="store_true")
     ap.add_argument("--kamera", default="yan",
-                    choices=("yan", "kask", "takip", "degisken"))
+                    choices=("yan", "kask", "takip", "degisken", "onden"))
     ap.add_argument("--gunduz", default="")
     args = ap.parse_args()
 
@@ -517,7 +642,13 @@ def main():
     s2.fazlari_ayarla(args.fazlar)
     cikti = args.cikti or f"videos/sahne3b_{args.sahne}.mp4"
     os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)
-    cizer = kare_fren3b if args.sahne == "fren" else (lambda t: kare_viraj3b(t, args.sure))
+    if args.sahne == "fren":
+        cizer = kare_fren3b
+    elif args.sahne == "kontra":
+        cizer = kare_kontra3b
+    else:
+        def cizer(t):
+            return kare_viraj3b(t, args.sure)
     toplam = int(args.sure * FPS)
 
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
