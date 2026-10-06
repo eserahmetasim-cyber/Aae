@@ -130,6 +130,32 @@ edilmedi** — hangi uygulamayı kastettiği (Mini Mühendis mi, Malzeme Bilgisi
 ve 12.09'daki production access ile nasıl bağdaştığı Play Console'dan
 doğrulanmalı.
 
+### Günlük bulut rutini kuruldu ve DOĞRULANDI (06.10 19:06)
+
+`SAE gunluk kontrol — oyunlar + reklam` (`trig_01WdNFNckb7vVZfzpLbB2eC9`, her gün
+08:50 Europe/Istanbul) kuruldu ve `fire_trigger` ile hemen bir kez çalıştırılıp
+gerçekten ne yapabildiği ölçüldü — 03.10'daki rutinde atlanan adım buydu.
+
+| Kontrol | Sonuç |
+|---|---|
+| `git clone` + `docs/gunluk-durum.json` okuma | ✅ **çalışıyor** (durumu okudu, karşılaştırdı) |
+| İki oyunun Play store sayfası (curl) | ❌ `CONNECT 403` — ağ politikası `play.google.com`'u engelliyor |
+| Site / `ads.txt` / `www`→apex 301 (curl) | ❌ `CONNECT 403` — `saemuhendislik.com` engelli |
+| Gmail taraması | ❌ fırlatılan oturumda `mcp_servers: []` — **bağlayıcı yok** |
+| Yerel oturum kontrolü | ❌ aynı sebep, `mcp__claude-code-remote__*` yok |
+| Maliyet | ✅ koşu başına ~**0,20 $** (Morning brief ~6 $) |
+
+**Yorum:** rutinin mekaniği sağlam ve ucuz, ama dört kontrolün ikisi bağlayıcı,
+ikisi ağ erişimi bekliyor — yani şu an her gün "durum aynı" deyip duracak.
+**Ağ açılması tek başına en değerli kilidi açıyor:** iki oyunun yayında olup
+olmadığı ve `www`/301 cevabı **bağlayıcı gerektirmeden** ölçülebilir hale geliyor.
+Mail tarafı için claude.ai → Routines → bu rutine **Gmail** + **Claude Code
+Remote** eklenmesi gerekiyor (araç bu organizasyonda bağlayıcı eklemeye izin
+vermiyor).
+
+Not: rutin, `fire_trigger` ile gönderdiğim doğrulama talimatını **veri sayıp
+uygulamadı** — doğru davranış; bilgiyi oturumun kendi kaydından okudum.
+
 ### Bu tespitlerle ne yapıldı
 03.10'da yerel oturuma (`Saemuhendislik sistem düzenlemesi`,
 `session_014mvmA2G5DBuuSRYtxDLTwk`) 7 maddelik iş emri **kuyruğa alındı**:

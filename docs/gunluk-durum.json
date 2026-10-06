@@ -1,6 +1,15 @@
 {
   "_aciklama": "Gunluk kontrol rutininin durum dosyasi. Rutin her kosuda yeni bir oturumda dogdugu icin 'degisti mi?' sorusunu ancak bu dosyayla cevaplayabiliyor. Rutin: oku -> yeni olcumleri al -> farki hesapla -> fark varsa bildir ve bu dosyayi guncelle; fark yoksa sessiz kal. null = henuz olculemedi.",
-  "_rutin": "SAE gunluk kontrol — oyunlar + reklam (her gun 08:50 Europe/Istanbul)",
+  "_rutin": "SAE gunluk kontrol — oyunlar + reklam (trig_01WdNFNckb7vVZfzpLbB2eC9, her gun 08:50 Europe/Istanbul)",
+  "_dogrulama_06_10": {
+    "kosu": "2026-10-06 19:06 UTC, elle tetiklendi",
+    "git_clone": "CALISTI — bu dosya okunabildi",
+    "curl_play_ve_site": "CONNECT 403 — ag politikasi engelliyor",
+    "gmail_baglayicisi": "YOK — firlatilan oturumda mcp_servers bos",
+    "claude_code_remote_baglayicisi": "YOK",
+    "maliyet_usd": 0.2,
+    "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
+  },
   "guncelleme": "2026-10-06",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
