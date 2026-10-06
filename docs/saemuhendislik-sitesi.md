@@ -118,6 +118,18 @@ hiç yayınlanmadı.
 > Console'da production canlı olduğu **doğrulandıktan sonra** linke çevrilir.
 > Yerel oturuma düzeltme gönderildi ve `yerel-oturum-is-emri.md` güncellendi.
 
+### Ek sinyal (06.10, doğrulanmamış)
+
+Morning brief rutininin 06.10 koşusu şunu yazmış: *"22 Eylül'de gönderilen
+kapalı test davetinin 14 günlük Google Play sayacı bu akşam ~20:49'da doluyor —
+Play Console'da üretime geçiş başvurusu bundan sonra açılabiliyor."*
+
+Bu, Mini Mühendis'in hâlâ **kapalı test → üretim** akışında olduğuna işaret eder
+ve "rozet kalsın" kararını destekler. Ama başka bir oturumun çıktısı, **teyit
+edilmedi** — hangi uygulamayı kastettiği (Mini Mühendis mi, Malzeme Bilgisi mi)
+ve 12.09'daki production access ile nasıl bağdaştığı Play Console'dan
+doğrulanmalı.
+
 ### Bu tespitlerle ne yapıldı
 03.10'da yerel oturuma (`Saemuhendislik sistem düzenlemesi`,
 `session_014mvmA2G5DBuuSRYtxDLTwk`) 7 maddelik iş emri **kuyruğa alındı**:
