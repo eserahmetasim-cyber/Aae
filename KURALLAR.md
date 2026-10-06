@@ -44,6 +44,12 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
 - **Motosiklet orta çizginin üzerinde gitmez**, sağ şeritte durur. Viraj sahnesinde
   şerit içi konum virajla değişir: sola dönen virajda şeridin sağına, sağa dönende
   soluna kayar — görüşü açan gerçek sürüş tekniği budur.
+- **Yatış yönü dönüş yönüyle aynıdır.** 3B motorda `yatis > 0` = SOLA yatış
+  (`uc_boyut` yuvarlanma ekseninde ölçülüp kareyle doğrulandı). Sola dönen
+  sahnede yatış pozitif, sağa dönende negatif olmalı; HUD'daki "MOTOSİKLET
+  SOLA/SAĞA" etiketi de bu işaretten türetilir. Kontra sahnesinde kamera
+  motorun **arkasında** durur: önden bakan kamerada sola yatış ekranın sağına
+  düşüyor ve yazıyla çelişiyormuş gibi okunuyor.
 - Kayboluş noktası elle kaydırılmaz; bakış çizgisinin virajın iç yamacını nerede
   kestiğinden **hesaplanır**. Yamaç sahnede sabit durur, ileri geri yürümez.
 - Kamera açısı `kamera:` ile seçilir (`yan` / `kask` / `takip` / `degisken`).

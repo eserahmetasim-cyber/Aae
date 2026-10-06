@@ -277,8 +277,8 @@ def kare_fren3b(t):
 # ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
-KONTRA_DONGU = 7.6          # ders adimlarinin ritmi (4. sn'den itibaren)
-KONTRA_OFSET = 4.0
+KONTRA_DONGU = 8.0          # ders adimlarinin ritmi (3. sn'den itibaren)
+KONTRA_OFSET = 3.0
 
 
 def kontra_evre(t):
@@ -288,19 +288,21 @@ def kontra_evre(t):
     gecen = max(0.0, t - KONTRA_OFSET)
     dongu = int(gecen // KONTRA_DONGU)
     u = (gecen % KONTRA_DONGU) / KONTRA_DONGU
-    yon = -1.0 if dongu % 2 == 0 else 1.0
+    # Parite, 11. sn'de baslayan dongu SOLA olacak sekilde secildi:
+    # 2. adim metni ("Sola gitmek icin SOL gidonu ileri it") o aralikta.
+    yon = -1.0 if dongu % 2 == 1 else 1.0
 
     if u < 0.12:                                   # duz git
         return 0.0, 0.0, 0.0, yon
     if u < 0.26:                                   # ITIS: teker ters yone
         p = yumusak((u - 0.12) / 0.14)
-        return -yon * 0.17 * p, yon * 0.40 * (p ** 2), p, yon
+        return -yon * 0.17 * p, -yon * 0.40 * (p ** 2), p, yon
     if u < 0.58:                                   # yatik seyir
         p = yumusak((u - 0.26) / 0.32)
-        return (-yon * 0.17 * (1 - p) + yon * 0.05 * p), yon * 0.40, 1.0 - p, yon
+        return (-yon * 0.17 * (1 - p) + yon * 0.05 * p), -yon * 0.40, 1.0 - p, yon
     if u < 0.76:                                   # duzeltme itisi
         p = yumusak((u - 0.58) / 0.18)
-        return yon * (0.05 + 0.12 * p), yon * 0.40 * (1 - p), -p, yon
+        return yon * (0.05 + 0.12 * p), -yon * 0.40 * (1 - p), -p, yon
     p = yumusak((u - 0.76) / 0.24)                 # duzeldi
     return yon * 0.17 * (1 - p), 0.0, 0.0, yon
 
@@ -352,8 +354,10 @@ def kare_kontra3b(t):
 
     # Motosiklet karenin ~%42'sini kaplasin: 1.85 m boy, 46 derece dikey aci
     # -> hedefe yaklasik 5.2 m mesafe. 7.4 m'de kucuk kaliyordu.
-    kamera = Kamera([FREN_SERIT + 1.15, 1.95, 5.2],
-                    [FREN_SERIT + 0.05, 1.15, 0.3], G, Y, fov=46)
+    # Kamera ARKADA: onden bakinca motosikletin solu ekranin sagina dusuyor,
+    # "MOTOSIKLET SOLA" yazarken goruntu saga yatiyormus gibi okunuyordu.
+    kamera = Kamera([FREN_SERIT + 0.95, 1.98, -4.9],
+                    [FREN_SERIT + 0.05, 1.10, 0.6], G, Y, fov=44)
     s.ciz(d, kamera, gok)
 
     # --- 2B anlatim: itisin yonu ile yatisin yonu ayni karede --------------
@@ -373,7 +377,7 @@ def kare_kontra3b(t):
     if abs(itis) > 0.05 and abs(direksiyon) > 0.03:
         kutular.append((f"ÖN TEKER {'SAĞA' if direksiyon > 0 else 'SOLA'}", TURUNCU))
     if abs(yatis) > 0.02:
-        yon_ad = "SOLA" if yatis < 0 else "SAĞA"
+        yon_ad = "SOLA" if yatis > 0 else "SAĞA"
         kutular.append((f"MOTOSİKLET {yon_ad} {int(abs(math.degrees(yatis)))}°", MAVI))
     for i, (metin, renk) in enumerate(kutular):
         gen = 470
@@ -506,7 +510,9 @@ def kare_gaz3b(t, toplam=55.0):
 
     # --- motosiklet --------------------------------------------------------
     konum, teget, disa, th = _gaz_konum(_gaz_s, ofset)
-    yatis = -0.42 * yatis_k                               # sola yatis (negatif)
+    # YATIS ISARETI: lambda > 0 = SOLA yatis (gorsel testle dogrulandi).
+    # Daha once negatif veriliyordu: sol virajda motosiklet SAGA yatiyordu.
+    yatis = 0.42 * yatis_k
     golge = [konum + np.array([0.40 * math.cos(a), -konum[1] + 0.012, 1.15 * math.sin(a)])
              for a in (math.pi * 2 * i / 10 for i in range(10))]
     s.yuzey(golge, (64, 74, 62) if GUNDUZ else (20, 25, 22), isiksiz=True, katman=2)
