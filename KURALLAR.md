@@ -50,6 +50,12 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   SOLA/SAĞA" etiketi de bu işaretten türetilir. Kontra sahnesinde kamera
   motorun **arkasında** durur: önden bakan kamerada sola yatış ekranın sağına
   düşüyor ve yazıyla çelişiyormuş gibi okunuyor.
+- **Yatan motosikletin yolu da bükülür.** Yatış varsa yol düz kalamaz; dönüş
+  yarıçapı fizikten gelir (`R = v² / (g · tan λ)`) ve yol yatışla aynı yöne
+  kıvrılır. Sabit hız seçilirken kadraj gözetilir: çok düşük hız virajı öyle
+  sertleştirir ki yol birkaç metrede kadrajdan çıkar.
+- **Motosiklet şeritten taşmaz.** "Dışarı taşıyor" gibi hata anlatan fazlarda
+  bile kenar çizgisine yanaşılır, çizgi geçilmez — hatayı şerit içinde göster.
 - Kayboluş noktası elle kaydırılmaz; bakış çizgisinin virajın iç yamacını nerede
   kestiğinden **hesaplanır**. Yamaç sahnede sabit durur, ileri geri yürümez.
 - Kamera açısı `kamera:` ile seçilir (`yan` / `kask` / `takip` / `degisken`).

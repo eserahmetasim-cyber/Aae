@@ -277,6 +277,7 @@ def kare_fren3b(t):
 # ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
+KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
 KONTRA_DONGU = 8.0          # ders adimlarinin ritmi (3. sn'den itibaren)
 KONTRA_OFSET = 3.0
 
@@ -314,34 +315,53 @@ def kare_kontra3b(t):
     d = ImageDraw.Draw(im, "RGBA")
     s = Sahne()
 
-    global _yol_k, _tek_k
+    global _yol_k, _tek_k, _agac_k
     _yol_k = (globals().get("_yol_k", 0.0) + 0.58) % 8.0
+    _agac_k = (globals().get("_agac_k", 0.0) + 0.58) % 12.0
     _tek_k = (globals().get("_tek_k", 0.0) + 0.42) % (2 * math.pi)
 
-    z = -150.0
-    while z < 60:
-        z2 = z + 6.0
-        s.yuzey([[-60, 0, z], [60, 0, z], [60, 0, z2], [-60, 0, z2]], cim, katman=0)
-        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
-                asfalt, katman=1)
+    # --- yatis yolu buker ---------------------------------------------------
+    # Motosiklet yatarak doner, o yuzden yol da yatisla ayni yone kivrilmali.
+    # Donus yaricapi fizikten geliyor: R = v^2 / (g * tan(yatis)).
+    # 70 km/h ve 22 derecede R ~ 93 m; daha dusuk hizda viraj o kadar sert
+    # oluyor ki yol birkac metrede kadrajdan cikiyordu.
+    kappa = math.tan(yatis) * 9.81 / (KONTRA_HIZ ** 2)
+
+    def kx(z):
+        """z metre ileride yolun yanal kaymasi (yatis>0 = sola = -x)."""
+        return 0.0 if z <= 0.0 else -kappa * z * z / 2.0
+
+    z = -16.0
+    while z < 115:
+        z2 = z + 5.0
+        x1, x2 = kx(z), kx(z2)
+        s.yuzey([[-240, 0, z], [240, 0, z], [240, 0, z2], [-240, 0, z2]],
+                cim, katman=0)
+        s.yuzey([[x1 - 4.2, 0.01, z], [x1 + 4.2, 0.01, z],
+                 [x2 + 4.2, 0.01, z2], [x2 - 4.2, 0.01, z2]], asfalt, katman=1)
         for yan in (-1, 1):
-            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
-                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+            s.yuzey([[x1 + yan * 4.0, 0.02, z], [x1 + yan * 3.86, 0.02, z],
+                     [x2 + yan * 3.86, 0.02, z2], [x2 + yan * 4.0, 0.02, z2]],
                     (205, 205, 200), katman=2)
         z = z2
-    for i in range(-20, 9):
+    for i in range(-2, 16):                              # kesikli orta cizgi
         z = i * 8.0 - _yol_k
-        s.yuzey([[-0.11, 0.02, z], [0.11, 0.02, z], [0.11, 0.02, z + 3.6],
-                 [-0.11, 0.02, z + 3.6]], (210, 210, 205), katman=2)
-    for i in range(-14, 6):
-        za = i * 12.0 - _yol_k * 0.9
+        z2 = z + 3.6
+        x1, x2 = kx(z), kx(z2)
+        s.yuzey([[x1 - 0.11, 0.02, z], [x1 + 0.11, 0.02, z],
+                 [x2 + 0.11, 0.02, z2], [x2 - 0.11, 0.02, z2]],
+                (210, 210, 205), katman=2)
+    for i in range(-1, 11):                              # agaclar yolu takip eder
+        za = i * 12.0 - _agac_k
+        xa = kx(za)
         for yan in (-1, 1):
-            _agac(s, yan * (8.5 + (i % 3) * 2.0), za, 5.0 + ((i * 5 + yan) % 4) * 1.3,
+            _agac(s, xa + yan * (8.5 + (i % 3) * 2.0), za,
+                  5.0 + ((i * 5 + yan) % 4) * 1.3,
                   (84, 66, 48) if GUNDUZ else (34, 30, 26),
                   (54, 104, 52) if GUNDUZ else (24, 38, 26))
     if GUNDUZ:
-        for i in range(6):
-            _tepe(s, -200 + i * 86, -300 - (i % 3) * 40, 150, 90, 32 + (i % 4) * 10,
+        for i in range(6):                               # tepeler ileride (+z)
+            _tepe(s, -220 + i * 92, 320 + (i % 3) * 40, 150, 90, 32 + (i % 4) * 10,
                   (104, 132, 140))
 
     gx = FREN_SERIT + yatis * 0.55                      # golge yatisla kayar
@@ -403,9 +423,11 @@ GAZ_DURUM = {
     "fren":    (0.00, 1.9, 0.00, "FREN · DÜZ ÇİZGİDE", MAVI),
     "yatis":   (0.18, 2.7, 1.00, "YATIŞ", MAVI),
     "sabit":   (0.32, 1.9, 1.00, "SABİT GAZ", YESIL),
-    "kesik":   (0.00, 5.3, 0.40, "GAZ KESİLDİ · DIŞARI TAŞIYOR", KIRMIZI),
+    # Taşıma serit ICINDE kalir: 3.5 m, kenar cizgisi 3.74-3.9 arasinda.
+    # Oncesinde 5.3 verilip motosiklet yoldan cikiyordu.
+    "kesik":   (0.00, 3.50, 0.40, "GAZ KESİLDİ · DIŞARI TAŞIYOR", KIRMIZI),
     "duzelt":  (0.30, 2.2, 1.18, "İÇ GİDONA BAS", TURUNCU),
-    "cikis":   (0.78, 3.0, 0.50, "GAZ AÇILIYOR", YESIL),
+    "cikis":   (0.92, 3.0, 0.50, "GAZ AÇILIYOR", YESIL),
 }
 GAZ_FAZLAR = None
 
@@ -458,7 +480,9 @@ def kare_gaz3b(t, toplam=55.0):
     d = ImageDraw.Draw(im, "RGBA")
     s = Sahne()
 
-    hiz_kmh = 44.0 + 30.0 * gaz
+    # Gaz-hiz kazanci yuksek tutuldu: cikista hizlanma goze carpmaliydi,
+    # 30 km/h bandinda gaz acilsa da motosiklet ayni hizda gidiyor gibiydi.
+    hiz_kmh = 42.0 + 46.0 * gaz
     global _gaz_s, _gaz_tek
     _gaz_s = globals().get("_gaz_s", -140.0) + (hiz_kmh / 3.6) / FPS
     if _gaz_s > 2 * math.pi * GAZ_R:
