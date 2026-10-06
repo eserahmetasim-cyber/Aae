@@ -27,7 +27,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from uc_boyut import Kamera, Sahne, donus, isik_ayarla   # noqa: E402
+from uc_boyut import Kamera, Sahne, birim, donus, isik_ayarla   # noqa: E402
 import sahne_uret as s2                              # ses + 2B yardimcilar  # noqa: E402
 from sahne_uret import yumusak                       # noqa: E402
 
@@ -91,6 +91,58 @@ def _tekerlek(s, z, aci, yaricap=0.31, disk=True, on=True):
                        yaricap * (0.54 if on else 0.44), DISK, segment=18)
             s.kutu([yan * 0.125, yaricap + 0.17, z - 0.03], [0.055, 0.12, 0.09], TURUNCU)
     s.silindir([-0.05, yaricap, z], [0.05, yaricap, z], 0.062, KROM, segment=10)  # gobek
+
+
+# ---------------------------------------------------------------------------
+#  KASK YAZISI  (marka: AAE)
+# ---------------------------------------------------------------------------
+# Her harf, birim kutuda (0..1 genislik, 0..1 yukseklik) cizgi parcalarindan
+# kurulur. Motor dokuyu desteklemiyor, yazi da kalin dortgenlerle ciziliyor.
+_HARF = {
+    "A": [((0.50, 1.00), (0.06, 0.00)), ((0.50, 1.00), (0.94, 0.00)),
+          ((0.22, 0.38), (0.78, 0.38))],
+    "E": [((0.10, 1.00), (0.10, 0.00)), ((0.06, 1.00), (0.92, 1.00)),
+          ((0.06, 0.52), (0.74, 0.52)), ((0.06, 0.00), (0.92, 0.00))],
+}
+
+
+def _kask_yazi(s, merkez, yaricap, bakis, yukari, metin="AAE",
+               yuk=0.066, kalin=0.012, renk=(24, 28, 36)):
+    """Kureye tegetlik bir duzlemde metni yazar. Harfler kucuk oldugu icin
+    duzlem yaklasimi kavis bozulmasi yaratmiyor."""
+    # Duzleme BAKAN gozun sagi: cross(bakis, yukari). Ters sirada yazilinca
+    # metin aynalaniyor ve "AAE" ekranda "EAA" olarak okunuyordu.
+    bakis = birim(np.asarray(bakis, dtype=float))
+    sag = birim(np.cross(bakis, np.asarray(yukari, dtype=float)))
+    ust = np.cross(sag, bakis)
+    merkez = np.asarray(merkez, dtype=float)
+
+    def nokta(u, v):
+        """Duz duzlem yerine kurenin UZERINE sarar. Duz birakilinca yazinin
+        kenarlari kaskin siluetinden tasip kara lekeler biraktiriyordu."""
+        if yaricap <= 0.0:
+            return list(merkez + bakis * 0.010 + sag * u + ust * v)
+        # Pay belirgin: ressam algoritmasi yuzleri derinlige gore siraliyor,
+        # kucuk pay verilince komsu kure yuzleri harflerin uzerine biniyordu.
+        d = birim(bakis * yaricap + sag * u + ust * v)
+        return list(merkez + d * (yaricap + 0.015))
+
+    harf_g, bosluk = yuk * 0.74, yuk * 0.22
+    genislik = len(metin) * harf_g + (len(metin) - 1) * bosluk
+    x = -genislik / 2.0
+    for ch in metin:
+        for (ax, ay), (bx, by) in _HARF[ch]:
+            a = np.array([x + ax * harf_g, (ay - 0.5) * yuk])
+            b = np.array([x + bx * harf_g, (by - 0.5) * yuk])
+            yon = b - a
+            boy = float(np.hypot(*yon))
+            if boy < 1e-9:
+                continue
+            yon /= boy
+            dik = np.array([-yon[1], yon[0]]) * (kalin / 2.0)
+            kose = (a - dik, a + dik, b + dik, b - dik)
+            s.yuzey([nokta(u[0], u[1]) for u in kose], renk, katman=3)
+        x += harf_g + bosluk
 
 
 def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
@@ -175,6 +227,11 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
     s.kure(kask_n, 0.148, KREM, dilim=16, halka=10)
     s.kutu([0, kask_n[1] - 0.01, kask_n[2] + 0.12], [0.18, 0.11, 0.06], (52, 64, 78))
     s.kutu([0, kask_n[1] + 0.12, kask_n[2] + 0.01], [0.17, 0.05, 0.17], TURUNCU)
+    # AAE arkaya ve iki yana yazilir: ders 03 arkadan, ders 04 tepeden-arkadan,
+    # ders 01/02 yandan bakiyor. Tepeye yazilmiyor, kaskin kubbesi ortuyor.
+    _kask_yazi(s, kask_n, 0.148, [0, 0, -1], [0, 1, 0])
+    for yan in (-1, 1):
+        _kask_yazi(s, kask_n, 0.148, [yan, 0, 0], [0, 1, 0], yuk=0.058)
 
     _tekerlek(s, arka_z, tekerlek_aci, on=False)
     _tekerlek(onk, on_z, tekerlek_aci, on=True)
@@ -415,6 +472,11 @@ def kare_kontra3b(t):
 # ---------------------------------------------------------------------------
 GAZ_R = 42.0                 # viraj orta cizgi yaricapi (m)
 GAZ_YARIM = 3.9              # yol yari genisligi
+# Viraj bu yay uzunlugundan sonra biter, yol tegete oturup duzlesir.
+# Motosiklet buraya ~44.5. sn'de variyor, yani "gazi kademeli ac"
+# adiminin (42. sn) hemen ardindan; duzluk kadraja birkac saniye once
+# giriyor, viraj goz onunde aciliyor.
+GAZ_CIKIS_S = 455.0
 
 # Her faz: (gaz, serit_ofseti, yatis_carpani, etiket, renk)
 # serit_ofseti: orta cizgiden disa dogru metre. Sag serit 0..3.9 arasi,
@@ -462,15 +524,31 @@ def gaz_evre(t, toplam):
             etiket, renk, durum)
 
 
+def _gaz_cerceve(th):
+    """Sapma acisinda (disa_birim, teget) verir."""
+    return (np.array([math.cos(th), 0.0, math.sin(th)]),
+            np.array([-math.sin(th), 0.0, math.cos(th)]))
+
+
 def _gaz_konum(s, ofset):
-    """s < 0 duz giris, s >= 0 daire. (konum, tegeti, disa_birim, sapma) verir."""
+    """Yol uc parcali: duz giris (s<0), yay, duz cikis (s>GAZ_CIKIS_S).
+    (konum, teget, disa_birim, sapma) verir; parcalar tegette suruyor."""
     if s < 0:
         return (np.array([GAZ_R + ofset, 0.0, s]), np.array([0.0, 0.0, 1.0]),
                 np.array([1.0, 0.0, 0.0]), 0.0)
-    th = s / GAZ_R
-    disa = np.array([math.cos(th), 0.0, math.sin(th)])
-    teget = np.array([-math.sin(th), 0.0, math.cos(th)])
-    return (GAZ_R + ofset) * disa, teget, disa, th
+    if s <= GAZ_CIKIS_S:
+        th = s / GAZ_R
+        disa, teget = _gaz_cerceve(th)
+        return (GAZ_R + ofset) * disa, teget, disa, th
+    th = GAZ_CIKIS_S / GAZ_R
+    disa, teget = _gaz_cerceve(th)
+    return ((GAZ_R + ofset) * disa + teget * (s - GAZ_CIKIS_S),
+            teget, disa, th)
+
+
+def _gaz_nokta(s, ofset, y):
+    k, _, _, _ = _gaz_konum(s, ofset)
+    return [float(k[0]), y, float(k[2])]
 
 
 def kare_gaz3b(t, toplam=55.0):
@@ -484,59 +562,52 @@ def kare_gaz3b(t, toplam=55.0):
     # 30 km/h bandinda gaz acilsa da motosiklet ayni hizda gidiyor gibiydi.
     hiz_kmh = 42.0 + 46.0 * gaz
     global _gaz_s, _gaz_tek
+    # Tur sarmasi kaldirildi: yol artik kapali daire degil, cikisi duz.
     _gaz_s = globals().get("_gaz_s", -140.0) + (hiz_kmh / 3.6) / FPS
-    if _gaz_s > 2 * math.pi * GAZ_R:
-        _gaz_s -= 2 * math.pi * GAZ_R
     _gaz_tek = (globals().get("_gaz_tek", 0.0) + 0.5) % (2 * math.pi)
 
-    # --- zemin, daire yol ve duz giris ------------------------------------
-    s.yuzey([[-200, 0, -260], [200, 0, -260], [200, 0, 200], [-200, 0, 200]],
+    # --- zemin ve yol -----------------------------------------------------
+    # Yol artik tam daire olarak degil, _gaz_konum boyunca yuruyerek ciziliyor.
+    # Boylece giris duzlugu, yay ve cikis duzlugu kendiliginden birbirine
+    # oturuyor; ayri ayri cizilince cikis duzlugu eklenemiyordu.
+    konum, teget, disa, th = _gaz_konum(_gaz_s, ofset)
+    s.yuzey([list(konum + teget * a + disa * b + np.array([0, -konum[1], 0]))
+             for a, b in ((-150, -150), (210, -150), (210, 150), (-150, 150))],
             cim, katman=0)
-    N = 84
-    for i in range(N):
-        a0, a1 = 2 * math.pi * i / N, 2 * math.pi * (i + 1) / N
-        for ri, ro, renk_y, kat in ((-GAZ_YARIM, GAZ_YARIM, asfalt, 1),
-                                    (GAZ_YARIM - 0.16, GAZ_YARIM, (208, 208, 202), 2),
-                                    (-GAZ_YARIM, -GAZ_YARIM + 0.16, (208, 208, 202), 2)):
-            s.yuzey([[(GAZ_R + ri) * math.cos(a0), 0.01, (GAZ_R + ri) * math.sin(a0)],
-                     [(GAZ_R + ro) * math.cos(a0), 0.01, (GAZ_R + ro) * math.sin(a0)],
-                     [(GAZ_R + ro) * math.cos(a1), 0.01, (GAZ_R + ro) * math.sin(a1)],
-                     [(GAZ_R + ri) * math.cos(a1), 0.01, (GAZ_R + ri) * math.sin(a1)]],
-                    renk_y, katman=kat)
-        if i % 3 == 0:                                   # kesikli orta cizgi
-            s.yuzey([[(GAZ_R - 0.11) * math.cos(a0), 0.02, (GAZ_R - 0.11) * math.sin(a0)],
-                     [(GAZ_R + 0.11) * math.cos(a0), 0.02, (GAZ_R + 0.11) * math.sin(a0)],
-                     [(GAZ_R + 0.11) * math.cos(a1), 0.02, (GAZ_R + 0.11) * math.sin(a1)],
-                     [(GAZ_R - 0.11) * math.cos(a1), 0.02, (GAZ_R - 0.11) * math.sin(a1)]],
-                    (212, 212, 206), katman=2)
-    z = -200.0 if _gaz_s < 70 else 1.0                    # duz giris (yalniz basta)
-    while z < 0:
-        z2 = min(0.0, z + 6.0)
-        s.yuzey([[GAZ_R - GAZ_YARIM, 0.01, z], [GAZ_R + GAZ_YARIM, 0.01, z],
-                 [GAZ_R + GAZ_YARIM, 0.01, z2], [GAZ_R - GAZ_YARIM, 0.01, z2]],
+
+    ADIM = 3.0
+    sx = _gaz_s - 24.0
+    while sx < _gaz_s + 165.0:
+        sx2 = sx + ADIM
+        s.yuzey([_gaz_nokta(sx, -GAZ_YARIM, 0.01), _gaz_nokta(sx, GAZ_YARIM, 0.01),
+                 _gaz_nokta(sx2, GAZ_YARIM, 0.01), _gaz_nokta(sx2, -GAZ_YARIM, 0.01)],
                 asfalt, katman=1)
         for yan in (-1, 1):
-            s.yuzey([[GAZ_R + yan * GAZ_YARIM, 0.02, z],
-                     [GAZ_R + yan * (GAZ_YARIM - 0.16), 0.02, z],
-                     [GAZ_R + yan * (GAZ_YARIM - 0.16), 0.02, z2],
-                     [GAZ_R + yan * GAZ_YARIM, 0.02, z2]], (208, 208, 202), katman=2)
-        if int(z / 6) % 2 == 0:
-            s.yuzey([[GAZ_R - 0.11, 0.02, z], [GAZ_R + 0.11, 0.02, z],
-                     [GAZ_R + 0.11, 0.02, z2], [GAZ_R - 0.11, 0.02, z2]],
-                    (212, 212, 206), katman=2)
-        z = z2
-    for i in range(26):                                   # agaclar
-        a = 2 * math.pi * i / 26
-        for rr in (GAZ_R - 11, GAZ_R + 11):
-            _agac(s, rr * math.cos(a), rr * math.sin(a), 5.0 + (i % 4) * 1.2,
+            s.yuzey([_gaz_nokta(sx, yan * GAZ_YARIM, 0.02),
+                     _gaz_nokta(sx, yan * (GAZ_YARIM - 0.16), 0.02),
+                     _gaz_nokta(sx2, yan * (GAZ_YARIM - 0.16), 0.02),
+                     _gaz_nokta(sx2, yan * GAZ_YARIM, 0.02)],
+                    (208, 208, 202), katman=2)
+        sx = sx2
+    for i in range(int((_gaz_s - 24.0) / 8.0), int((_gaz_s + 165.0) / 8.0) + 1):
+        sa, sb = i * 8.0, i * 8.0 + 3.6          # kesikli orta cizgi
+        s.yuzey([_gaz_nokta(sa, -0.11, 0.02), _gaz_nokta(sa, 0.11, 0.02),
+                 _gaz_nokta(sb, 0.11, 0.02), _gaz_nokta(sb, -0.11, 0.02)],
+                (212, 212, 206), katman=2)
+    for i in range(int((_gaz_s - 24.0) / 14.0), int((_gaz_s + 165.0) / 14.0) + 1):
+        for yan in (-1, 1):                      # agaclar yolu takip eder
+            a = _gaz_nokta(i * 14.0, yan * 11.0, 0.0)
+            _agac(s, a[0], a[2], 5.0 + (i % 4) * 1.2,
                   (84, 66, 48) if GUNDUZ else (34, 30, 26),
                   (54, 104, 52) if GUNDUZ else (24, 38, 26))
 
     # --- motosiklet --------------------------------------------------------
-    konum, teget, disa, th = _gaz_konum(_gaz_s, ofset)
     # YATIS ISARETI: lambda > 0 = SOLA yatis (gorsel testle dogrulandi).
     # Daha once negatif veriliyordu: sol virajda motosiklet SAGA yatiyordu.
-    yatis = 0.42 * yatis_k
+    # Duz cikista yatis sifirlanir: yol duzken motosiklet yatik duramaz.
+    # Dogrulma tegete varmadan 12 m once basliyor, gercek surusteki gibi.
+    dik = min(1.0, max(0.0, (_gaz_s - (GAZ_CIKIS_S - 12.0)) / 30.0))
+    yatis = 0.42 * yatis_k * (1.0 - dik)
     golge = [konum + np.array([0.40 * math.cos(a), -konum[1] + 0.012, 1.15 * math.sin(a)])
              for a in (math.pi * 2 * i / 10 for i in range(10))]
     s.yuzey(golge, (64, 74, 62) if GUNDUZ else (20, 25, 22), isiksiz=True, katman=2)

@@ -56,6 +56,12 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   sertleştirir ki yol birkaç metrede kadrajdan çıkar.
 - **Motosiklet şeritten taşmaz.** "Dışarı taşıyor" gibi hata anlatan fazlarda
   bile kenar çizgisine yanaşılır, çizgi geçilmez — hatayı şerit içinde göster.
+- **Sürücünün kaskında AAE yazar.** Yazı arkaya ve iki yana, küre yüzeyine
+  sarılarak konur; düz düzlemde bırakılırsa kaskın siluetinden taşıyor.
+  Teğet düzlemin sağ ekseni `cross(bakış, yukarı)` — ters sırada yazı aynalanır.
+- **Viraj sahnesi kapalı daire değil.** Yol üç parçalı: düz giriş, yay, düz
+  çıkış. "Gazı kademeli aç" adımında viraj biter ve yol düzleşir; motosiklet
+  teğet noktasına varmadan doğrulmaya başlar — yol düzken yatık duramaz.
 - Kayboluş noktası elle kaydırılmaz; bakış çizgisinin virajın iç yamacını nerede
   kestiğinden **hesaplanır**. Yamaç sahnede sabit durur, ileri geri yürümez.
 - Kamera açısı `kamera:` ile seçilir (`yan` / `kask` / `takip` / `degisken`).
