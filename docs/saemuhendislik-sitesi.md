@@ -84,6 +84,40 @@ Buluttan doğrulandı:
 
 Yapıştırmaya hazır kısa iş emri: `docs/yerel-oturum-is-emri.md`.
 
+### 06.10.2026 — Mini Mühendis / Google Play kontrolü
+
+`play.google.com` da bu ortamda egress'te engelli, canlı listeleme okunamadı;
+bulgular Gmail'den.
+
+**🔴 Android geliştirici doğrulaması — SON TARİH GEÇTİ.**
+04.09, `googleplay-noreply@google.com`, "[Son hatırlatma]":
+> "Tüm Google Play uygulamalarının ... **30 Eylül 2026'ya kadar kaydedilmesi
+> gerekir. Kaydedilmeyen tüm Google Play uygulamaları dünya genelinde Google
+> Play'den kaldırılacak.**" ... "%99'undan fazlası otomatik olarak kaydedilmiş
+> olsa da ... ana sayfanızı kontrol edip otomatik olarak kaydedilemeyen ...
+> uygulamalarınız olup olmadığına bakmanız gerekir." ... "Başladığınız paket adı
+> kaydı taslaklarını başarıyla tamamladığınızdan emin olun."
+
+Son tarih 6 gün önce geçti. Kaldırma bildirimi gelmedi (muhtemelen otomatik
+kaydedilmiş) ama Play Console → *Android geliştirici doğrulama* sayfasından
+doğrulanmalı. **Bu iş sıranın başına alındı** — uygulama kaldırma riski taşıyor.
+
+**🟡 Mini Mühendis: izin var, yayın YOK (muhtemelen).**
+12.09 mailinin tam metni yayınlama **izni** verildiğini söylüyor, uygulamanın
+canlı olduğunu değil:
+> "this has now been granted. **Production is where you make your app
+> available**... **Before you release to production** we recommend testing your
+> app extensively..."
+
+12.09'dan bugüne "yayınlandı/canlı" maili de gelmedi → sürüm büyük olasılıkla
+hiç yayınlanmadı.
+
+> ⚠ **03.10'daki değerlendirme düzeltildi.** O gün "YAKINDA GOOGLE PLAY'DE
+> rozeti artık yanlış, Play linkine çevrilmeli" demiştim. Uygulama yayında
+> değilse rozet **doğru**; link ölü sayfaya gider. Yeni kural: rozet ancak Play
+> Console'da production canlı olduğu **doğrulandıktan sonra** linke çevrilir.
+> Yerel oturuma düzeltme gönderildi ve `yerel-oturum-is-emri.md` güncellendi.
+
 ### Bu tespitlerle ne yapıldı
 03.10'da yerel oturuma (`Saemuhendislik sistem düzenlemesi`,
 `session_014mvmA2G5DBuuSRYtxDLTwk`) 7 maddelik iş emri **kuyruğa alındı**:

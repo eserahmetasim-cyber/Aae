@@ -13,7 +13,19 @@
 
 ---
 
-Üç işi bu sırayla yap, sonucu bana tek mesajda özetle.
+Beş işi bu sırayla yap, sonucu bana tek mesajda özetle.
+
+**0) ⚠ ÖNCE BU — Android geliştirici doğrulaması, son tarih GEÇTİ.**
+04.09'daki "[Son hatırlatma]" maili: *"Tüm Google Play uygulamalarının ... **30
+Eylül 2026'ya kadar kaydedilmesi gerekir. Kaydedilmeyen tüm Google Play
+uygulamaları dünya genelinde Google Play'den kaldırılacak.**"* Bugün 06.10 —
+son tarih 6 gün önce geçti. Kaldırma bildirimi gelmedi (muhtemelen otomatik
+kaydedildi) ama doğrulanmalı.
+- Play Console → `https://play.google.com/console/android-developer-verification`
+- `com.saemuhendislik.mini_muhendis` ve varsa Malzeme Bilgisi / Moto Bakım
+  paketleri **kayıtlı** mı?
+- Console ana sayfasında "kaydedilmemiş" filtresini uygula; çıkan varsa kaydet.
+- Yarım kalmış **paket adı kaydı taslağı** varsa tamamla.
 
 **1) AdSense — başvuru 39. günde (28.08.2026'da yapıldı).**
 Konsol: `https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites`
@@ -63,11 +75,20 @@ sorun için **"Düzeltmeyi doğrula"** başlat.
 
 ⚠ Temiz URL kuralı: link / canonical / sitemap'te **`.html` yazılmaz**.
 
-### Aynı dağıtıma ekle
-**12.09'da Mini Mühendis'e Google Play production access verildi**
-(`com.saemuhendislik.mini_muhendis`). Ana sayfadaki "Uygulamalarımız" bandında
-Mini Mühendis'in **"YAKINDA GOOGLE PLAY'DE" rozeti artık yanlış bilgi veriyor** —
-gerçek Play Store linkine çevir (TR + EN).
+**4) Mini Mühendis yayın durumu — rozete dokunmadan önce doğrula.**
+12.09'daki mail **yayınlama İZNİ** verdiğini söylüyor, uygulamanın yayında
+olduğunu DEĞİL: *"this has now been granted. Production is where you make your
+app available... **Before you release to production** we recommend testing..."*
+12.09'dan beri "yayınlandı" maili de gelmedi.
+- Play Console → Mini Mühendis → production track'te **canlı** mı, yoksa izin
+  verilmiş ama sürüm hiç yayınlanmamış mı?
+- `https://play.google.com/store/apps/details?id=com.saemuhendislik.mini_muhendis`
+  gerçekten açılıyor mu?
+- **Canlıysa** → ana sayfadaki "Uygulamalarımız" bandındaki rozeti gerçek Play
+  linkine çevir (TR + EN), aynı dağıtıma dahil et.
+- **Canlı değilse** → **"YAKINDA GOOGLE PLAY'DE" rozeti doğrudur, KALSIN.**
+  (Ölü linke gitmek AdSense/SEO açısından zarar.) Bunun yerine bana yayına almak
+  için ne gerektiğini bildir.
 
 ### Bitince
 Wiki kavram sayfası `saemuhendislik-sitesi.md` ve kalıcı hafızayı güncelle.
