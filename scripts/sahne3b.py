@@ -385,6 +385,170 @@ def kare_kontra3b(t):
     return im
 
 
+
+# ---------------------------------------------------------------------------
+#  GAZ (virajda gaz kontrolu) - havadan takip
+# ---------------------------------------------------------------------------
+GAZ_R = 42.0                 # viraj orta cizgi yaricapi (m)
+GAZ_YARIM = 3.9              # yol yari genisligi
+
+# Her faz: (gaz, serit_ofseti, yatis_carpani, etiket, renk)
+# serit_ofseti: orta cizgiden disa dogru metre. Sag serit 0..3.9 arasi,
+# 3.9'u gecmek seritten TASMAK demek.
+GAZ_DURUM = {
+    "fren":    (0.00, 1.9, 0.00, "FREN · DÜZ ÇİZGİDE", MAVI),
+    "yatis":   (0.18, 2.7, 1.00, "YATIŞ", MAVI),
+    "sabit":   (0.32, 1.9, 1.00, "SABİT GAZ", YESIL),
+    "kesik":   (0.00, 5.3, 0.40, "GAZ KESİLDİ · DIŞARI TAŞIYOR", KIRMIZI),
+    "duzelt":  (0.30, 2.2, 1.18, "İÇ GİDONA BAS", TURUNCU),
+    "cikis":   (0.78, 3.0, 0.50, "GAZ AÇILIYOR", YESIL),
+}
+GAZ_FAZLAR = None
+
+
+def gaz_fazlari_ayarla(metin):
+    global GAZ_FAZLAR
+    if not metin:
+        GAZ_FAZLAR = [(0.0, "sabit")]
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, durum = parca.strip().partition(":")
+        durum = durum.strip()
+        if durum not in GAZ_DURUM:
+            raise SystemExit(f"HATA: bilinmeyen gaz fazi '{durum}'")
+        f.append((float(t_str), durum))
+    GAZ_FAZLAR = sorted(f)
+
+
+def gaz_evre(t, toplam):
+    """Deger onceki fazin biraktigi yerden bu fazin hedefine suruklenir."""
+    i, bas, bitis = 0, GAZ_FAZLAR[0][0], toplam
+    for j, (b, _) in enumerate(GAZ_FAZLAR):
+        if t >= b:
+            i, bas = j, b
+            bitis = GAZ_FAZLAR[j + 1][0] if j + 1 < len(GAZ_FAZLAR) else toplam
+    durum = GAZ_FAZLAR[i][1]
+    g1, o1, y1, etiket, renk = GAZ_DURUM[durum]
+    g0, o0, y0 = GAZ_DURUM[GAZ_FAZLAR[i - 1][1]][:3] if i > 0 else (g1, o1, y1)
+    p = yumusak((t - bas) / max(0.5, bitis - bas))
+    return (g0 + (g1 - g0) * p, o0 + (o1 - o0) * p, y0 + (y1 - y0) * p,
+            etiket, renk, durum)
+
+
+def _gaz_konum(s, ofset):
+    """s < 0 duz giris, s >= 0 daire. (konum, tegeti, disa_birim, sapma) verir."""
+    if s < 0:
+        return (np.array([GAZ_R + ofset, 0.0, s]), np.array([0.0, 0.0, 1.0]),
+                np.array([1.0, 0.0, 0.0]), 0.0)
+    th = s / GAZ_R
+    disa = np.array([math.cos(th), 0.0, math.sin(th)])
+    teget = np.array([-math.sin(th), 0.0, math.cos(th)])
+    return (GAZ_R + ofset) * disa, teget, disa, th
+
+
+def kare_gaz3b(t, toplam=55.0):
+    gok, cim, asfalt = _palet()
+    gaz, ofset, yatis_k, etiket, renk, durum = gaz_evre(t, toplam)
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    hiz_kmh = 44.0 + 30.0 * gaz
+    global _gaz_s, _gaz_tek
+    _gaz_s = globals().get("_gaz_s", -140.0) + (hiz_kmh / 3.6) / FPS
+    if _gaz_s > 2 * math.pi * GAZ_R:
+        _gaz_s -= 2 * math.pi * GAZ_R
+    _gaz_tek = (globals().get("_gaz_tek", 0.0) + 0.5) % (2 * math.pi)
+
+    # --- zemin, daire yol ve duz giris ------------------------------------
+    s.yuzey([[-200, 0, -260], [200, 0, -260], [200, 0, 200], [-200, 0, 200]],
+            cim, katman=0)
+    N = 84
+    for i in range(N):
+        a0, a1 = 2 * math.pi * i / N, 2 * math.pi * (i + 1) / N
+        for ri, ro, renk_y, kat in ((-GAZ_YARIM, GAZ_YARIM, asfalt, 1),
+                                    (GAZ_YARIM - 0.16, GAZ_YARIM, (208, 208, 202), 2),
+                                    (-GAZ_YARIM, -GAZ_YARIM + 0.16, (208, 208, 202), 2)):
+            s.yuzey([[(GAZ_R + ri) * math.cos(a0), 0.01, (GAZ_R + ri) * math.sin(a0)],
+                     [(GAZ_R + ro) * math.cos(a0), 0.01, (GAZ_R + ro) * math.sin(a0)],
+                     [(GAZ_R + ro) * math.cos(a1), 0.01, (GAZ_R + ro) * math.sin(a1)],
+                     [(GAZ_R + ri) * math.cos(a1), 0.01, (GAZ_R + ri) * math.sin(a1)]],
+                    renk_y, katman=kat)
+        if i % 3 == 0:                                   # kesikli orta cizgi
+            s.yuzey([[(GAZ_R - 0.11) * math.cos(a0), 0.02, (GAZ_R - 0.11) * math.sin(a0)],
+                     [(GAZ_R + 0.11) * math.cos(a0), 0.02, (GAZ_R + 0.11) * math.sin(a0)],
+                     [(GAZ_R + 0.11) * math.cos(a1), 0.02, (GAZ_R + 0.11) * math.sin(a1)],
+                     [(GAZ_R - 0.11) * math.cos(a1), 0.02, (GAZ_R - 0.11) * math.sin(a1)]],
+                    (212, 212, 206), katman=2)
+    z = -200.0 if _gaz_s < 70 else 1.0                    # duz giris (yalniz basta)
+    while z < 0:
+        z2 = min(0.0, z + 6.0)
+        s.yuzey([[GAZ_R - GAZ_YARIM, 0.01, z], [GAZ_R + GAZ_YARIM, 0.01, z],
+                 [GAZ_R + GAZ_YARIM, 0.01, z2], [GAZ_R - GAZ_YARIM, 0.01, z2]],
+                asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[GAZ_R + yan * GAZ_YARIM, 0.02, z],
+                     [GAZ_R + yan * (GAZ_YARIM - 0.16), 0.02, z],
+                     [GAZ_R + yan * (GAZ_YARIM - 0.16), 0.02, z2],
+                     [GAZ_R + yan * GAZ_YARIM, 0.02, z2]], (208, 208, 202), katman=2)
+        if int(z / 6) % 2 == 0:
+            s.yuzey([[GAZ_R - 0.11, 0.02, z], [GAZ_R + 0.11, 0.02, z],
+                     [GAZ_R + 0.11, 0.02, z2], [GAZ_R - 0.11, 0.02, z2]],
+                    (212, 212, 206), katman=2)
+        z = z2
+    for i in range(26):                                   # agaclar
+        a = 2 * math.pi * i / 26
+        for rr in (GAZ_R - 11, GAZ_R + 11):
+            _agac(s, rr * math.cos(a), rr * math.sin(a), 5.0 + (i % 4) * 1.2,
+                  (84, 66, 48) if GUNDUZ else (34, 30, 26),
+                  (54, 104, 52) if GUNDUZ else (24, 38, 26))
+
+    # --- motosiklet --------------------------------------------------------
+    konum, teget, disa, th = _gaz_konum(_gaz_s, ofset)
+    yatis = -0.42 * yatis_k                               # sola yatis (negatif)
+    golge = [konum + np.array([0.40 * math.cos(a), -konum[1] + 0.012, 1.15 * math.sin(a)])
+             for a in (math.pi * 2 * i / 10 for i in range(10))]
+    s.yuzey(golge, (64, 74, 62) if GUNDUZ else (20, 25, 22), isiksiz=True, katman=2)
+    model, _, _ = motosiklet(0.0, _gaz_tek, 0.0)
+    R = donus([0, 1, 0], -th) @ donus([0, 0, 1], yatis)
+    s.ekle(model, R=R, t=konum)
+
+    # --- havadan takip kamerasi -------------------------------------------
+    # Daha alcak ve yakin: 21 m yukseklikte motosiklet pul kadar kaliyordu.
+    goz = konum + np.array([0.0, 11.5, 0.0]) - teget * 10.5 + disa * 1.5
+    kamera = Kamera(goz, konum + teget * 2.5, G, Y, fov=44)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    d.rounded_rectangle([70, 470, 188, 790], 10, fill=(255, 255, 255, 22))
+    yuk = int(316 * gaz)
+    d.rounded_rectangle([70, 786 - yuk, 188, 786], 10,
+                        fill=KIRMIZI if gaz < 0.03 else TURUNCU)
+    s2.yazi(d, (129, 418), "GAZ", 32, (160, 165, 172), ortala=True)
+    s2.yazi(d, (129, 800), f"%{int(gaz * 100)}", 40,
+            KIRMIZI if gaz < 0.03 else TURUNCU, ortala=True)
+    d.rounded_rectangle([G - 320, 470, G - 72, 612], 18, fill=(0, 0, 0, 160),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 196, 482), f"{int(hiz_kmh)}", 82, KREM, ortala=True)
+    s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
+
+    f = s2.font(36)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 300, (G + tw) / 2 + 28, 376], 14,
+                        fill=(0, 0, 0, 180), outline=renk, width=5)
+    s2.yazi(d, (G / 2, 312), etiket, 36, renk, ortala=True)
+
+    if ofset > GAZ_YARIM - 0.3:                           # seritten tasti
+        uyari = "ŞERİDİN DIŞINDA"
+        f2 = s2.font(40)
+        tw2 = d.textlength(uyari, font=f2)
+        d.rounded_rectangle([(G - tw2) / 2 - 30, 392, (G + tw2) / 2 + 30, 474], 14,
+                            fill=(120, 20, 16, 210), outline=KIRMIZI, width=5)
+        s2.yazi(d, (G / 2, 404), uyari, 40, (255, 220, 215), ortala=True)
+    return im
+
+
 # ---------------------------------------------------------------------------
 #  VIRAJ (surucu gozunden, gercek 3B yol)
 # ---------------------------------------------------------------------------
@@ -626,26 +790,34 @@ def kare_viraj3b(t, toplam=55.0):
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
-    ap.add_argument("--sahne", choices=("fren", "viraj", "kontra"), required=True)
+    ap.add_argument("--sahne", choices=("fren", "viraj", "kontra", "gaz"), required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
     ap.add_argument("--cikti", default=None)
     ap.add_argument("--sessiz", action="store_true")
     ap.add_argument("--kamera", default="yan",
-                    choices=("yan", "kask", "takip", "degisken", "onden"))
+                    choices=("yan", "kask", "takip", "degisken", "onden", "tepeden"))
     ap.add_argument("--gunduz", default="")
     args = ap.parse_args()
 
     global KAMERA_MODU, GUNDUZ
     KAMERA_MODU = args.kamera
     GUNDUZ = str(args.gunduz).lower() in ("1", "true", "evet", "yes")
-    s2.fazlari_ayarla(args.fazlar)
+    # Faz adlari sahneye gore farkli; viraj disindaki sahnelerde viraj
+    # dogrulayicisina gondermek "bilinmeyen faz" hatasi veriyordu.
+    if args.sahne == "viraj":
+        s2.fazlari_ayarla(args.fazlar)
     cikti = args.cikti or f"videos/sahne3b_{args.sahne}.mp4"
     os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)
     if args.sahne == "fren":
         cizer = kare_fren3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
+    elif args.sahne == "gaz":
+        gaz_fazlari_ayarla(args.fazlar)
+
+        def cizer(t):
+            return kare_gaz3b(t, args.sure)
     else:
         def cizer(t):
             return kare_viraj3b(t, args.sure)

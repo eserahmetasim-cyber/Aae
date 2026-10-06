@@ -131,14 +131,15 @@ def yukle(yol: str) -> dict:
         raise DersHatasi(f"{yol}: 'boyut' 2 ya da 3 olmali.")
     kamera = str(ham.get("kamera") or "yan").strip()
     # NOT: "on" kullanilamaz - YAML'de on/off/yes/no boolean olarak okunur.
-    if kamera not in ("yan", "kask", "takip", "degisken", "onden"):
-        raise DersHatasi(f"{yol}: 'kamera' yan|kask|takip|degisken|onden olmali.")
+    if kamera not in ("yan", "kask", "takip", "degisken", "onden", "tepeden"):
+        raise DersHatasi(
+            f"{yol}: 'kamera' yan|kask|takip|degisken|onden|tepeden olmali.")
     gunduz = bool(ham.get("gunduz", False))
     sahne = str(ham.get("sahne") or "").strip()
-    if sahne and sahne not in ("fren", "viraj", "kontra"):
-        raise DersHatasi(f"{yol}: 'sahne' fren|viraj|kontra olmali (ya da bos).")
-    if sahne == "kontra" and boyut != 3:
-        raise DersHatasi(f"{yol}: 'kontra' sahnesi yalnizca 3 boyutlu uretilir.")
+    if sahne and sahne not in ("fren", "viraj", "kontra", "gaz"):
+        raise DersHatasi(f"{yol}: 'sahne' fren|viraj|kontra|gaz olmali (ya da bos).")
+    if sahne in ("kontra", "gaz") and boyut != 3:
+        raise DersHatasi(f"{yol}: '{sahne}' sahnesi yalnizca 3 boyutlu uretilir.")
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
     baslangic = float(ham.get("baslangic", 0))
     if baslangic < 0:

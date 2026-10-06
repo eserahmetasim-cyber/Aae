@@ -1,0 +1,105 @@
+# Ders 04 · Virajda gaz kontrolü
+# Kaynaklar (teknik doğrulama):
+#   https://www.motorcyclenews.com/advice/riding-tips/how-to-corner-a-motorbike/
+#   https://www.ridinginthezone.com/how-not-to-suck-at-cornering/
+#   https://www.motorcular.com/tr/surus-teknikleri/motosiklette-gaz-kontrol-teknigi
+
+ders_no: 4
+slug: viraj-gazi
+baslik: "Virajda Gaz: Yavaş Gir, Hızlı Çık"
+alt_baslik: "Gaz kesmek seni dışarı taşır"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: gaz
+boyut: 3
+kamera: tepeden         # havadan takip: şerit içindeki kaymayı gösterir
+gunduz: true
+sahne_fazlari: "0:fren, 11:yatis, 19:sabit, 27:kesik, 35:duzelt, 42:cikis"
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_piyano.mp3"
+muzik_ses: 0.36
+
+kapanis: "Hız viraja girmeden ayarlanır"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Hızını viraja GİRMEDEN al" }
+  - { t: 11, sure: 7, metin: "2 · Fren düz çizgide biter, sonra yat" }
+  - { t: 19, sure: 7, metin: "3 · İçeride sabit gaz: motosiklet oturur" }
+  - { t: 27, sure: 7, metin: "4 · Viraj içinde gaz KESME — dışarı taşır" }
+  - { t: 35, sure: 6, metin: "5 · Geniş kalıyorsan iç gidona bas" }
+  - { t: 42, sure: 7, metin: "6 · Çıkışta doğruldukça gazı kademeli aç" }
+
+youtube:
+  baslik: "Virajda Gaz Kontrolü: Yavaş Gir, Hızlı Çık | Yol Okulu #4"
+  aciklama: |
+    Virajda hızını ayarladığın yer virajın içi değil, girişidir. İçeride yapılan
+    her ani gaz hareketi — özellikle gaz kesmek — çizgini bozar ve seni dışarı
+    taşır. Bu derste girişten çıkışa gazın ne yapması gerektiğini anlatıyoruz.
+
+    0:04 Hızını viraja girmeden al
+    0:11 Fren düz çizgide biter, sonra yat
+    0:19 İçeride sabit gaz: motosiklet oturur
+    0:27 Viraj içinde gaz kesme — dışarı taşır
+    0:35 Geniş kalıyorsan iç gidona bas
+    0:42 Çıkışta doğruldukça gazı kademeli aç
+
+    SABİT GAZ NE İŞE YARAR
+    Motosiklet yatıp oturduktan sonra hızını koruyacak kadar hafif açık gaz
+    (sabit gaz) tutarsın. Bu, ağırlığı biraz arkaya alır, arka lastiğin
+    tutuşunu artırır, süspansiyonu oturtur ve yerden açıklığı korur. Motosiklet
+    virajda en kararlı hâline böyle gelir.
+
+    GAZ KESMEK NEDEN DIŞARI TAŞIR
+    Viraj ortasında gazı kapatınca ağırlık öne geçer, ön süspansiyon çöker,
+    arka hafifler. Motosiklet doğrulmaya başlar; doğrulan motosiklet daha geniş
+    bir yay çizer, yani şeridinden dışarı taşarsın. Ani kesmede arka lastik
+    kayabilir. Kazaların önemli bir kısmı gazın düzensiz AÇILMASINDAN değil,
+    düzensiz KAPATILMASINDAN çıkar — çünkü panikte ilk refleks gazı kesmektir.
+
+    GENİŞ KALIYORSAN NE YAPILIR
+    Gazı kesme, fren yapma. İç gidona biraz daha bastır (bkz. Ders 3) ve
+    bakışını virajın çıkışında tut (bkz. Ders 2). Motosiklet yatar, yay daralır.
+
+    ÇIKIŞTA
+    Viraj açılmaya başlayınca gazı kademeli aç. Açılan gaz motosikleti
+    kendiliğinden doğrultur ve seni çıkışa doğru sürükler — "yavaş gir,
+    hızlı çık" tam olarak budur.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez. Boş ve
+    güvenli bir alanda, tam koruyucu ekipmanla, düşük hızdan başlayarak çalış.
+
+    @aae_motorcycle
+  etiketler:
+    - motosiklet
+    - viraj
+    - gaz kontrolü
+    - sürüş eğitimi
+    - yavaş gir hızlı çık
+    - motosiklet eğitimi
+    - yol okulu
+    - motovlog
+  kategori: "2"
+  gizlilik: private
+
+instagram:
+  caption: |
+    Virajda hızını ayarladığın yer virajın içi değil, GİRİŞİ.
+
+    İçeride motosikleti oturtan şey sabit gazdır: ağırlık biraz arkaya gider,
+    arka lastik tutar, süspansiyon oturur.
+
+    Viraj ortasında gazı kesersen ağırlık öne geçer, motosiklet doğrulur ve
+    daha geniş bir yay çizer — yani şeridinden dışarı taşarsın.
+    Geniş kalıyorsan gazı kesme: iç gidona bastır, bakışın çıkışta kalsın.
+
+    Çıkışta gazı kademeli aç. Yavaş gir, hızlı çık.
+
+    Boş bir alanda, tam ekipmanla çalış.
+
+    @aae_motorcycle
+    #motosiklet #viraj #gazkontrolü #sürüşeğitimi #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş
+  feed_de_paylas: true
