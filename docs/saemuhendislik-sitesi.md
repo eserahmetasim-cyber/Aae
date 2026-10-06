@@ -400,24 +400,73 @@ Sitemap yeniden gönderildi, iki hata için **"Düzeltmeyi doğrula"** başlatı
 
 ---
 
-## 8. Günlük otomatik takip görevi (12.09'da kuruldu)
+## 8. Günlük otomatik takip
 
-- Zamanlanmış görev adı: **`adsense-gunluk-kontrol`**, her gün **12:00**.
-- Dosya: `C:\Users\ahmet\.claude\scheduled-tasks\adsense-gunluk-kontrol\SKILL.md`
-- Yaptığı: Gmail taraması (Search Console maili) + site sağlık kontrolü (curl,
-  `--ssl-no-revoke`) + AdSense paneli (Chrome eklentisi, `u/1` URL'si).
-- **Onay gelirse AAE'ye sormadan Auto ads'i açar ve CMP mesajını yayınlar** —
-  bu yetki 12.09'da açıkça verildi.
-- Durum değişmezse tek satır bildirir, log'a yazmaz. 21 günü geçerse yeniden
-  inceleme ister. Oturum düşerse şifre girmez, 008 ile giriş istenmesini bildirir.
-- ⚠ **Görev yalnızca uygulama AÇIKKEN çalışır.** Nitekim 13.09–03.10 arasında
-  bilgisayar erişilemez olduğu için **hiç çalışmadı** ve 16.09'daki iki Search
-  Console uyarısı 17 gün boyunca görülmedi (bkz. §0). Takibin tek dayanağı bu
-  görev olmamalı. Panelin ekran görüntüsü sık sık
-  "0 width"/timeout veriyor → screenshot yerine JS / `get_page_text` kullanılıyor.
+### 8a. Bulut rutini — `SAE gunluk kontrol — oyunlar + reklam` (06.10'da kuruldu)
 
-Gmail bağlayıcısı **eserahmetasim@gmail.com**'a bağlı: AdSense maili oraya
-**GELMEZ** (008'e gelir), Search Console maili oraya gelir.
+- Trigger id: `trig_01WdNFNckb7vVZfzpLbB2eC9`, her gün **08:50** (Europe/Istanbul).
+- Her koşuda yeni bir bulut oturumu doğar; AAE'nin bilgisayarı kapalı olsa da çalışır.
+- Kontrol ettiği dört şey: (1) Gmail'de Play Console / Search Console / AdSense
+  maili, (2) iki oyunun Play store sayfasının HTTP kodu, (3) site + `ads.txt` +
+  **`www` → apex 301** testi, (4) yerel oturumun bağlantı durumu.
+- **Sessiz çalışır:** fark yoksa tek satır, bildirim yok. Fark varsa push bildirimi
+  + `docs/gunluk-durum.json` ve bu dosyanın §0'ı güncellenip push edilir.
+- Durum dosyası: **`docs/gunluk-durum.json`** (bu depoda). Rutin her koşuda sıfırdan
+  doğduğu için "değişti mi?" sorusunu ancak bu dosyayla cevaplayabiliyor.
+- ⚠ **Dağıtım yapmaz**, panele şifre girmez. Panel/dağıtım işleri yerel oturuma devredilir.
+- ⚠ Rutin **bağlayıcısız** kaydedildi (araç bu organizasyonda bağlayıcı eklemeye izin
+  vermiyor). Gmail'i görüp göremediği ilk koşuda ölçüldü — sonuç §0'da. Göremiyorsa
+  claude.ai → Routines → bu rutine **Gmail** + **Claude Code Remote** eklenmeli.
+
+### 8b. Yerel görev — `adsense-gunluk-kontrol` (12.09'da kuruldu, GÜVENİLMEZ)
+
+- `C:\Users\ahmet\.claude\scheduled-tasks\adsense-gunluk-kontrol\SKILL.md`, her gün 12:00.
+- Yaptığı: Gmail + site sağlık (curl, `--ssl-no-revoke` şart) + AdSense paneli
+  (Chrome eklentisi, `u/1`). **Onay gelirse sormadan Auto ads'i açar ve CMP'yi
+  yayınlar** (yetki 12.09'da verildi).
+- ⚠ **Yalnızca uygulama AÇIKKEN çalışır.** 13.09–06.10 arasında bilgisayar
+  erişilemez olduğu için **hiç çalışmadı**; 16.09'daki iki Search Console uyarısı
+  20 gün boyunca görülmedi. **Takibin tek dayanağı bu görev olmamalı** — 8a bu
+  yüzden kuruldu.
+- Panel ekran görüntüsü sık sık "0 width"/timeout veriyor → screenshot yerine
+  JS / `get_page_text` kullanılıyor.
+
+Gmail bağlayıcısı **eserahmetasim@gmail.com**'a bağlı: Search Console ve Google
+Play mailleri oraya gelir, **AdSense maili GELMEZ** (008'e gider). AAE 06.10'da
+008'den ana hesaba yönlendirme kurmayı üstlendi; kurulunca AdSense onayı/reddi
+maille görünür hale gelecek.
+
+---
+
+## 8c. Google Play'deki iki oyun
+
+Her gün takip edilen iki oyun (06.10.2026'da kimlikleri doğrulandı):
+
+| | Mini Mühendis | AAE Motosiklet Yol Okulu |
+|---|---|---|
+| Tam ad | Mini Mühendis: Malzeme Oyunu | AAE Motosiklet Yol Okulu |
+| Paket | `com.saemuhendislik.mini_muhendis` | `com.saemuhendislik.yol_okulu_3b` |
+| Aşama | production access **verildi** (12.09) | kapalı test, 14 günlük sayaç **06.10'da doldu** |
+| Yayında? | Hayır (görünüşe göre sürüm hiç yayınlanmadı) | Hayır |
+
+- Store linkleri: `https://play.google.com/store/apps/details?id=<paket>`
+- Yol Okulu opt-in linki:
+  `https://play.google.com/apps/testing/com.saemuhendislik.yol_okulu_3b`
+- **Mini Mühendis:** 12.09 maili yayınlama **izni** veriyor, yayında olduğunu
+  değil ("Before you release to production..."). O tarihten beri "yayınlandı"
+  maili gelmedi.
+- **Yol Okulu:** kapalı test daveti 22.09 17:49 UTC'de **14 kişiye** gönderildi
+  (AAE'nin kendi mailinden, bcc). Google kişisel hesaplar için **14 gün boyunca
+  12 kesintisiz opt-in test kullanıcısı** istiyor. Sayaç davetin gönderildiği an
+  değil her kullanıcının **opt-in anı** üzerinden işler; **kaç kişinin testte
+  kaldığı YALNIZCA Play Console'da görünür**, mailden okunamaz.
+- Oyunun içeriği (davet mailinden): yolda bir durum çıkıyor (ıslak yolda takip
+  mesafesi, tırın arkasında görüş, tünele giriş, dönel kavşak), üç şık ve kısa
+  süre; seçimin sonucu gerçek metre ölçüsüyle oynuyor. Ücretsiz, reklamsız,
+  çevrimdışı, veri toplamıyor.
+- Sitedeki "Uygulamalarımız" bandındaki **"YAKINDA GOOGLE PLAY'DE" rozetleri**,
+  ancak store sayfası 200 döndüğü **doğrulandıktan sonra** Play linkine çevrilir —
+  yayında olmayan oyuna link vermek ölü sayfaya gider.
 
 ---
 

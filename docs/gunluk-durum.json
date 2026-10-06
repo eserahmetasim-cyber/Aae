@@ -1,0 +1,67 @@
+{
+  "_aciklama": "Gunluk kontrol rutininin durum dosyasi. Rutin her kosuda yeni bir oturumda dogdugu icin 'degisti mi?' sorusunu ancak bu dosyayla cevaplayabiliyor. Rutin: oku -> yeni olcumleri al -> farki hesapla -> fark varsa bildir ve bu dosyayi guncelle; fark yoksa sessiz kal. null = henuz olculemedi.",
+  "_rutin": "SAE gunluk kontrol — oyunlar + reklam (her gun 08:50 Europe/Istanbul)",
+  "guncelleme": "2026-10-06",
+  "ag_erisimi": false,
+  "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
+
+  "mini_muhendis": {
+    "ad": "Mini Mühendis: Malzeme Oyunu",
+    "paket": "com.saemuhendislik.mini_muhendis",
+    "store_http": null,
+    "yayinda": false,
+    "asama": "production access verildi (12.09), surum yayinlanmamis gorunuyor",
+    "son_mail": "2026-09-12 — production access granted"
+  },
+
+  "yol_okulu": {
+    "ad": "AAE Motosiklet Yol Okulu",
+    "paket": "com.saemuhendislik.yol_okulu_3b",
+    "store_http": null,
+    "yayinda": false,
+    "asama": "kapali test; 14 gunluk sayac 06.10 ~17:49 UTC itibariyla doldu, uretime gecis basvurusu acilabilir",
+    "kapali_test_baslangic": "2026-09-22",
+    "davet_edilen_tester": 14,
+    "opt_in_kalan_tester": null,
+    "_tester_notu": "Google kisisel hesaplar icin 14 gun boyunca 12 kesintisiz opt-in tester istiyor. Bu sayi YALNIZCA Play Console'da gorunur, mailden okunamaz.",
+    "son_mail": null
+  },
+
+  "adsense": {
+    "yayinci": "ca-pub-8433209614215281",
+    "hesap": "ahmetasimeser008@gmail.com",
+    "basvuru": "2026-08-28",
+    "durum": "Hazirlaniyor",
+    "auto_ads": false,
+    "cmp_yayinda": false,
+    "son_mail": null,
+    "_mail_notu": "AdSense maili 008 hesabina gidiyor; Gmail baglayicisi eserahmetasim@gmail.com'a bagli. 008'den yonlendirme kurulana kadar onay/ret maili gorunmez."
+  },
+
+  "search_console": {
+    "acik_sorun": 3,
+    "sorunlar": [
+      "Yonlendirmeli sayfa — 07.09 duzeltmesi 16.09'da BASARISIZ bildirildi",
+      "Kopya, Google kullanicidan farkli bir standart sayfa secti (16.09, yeni)",
+      "Kullanici tarafindan secilen standart sayfa olmadan kopya (16.09, yeni)"
+    ],
+    "son_mail": "2026-09-16 — duzeltme basarisiz + iki yeni kopya nedeni"
+  },
+
+  "site": {
+    "apex_http": null,
+    "www_http": null,
+    "www_301_apexe": null,
+    "ads_txt_http": null,
+    "ads_txt_dogru": null,
+    "_www_notu": "BAS SUPHELI: www apex'e 301 yonlendirmiyorsa Google iki ozdes site goruyor — Search Console'daki 'Google farkli standart sayfa secti' sorununun en guclu sebebi. 10.09'da www/ads.txt 200 donuyordu."
+  },
+
+  "yerel_oturum": {
+    "id": "session_014mvmA2G5DBuuSRYtxDLTwk",
+    "baglanti": "disconnected",
+    "son_baglanti_denemesi": "2026-09-13",
+    "kuyruktaki_is_emri": 4,
+    "son_kontrol": "2026-10-06"
+  }
+}
