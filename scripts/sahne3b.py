@@ -230,8 +230,10 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
     # AAE arkaya ve iki yana yazilir: ders 03 arkadan, ders 04 tepeden-arkadan,
     # ders 01/02 yandan bakiyor. Tepeye yazilmiyor, kaskin kubbesi ortuyor.
     _kask_yazi(s, kask_n, 0.148, [0, 0, -1], [0, 1, 0])
+    # Yan yazi daha kucuk: 0.058'de metin 60 derecelik yay kapliyor, 3/4
+    # acidan kaskin siluetine sarip "AE A" gibi okunuyordu. 0.046'da 48 derece.
     for yan in (-1, 1):
-        _kask_yazi(s, kask_n, 0.148, [yan, 0, 0], [0, 1, 0], yuk=0.058)
+        _kask_yazi(s, kask_n, 0.148, [yan, 0, 0], [0, 1, 0], yuk=0.046)
 
     _tekerlek(s, arka_z, tekerlek_aci, on=False)
     _tekerlek(onk, on_z, tekerlek_aci, on=True)
