@@ -63,6 +63,27 @@ Bu hesaba (eserahmetasim) hiç AdSense maili gelmedi — beklenen, 008'e gidiyor
 **"YAKINDA GOOGLE PLAY'DE" rozeti artık yanlış** — gerçek Play Store linkine
 çevrilmeli (TR+EN).
 
+### 06.10.2026 — üç gün sonra: hiçbir şey hareket etmedi
+
+Buluttan doğrulandı:
+- **Gmail: 16.09'dan beri yeni Search Console / AdSense maili YOK** → yukarıdaki
+  üç sorun hâlâ açık, durum değişmemiş.
+- **AdSense başvurusu 39. günde**, hâlâ "Hazırlanıyor" varsayılıyor (panel
+  okunamadı). 21 gün eşiği 18 gün önce aşıldı → yeniden inceleme talebi gerekli.
+- **Yerel oturum 13.09'dan beri hiç bağlanmadı** (`computer_unreachable`);
+  03.10'da kuyruğa alınan iş emri işlenmedi. 06.10'da üç maddelik öncelikli emir
+  daha kuyruğa eklendi (AdSense durumu → SC kopya raporu → www/apex 301 testi).
+- **Site bu ortamdan hâlâ erişilemez** (egress 403) → `www` hipotezi buluttan
+  doğrulanamıyor.
+- Günlük bulut rutini (`SAE Muhendislik gunluk takip`) çalışıyor ama
+  **bağlayıcısız** kaydedildiği için Gmail'i ve oturum araçlarını göremiyor —
+  koşuları 30 saniyede bitiyor. Rutinin istemi, bağlayıcı yokken tek satır
+  "kör çalışıyor + ne eklenmeli" raporu verecek şekilde güncellendi.
+  Kalıcı çözüm: claude.ai → Routines → bu rutine **Gmail** + **Claude Code
+  Remote** bağlayıcılarını ekle.
+
+Yapıştırmaya hazır kısa iş emri: `docs/yerel-oturum-is-emri.md`.
+
 ### Bu tespitlerle ne yapıldı
 03.10'da yerel oturuma (`Saemuhendislik sistem düzenlemesi`,
 `session_014mvmA2G5DBuuSRYtxDLTwk`) 7 maddelik iş emri **kuyruğa alındı**:
