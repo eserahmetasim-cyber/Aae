@@ -477,13 +477,15 @@ def alkis():
     rng = np.random.default_rng(41)
     g = np.diff(rng.normal(0, 1, n + 1))
     # 3'luk yumusatma yetmiyordu: alkisin kuyrugu 9 kHz ustunu dolduruyordu.
-    g = np.convolve(g, np.ones(9) / 9, mode="same")            # cok tizi kir
+    # 9'luk yumusatma hala parlakti: olcumde 2. ve 4. vurusta 2.5 kHz ustu
+    # pay %7'ye cikiyordu, parcanin en tiz ani alkisti.
+    g = np.convolve(g, np.ones(21) / 21, mode="same")          # cok tizi kir
     s = np.zeros(n)
     for gecikme, kazanc in ((0.000, 1.0), (0.009, 0.8), (0.019, 0.65), (0.030, 0.5)):
         i = int(gecikme * SR)
         boy = min(len(g) - i, int(0.02 * SR))
         s[i:i + boy] += g[:boy] * kazanc
-    s += g * 0.30 * np.exp(-np.arange(n) / SR * 22.0)          # oda kuyrugu
+    s += g * 0.16 * np.exp(-np.arange(n) / SR * 34.0)          # oda kuyrugu
     return s / max(1e-9, np.abs(s).max())
 
 
@@ -496,10 +498,14 @@ def pizzicato_bas(frekans, sure, guc=1.0, tohum=0):
     birakmiyor ve marimba ile ayni aileden (vurmali/cekme) duruyor."""
     n = int(sure * SR)
     t = np.arange(n) / SR
-    tel = tel_cal(frekans, sure, 0.60, tohum)
+    # Karplus-Strong tohumu genis bantli gurultu: olcumde parcanin en tiz ani
+    # bas notasinin atagiydi (2.5 kHz ustu pay %8). Bas calgi 1 kHz ustunde is
+    # gormez, tel bileseni alcak geciren suzgecten geciriliyor.
+    tel = tel_cal(frekans, sure, 1.0, tohum)
+    tel = np.convolve(tel, np.ones(24) / 24, mode="same")      # ~900 Hz uzeri
     govde = np.sin(2 * np.pi * frekans * t) * np.exp(-t * 5.5) * 0.55
-    s = tel * 0.75 + govde
-    s *= zarf(n, 0.003, 0.12, 0.45, 0.30)
+    s = tel * 0.70 + govde
+    s *= zarf(n, 0.006, 0.12, 0.45, 0.30)
     return s / max(1e-9, np.abs(s).max()) * guc
 
 
@@ -513,13 +519,19 @@ def uret_okul(bpm, sure, tohum):
         t0 = b * bar
         kok, akor = OKUL_ILERLEME[b % len(OKUL_ILERLEME)]
 
-        for v in (0.0, 2.0):                                   # yumusak kick
-            ekle(davul, kick() * 0.62, t0 + v * vurus)
-        for v in (1.0, 3.0):                                   # alkis
-            ekle(davul, alkis() * 0.26, t0 + v * vurus)
-        for k in range(8):                                     # shaker
-            ekle(davul, shaker_yumusak(b * 8 + k) * (0.09 if k % 2 == 0 else 0.05),
-                 t0 + k * vurus / 2)
+        # Acilis yumusak: ilk bar vurmalisiz, sadece bas ve akorlar. Parca
+        # dogrudan vurmaliyla basladiginda ezgi henuz yokken alkis ve shaker
+        # tek basina kaliyor ve kulaga en tiz sey olarak giriyordu.
+        if b >= 1:
+            for v in (0.0, 2.0):                               # yumusak kick
+                ekle(davul, kick() * 0.62, t0 + v * vurus)
+            for v in (1.0, 3.0):                               # alkis
+                ekle(davul, alkis() * 0.13, t0 + v * vurus)
+            for k in range(8):                                 # shaker
+                ekle(davul, shaker_yumusak(b * 8 + k)
+                     * (0.06 if k % 2 == 0 else 0.035), t0 + k * vurus / 2)
+        else:
+            ekle(davul, kick() * 0.40, t0)
 
         # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
         for k, oran in enumerate((1.0, 1.0, 1.5, 1.25)):
