@@ -430,7 +430,7 @@ KEMAN_EZGI = [
 ]
 
 
-def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0):
+def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0, atak=0.055):
     """Yayli calgi: 16 harmonik, formant agirlikli; vibrato faz uzerinden
     uygulanir ki frekans gercekten salinsin, genlik degil."""
     n = int(sure * SR)
@@ -454,49 +454,89 @@ def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0):
     g = np.diff(rng.normal(0, 1, n + 1))
     g /= max(1e-9, np.abs(g).max())
     s += g * 0.05 * np.exp(-t * 7.0)
-    return s * zarf(n, 0.055, 0.18, 0.80, 0.30) * guc
+    # Kisa atak = staccato (ostinato); uzun atak = yayli ezgi.
+    return s * zarf(n, atak, 0.18, 0.80, 0.30) * guc
+
+
+def yukselis(sure):
+    """Patlamadan onceki yukselis: tizlesen gurultu + yukari kayan sinus."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    rng = np.random.default_rng(99)
+    g = np.diff(rng.normal(0, 1, n + 1))                  # tiz gurultu
+    g /= max(1e-9, np.abs(g).max())
+    kayma = np.sin(2 * np.pi * np.cumsum(np.geomspace(380, 1700, n)) / SR)
+    return (g * 0.55 + kayma * 0.45) * np.linspace(0.0, 1.0, n) ** 2.2
 
 
 def uret_keman(bpm, sure, tohum):
-    """Keman + hiphop: boom-bap davul, 808, pizzicato ve keman ezgi."""
+    """Keman + hiphop, hareketli kurgu.
+
+    Onceki surum boom-bap ve uzun keman notalariyla sakin kaliyordu; bu surum
+    16-lik hat, staccato keman ostinatosu, hareketli 808 ve dort barda bir
+    trampet dolgusu + yukselis ile surukluyor."""
     vurus, n = 60.0 / bpm, int(sure * SR)
     bar = 4 * vurus
     davul, enstruman = np.zeros(n), np.zeros(n)
-    rng = np.random.default_rng(tohum)
+    toplam_bar = int(np.ceil(sure / bar))
 
-    for b in range(int(np.ceil(sure / bar))):
+    for b in range(toplam_bar):
         t0 = b * bar
         kok, akor = KEMAN_ILERLEME[b % len(KEMAN_ILERLEME)]
+        dolgu = (b % 4 == 3)                                # dort barda bir
 
-        # --- boom-bap: 1 ve 3-ten hemen sonra kick, 2 ve 4-te trampet ------
-        for v in (0.0, 1.75, 2.5):
-            ekle(davul, kick() * 0.95, t0 + v * vurus)
+        # --- davul: surukleyen kick, 2 ve 4'te trampet, 16-lik hat --------
+        for v in (0.0, 0.75, 1.5, 2.0, 2.75, 3.5):
+            ekle(davul, kick() * 1.0, t0 + v * vurus)
         for v in (1.0, 3.0):
-            ekle(davul, trampet() * 0.62, t0 + v * vurus)
-        for k in range(8):                                  # 8-lik hatlar
-            acik = (k == 7 and b % 2 == 1)
-            ekle(davul, hihat(acik) * (0.17 if k % 2 else 0.26),
-                 t0 + k * vurus / 2)
-        ekle(enstruman, bas_808(kok, bar * 0.92) * 0.60, t0)
+            ekle(davul, trampet() * 0.70, t0 + v * vurus)
+        for k in range(16):
+            if dolgu and k >= 12:                           # dolguya yer ac
+                continue
+            acik = (k == 14)
+            # 16-lik hat duz olunca makine gibi duyuluyor: vurusun basi daha
+            # kuvvetli, aralar kisik - insan eli boyle calar.
+            guc = 0.30 if k % 4 == 0 else (0.20 if k % 2 == 0 else 0.13)
+            ekle(davul, hihat(acik) * guc, t0 + k * vurus / 4)
+        if dolgu:                                           # trampet dolgusu
+            for k in range(6):
+                ekle(davul, trampet(int(0.13 * SR)) * (0.26 + 0.09 * k),
+                     t0 + (3.0 + k * 0.166) * vurus)
+            ekle(enstruman, yukselis(bar * 0.75) * 0.22, t0 + bar * 0.25)
 
-        # --- pizzicato: olcunun ikinci yarisinda akor arpeji --------------
-        for k, f in enumerate(akor):
-            ekle(enstruman, tel_cal(f / 2, 1.1, 0.5, tohum + k) * 0.17,
-                 t0 + (2.0 + k * 0.5) * vurus)
+        # --- 808: barin ikinci yarisinda tekrar vurur, hareket hissi verir -
+        ekle(enstruman, bas_808(kok, bar * 0.48) * 0.62, t0)
+        ekle(enstruman, bas_808(kok, bar * 0.40) * 0.50, t0 + 2.5 * vurus)
 
-        # --- keman ezgi: ilk bar bos, kulagi davula alistirir -------------
+        # --- keman ostinatosu: 16-lik staccato akor sesleri ----------------
         if b >= 1:
+            sira = (0, 1, 2, 1)
+            for k in range(16):
+                if dolgu and k >= 12:
+                    continue
+                f = akor[sira[k % 4]] * (2.0 if k % 8 == 4 else 1.0)
+                ekle(enstruman,
+                     keman_nota(f, vurus * 0.30, 0.17, atak=0.012,
+                                tohum=b * 17 + k),
+                     t0 + k * vurus / 4)
+
+        # --- keman ezgi: ostinatonun uzerinde uzun notalar -----------------
+        if b >= 2:
             for v, f, uz in KEMAN_EZGI[b % len(KEMAN_EZGI)]:
-                oktav = 0.5 if b % 8 >= 4 else 1.0          # ikinci devir pes
-                ekle(enstruman, keman_nota(f * oktav, uz * vurus, 0.42,
+                ekle(enstruman, keman_nota(f, uz * vurus, 0.46,
                                            tohum=b * 7 + int(v * 2)),
                      t0 + v * vurus)
-            ekle(enstruman, yayli([f * 0.5 for f in akor], int(bar * SR)) * 0.30, t0)
+        ekle(enstruman, yayli([f * 0.5 for f in akor], int(bar * SR)) * 0.26, t0)
 
-    enstruman = yanki_uygula(enstruman, oda_yankisi(1.7), islak=0.26)
-    mix = davul * 0.52 + enstruman
+        # --- pizzicato: kontra vurus, ezgiye karsi ritim -------------------
+        for k, f in enumerate(akor):
+            ekle(enstruman, tel_cal(f / 2, 0.7, 0.55, tohum + k) * 0.15,
+                 t0 + (1.75 + k * 0.25) * vurus)
+
+    enstruman = yanki_uygula(enstruman, oda_yankisi(1.4), islak=0.20)
+    mix = davul * 0.60 + enstruman
     mix /= max(1e-9, np.abs(mix).max())
-    return mix * 0.72
+    return mix * 0.74
 
 
 def wav_yaz(yol: str, mono: np.ndarray) -> None:
@@ -538,7 +578,7 @@ def main() -> None:
     args = ap.parse_args()
 
     VARSAYILAN_BPM = {"sade": 70.0, "piyano": 64.0, "lofi": 76.0,
-                      "atmosfer": 60.0, "phonk": 82.0, "keman": 88.0}
+                      "atmosfer": 60.0, "phonk": 82.0, "keman": 98.0}
     URETICI = {"sade": uret_sade, "piyano": uret_piyano, "lofi": uret_lofi,
                "atmosfer": uret_atmosfer, "phonk": uret, "keman": uret_keman}
     bpm = args.bpm or VARSAYILAN_BPM[args.stil]
