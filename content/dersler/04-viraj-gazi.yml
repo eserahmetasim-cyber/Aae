@@ -20,7 +20,7 @@ sahne_fazlari: "0:fren, 11:yatis, 19:sabit, 27:kesik, 35:duzelt, 42:cikis"
 baslangic: 0
 sure: 55
 kaynak_ses: 0.035
-muzik: "assets/muzik/aae_keman.mp3"
+muzik: "assets/muzik/aae_okul.mp3"
 muzik_ses: 0.36
 
 kapanis: "Hız viraja girmeden ayarlanır"

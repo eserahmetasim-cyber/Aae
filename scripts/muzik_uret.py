@@ -532,7 +532,7 @@ def uret_okul(bpm, sure, tohum):
         # 2 kHz'e, F5'te 2.7 kHz'e dusuyordu, yani tam sert banda.
         for k in range(4):
             for f in akor:
-                ekle(enstruman, marimba(f * 0.5, 0.65, 0.13),
+                ekle(enstruman, marimba(f * 0.5, 0.65, 0.10),
                      t0 + (k + 0.5) * vurus)
 
         # --- ezgi: marimba, her dort barda bir glockenspiel iki katina ----
@@ -540,7 +540,9 @@ def uret_okul(bpm, sure, tohum):
             for v, f, uz in OKUL_EZGI[b % len(OKUL_EZGI)]:
                 # Ezgi kendi oktavinda kalir. Bir oktav indirilince 400-1200 Hz
                 # bandi 17 dB bosaldi, parca sadece bas ve gurultuye dondu.
-                ekle(enstruman, marimba(f, max(0.6, uz * vurus * 1.8), 0.46),
+                # Tek tek gelen "tin tin" notalar one cikiyordu; ezgi fona
+                # cekildi, yatak akorlar ve bas tasiyor.
+                ekle(enstruman, marimba(f, max(0.6, uz * vurus * 1.8), 0.26),
                      t0 + v * vurus)
         # Glockenspiel kaldirildi: 5.40x kismi sesi 9 kHz ustunde en cok
         # enerjiyi veren kaynakti. Yerine akorun sicak alt oktavi geliyor.
