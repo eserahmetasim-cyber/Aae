@@ -410,6 +410,112 @@ def uret_atmosfer(bpm, sure, tohum):
 
 
 # ---------------------------------------------------------------------------
+#  OKUL  (seri adi "Motosiklet Yol Okulu")
+# ---------------------------------------------------------------------------
+# Do major, parlak ve tempolu. Marimba + alkis + glockenspiel: ders anlatan
+# videonun altinda nese verir ama konusma bandini doldurmaz.
+OKUL_ILERLEME = [                                   # I - vi - IV - V
+    (65.41, (261.63, 329.63, 392.00)),              # C
+    (55.00, (220.00, 261.63, 329.63)),              # Am
+    (43.65, (174.61, 261.63, 349.23)),              # F
+    (49.00, (196.00, 246.94, 392.00)),              # G
+]
+# (vurus, frekans, sure_vurus)
+OKUL_EZGI = [
+    [(0.0, 329.63, 0.5), (0.5, 392.00, 0.5), (1.0, 523.25, 1.0),
+     (2.0, 392.00, 0.5), (2.5, 329.63, 0.5), (3.0, 293.66, 1.0)],
+    [(0.0, 523.25, 0.75), (0.75, 440.00, 0.75), (1.5, 329.63, 1.0),
+     (2.5, 440.00, 1.5)],
+    [(0.0, 440.00, 0.5), (0.5, 523.25, 0.5), (1.0, 698.46, 1.0),
+     (2.0, 523.25, 1.0), (3.0, 440.00, 1.0)],
+    [(0.0, 493.88, 0.75), (0.75, 587.33, 0.75), (1.5, 392.00, 1.0),
+     (2.5, 587.33, 1.5)],
+]
+
+
+def marimba(frekans, sure, guc=1.0):
+    """Tahta cubuk: kismi sesleri 1 : 3.9 : 9.6 oraninda, armonik degil.
+    Duz sinus "tahta" duymuyor, bu oranlar veriyor."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    s = np.zeros(n)
+    for kat, genlik, sonum in ((1.0, 1.0, 4.5), (3.93, 0.30, 9.0), (9.58, 0.10, 16.0)):
+        s += genlik * np.sin(2 * np.pi * frekans * kat * t) * np.exp(-t * sonum)
+    s += np.random.default_rng(int(frekans) % 977).normal(0, 1, n) * 0.05 \
+        * np.exp(-t * 180.0)                                   # tokmak sesi
+    return s / max(1e-9, np.abs(s).max()) * guc
+
+
+def can(frekans, sure, guc=1.0):
+    """Glockenspiel: metal cubuk, uzun sonumlu ve cok tiz."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    s = np.zeros(n)
+    for kat, genlik, sonum in ((1.0, 1.0, 2.2), (2.76, 0.42, 3.4), (5.40, 0.16, 5.0)):
+        s += genlik * np.sin(2 * np.pi * frekans * kat * t) * np.exp(-t * sonum)
+    return s / max(1e-9, np.abs(s).max()) * guc
+
+
+def alkis():
+    """El cirpmasi: tek gurultu patlamasi 'ss' gibi duyuluyor; ard arda
+    birkac kisa patlama + kisa kuyruk insan elini veriyor."""
+    n = int(0.26 * SR)
+    rng = np.random.default_rng(41)
+    g = np.diff(rng.normal(0, 1, n + 1))
+    g = np.convolve(g, np.ones(3) / 3, mode="same")            # cok tizi kir
+    s = np.zeros(n)
+    for gecikme, kazanc in ((0.000, 1.0), (0.009, 0.8), (0.019, 0.65), (0.030, 0.5)):
+        i = int(gecikme * SR)
+        boy = min(len(g) - i, int(0.02 * SR))
+        s[i:i + boy] += g[:boy] * kazanc
+    s += g * 0.30 * np.exp(-np.arange(n) / SR * 22.0)          # oda kuyrugu
+    return s / max(1e-9, np.abs(s).max())
+
+
+def uret_okul(bpm, sure, tohum):
+    """Okul havasi: marimba ezgi, alkis, hafif kick ve yuruyen bas."""
+    vurus, n = 60.0 / bpm, int(sure * SR)
+    bar = 4 * vurus
+    davul, enstruman = np.zeros(n), np.zeros(n)
+
+    for b in range(int(np.ceil(sure / bar))):
+        t0 = b * bar
+        kok, akor = OKUL_ILERLEME[b % len(OKUL_ILERLEME)]
+
+        for v in (0.0, 2.0):                                   # yumusak kick
+            ekle(davul, kick() * 0.62, t0 + v * vurus)
+        for v in (1.0, 3.0):                                   # alkis
+            ekle(davul, alkis() * 0.40, t0 + v * vurus)
+        for k in range(8):                                     # shaker
+            ekle(davul, hihat() * (0.20 if k % 2 == 0 else 0.12),
+                 t0 + k * vurus / 2)
+
+        # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
+        for k, oran in enumerate((1.0, 1.0, 1.5, 1.25)):
+            ekle(enstruman, bas_cal(kok * oran, vurus * 0.92) * 0.30,
+                 t0 + k * vurus)
+
+        # --- marimba eslik: kontra vuruslarda akor sesleri ----------------
+        for k in range(4):
+            for f in akor:
+                ekle(enstruman, marimba(f, 0.55, 0.12),
+                     t0 + (k + 0.5) * vurus)
+
+        # --- ezgi: marimba, her dort barda bir glockenspiel iki katina ----
+        if b >= 1:
+            for v, f, uz in OKUL_EZGI[b % len(OKUL_EZGI)]:
+                ekle(enstruman, marimba(f, max(0.5, uz * vurus * 1.6), 0.42),
+                     t0 + v * vurus)
+                if b % 4 == 3:
+                    ekle(enstruman, can(f * 2, 0.9, 0.11), t0 + v * vurus)
+
+    enstruman = yanki_uygula(enstruman, oda_yankisi(1.3), islak=0.22)
+    mix = davul * 0.46 + enstruman
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.74
+
+
+# ---------------------------------------------------------------------------
 #  KEMAN + HIPHOP
 # ---------------------------------------------------------------------------
 # A minor, boom-bap kalip. Keman toplamali sentezle: harmonikler + vibrato +
@@ -559,6 +665,9 @@ TON_ZINCIRI = {
             "alimiter=limit=0.92",
     "keman": "highpass=f=32,lowpass=f=12500,equalizer=f=2600:t=q:w=1.3:g=-2.5,"
              "alimiter=limit=0.92",
+    # Marimba ve glockenspiel parlakligini tizde tasiyor, ustte genis birakilir.
+    "okul": "highpass=f=45,lowpass=f=13000,equalizer=f=2700:t=q:w=1.4:g=-3,"
+            "alimiter=limit=0.92",
     "_": "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
          "alimiter=limit=0.92",
 }
@@ -568,9 +677,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="AAE fon muzigi uretici")
     ap.add_argument("--stil",
                     choices=("sade", "phonk", "piyano", "lofi", "atmosfer",
-                             "keman"),
+                             "keman", "okul"),
                     default="sade",
-                    help="sade | piyano | lofi | atmosfer | phonk | keman")
+                    help="sade | piyano | lofi | atmosfer | phonk | keman | okul")
     ap.add_argument("--bpm", type=float, default=0.0, help="0 = stile gore secilir")
     ap.add_argument("--sure", type=float, default=64.0, help="saniye")
     ap.add_argument("--tohum", type=int, default=3, help="varyasyon icin")
@@ -578,12 +687,17 @@ def main() -> None:
     args = ap.parse_args()
 
     VARSAYILAN_BPM = {"sade": 70.0, "piyano": 64.0, "lofi": 76.0,
-                      "atmosfer": 60.0, "phonk": 82.0, "keman": 98.0}
+                      "atmosfer": 60.0, "phonk": 82.0, "keman": 98.0,
+                      "okul": 104.0}
     URETICI = {"sade": uret_sade, "piyano": uret_piyano, "lofi": uret_lofi,
-               "atmosfer": uret_atmosfer, "phonk": uret, "keman": uret_keman}
+               "atmosfer": uret_atmosfer, "phonk": uret, "keman": uret_keman,
+               "okul": uret_okul}
     bpm = args.bpm or VARSAYILAN_BPM[args.stil]
     cikti = args.cikti or f"assets/muzik/aae_{args.stil}.mp3"
-    print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
+    # Ton stile gore degisiyor; sabit "A minor" basmak yaniltiyordu.
+    TON = {"okul": "C major"}
+    print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn"
+          f" · {TON.get(args.stil, 'A minor')}")
     mix = URETICI[args.stil](bpm, args.sure, args.tohum)
     args.cikti = cikti
 
