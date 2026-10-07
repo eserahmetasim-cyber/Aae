@@ -1,0 +1,44 @@
+# AAE eğitim videosu — ders şablonu
+# Kopyala: content/dersler/02-<slug>.yml  (alt çizgiyle başlayan dosyalar atlanır)
+
+ders_no: 0                 # ders numarası (zorunlu, tamsayı) — "no" YAML'da boolean, o yüzden ders_no
+slug: ornek-ders           # dosya adında kullanılır (zorunlu)
+baslik: "Dersin Başlığı"   # üst bantta ve açılış kartında (zorunlu)
+alt_baslik: "Tek cümlede ne öğretiyor"
+seri: "MOTOSİKLET YOL OKULU"
+tarih: ""                  # boş = render günü
+surum: 1                   # v1, v2... yeniden kurgu yaparken artır
+
+kaynak: ""                 # boş = videos/ içindeki ilk video
+sahne: ""                  # kaynak yoksa çizimle üret: fren | viraj
+boyut: 3                   # 3 = 3 boyutlu sahne, 2 = düz çizim
+kamera: yan                # yan | kask | takip | degisken
+gunduz: false              # true = gündüz ışığı, uzak daha net
+baslangic: 0               # uzun klipten parça seç: kaçıncı saniyeden başlasın
+sure: 60                   # saniye (1-90, KURALLAR.md)
+kaynak_ses: 0.035          # motorun gerçek sesi (0 = sustur, 1 = olduğu gibi)
+muzik: "assets/muzik/aae_piyano.mp3"
+muzik_ses: 0.36
+
+kapanis: "Çıkarım tek cümle · Takip et"   # son 3 saniyede görünür
+
+# Ekranda zamanlı geçen adımlar: t = başlangıç sn, sure = ekranda kalma sn
+adimlar:
+  - { t: 4,  sure: 5, metin: "1 · İlk adım" }
+  - { t: 10, sure: 5, metin: "2 · İkinci adım" }
+
+youtube:
+  baslik: ""               # boş = "Ders N: <baslik>"
+  aciklama: |
+    Açıklama buraya.
+  etiketler: [motosiklet, sürüş eğitimi]
+  kategori: "2"            # 2 = Autos & Vehicles
+  gizlilik: private        # private | unlisted | public
+
+instagram:
+  caption: |
+    Caption buraya.
+
+    @aae_motorcycle
+  feed_de_paylas: true
+  kapak_url: ""            # opsiyonel public görsel URL
