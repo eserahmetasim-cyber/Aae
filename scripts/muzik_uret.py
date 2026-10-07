@@ -439,7 +439,8 @@ def marimba(frekans, sure, guc=1.0):
     n = int(sure * SR)
     t = np.arange(n) / SR
     s = np.zeros(n)
-    for kat, genlik, sonum in ((1.0, 1.0, 4.5), (3.93, 0.30, 9.0), (9.58, 0.10, 16.0)):
+    # 9.58x kismi ses 0.10'da cok parlakti; tahta karakteri 3.93x'ten geliyor.
+    for kat, genlik, sonum in ((1.0, 1.0, 4.5), (3.93, 0.26, 9.0), (9.58, 0.03, 20.0)):
         s += genlik * np.sin(2 * np.pi * frekans * kat * t) * np.exp(-t * sonum)
     s += np.random.default_rng(int(frekans) % 977).normal(0, 1, n) * 0.05 \
         * np.exp(-t * 180.0)                                   # tokmak sesi
@@ -456,13 +457,26 @@ def can(frekans, sure, guc=1.0):
     return s / max(1e-9, np.abs(s).max()) * guc
 
 
+def shaker_yumusak(tohum=0):
+    """Yumusak shaker. hihat() turev filtresi kullaniyor (+6 dB/oktav), bu da
+    9 kHz ustunu dolduruyordu; olcumde begenilen piyano parcasina gore 22 dB
+    fazla tiz enerji cikti ve kulagi tirmaliyordu. Burada gurultu yumusatma
+    ile bant sinirlaniyor."""
+    n = int(0.07 * SR)
+    g = np.random.default_rng(300 + tohum).normal(0, 1, n)
+    g = np.convolve(g, np.ones(7) / 7, mode="same")        # ~6 kHz uzeri sonuk
+    g /= max(1e-9, np.abs(g).max())
+    return g * zarf(n, 0.002, 0.030, 0.0, 0.035)
+
+
 def alkis():
     """El cirpmasi: tek gurultu patlamasi 'ss' gibi duyuluyor; ard arda
     birkac kisa patlama + kisa kuyruk insan elini veriyor."""
     n = int(0.26 * SR)
     rng = np.random.default_rng(41)
     g = np.diff(rng.normal(0, 1, n + 1))
-    g = np.convolve(g, np.ones(3) / 3, mode="same")            # cok tizi kir
+    # 3'luk yumusatma yetmiyordu: alkisin kuyrugu 9 kHz ustunu dolduruyordu.
+    g = np.convolve(g, np.ones(9) / 9, mode="same")            # cok tizi kir
     s = np.zeros(n)
     for gecikme, kazanc in ((0.000, 1.0), (0.009, 0.8), (0.019, 0.65), (0.030, 0.5)):
         i = int(gecikme * SR)
@@ -503,7 +517,7 @@ def uret_okul(bpm, sure, tohum):
         for v in (1.0, 3.0):                                   # alkis
             ekle(davul, alkis() * 0.40, t0 + v * vurus)
         for k in range(8):                                     # shaker
-            ekle(davul, hihat() * (0.20 if k % 2 == 0 else 0.12),
+            ekle(davul, shaker_yumusak(b * 8 + k) * (0.16 if k % 2 == 0 else 0.09),
                  t0 + k * vurus / 2)
 
         # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
@@ -523,8 +537,9 @@ def uret_okul(bpm, sure, tohum):
             for v, f, uz in OKUL_EZGI[b % len(OKUL_EZGI)]:
                 ekle(enstruman, marimba(f, max(0.5, uz * vurus * 1.6), 0.42),
                      t0 + v * vurus)
-                if b % 4 == 3:
-                    ekle(enstruman, can(f * 2, 0.9, 0.11), t0 + v * vurus)
+        # Glockenspiel kaldirildi: 5.40x kismi sesi 9 kHz ustunde en cok
+        # enerjiyi veren kaynakti. Yerine akorun sicak alt oktavi geliyor.
+        ekle(enstruman, yayli([f * 0.5 for f in akor], int(bar * SR)) * 0.20, t0)
 
     enstruman = yanki_uygula(enstruman, oda_yankisi(1.3), islak=0.22)
     mix = davul * 0.46 + enstruman
@@ -563,11 +578,13 @@ def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0, atak=0.055):
     faz = 2 * np.pi * frekans * (t + derinlik / (2 * np.pi * vibrato)
                                  * np.sin(2 * np.pi * vibrato * t))
     s = np.zeros(n)
-    for h in range(1, 17):
+    # Harmonik dususu dikleştirildi (-1.15 -> -1.7) ve tavan 7 kHz'e indi:
+    # 16-lik ostinatoda 16 harmonik ust bandi dolduruyor, kulagi tirmaliyordu.
+    for h in range(1, 13):
         fh = frekans * h
-        if fh > 11000:
+        if fh > 7000:
             break
-        a = h ** -1.15
+        a = h ** -1.7
         a *= 1.0 + 0.9 * np.exp(-((fh - 300.0) / 130.0) ** 2) \
                  + 0.7 * np.exp(-((fh - 720.0) / 230.0) ** 2)
         s += a * np.sin(faz * h + (h % 3))
@@ -576,7 +593,7 @@ def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0, atak=0.055):
     rng = np.random.default_rng(500 + tohum)
     g = np.diff(rng.normal(0, 1, n + 1))
     g /= max(1e-9, np.abs(g).max())
-    s += g * 0.05 * np.exp(-t * 7.0)
+    s += g * 0.025 * np.exp(-t * 11.0)       # yay gurultusu kisildi
     # Kisa atak = staccato (ostinato); uzun atak = yayli ezgi.
     return s * zarf(n, atak, 0.18, 0.80, 0.30) * guc
 
@@ -616,11 +633,13 @@ def uret_keman(bpm, sure, tohum):
         for k in range(16):
             if dolgu and k >= 12:                           # dolguya yer ac
                 continue
-            acik = (k == 14)
             # 16-lik hat duz olunca makine gibi duyuluyor: vurusun basi daha
             # kuvvetli, aralar kisik - insan eli boyle calar.
-            guc = 0.30 if k % 4 == 0 else (0.20 if k % 2 == 0 else 0.13)
-            ekle(davul, hihat(acik) * guc, t0 + k * vurus / 4)
+            guc = 0.26 if k % 4 == 0 else (0.17 if k % 2 == 0 else 0.11)
+            # hihat() turev filtresiyle +6 dB/oktav tizlestiriyor ve 16-lik
+            # kalipta tiz bandi dolduruyordu; bant sinirli shaker kullaniliyor.
+            ses = hihat(True) * 0.16 if k == 14 else shaker_yumusak(b * 16 + k) * guc
+            ekle(davul, ses, t0 + k * vurus / 4)
         if dolgu:                                           # trampet dolgusu
             for k in range(6):
                 ekle(davul, trampet(int(0.13 * SR)) * (0.26 + 0.09 * k),
@@ -680,11 +699,13 @@ def wav_yaz(yol: str, mono: np.ndarray) -> None:
 TON_ZINCIRI = {
     "sade": "highpass=f=38,lowpass=f=11000,equalizer=f=2800:t=q:w=1.4:g=-2.5,"
             "alimiter=limit=0.92",
-    "keman": "highpass=f=32,lowpass=f=12500,equalizer=f=2600:t=q:w=1.3:g=-2.5,"
-             "alimiter=limit=0.92",
     # Marimba ve glockenspiel parlakligini tizde tasiyor, ustte genis birakilir.
-    "okul": "highpass=f=45,lowpass=f=13000,equalizer=f=2700:t=q:w=1.4:g=-3,"
-            "alimiter=limit=0.92",
+    # Tepe sert sinirlandi: olcum begenilen piyano parcasina gore 5-9 kHz'de
+    # 18, 9 kHz ustunde 22 dB fazla enerji gosterdi.
+    "okul": "highpass=f=45,lowpass=f=7600,equalizer=f=3200:t=q:w=1.1:g=-5,"
+            "equalizer=f=6000:t=q:w=1.0:g=-4,alimiter=limit=0.92",
+    "keman": "highpass=f=32,lowpass=f=8200,equalizer=f=3200:t=q:w=1.1:g=-4,"
+             "alimiter=limit=0.92",
     "_": "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
          "alimiter=limit=0.92",
 }
