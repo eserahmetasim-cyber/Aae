@@ -530,12 +530,14 @@ def uret_okul(bpm, sure, tohum):
             for k in range(8):                                 # shaker
                 ekle(davul, shaker_yumusak(b * 8 + k)
                      * (0.06 if k % 2 == 0 else 0.035), t0 + k * vurus / 2)
-        else:
-            ekle(davul, kick() * 0.40, t0)
+        # Ilk barda hicbir vurmali yok. Tek bir kick bile birakilinca parcanin
+        # ilk duyulan sesi o oluyordu.
 
         # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
         for k, oran in enumerate((1.0, 1.0, 1.5, 1.25)):
-            ekle(enstruman, pizzicato_bas(kok * oran, vurus * 0.95, 0.34,
+            # Ilk bar iyice kisik: parca sessizlikten aciliyor.
+            ekle(enstruman, pizzicato_bas(kok * oran, vurus * 0.95,
+                                          0.34 if b else 0.16,
                                           tohum + b * 4 + k),
                  t0 + k * vurus)
 
@@ -721,8 +723,11 @@ TON_ZINCIRI = {
     # Marimba ve glockenspiel parlakligini tizde tasiyor, ustte genis birakilir.
     # Tepe sert sinirlandi: olcum begenilen piyano parcasina gore 5-9 kHz'de
     # 18, 9 kHz ustunde 22 dB fazla enerji gosterdi.
+    # afade: parca sessizlikten acilir, ilk duyulan ses hicbir zaman bir
+    # vurus olmaz.
     "okul": "highpass=f=45,lowpass=f=6500,equalizer=f=3000:t=q:w=1.0:g=-5,"
-            "equalizer=f=4800:t=q:w=1.0:g=-4,alimiter=limit=0.92",
+            "equalizer=f=4800:t=q:w=1.0:g=-4,afade=t=in:st=0:d=2.6,"
+            "alimiter=limit=0.92",
     "keman": "highpass=f=32,lowpass=f=8200,equalizer=f=3200:t=q:w=1.1:g=-4,"
              "alimiter=limit=0.92",
     "_": "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
