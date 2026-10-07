@@ -440,10 +440,11 @@ def marimba(frekans, sure, guc=1.0):
     t = np.arange(n) / SR
     s = np.zeros(n)
     # 9.58x kismi ses 0.10'da cok parlakti; tahta karakteri 3.93x'ten geliyor.
-    for kat, genlik, sonum in ((1.0, 1.0, 4.5), (3.93, 0.26, 9.0), (9.58, 0.03, 20.0)):
+    for kat, genlik, sonum in ((1.0, 1.0, 4.0), (3.93, 0.15, 11.0)):
         s += genlik * np.sin(2 * np.pi * frekans * kat * t) * np.exp(-t * sonum)
-    s += np.random.default_rng(int(frekans) % 977).normal(0, 1, n) * 0.05 \
-        * np.exp(-t * 180.0)                                   # tokmak sesi
+    # Tokmak gurultusu genis bantli: kisik ve cok kisa tutuluyor.
+    s += np.random.default_rng(int(frekans) % 977).normal(0, 1, n) * 0.022 \
+        * np.exp(-t * 320.0)                                   # tokmak sesi
     return s / max(1e-9, np.abs(s).max()) * guc
 
 
@@ -515,9 +516,9 @@ def uret_okul(bpm, sure, tohum):
         for v in (0.0, 2.0):                                   # yumusak kick
             ekle(davul, kick() * 0.62, t0 + v * vurus)
         for v in (1.0, 3.0):                                   # alkis
-            ekle(davul, alkis() * 0.40, t0 + v * vurus)
+            ekle(davul, alkis() * 0.26, t0 + v * vurus)
         for k in range(8):                                     # shaker
-            ekle(davul, shaker_yumusak(b * 8 + k) * (0.16 if k % 2 == 0 else 0.09),
+            ekle(davul, shaker_yumusak(b * 8 + k) * (0.09 if k % 2 == 0 else 0.05),
                  t0 + k * vurus / 2)
 
         # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
@@ -527,15 +528,19 @@ def uret_okul(bpm, sure, tohum):
                  t0 + k * vurus)
 
         # --- marimba eslik: kontra vuruslarda akor sesleri ----------------
+        # Eslik ve ezgi bir oktav asagi: marimbanin 3.93x kismi sesi C5'te
+        # 2 kHz'e, F5'te 2.7 kHz'e dusuyordu, yani tam sert banda.
         for k in range(4):
             for f in akor:
-                ekle(enstruman, marimba(f, 0.55, 0.12),
+                ekle(enstruman, marimba(f * 0.5, 0.65, 0.13),
                      t0 + (k + 0.5) * vurus)
 
         # --- ezgi: marimba, her dort barda bir glockenspiel iki katina ----
         if b >= 1:
             for v, f, uz in OKUL_EZGI[b % len(OKUL_EZGI)]:
-                ekle(enstruman, marimba(f, max(0.5, uz * vurus * 1.6), 0.42),
+                # Ezgi kendi oktavinda kalir. Bir oktav indirilince 400-1200 Hz
+                # bandi 17 dB bosaldi, parca sadece bas ve gurultuye dondu.
+                ekle(enstruman, marimba(f, max(0.6, uz * vurus * 1.8), 0.46),
                      t0 + v * vurus)
         # Glockenspiel kaldirildi: 5.40x kismi sesi 9 kHz ustunde en cok
         # enerjiyi veren kaynakti. Yerine akorun sicak alt oktavi geliyor.
@@ -702,8 +707,8 @@ TON_ZINCIRI = {
     # Marimba ve glockenspiel parlakligini tizde tasiyor, ustte genis birakilir.
     # Tepe sert sinirlandi: olcum begenilen piyano parcasina gore 5-9 kHz'de
     # 18, 9 kHz ustunde 22 dB fazla enerji gosterdi.
-    "okul": "highpass=f=45,lowpass=f=7600,equalizer=f=3200:t=q:w=1.1:g=-5,"
-            "equalizer=f=6000:t=q:w=1.0:g=-4,alimiter=limit=0.92",
+    "okul": "highpass=f=45,lowpass=f=6500,equalizer=f=3000:t=q:w=1.0:g=-5,"
+            "equalizer=f=4800:t=q:w=1.0:g=-4,alimiter=limit=0.92",
     "keman": "highpass=f=32,lowpass=f=8200,equalizer=f=3200:t=q:w=1.1:g=-4,"
              "alimiter=limit=0.92",
     "_": "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
