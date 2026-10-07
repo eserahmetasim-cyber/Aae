@@ -145,6 +145,136 @@ def _kask_yazi(s, merkez, yaricap, bakis, yukari, metin="AAE",
         x += harf_g + bosluk
 
 
+# Gercek kask olculeri. Kafa kaliplari "ara oval" (en yaygin), "uzun oval" ve
+# "yuvarlak oval"; ara oval onden arkaya yanlardan uzundur - kure degil yumurta.
+# Kapali kaskin arkadan gorunusunde dort sey okunur: yukari dogru daralan
+# kabuk, tepeye yakin duran spoiler, onun altinda egzoz delikleri ve en altta
+# ense rulosu. Onde cene bari one tasar; kure bunlarin hicbirini vermiyordu.
+# Arkadan bakista kask daireden daha dar ve uzundur; esit yarıcap verince
+# top gibi duruyordu.
+KASK_R = (0.131, 0.159, 0.163)          # (yan, yukseklik, on-arka)
+KASK_KOYU, KASK_METAL = (38, 41, 47), (62, 66, 74)
+VIZ_A, VIZ_T0, VIZ_T1 = 1.20, -0.32, 0.21     # vizor acikligi
+
+
+def _kask_olcu(t, a):
+    """Cene bari one tasar, agiz hizasinda kabuk yanlardan hafif daralir."""
+    rx, ry, rz = KASK_R
+    on = max(0.0, math.cos(a)) ** 1.5
+    alt = min(1.0, max(0.0, (VIZ_T0 + 0.14 - t) / 0.80))
+    return (rx * (1.0 - 0.10 * alt * on), ry, rz * (1.0 + 0.36 * alt * on))
+
+
+def _kask_p(merkez, t, a, pay=1.0):
+    r = _kask_olcu(t, a)
+    return [merkez[0] + math.cos(t) * math.sin(a) * r[0] * pay,
+            merkez[1] + math.sin(t) * r[1] * pay,
+            merkez[2] + math.cos(t) * math.cos(a) * r[2] * pay]
+
+
+def _kask_alt(a):
+    """Kabugun alt kenari: onde cene barina iner, yanlarda kulagi orter,
+    arkada ense hareket edebilsin diye yukari kivrilir."""
+    return -0.80 - 0.26 * math.cos(a)
+
+
+def _kask_yama(s, merkez, t0, t1, a0, a1, renk, pay=1.0, na=4, nt=3):
+    """Kabuga oturan dikdortgen yama (havalandirma agzi, vizor, cerceve)."""
+    for j in range(na):
+        aa0 = a0 + (a1 - a0) * j / na
+        aa1 = a0 + (a1 - a0) * (j + 1) / na
+        for i in range(nt):
+            tt0 = t0 + (t1 - t0) * i / nt
+            tt1 = t0 + (t1 - t0) * (i + 1) / nt
+            c = renk(i / max(1, nt - 1)) if callable(renk) else renk
+            s.yuzey([_kask_p(merkez, tt0, aa0, pay), _kask_p(merkez, tt0, aa1, pay),
+                     _kask_p(merkez, tt1, aa1, pay), _kask_p(merkez, tt1, aa0, pay)], c)
+
+
+def _kask(s, merkez, kabuk=KREM, aksan=TURUNCU):
+    """Kapali (full face) kask."""
+    merkez = np.asarray(merkez, dtype=float)
+    NA, NT = 28, 9
+
+    for j in range(NA):                                   # --- kabuk ---
+        a0, a1 = 2 * math.pi * j / NA, 2 * math.pi * (j + 1) / NA
+        b0, b1 = _kask_alt(a0), _kask_alt(a1)
+        for i in range(NT):
+            u0, u1 = i / NT, (i + 1) / NT
+            s.yuzey([_kask_p(merkez, b0 + (math.pi / 2 - b0) * u0, a0),
+                     _kask_p(merkez, b1 + (math.pi / 2 - b1) * u0, a1),
+                     _kask_p(merkez, b1 + (math.pi / 2 - b1) * u1, a1),
+                     _kask_p(merkez, b0 + (math.pi / 2 - b0) * u1, a0)], kabuk)
+
+    for j in range(NA):                                   # --- ense rulosu ---
+        a0, a1 = 2 * math.pi * j / NA, 2 * math.pi * (j + 1) / NA
+        b0, b1 = _kask_alt(a0), _kask_alt(a1)
+        s.yuzey([_kask_p(merkez, b0, a0), _kask_p(merkez, b1, a1),
+                 _kask_p(merkez, b1 - 0.13, a1, 0.90),
+                 _kask_p(merkez, b0 - 0.13, a0, 0.90)], KASK_KOYU)
+
+    # --- vizor: koyu cerceve + icine oturan camlar (ustte gok yansimasi) ---
+    _kask_yama(s, merkez, VIZ_T0 - 0.05, VIZ_T1 + 0.05, -VIZ_A - 0.05, VIZ_A + 0.05,
+               KASK_KOYU, pay=1.004, na=14, nt=2)
+    _kask_yama(s, merkez, VIZ_T0, VIZ_T1, -VIZ_A, VIZ_A,
+               lambda u: tuple(min(255, int(v * (0.78 + 1.25 * u * u)))
+                               for v in (47, 59, 77)), pay=1.016, na=14, nt=5)
+
+    # --- tepe seridi: on-arka, kutupta genisleyerek tam kapanir ------------
+    # Sabit azimut genisligi verilince serit kutupta sivri bir uca donusuyordu.
+    def _da(t):
+        return math.asin(min(1.0, 0.032 / max(0.012, _kask_olcu(t, 0.0)[0] * math.cos(t))))
+
+    for sektor, t_bas in ((0.0, VIZ_T1 + 0.09), (math.pi, -0.10)):
+        for i in range(8):
+            u0 = t_bas + (math.pi / 2 - t_bas) * i / 8
+            u1 = t_bas + (math.pi / 2 - t_bas) * (i + 1) / 8
+            d0, d1 = _da(u0), _da(u1)
+            for j in range(4):
+                a00 = sektor - d0 + 2 * d0 * j / 4
+                a01 = sektor - d0 + 2 * d0 * (j + 1) / 4
+                a10 = sektor - d1 + 2 * d1 * j / 4
+                a11 = sektor - d1 + 2 * d1 * (j + 1) / 4
+                s.yuzey([_kask_p(merkez, u0, a00, 1.006),
+                         _kask_p(merkez, u0, a01, 1.006),
+                         _kask_p(merkez, u1, a11, 1.006),
+                         _kask_p(merkez, u1, a10, 1.006)], aksan)
+
+    # --- arka spoiler: ortada kalinlasip kenarlarda kabuga karisan ordek
+    #     kuyrugu. Kutu olarak konunca arkadan "T" gibi cikinti yapiyordu.
+    SP, ST0, ST1 = 0.50, -0.02, 0.30
+    def _sp(a):
+        return 1.0 + 0.085 * math.cos((a - math.pi) / SP * (math.pi / 2))
+    for j in range(10):
+        a0 = math.pi - SP + 2 * SP * j / 10
+        a1 = math.pi - SP + 2 * SP * (j + 1) / 10
+        p0, p1 = _sp(a0), _sp(a1)
+        for i in range(3):
+            t0 = ST0 + (ST1 - ST0) * i / 3
+            t1 = ST0 + (ST1 - ST0) * (i + 1) / 3
+            s.yuzey([_kask_p(merkez, t0, a0, p0), _kask_p(merkez, t0, a1, p1),
+                     _kask_p(merkez, t1, a1, p1), _kask_p(merkez, t1, a0, p0)], kabuk)
+        s.yuzey([_kask_p(merkez, ST0, a0, p0), _kask_p(merkez, ST0, a1, p1),
+                 _kask_p(merkez, ST0 - 0.13, a1), _kask_p(merkez, ST0 - 0.13, a0)],
+                KASK_KOYU)
+
+    # --- havalandirma agizlari: kabuga gomulu koyu yamalar ------------------
+    _kask_yama(s, merkez, -0.46, -0.30, -0.26, 0.26, KASK_KOYU, 1.004, na=5, nt=2)
+    for yan in (-1, 1):                                   # arka egzozlar
+        _kask_yama(s, merkez, -0.17, -0.03, yan * (math.pi - 0.52),
+                   yan * (math.pi - 0.26), KASK_KOYU, 1.004, na=3, nt=2)
+    for yan in (-1, 1):                                   # tepe girisleri
+        _kask_yama(s, merkez, 0.52, 0.80, yan * 0.16, yan * 0.42,
+                   KASK_KOYU, 1.004, na=3, nt=2)
+    for yan in (-1, 1):                                   # vizor mentesesi
+        s.kutu(merkez + [yan * 0.126, -0.034, 0.056], [0.016, 0.040, 0.042],
+               KASK_METAL)
+
+    _kask_yazi(s, merkez, 0.158, [0, -0.46, -1], [0, 1, 0], yuk=0.042)
+    for yan in (-1, 1):
+        _kask_yazi(s, merkez, 0.140, [yan, 0.30, -0.42], [0, 1, 0], yuk=0.036)
+
+
 def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
     """fren 0-1: catal cokmesi + surucunun one yuklenmesi."""
     s = Sahne()
@@ -224,16 +354,7 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
     boyun = omuz_n + np.array([0.0, 0.13, 0.05])
     s.silindir(omuz_n, boyun, 0.085, (70, 80, 92), segment=10)
     kask_n = np.array([0.0, omuz_y + 0.27, omuz_z + 0.07])
-    s.kure(kask_n, 0.148, KREM, dilim=16, halka=10)
-    s.kutu([0, kask_n[1] - 0.01, kask_n[2] + 0.12], [0.18, 0.11, 0.06], (52, 64, 78))
-    s.kutu([0, kask_n[1] + 0.12, kask_n[2] + 0.01], [0.17, 0.05, 0.17], TURUNCU)
-    # AAE arkaya ve iki yana yazilir: ders 03 arkadan, ders 04 tepeden-arkadan,
-    # ders 01/02 yandan bakiyor. Tepeye yazilmiyor, kaskin kubbesi ortuyor.
-    _kask_yazi(s, kask_n, 0.148, [0, 0, -1], [0, 1, 0])
-    # Yan yazi daha kucuk: 0.058'de metin 60 derecelik yay kapliyor, 3/4
-    # acidan kaskin siluetine sarip "AE A" gibi okunuyordu. 0.046'da 48 derece.
-    for yan in (-1, 1):
-        _kask_yazi(s, kask_n, 0.148, [yan, 0, 0], [0, 1, 0], yuk=0.046)
+    _kask(s, kask_n)
 
     _tekerlek(s, arka_z, tekerlek_aci, on=False)
     _tekerlek(onk, on_z, tekerlek_aci, on=True)

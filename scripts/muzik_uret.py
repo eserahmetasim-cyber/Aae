@@ -409,6 +409,96 @@ def uret_atmosfer(bpm, sure, tohum):
     return mix * 0.6
 
 
+# ---------------------------------------------------------------------------
+#  KEMAN + HIPHOP
+# ---------------------------------------------------------------------------
+# A minor, boom-bap kalip. Keman toplamali sentezle: harmonikler + vibrato +
+# yay gurultusu. Tek sinus "keman" gibi duymuyor; govdeyi veren sey harmonik
+# agirliklarindaki formant tepeleri (~300 Hz ve ~700 Hz).
+KEMAN_ILERLEME = [                       # (bas koku, keman akoru)
+    (55.00, (440.00, 523.25, 659.25)),   # Am
+    (43.65, (349.23, 440.00, 523.25)),   # F
+    (65.41, (392.00, 523.25, 659.25)),   # C
+    (49.00, (392.00, 493.88, 587.33)),   # G
+]
+# (vurus, frekans, sure_vurus) - dort barlik ezgi
+KEMAN_EZGI = [
+    [(0.0, 659.25, 1.5), (1.5, 523.25, 1.0), (2.5, 587.33, 1.5)],
+    [(0.0, 523.25, 2.0), (2.0, 440.00, 2.0)],
+    [(0.0, 783.99, 1.5), (1.5, 659.25, 1.0), (2.5, 523.25, 1.5)],
+    [(0.0, 587.33, 1.5), (1.5, 493.88, 1.0), (2.5, 440.00, 1.5)],
+]
+
+
+def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0):
+    """Yayli calgi: 16 harmonik, formant agirlikli; vibrato faz uzerinden
+    uygulanir ki frekans gercekten salinsin, genlik degil."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    # vibrato ilk 120 ms'de yok, sonra aciliyor - gercek yay boyle calar
+    derinlik = 0.004 * np.clip((t - 0.12) / 0.25, 0.0, 1.0)
+    faz = 2 * np.pi * frekans * (t + derinlik / (2 * np.pi * vibrato)
+                                 * np.sin(2 * np.pi * vibrato * t))
+    s = np.zeros(n)
+    for h in range(1, 17):
+        fh = frekans * h
+        if fh > 11000:
+            break
+        a = h ** -1.15
+        a *= 1.0 + 0.9 * np.exp(-((fh - 300.0) / 130.0) ** 2) \
+                 + 0.7 * np.exp(-((fh - 720.0) / 230.0) ** 2)
+        s += a * np.sin(faz * h + (h % 3))
+    s /= max(1e-9, np.abs(s).max())
+    # yay gurultusu: atakta duyulur, sonra siniri
+    rng = np.random.default_rng(500 + tohum)
+    g = np.diff(rng.normal(0, 1, n + 1))
+    g /= max(1e-9, np.abs(g).max())
+    s += g * 0.05 * np.exp(-t * 7.0)
+    return s * zarf(n, 0.055, 0.18, 0.80, 0.30) * guc
+
+
+def uret_keman(bpm, sure, tohum):
+    """Keman + hiphop: boom-bap davul, 808, pizzicato ve keman ezgi."""
+    vurus, n = 60.0 / bpm, int(sure * SR)
+    bar = 4 * vurus
+    davul, enstruman = np.zeros(n), np.zeros(n)
+    rng = np.random.default_rng(tohum)
+
+    for b in range(int(np.ceil(sure / bar))):
+        t0 = b * bar
+        kok, akor = KEMAN_ILERLEME[b % len(KEMAN_ILERLEME)]
+
+        # --- boom-bap: 1 ve 3-ten hemen sonra kick, 2 ve 4-te trampet ------
+        for v in (0.0, 1.75, 2.5):
+            ekle(davul, kick() * 0.95, t0 + v * vurus)
+        for v in (1.0, 3.0):
+            ekle(davul, trampet() * 0.62, t0 + v * vurus)
+        for k in range(8):                                  # 8-lik hatlar
+            acik = (k == 7 and b % 2 == 1)
+            ekle(davul, hihat(acik) * (0.17 if k % 2 else 0.26),
+                 t0 + k * vurus / 2)
+        ekle(enstruman, bas_808(kok, bar * 0.92) * 0.60, t0)
+
+        # --- pizzicato: olcunun ikinci yarisinda akor arpeji --------------
+        for k, f in enumerate(akor):
+            ekle(enstruman, tel_cal(f / 2, 1.1, 0.5, tohum + k) * 0.17,
+                 t0 + (2.0 + k * 0.5) * vurus)
+
+        # --- keman ezgi: ilk bar bos, kulagi davula alistirir -------------
+        if b >= 1:
+            for v, f, uz in KEMAN_EZGI[b % len(KEMAN_EZGI)]:
+                oktav = 0.5 if b % 8 >= 4 else 1.0          # ikinci devir pes
+                ekle(enstruman, keman_nota(f * oktav, uz * vurus, 0.42,
+                                           tohum=b * 7 + int(v * 2)),
+                     t0 + v * vurus)
+            ekle(enstruman, yayli([f * 0.5 for f in akor], int(bar * SR)) * 0.30, t0)
+
+    enstruman = yanki_uygula(enstruman, oda_yankisi(1.7), islak=0.26)
+    mix = davul * 0.52 + enstruman
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.72
+
+
 def wav_yaz(yol: str, mono: np.ndarray) -> None:
     # Hafif genislik: sag kanali 11 ms geciktir
     gecikme = int(0.011 * SR)
@@ -422,12 +512,25 @@ def wav_yaz(yol: str, mono: np.ndarray) -> None:
         fh.writeframes(veri.tobytes())
 
 
+# Stile gore ton sekillendirme. Keman ustte daha genis birakilir, yoksa
+# yayli parlakligini kaybedip sentetik duyuluyor.
+TON_ZINCIRI = {
+    "sade": "highpass=f=38,lowpass=f=11000,equalizer=f=2800:t=q:w=1.4:g=-2.5,"
+            "alimiter=limit=0.92",
+    "keman": "highpass=f=32,lowpass=f=12500,equalizer=f=2600:t=q:w=1.3:g=-2.5,"
+             "alimiter=limit=0.92",
+    "_": "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
+         "alimiter=limit=0.92",
+}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="AAE fon muzigi uretici")
     ap.add_argument("--stil",
-                    choices=("sade", "phonk", "piyano", "lofi", "atmosfer"),
+                    choices=("sade", "phonk", "piyano", "lofi", "atmosfer",
+                             "keman"),
                     default="sade",
-                    help="sade | piyano | lofi | atmosfer | phonk")
+                    help="sade | piyano | lofi | atmosfer | phonk | keman")
     ap.add_argument("--bpm", type=float, default=0.0, help="0 = stile gore secilir")
     ap.add_argument("--sure", type=float, default=64.0, help="saniye")
     ap.add_argument("--tohum", type=int, default=3, help="varyasyon icin")
@@ -435,9 +538,9 @@ def main() -> None:
     args = ap.parse_args()
 
     VARSAYILAN_BPM = {"sade": 70.0, "piyano": 64.0, "lofi": 76.0,
-                      "atmosfer": 60.0, "phonk": 82.0}
+                      "atmosfer": 60.0, "phonk": 82.0, "keman": 88.0}
     URETICI = {"sade": uret_sade, "piyano": uret_piyano, "lofi": uret_lofi,
-               "atmosfer": uret_atmosfer, "phonk": uret}
+               "atmosfer": uret_atmosfer, "phonk": uret, "keman": uret_keman}
     bpm = args.bpm or VARSAYILAN_BPM[args.stil]
     cikti = args.cikti or f"assets/muzik/aae_{args.stil}.mp3"
     print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
@@ -453,13 +556,13 @@ def main() -> None:
             ["ffmpeg", "-y", "-v", "error", "-i", gecici,
              # 30 Hz alti gereksiz, 9.5 kHz ustu tiz anlatimla cakisiyor;
              # 2.5 kHz civarini da biraz acalim ki konusma bandi bos kalsin.
-             "-af", ("highpass=f=38,lowpass=f=11000,equalizer=f=2800:t=q:w=1.4:g=-2.5,"
-                     "alimiter=limit=0.92") if args.stil == "sade" else
-                    ("highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
-                     "alimiter=limit=0.92"),
+             # Tek zincir: once ton sekillendirme, sonra seviye. Daha once
+             # -af iki kez veriliyordu ve ikincisi birincisini eziyordu, yani
+             # highpass/lowpass hic uygulanmiyordu.
              # Stiller arasi seviye farki karsilastirmayi bozuyordu: hepsi
              # ayni hedefe (-16 LUFS) oturtulur, son miks zaten -14'e normalize.
-             "-af:a", "loudnorm=I=-16:TP=-1.5:LRA=11",
+             "-af", TON_ZINCIRI.get(args.stil, TON_ZINCIRI["_"])
+                    + ",loudnorm=I=-16:TP=-1.5:LRA=11",
              "-c:a", "libmp3lame", "-b:a", "192k", args.cikti],
             check=True)
     finally:

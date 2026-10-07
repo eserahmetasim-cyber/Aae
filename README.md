@@ -118,6 +118,30 @@ python3 scripts/publish_youtube.py   --ders content/dersler/01-acil-fren.yml --k
 python3 scripts/publish_instagram.py --ders content/dersler/01-acil-fren.yml --kuru
 ```
 
+### Günlük otomatik yayın
+
+`gunluk-yayin` iş akışı **her sabah 10:00'da (Istanbul)** sıradaki dersi render
+edip YouTube'a `public`, Instagram'a Reel olarak yayınlar.
+
+Sıra `content/yayin_kaydi.json` içinde tutulur: her yayından sonra ders
+işaretlenir ve kayıt depoya geri yazılır, böylece ertesi gün bir sonraki ders
+çıkar. Dersler bitince iş akışı "sırada ders yok" deyip yeşil biter — devam
+etmesi için yeni ders eklemen yeter.
+
+```bash
+python3 scripts/yayin_sirasi.py --durum      # hangi ders yayında, hangisi bekliyor
+python3 scripts/yayin_sirasi.py --sonraki    # sırada bekleyen dersin yolu
+```
+
+> **Açma anahtarı Secret'lardır.** Secret girilmeden hiçbir şey yayınlanmaz:
+> o platform atlanır, ders sırada kalır, iş akışı yeşil biter. YouTube için
+> `YT_CLIENT_ID` + `YT_CLIENT_SECRET` + `YT_REFRESH_TOKEN`, Instagram için
+> `IG_USER_ID` + `IG_ACCESS_TOKEN`. Kurulum aşağıdaki bölümlerde.
+>
+> Instagram Reel yayınlandığı anda herkese açık olur ve API'den geri alınamaz.
+> Günlük yayını durdurmak için **Actions → Gunluk Yayin → ⋯ → Disable workflow**
+> ya da ilgili Secret'ı sil.
+
 `--kuru` hiçbir istek göndermeden ne yapılacağını gösterir.
 `publish_instagram.py --sadece-hazirla` videoyu yükleyip işletir ama **yayınlamaz**.
 
@@ -179,7 +203,8 @@ Parçaların **hepsi `scripts/muzik_uret.py` ile sentezlendi** — hiçbir yerde
 
 | Dosya | Karakter |
 |---|---|
-| `aae_piyano.mp3` | **Varsayılan.** 64 BPM; sakin piyano ezgisi (kısmi sesleri hafif akortsuz, başta çekiç gürültüsü) + çok kısık yaylı + oda yankısı. Ritim yok. |
+| `aae_keman.mp3` | **Varsayılan.** 88 BPM; keman ezgisi (16 harmonik + vibrato + yay gürültüsü, ~300 ve ~700 Hz formant tepeleri) üzerine boom-bap davul, 808 bas ve pizzicato arpej. |
+| `aae_piyano.mp3` | 64 BPM; sakin piyano ezgisi (kısmi sesleri hafif akortsuz, başta çekiç gürültüsü) + çok kısık yaylı + oda yankısı. Ritim yok. |
 | `aae_sade.mp3` | 70 BPM; Karplus-Strong telli çalgı + bas hattı + fırça vuruşu. Boş başlar, açılır, sonda incelir. |
 | `aae_yol_okulu.mp3` | 82 BPM; koyu phonk/trap yatağı (808 bas + cowbell). |
 | `aae_lofi.mp3` ✻ | 76 BPM; Rhodes benzeri akorlar + yumuşak beat + plak çatırtısı. |
@@ -194,7 +219,7 @@ python3 scripts/muzik_uret.py --stil piyano --bpm 60 --tohum 9 \
         --cikti assets/muzik/aae_yavas.mp3
 ```
 
-`--stil` (piyano / sade / lofi / atmosfer / phonk) karakteri, `--tohum`
+`--stil` (keman / piyano / sade / lofi / atmosfer / phonk) karakteri, `--tohum`
 varyasyonu, `--bpm` tempoyu değiştirir. Ürettiğin dosyayı ders dosyasındaki
 `muzik:` alanına yaz. Her parça -16 LUFS'a oturtulur, böylece stiller arasında
 seviye farkı olmaz.
@@ -265,7 +290,7 @@ Reels: MP4/MOV, H.264/HEVC + AAC, 23–60 fps, **≤ 300 MB**, 9:16 önerilir, `
 content/dersler/        → ders dosyaları (_sablon.yml kopyala)
 videos/                 → ham çekimler (Git LFS)
 output/                 → render edilmiş videolar
-assets/muzik/           → fon müziği (aae_piyano.mp3 varsayılan)
+assets/muzik/           → fon müziği (aae_keman.mp3 varsayılan)
 scripts/
   lesson.py                 → ders dosyasını okur/doğrular, drawtext metinlerini üretir
   make_training_video.sh    → ffmpeg render
@@ -274,9 +299,12 @@ scripts/
   get_youtube_token.py      → YT refresh token (tek seferlik, yerelde)
   get_instagram_ids.py      → IG user id + uzun ömürlü jeton (tek seferlik, yerelde)
   muzik_uret.py             → telifsiz fon müziği besteler (numpy gerekir)
+  yayin_sirasi.py           → günlük yayın sırası (hangi ders yayınlandı)
   sahne_uret.py             → düz (2B) sahne + motor sesi (numpy, pillow)
   sahne3b.py                → 3 boyutlu sahne (fren / viraj)
   uc_boyut.py               → yazılımsal 3B motor: kamera, ışık, derinlik
 .github/workflows/egitim-videosu.yml
+.github/workflows/gunluk-yayin.yml   → her sabah 10:00 otomatik yayin
+content/yayin_kaydi.json             → hangi ders yayinlandi
 KURALLAR.md             → format, marka, yayın ve sır kuralları
 ```

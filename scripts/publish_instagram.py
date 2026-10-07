@@ -132,6 +132,8 @@ def main() -> None:
     ap.add_argument("--ders", help="content/dersler/*.yml (bos = ilk ders)")
     ap.add_argument("--video-url", help="PUBLIC video adresi (resumable yerine)")
     ap.add_argument("--kuru", action="store_true", help="istek gondermeden ne yapilacagini goster")
+    ap.add_argument("--id-dosyasi", default="",
+                    help="basarili yayinda media id'sini bu dosyaya yaz")
     ap.add_argument("--sadece-hazirla", action="store_true",
                     help="kabi hazirla ama YAYINLAMA (creation_id basilir)")
     args = ap.parse_args()
@@ -206,6 +208,9 @@ def main() -> None:
 
     sorgu = urllib.parse.urlencode({"fields": "permalink", "access_token": jeton})
     baglanti = _cagir(f"{GRAPH}/{surum}/{medya_id}?{sorgu}").get("permalink", "")
+    if args.id_dosyasi:            # gunluk yayin is akisi id'yi buradan okur
+        with open(args.id_dosyasi, "w", encoding="utf-8") as f:
+            f.write(medya_id or "")
     print(f"\nTAMAM ✓  Reel yayinda: {baglanti or medya_id}")
 
 

@@ -17,7 +17,7 @@ gunduz: false              # true = gündüz ışığı, uzak daha net
 baslangic: 0               # uzun klipten parça seç: kaçıncı saniyeden başlasın
 sure: 60                   # saniye (1-90, KURALLAR.md)
 kaynak_ses: 0.035          # motorun gerçek sesi (0 = sustur, 1 = olduğu gibi)
-muzik: "assets/muzik/aae_piyano.mp3"
+muzik: "assets/muzik/aae_keman.mp3"
 muzik_ses: 0.36
 
 kapanis: "Çıkarım tek cümle · Takip et"   # son 3 saniyede görünür
