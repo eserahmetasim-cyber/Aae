@@ -106,10 +106,9 @@ _HARF = {
 }
 
 
-def _kask_yazi(s, merkez, yaricap, bakis, yukari, metin="AAE",
-               yuk=0.066, kalin=0.012, renk=(24, 28, 36)):
-    """Kureye tegetlik bir duzlemde metni yazar. Harfler kucuk oldugu icin
-    duzlem yaklasimi kavis bozulmasi yaratmiyor."""
+def _kask_sar(merkez, yaricap, bakis, yukari, pay=0.015):
+    """Kaskin uzerine oturan yerel 2B duzlem: (u, v) -> 3B nokta dondurur.
+    Hem yazi hem bayrak bunu kullanir."""
     # Duzleme BAKAN gozun sagi: cross(bakis, yukari). Ters sirada yazilinca
     # metin aynalaniyor ve "AAE" ekranda "EAA" olarak okunuyordu.
     bakis = birim(np.asarray(bakis, dtype=float))
@@ -118,15 +117,65 @@ def _kask_yazi(s, merkez, yaricap, bakis, yukari, metin="AAE",
     merkez = np.asarray(merkez, dtype=float)
 
     def nokta(u, v):
-        """Duz duzlem yerine kurenin UZERINE sarar. Duz birakilinca yazinin
-        kenarlari kaskin siluetinden tasip kara lekeler biraktiriyordu."""
+        """Duz duzlem yerine kabugun UZERINE sarar. Duz birakilinca cizimin
+        kenarlari kaskin siluetinden tasip lekeler biraktiriyordu."""
         if yaricap <= 0.0:
-            return list(merkez + bakis * 0.010 + sag * u + ust * v)
+            return list(merkez + bakis * pay + sag * u + ust * v)
         # Pay belirgin: ressam algoritmasi yuzleri derinlige gore siraliyor,
-        # kucuk pay verilince komsu kure yuzleri harflerin uzerine biniyordu.
+        # kucuk pay verilince komsu kabuk yuzleri cizimin uzerine biniyordu.
         d = birim(bakis * yaricap + sag * u + ust * v)
-        return list(merkez + d * (yaricap + 0.015))
+        return list(merkez + d * (yaricap + pay))
 
+    return nokta
+
+
+def _cember(merkez, yaricap, aci0, aci1, adim=26):
+    """Yay uzerinde 2B nokta listesi."""
+    return [(merkez[0] + yaricap * math.cos(a), merkez[1] + yaricap * math.sin(a))
+            for a in np.linspace(aci0, aci1, adim)]
+
+
+def _kask_bayrak(s, merkez, yaricap, bakis, yukari, yuk=0.050, pay=0.014):
+    """Turk bayragi: kirmizi zemin + ay + bes koseli yildiz.
+
+    Hilal iki cemberin farki; motorda boolean yok, bu yuzden kesisim
+    noktalarindan gecen tek bir icbukey cokgen olarak kuruluyor."""
+    KIRMIZI_B, BEYAZ = (227, 10, 23), (248, 248, 246)
+    gen = yuk * 1.5
+    zemin = _kask_sar(merkez, yaricap, bakis, yukari, pay)
+    uzeri = _kask_sar(merkez, yaricap, bakis, yukari, pay + 0.005)
+
+    s.yuzey([zemin(u, v) for u, v in ((-gen / 2, -yuk / 2), (gen / 2, -yuk / 2),
+                                      (gen / 2, yuk / 2), (-gen / 2, yuk / 2))],
+            KIRMIZI_B, katman=3)
+
+    # --- hilal: dis cember Ro, ic cember Ri, merkezleri d kadar ayrik ------
+    Ro, Ri, d = 0.26 * yuk, 0.215 * yuk, 0.075 * yuk
+    Co = (-0.16 * gen, 0.0)
+    Ci = (Co[0] + d, 0.0)
+    x = (d * d + Ro * Ro - Ri * Ri) / (2 * d)          # kesisim, Co merkezli
+    y = math.sqrt(max(0.0, Ro * Ro - x * x))
+    t_dis = math.atan2(y, x)
+    t_ic = math.atan2(y, x - d)
+    hilal = _cember(Co, Ro, t_dis, 2 * math.pi - t_dis) \
+        + _cember(Ci, Ri, 2 * math.pi - t_ic, t_ic)
+    s.yuzey([uzeri(u, v) for u, v in hilal], BEYAZ, katman=3)
+
+    # --- yildiz: bir ucu sancak tarafina (saga) bakar ----------------------
+    Ry, Ciz = 0.115 * yuk, (0.02 * gen, 0.0)
+    yildiz = []
+    for i in range(10):
+        r = Ry if i % 2 == 0 else Ry * 0.42
+        a = i * math.pi / 5
+        yildiz.append((Ciz[0] + r * math.cos(a), Ciz[1] + r * math.sin(a)))
+    s.yuzey([uzeri(u, v) for u, v in yildiz], BEYAZ, katman=3)
+
+
+def _kask_yazi(s, merkez, yaricap, bakis, yukari, metin="AAE",
+               yuk=0.066, kalin=0.012, renk=(24, 28, 36)):
+    """Kaska tegetlik bir duzlemde metni yazar. Harfler kucuk oldugu icin
+    duzlem yaklasimi kavis bozulmasi yaratmiyor."""
+    nokta = _kask_sar(merkez, yaricap, bakis, yukari)
     harf_g, bosluk = yuk * 0.74, yuk * 0.22
     genislik = len(metin) * harf_g + (len(metin) - 1) * bosluk
     x = -genislik / 2.0
@@ -273,6 +322,8 @@ def _kask(s, merkez, kabuk=KREM, aksan=TURUNCU):
     _kask_yazi(s, merkez, 0.158, [0, -0.46, -1], [0, 1, 0], yuk=0.042)
     for yan in (-1, 1):
         _kask_yazi(s, merkez, 0.140, [yan, 0.30, -0.42], [0, 1, 0], yuk=0.036)
+        # Bayrak sakakta: onde vizor cercevesi, arkada AAE var, arasi bos.
+        _kask_bayrak(s, merkez, 0.140, [yan, 0.45, 0.25], [0, 1, 0], yuk=0.046)
 
 
 def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
