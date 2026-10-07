@@ -472,8 +472,24 @@ def alkis():
     return s / max(1e-9, np.abs(s).max())
 
 
+def pizzicato_bas(frekans, sure, guc=1.0, tohum=0):
+    """Parmakla cekilen kontrbas: Karplus-Strong tel + kisa sinus govde.
+
+    Onceki yuruyen bas bas_cal ile caliniyordu: yumusak atakli, uzun
+    surdurmeli sinus yigini, yani YAYLA cekilmis gibi duyuluyordu ve okul
+    parcasinda keman varmis izlenimi veriyordu. Cekilen tel o izlenimi
+    birakmiyor ve marimba ile ayni aileden (vurmali/cekme) duruyor."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    tel = tel_cal(frekans, sure, 0.60, tohum)
+    govde = np.sin(2 * np.pi * frekans * t) * np.exp(-t * 5.5) * 0.55
+    s = tel * 0.75 + govde
+    s *= zarf(n, 0.003, 0.12, 0.45, 0.30)
+    return s / max(1e-9, np.abs(s).max()) * guc
+
+
 def uret_okul(bpm, sure, tohum):
-    """Okul havasi: marimba ezgi, alkis, hafif kick ve yuruyen bas."""
+    """Okul havasi: marimba ezgi, alkis, hafif kick ve cekme kontrbas."""
     vurus, n = 60.0 / bpm, int(sure * SR)
     bar = 4 * vurus
     davul, enstruman = np.zeros(n), np.zeros(n)
@@ -492,7 +508,8 @@ def uret_okul(bpm, sure, tohum):
 
         # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
         for k, oran in enumerate((1.0, 1.0, 1.5, 1.25)):
-            ekle(enstruman, bas_cal(kok * oran, vurus * 0.92) * 0.30,
+            ekle(enstruman, pizzicato_bas(kok * oran, vurus * 0.95, 0.34,
+                                          tohum + b * 4 + k),
                  t0 + k * vurus)
 
         # --- marimba eslik: kontra vuruslarda akor sesleri ----------------
