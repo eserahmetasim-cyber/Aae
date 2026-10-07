@@ -9,7 +9,51 @@
 
 ---
 
-## 0. GÜNCEL DURUM — 03.10.2026 (bulut oturumu tespiti)
+## 0. GÜNCEL DURUM
+
+### 🟢 07.10.2026 — ADSENSE ONAYI GELDİ
+
+AAE panelde "site için reklam onayı alındı" yazdığını gördü ve reklamların
+yayına alınmasını istedi. Başvuru 28.08'de yapılmıştı → **40 gün**.
+
+> ⚠ Bu bulut oturumundan **bağımsız doğrulanamadı**: tarayıcı/ekran aracı yok,
+> site egress'te engelli, onay maili 008 hesabına gittiği için Gmail'de de yok
+> (7 gün tarandı, hiç AdSense maili gelmemiş). Bu projede bir kez önbellekten
+> gelen yanlış uyarı yaşandığı için iş emri **paneldeki durumu okumakla
+> başlıyor** — onaylı değilse dur ve bildir.
+
+**AAE'nin kararı:** Auto ads **maksimum gelir** — tüm formatlar açık (vignette,
+anchor, yan panel dahil), yoğunluk en yüksek, **ana sayfa dahil**.
+(28.08'de danışmanlık sitesinde imaj maliyeti olabileceğini söylemiştim; AAE o
+gün de bugün de bilerek devam dedi. Karar onun, tam kapsamıyla uygulanıyor.)
+
+**Reklamsız kalacak üç sayfa — tercih değil zorunluluk:** `gizlilik.html` ve
+`gizlilik-politikasi.html` (Play Store'a verilen uygulama gizlilik politikaları;
+reklam koymak uygulama incelemesinde sorun çıkarır) ve `404.html` (içeriksiz
+sayfa, AdSense politikası). Bu üçünde AdSense script'i **hiç yok ve
+eklenmeyecek**. `google19071191ddf4150f.html` da dokunulmaz.
+
+**Kalan iş iki tık, ikisi de yerel oturumda:** Auto ads'i açmak ve 30.08'de
+kurulup onay beklediği için yayınlanamayan **CMP (AB rıza mesajı)** mesajını
+yayınlamak. İş emri 07.10'da kuyruğa alındı.
+
+### 🟡 07.10.2026 — Mini Mühendis "yayınlasınlar" talebi
+
+AAE, Mini Mühendis için Google Play desteğine yazılmasını istedi. **Teşhis
+bunun yanlış kapı olduğunu gösteriyor:** 12.09 maili yayınlama **izni** verdi,
+yayına almadı; 12.09–07.10 arasında Play Console'dan **hiç** "sürüm incelemede /
+yayınlandı / reddedildi" maili gelmedi (Gmail 30 gün tarandı). Yani Google bir
+şeyi bekletmiyor — **üretim sürümü hiç yayınlanmamış olabilir.**
+
+Doğru adım: Play Console → Mini Mühendis → **Üretim** track'inde sürüm oluşturup
+incelemeye göndermek. Destek kaydı ancak sürüm gerçekten **7+ gün "İncelemede"**
+kalırsa anlamlı; o durum için hazır metin: **`docs/play-destek-mesaji.md`**
+(Play desteğinin açık e-posta adresi yok, Play Console → Yardım ve geri bildirim
+→ Destek ekibiyle iletişime geç formundan gidiliyor).
+
+---
+
+## 0b. Önceki durum — 03.10.2026 (bulut oturumu tespiti)
 
 Gmail (eserahmetasim@gmail.com) üzerinden doğrulandı. **12.09'dan beri kimsenin
 görmediği iki uyarı var** — AAE'nin bilgisayarı 13.09'dan beri erişilemez olduğu
@@ -362,7 +406,7 @@ süre boş 404 verdi — dağıtım sonrası 200 testi bu yüzden şart.)
 | Hesap | **ahmetasimeser008@gmail.com** (eserahmetasim'de AdSense hesabı YOK) |
 | Konsol | https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites |
 | Başvuru | 28.08.2026 14:19 |
-| Son bilinen durum | **"Hazırlanıyor"** (12.09 itibarıyla ~15. gün) |
+| Son bilinen durum | **ONAYLANDI — 07.10.2026** (AAE panelden okudu; bkz. §0). Öncesinde 12.09'da "Hazırlanıyor" idi. |
 
 Yayıncı kimliği eski 2020 sitesinin AdSense hesabından geri kazanıldı
 (`eski-site-yedek\` içinde grep ile bulundu) — ödeme bilgileri bile hazırdı.

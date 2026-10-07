@@ -10,19 +10,18 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-06",
+  "guncelleme": "2026-10-07",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
-
   "mini_muhendis": {
     "ad": "Mini Mühendis: Malzeme Oyunu",
     "paket": "com.saemuhendislik.mini_muhendis",
     "store_http": null,
     "yayinda": false,
-    "asama": "production access verildi (12.09), surum yayinlanmamis gorunuyor",
-    "son_mail": "2026-09-12 — production access granted"
+    "asama": "production access var (12.09) ama uretim surumu yayinlanmamis gorunuyor — 12.09-07.10 arasi Play Console'dan hic surum/inceleme/ret maili gelmedi",
+    "son_mail": "2026-09-12 — production access granted",
+    "_yayin_notu": "AAE 07.10'da 'desteqe yaz yayinlasinlar' dedi. Teshis: Google bir sey bekletmiyor, rollout adimi eksik. Destek kaydi ancak sürüm gercekten 7+ gun 'Incelemede' kalirsa anlamli — hazir metin docs/play-destek-mesaji.md."
   },
-
   "yol_okulu": {
     "ad": "AAE Motosiklet Yol Okulu",
     "paket": "com.saemuhendislik.yol_okulu_3b",
@@ -35,18 +34,25 @@
     "_tester_notu": "Google kisisel hesaplar icin 14 gun boyunca 12 kesintisiz opt-in tester istiyor. Bu sayi YALNIZCA Play Console'da gorunur, mailden okunamaz.",
     "son_mail": null
   },
-
   "adsense": {
     "yayinci": "ca-pub-8433209614215281",
     "hesap": "ahmetasimeser008@gmail.com",
     "basvuru": "2026-08-28",
-    "durum": "Hazirlaniyor",
+    "durum": "ONAYLANDI (07.10 — AAE panelden okudu; bagimsiz dogrulanamadi)",
     "auto_ads": false,
     "cmp_yayinda": false,
     "son_mail": null,
-    "_mail_notu": "AdSense maili 008 hesabina gidiyor; Gmail baglayicisi eserahmetasim@gmail.com'a bagli. 008'den yonlendirme kurulana kadar onay/ret maili gorunmez."
+    "_mail_notu": "AdSense maili 008 hesabina gidiyor; Gmail baglayicisi eserahmetasim@gmail.com'a bagli. 008'den yonlendirme kurulana kadar onay/ret maili gorunmez.",
+    "onay_tarihi": "2026-10-07",
+    "yogunluk_karari": "MAKSIMUM — tum formatlar (vignette, anchor, yan panel) acik, yogunluk en yuksek, ANA SAYFA DAHIL (AAE karari 07.10)",
+    "reklamsiz_kalacak": [
+      "gizlilik.html",
+      "gizlilik-politikasi.html",
+      "404.html"
+    ],
+    "_reklamsiz_notu": "Ilk ikisi Play Store'a verilen uygulama gizlilik politikalari, ucuncusu iceriksiz sayfa. AdSense script'i bu ucunde hic yok ve EKLENMEYECEK.",
+    "_kalan": "Auto ads acma + CMP yayinlama yerel oturumda; is emri 07.10'da kuyruga alindi, bilgisayar aciliminda islenecek."
   },
-
   "search_console": {
     "acik_sorun": 3,
     "sorunlar": [
@@ -56,7 +62,6 @@
     ],
     "son_mail": "2026-09-16 — duzeltme basarisiz + iki yeni kopya nedeni"
   },
-
   "site": {
     "apex_http": null,
     "www_http": null,
@@ -65,7 +70,6 @@
     "ads_txt_dogru": null,
     "_www_notu": "BAS SUPHELI: www apex'e 301 yonlendirmiyorsa Google iki ozdes site goruyor — Search Console'daki 'Google farkli standart sayfa secti' sorununun en guclu sebebi. 10.09'da www/ads.txt 200 donuyordu."
   },
-
   "yerel_oturum": {
     "id": "session_014mvmA2G5DBuuSRYtxDLTwk",
     "baglanti": "disconnected",

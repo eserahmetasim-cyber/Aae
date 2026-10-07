@@ -1,11 +1,13 @@
 # Yerel oturuma yapıştırılacak iş emri
 
-> Hazırlanma tarihi: **06.10.2026**. Bilgisayardaki Claude oturumuna
-> ("Saemuhendislik sistem düzenlemesi") açılınca yapıştır.
+> Son güncelleme: **07.10.2026** (AdSense onayı geldi, sıra değişti).
+> Bilgisayardaki Claude oturumuna ("Saemuhendislik sistem düzenlemesi") açılınca
+> yapıştır.
 >
-> Not: Bu emir bulut oturumundan `send_message` ile 03.10 ve 06.10'da zaten
-> kuyruğa alındı — bilgisayar bağlanınca kendiliğinden düşmesi gerekir. Bu dosya
-> yedek: kuyruk düşmezse ya da yeni bir oturum açarsan aşağıdaki bloğu yapıştır.
+> Not: Bu emir bulut oturumundan `send_message` ile 03.10, 06.10 ve 07.10'da
+> zaten kuyruğa alındı — bilgisayar bağlanınca kendiliğinden düşmesi gerekir. Bu
+> dosya yedek: kuyruk düşmezse ya da yeni bir oturum açarsan aşağıdaki bloğu
+> yapıştır.
 
 ---
 
@@ -13,7 +15,30 @@
 
 ---
 
-Beş işi bu sırayla yap, sonucu bana tek mesajda özetle.
+Bu işleri bu sırayla yap, sonucu bana tek mesajda özetle.
+
+**00) ⚠⚠ EN ÖNCE — AdSense ONAYI GELDİ, reklamları yayına al (07.10).**
+Panelde "site için reklam onayı alındı" görüldü. İlk iş durumu teyit etmek:
+`https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites` (008, `u/1`;
+screenshot yerine JS / `get_page_text`).
+- Onaylıysa: **Reklamlar → Siteye göre → `saemuhendislik.com` → düzenle**
+  - Otomatik reklamlar **AÇIK**
+  - **Tüm formatlar açık**: sayfa içi (in-article, in-feed, multiplex),
+    **vignette**, **anchor**, **yan panel** — hiçbirini kapatma
+  - **Yoğunluk kaydırıcısı en yükseğe**
+  - Sayfa hariç tutma varsa temizle — **ana sayfa dahil** her yerde reklam
+  - Siteye uygula / Kaydet
+- Sonra **Gizlilik ve mesajlaşma → Avrupa tüzükleri → mesaj oluştur → Yayınla**
+  (bilgiler kayıtlı: "SAE Mühendislik", `/cerez-politikasi`, logo, 198 ortak).
+- `ads.txt` durumu "Yetkili"ye dönmeli; dönmezse 24-48 saat normal.
+- `C:\SAE-yukleme` içinde grep: AdSense script'i 22 içerik sayfasının
+  `<head>`'inde duruyor mu? Eksikse Python+UTF-8 ile ekle, zip → dağıt → 200 doğrula.
+
+⚠ **Üç sayfa reklamsız KALACAK** (tercih değil, zorunluluk): `gizlilik.html` ve
+`gizlilik-politikasi.html` (Play Store'a verilen uygulama gizlilik politikaları —
+reklam koymak uygulama incelemesinde sorun çıkarır) ve `404.html` (içeriksiz
+sayfa, AdSense politikası). Bu üçünde script hiç yok, **eklenmeyecek**.
+`google19071191ddf4150f.html` de dokunulmaz.
 
 **0) ⚠ ÖNCE BU — Android geliştirici doğrulaması, son tarih GEÇTİ.**
 04.09'daki "[Son hatırlatma]" maili: *"Tüm Google Play uygulamalarının ... **30
@@ -74,6 +99,25 @@ kullanma) → Pages `deployments/new` → gizli zip input'u → "N/N files uploa
 sorun için **"Düzeltmeyi doğrula"** başlat.
 
 ⚠ Temiz URL kuralı: link / canonical / sitemap'te **`.html` yazılmaz**.
+
+**3b) Mini Mühendis'i YAYINA AL — AAE "artık yayınlasınlar" diyor.**
+⚠ Önce şunu anla: 12.09 maili **yayınlama izni** verdi, yayına almadı. 12.09'dan
+07.10'a kadar Play Console'dan **hiç** "sürüm incelemede / yayınlandı / reddedildi"
+maili gelmedi (Gmail'den 30 gün tarandı). Bu, **production sürümünün hiç
+yayınlanmadığını** gösteriyor — Google bir şeyi bekletmiyor, rollout adımı eksik.
+- Play Console → Mini Mühendis → **Üretim (Production)** track'i. Orada yayınlanmış
+  bir sürüm var mı, yoksa sadece kapalı/iç test mi var?
+- **Sürüm yoksa:** yeni üretim sürümü oluştur (mevcut AAB'yi seç) → sürüm notları →
+  **İncelemeye gönder / Yayınla**. Eksik kalan zorunlu alan varsa (içerik
+  derecelendirmesi, veri güvenliği formu, hedef kitle, gizlilik URL'si) tamamla.
+  Gizlilik URL'si: `https://saemuhendislik.com/gizlilik` (veya Play'de kayıtlı olan).
+- **Sürüm varsa ve "İncelemede" ise:** kaç gündür incelemede olduğunu söyle.
+  **7 günü geçmişse** `docs/play-destek-mesaji.md` dosyasındaki hazır metinle
+  Play Console → **Yardım ve geri bildirim → Destek ekibiyle iletişime geç**
+  üzerinden destek kaydı aç (Play desteğinin açık bir e-posta adresi yok, form
+  üzerinden gidiliyor). 7 günün altındaysa destek kaydı AÇMA, bekle.
+- **Reddedilmişse:** ret gerekçesini oku, düzeltilebiliyorsa düzelt ve yeniden gönder.
+- Sonucu AAE'ye net yaz: hangi aşamada, ne yapıldı, ne bekleniyor.
 
 **4) Mini Mühendis yayın durumu — rozete dokunmadan önce doğrula.**
 12.09'daki mail **yayınlama İZNİ** verdiğini söylüyor, uygulamanın yayında
