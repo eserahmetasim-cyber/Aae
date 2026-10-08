@@ -1,6 +1,6 @@
 {
   "_aciklama": "Gunluk kontrol rutininin durum dosyasi. Rutin her kosuda yeni bir oturumda dogdugu icin 'degisti mi?' sorusunu ancak bu dosyayla cevaplayabiliyor. Rutin: oku -> yeni olcumleri al -> farki hesapla -> fark varsa bildir ve bu dosyayi guncelle; fark yoksa sessiz kal. null = henuz olculemedi.",
-  "_rutin": "SAE gunluk kontrol — oyunlar + reklam (trig_01WdNFNckb7vVZfzpLbB2eC9, her gun 08:50 Europe/Istanbul)",
+  "_rutin": "SAE gunluk kontrol. DIKKAT: trig_01WdNFNckb7vVZfzpLbB2eC9 (her gun 08:50 Europe/Istanbul) KOR — firlattigi oturumda mcp_servers bos, Gmail gorunmuyor, ag CONNECT 403. Gercek gunluk kontrol 08.10dan itibaren session_01Bk2vAVxQmjnVoApiFfWWQF icinden send_later zinciriyle yapiliyor (ilk tetik trig_01Dz569oUzKyXZc1mGmARyhF, 09.10 09:55 UTC, 20 saat arayla kendini zincirliyor). Bu oturumun Gmail baglayicisi var ve 08.10da iki onemli haberi onunla buldu.",
   "_dogrulama_06_10": {
     "kosu": "2026-10-06 19:06 UTC, elle tetiklendi",
     "git_clone": "CALISTI — bu dosya okunabildi",
@@ -22,7 +22,8 @@
     "son_mail": "2026-10-07 — Play Developer Support [3-2357000041354], inceleme hizlandirildi",
     "_yayin_notu": "DUZELTME 08.10: 07.10 teshisim YANLISTI. \"Uretim surumu hic yayinlanmamis\" demistim; gercek su ki surum incelemede ve destek kaydi acilmis. Bir gun gec gordum cunku takip zincirinin gonderen filtresinde googleplay-developer-support@google.com yoktu.",
     "destek_kaydi": "3-2357000041354",
-    "_KURAL": "YENI SURUM GONDERILMEYECEK. Google acikca yaziyor: \"Please refrain from submitting any further versions until the current review is finished... each new submission will reset the review turnaround time.\" Yeni AAB/surum gonderilirse inceleme sayaci bastan baslar. Play Console yalnizca OKUNACAK, hicbir sey gonderilmeyecek."
+    "_KURAL": "YENI SURUM GONDERILMEYECEK. Google acikca yaziyor: \"Please refrain from submitting any further versions until the current review is finished... each new submission will reset the review turnaround time.\" Yeni AAB/surum gonderilirse inceleme sayaci bastan baslar. Play Console yalnizca OKUNACAK, hicbir sey gonderilmeyecek.",
+    "destek_kaydi_durumu": "KAPANDI — 08.10 09:56 UTC memnuniyet anketi geldi (Re: [3-2357000041354] Google Play Developer Support Survey). Inceleme sonucu HENUZ gelmedi."
   },
   "yol_okulu": {
     "ad": "AAE Motosiklet Yol Okulu",
@@ -87,7 +88,7 @@
     "kuyruktaki_is_emri": 7,
     "son_kontrol": "2026-10-08",
     "_kuyruk_notu": "07.10'da tek bir BIRLESIK yapilacaklar listesi gonderildi (AdSense Auto ads maksimum + CMP -> Mini Muhendis uretim surumu -> Yol Okulu uretime gecis -> Android dogrulamasi -> Search Console 3 sorun -> www/apex 301 -> rozetler). Hangi mesaji once okursa tam listeyi gorur.",
-    "_takip_zinciri": "6 kontrolluk zincir: 1/6 09:40, 2/6 13:48, 3/6 17:53, 4/6 22:14 (07.10), 5/6 09:20, 6/6 13:25 (08.10, trig_0128bUM6LtJzogecqwpToneS) — 6/6 ZINCIRIN SONU. 5/6 iki gercek haber buldu (Play destek + Search Console dogrulamasi).",
+    "_takip_zinciri": "4 saatlik 6 kontrolluk zincir 08.10 13:26da planlandigi gibi bitti (1/6 07.10 09:40 … 6/6 08.10 13:26). Alti kontrolun hicbirinde yerel oturum baglanmadi. 5/6 iki gercek haber buldu. Yerine gunluk kontrol kuruldu.",
     "_calisan_pencere": "08.10: AAE bilgisayarini acti ve is emrini yapistirdi, ama list_sessions icinde yeni Claude Code oturumu YOK. Calisan sey muhtemelen masaustu uygulamasinin normal sohbet penceresi (claude.ai konusmasi) — ekrani gorebiliyor ama buradan izlenemiyor. Search Console dogrulamasinin baslamis olmasi orada is yapildiginin kaniti."
   },
   "_mail_filtresi_dersi": "Google Play destek maillerinin gondericisi googleplay-developer-support@google.com. Dar gonderen listesi bir tam gun gecikmeye yol acti. Bundan sonraki tum Gmail taramalarinda from:google.com genis filtresi kullanilacak."
