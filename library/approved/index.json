@@ -1,0 +1,41 @@
+{
+  "guncelleme": "2026-10-08T09:45:28+00:00",
+  "dersler": [
+    {
+      "klasor": "01-acil-fren",
+      "ders_no": 1,
+      "baslik": "Acil Frende Ağırlık Transferi",
+      "video": "library/approved/01-acil-fren/01-acil-fren.mp4",
+      "meta": "library/approved/01-acil-fren/meta.json",
+      "onay_tarihi": "2026-10-08T09:45:22+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "02-viraj-bakisi",
+      "ders_no": 2,
+      "baslik": "Virajda Bakış",
+      "video": "library/approved/02-viraj-bakisi/02-viraj-bakisi.mp4",
+      "meta": "library/approved/02-viraj-bakisi/meta.json",
+      "onay_tarihi": "2026-10-08T09:45:26+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "03-kontra",
+      "ders_no": 3,
+      "baslik": "Kontra: Motosiklet Nasıl Döner",
+      "video": "library/approved/03-kontra/03-kontra.mp4",
+      "meta": "library/approved/03-kontra/meta.json",
+      "onay_tarihi": "2026-10-08T09:45:27+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "04-viraj-gazi",
+      "ders_no": 4,
+      "baslik": "Virajda Gaz: Yavaş Gir, Hızlı Çık",
+      "video": "library/approved/04-viraj-gazi/04-viraj-gazi.mp4",
+      "meta": "library/approved/04-viraj-gazi/meta.json",
+      "onay_tarihi": "2026-10-08T09:45:28+00:00",
+      "durum": "onaylandi"
+    }
+  ]
+}
