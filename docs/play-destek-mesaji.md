@@ -1,23 +1,25 @@
 # Google Play desteğine hazır mesaj — Mini Mühendis
 
-> ⚠ **ÖNCE OKU — bunu göndermek çoğu durumda GEREKSİZ.**
+> # ⛔ ARTIK KULLANMA — destek kaydı 07.10.2026'da zaten açıldı ve cevaplandı.
 >
-> 07.10.2026 itibarıyla teşhis şu: Mini Mühendis'e **12.09'da yayınlama izni
-> (production access) verildi**, ama 12.09–07.10 arasında Play Console'dan
-> **hiçbir** "sürüm incelemede / yayınlandı / reddedildi" maili gelmedi
-> (Gmail 30 gün tarandı). Google bir şeyi bekletmiyor gibi görünüyor —
-> **üretim sürümü hiç yayınlanmamış olabilir.**
+> **Kayıt no: `[3-2357000041354]`** (07.10 09:24 UTC açıldı, 09:33 UTC cevaplandı.)
+> Google Play Developer Support'un cevabı:
 >
-> Bu durumda desteğe yazmak işe yaramaz; cevap "bir üretim sürümü oluşturup
-> incelemeye gönderin" olur. Doğru adım: Play Console → Mini Mühendis →
-> **Üretim** track'inde sürüm oluşturup incelemeye göndermek.
+> > *"We've **expedited your app to the Google Play Review Team**. Keep an eye on your
+> > Google Play Console for the latest updates… **Please refrain from submitting any
+> > further versions until the current review is finished and the issue is resolved.**
+> > Please be advised that each new submission will **reset the review turnaround
+> > time**…"*
 >
-> **Bu mesajı yalnızca şu durumda gönder:** Play Console'da üretim sürümü
-> **gerçekten "İncelemede"** ve **7 günden fazla** öyle kalmış.
+> Yani: uygulama incelemede, Google incelemeyi hızlandırdı, ve **yeni sürüm
+> göndermek yasak** — gönderilirse sayaç sıfırlanır.
 >
-> Play desteğinin açık bir e-posta adresi yok. Yol:
-> **Play Console → Yardım ve geri bildirim → Destek ekibiyle iletişime geç**
-> (uygulama seçili olacak şekilde). Oradaki forma aşağıdaki metni yapıştır.
+> **Şu anda yapılacak tek şey beklemek.** Yeni destek kaydı açmak da gereksiz;
+> aynı konuda ikinci kayıt açmak sırayı öne almaz.
+>
+> Aşağıdaki metin yalnızca **arşiv** olarak duruyor. Tekrar kullanılacağı tek
+> durum: bu inceleme sonuçlanır, yeni bir sürüm gönderilir ve **o** sürüm 7
+> günden fazla "İncelemede" kalırsa.
 
 ---
 

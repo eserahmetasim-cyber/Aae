@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-07",
+  "guncelleme": "2026-10-08",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -18,9 +18,11 @@
     "paket": "com.saemuhendislik.mini_muhendis",
     "store_http": null,
     "yayinda": false,
-    "asama": "production access var (12.09) ama uretim surumu yayinlanmamis gorunuyor — 12.09-07.10 arasi Play Console'dan hic surum/inceleme/ret maili gelmedi",
-    "son_mail": "2026-09-12 — production access granted",
-    "_yayin_notu": "AAE 07.10'da 'desteqe yaz yayinlasinlar' dedi. Teshis: Google bir sey bekletmiyor, rollout adimi eksik. Destek kaydi ancak sürüm gercekten 7+ gun 'Incelemede' kalirsa anlamli — hazir metin docs/play-destek-mesaji.md."
+    "asama": "INCELEMEDE (dogrulandi) — 07.10 09:24 UTC destek kaydi 3-2357000041354 acildi, 09:33 UTC Google cevapladi: \"We have expedited your app to the Google Play Review Team.\"",
+    "son_mail": "2026-10-07 — Play Developer Support [3-2357000041354], inceleme hizlandirildi",
+    "_yayin_notu": "DUZELTME 08.10: 07.10 teshisim YANLISTI. \"Uretim surumu hic yayinlanmamis\" demistim; gercek su ki surum incelemede ve destek kaydi acilmis. Bir gun gec gordum cunku takip zincirinin gonderen filtresinde googleplay-developer-support@google.com yoktu.",
+    "destek_kaydi": "3-2357000041354",
+    "_KURAL": "YENI SURUM GONDERILMEYECEK. Google acikca yaziyor: \"Please refrain from submitting any further versions until the current review is finished... each new submission will reset the review turnaround time.\" Yeni AAB/surum gonderilirse inceleme sayaci bastan baslar. Play Console yalnizca OKUNACAK, hicbir sey gonderilmeyecek."
   },
   "yol_okulu": {
     "ad": "AAE Motosiklet Yol Okulu",
@@ -60,7 +62,15 @@
       "Kopya, Google kullanicidan farkli bir standart sayfa secti (16.09, yeni)",
       "Kullanici tarafindan secilen standart sayfa olmadan kopya (16.09, yeni)"
     ],
-    "son_mail": "2026-09-16 — duzeltme basarisiz + iki yeni kopya nedeni"
+    "son_mail": "2026-10-08 05:48 — \"Kopya, Google kullanicidan farkli bir standart sayfa sectildi\" sorunu icin DOGRULAMA BASLADI, 3 sayfa (WNC-10030260)",
+    "dogrulama": {
+      "baslangic": "2026-10-08",
+      "sorun": "Kopya, Google kullanicidan farkli bir standart sayfa secti",
+      "etkilenen_sayfa": 3,
+      "mesaj_kodu": "WNC-10030260",
+      "sonuc": null,
+      "_uyari": "Dogrulama dugmesine basmak sorunu COZMEZ. 07.09da da basilmisti, 16.09da BASARISIZ dondu. Bas supheli (www -> apex 301 yok) hala test edilmedi. Gercek duzeltme yapilmadiysa bu dogrulama da birkac gun icinde basarisiz doner."
+    }
   },
   "site": {
     "apex_http": null,
@@ -72,11 +82,13 @@
   },
   "yerel_oturum": {
     "id": "session_014mvmA2G5DBuuSRYtxDLTwk",
-    "baglanti": "disconnected",
+    "baglanti": "disconnected (08.10 09:20 UTC) — 08.10da yanlislikla arsivlenmisti, unarchive edildi",
     "son_baglanti_denemesi": "2026-09-13",
     "kuyruktaki_is_emri": 7,
-    "son_kontrol": "2026-10-07",
+    "son_kontrol": "2026-10-08",
     "_kuyruk_notu": "07.10'da tek bir BIRLESIK yapilacaklar listesi gonderildi (AdSense Auto ads maksimum + CMP -> Mini Muhendis uretim surumu -> Yol Okulu uretime gecis -> Android dogrulamasi -> Search Console 3 sorun -> www/apex 301 -> rozetler). Hangi mesaji once okursa tam listeyi gorur.",
-    "_takip_zinciri": "AAE 07.10'da 'sen yap ben anlamam' dedi. Bu oturumdan konsola girmek MUMKUN DEGIL (computer-use/tarayici araci yok, enable__mcp__remote-devices__* da yok, ag 403). Cozum: send_later ile 4 saat arayla kendi kendine takip zinciri kuruldu (ilk tetik trig_01Khnpdk6smimepD3xtmPw5q, 07.10 09:40 UTC). Baglanti gelirse emirler surulup dogrulanir ve AAE'ye raporlanir; kapali oldugu surece AAE'ye HIC yazilmaz. En fazla 6 kontrol (~24 saat)."
-  }
+    "_takip_zinciri": "6 kontrolluk zincir: 1/6 09:40, 2/6 13:48, 3/6 17:53, 4/6 22:14 (07.10), 5/6 09:20, 6/6 13:25 (08.10, trig_0128bUM6LtJzogecqwpToneS) — 6/6 ZINCIRIN SONU. 5/6 iki gercek haber buldu (Play destek + Search Console dogrulamasi).",
+    "_calisan_pencere": "08.10: AAE bilgisayarini acti ve is emrini yapistirdi, ama list_sessions icinde yeni Claude Code oturumu YOK. Calisan sey muhtemelen masaustu uygulamasinin normal sohbet penceresi (claude.ai konusmasi) — ekrani gorebiliyor ama buradan izlenemiyor. Search Console dogrulamasinin baslamis olmasi orada is yapildiginin kaniti."
+  },
+  "_mail_filtresi_dersi": "Google Play destek maillerinin gondericisi googleplay-developer-support@google.com. Dar gonderen listesi bir tam gun gecikmeye yol acti. Bundan sonraki tum Gmail taramalarinda from:google.com genis filtresi kullanilacak."
 }

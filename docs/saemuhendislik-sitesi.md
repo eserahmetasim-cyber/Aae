@@ -4,8 +4,8 @@
 > transkriptinden, oradaki wiki kavram sayfasından ve kalıcı hafıza dosyasından
 > damıtıldı. Amaç: siteyle ilgili işe bu depodan devam edebilmek.
 >
-> Son güncel bilgi tarihi: **12.09.2026**. Bundan sonrasını (AdSense onayı vb.)
-> doğrulamak gerekir.
+> Son güncel bilgi tarihi: **08.10.2026** (§0). 12.09 öncesi bilgiler o
+> oturumun transkriptinden; sonrası Gmail ve konsol kayıtlarından doğrulandı.
 
 ---
 
@@ -37,21 +37,49 @@ eklenmeyecek**. `google19071191ddf4150f.html` da dokunulmaz.
 kurulup onay beklediği için yayınlanamayan **CMP (AB rıza mesajı)** mesajını
 yayınlamak. İş emri 07.10'da kuyruğa alındı.
 
-### 🟡 07.10.2026 — Mini Mühendis "yayınlasınlar" talebi
+### 🔴 08.10.2026 — Mini Mühendis GERÇEKTEN incelemede: YENİ SÜRÜM GÖNDERİLMEYECEK
 
-AAE, Mini Mühendis için Google Play desteğine yazılmasını istedi. **Teşhis
-bunun yanlış kapı olduğunu gösteriyor:** 12.09 maili yayınlama **izni** verdi,
-yayına almadı; 12.09–07.10 arasında Play Console'dan **hiç** "sürüm incelemede /
-yayınlandı / reddedildi" maili gelmedi (Gmail 30 gün tarandı). Yani Google bir
-şeyi bekletmiyor — **üretim sürümü hiç yayınlanmamış olabilir.**
+**07.10 teşhisim yanlıştı ve düzeltiyorum.** O gün "üretim sürümü hiç
+yayınlanmamış, desteğe yazmak yanlış kapı" demiştim. Gerçek bunun tersi:
 
-Doğru adım: Play Console → Mini Mühendis → **Üretim** track'inde sürüm oluşturup
-incelemeye göndermek. Destek kaydı ancak sürüm gerçekten **7+ gün "İncelemede"**
-kalırsa anlamlı; o durum için hazır metin: **`docs/play-destek-mesaji.md`**
-(Play desteğinin açık e-posta adresi yok, Play Console → Yardım ve geri bildirim
-→ Destek ekibiyle iletişime geç formundan gidiliyor).
+| Saat (UTC) | Gönderen | İçerik |
+|---|---|---|
+| 07.10 09:24 | `googleplay-developer-support@google.com` | Destek kaydı açıldı: **`[3-2357000041354]`** |
+| 07.10 09:33 | aynı | İnceleme **hızlandırıldı** |
 
----
+Google'ın cevabı, kelimesi kelimesine:
+
+> *"We've **expedited your app to the Google Play Review Team**. Keep an eye on
+> your Google Play Console for the latest updates… **Please refrain from
+> submitting any further versions until the current review is finished and the
+> issue is resolved.** Please be advised that each new submission will **reset
+> the review turnaround time**, as the evaluation period is counted from the
+> date of the most recent change."*
+
+**→ Yeni bir değişmez kural (bkz. §5):** bu inceleme bitene kadar Mini Mühendis
+için **yeni sürüm / AAB gönderilmeyecek, yeni üretim sürümü oluşturulmayacak,
+"incelemeye gönder"e basılmayacak, yeni destek kaydı açılmayacak.** Her yeni
+gönderim inceleme sayacını sıfırlar. Play Console yalnızca **okunacak**.
+
+**Neden bir gün geç görüldü:** takip zincirinin Gmail gönderen filtresinde
+`googleplay-developer-support@google.com` yoktu (yalnızca
+`no-reply-googleplay-developer`, `googleplay-noreply`, `noreply-play-console`
+vardı). Bundan sonra Gmail taramalarında geniş `from:google.com` filtresi
+kullanılıyor.
+
+`docs/play-destek-mesaji.md` artık **arşiv** — başına "kullanma" uyarısı kondu.
+
+### 🟡 08.10.2026 — Search Console doğrulaması başladı
+
+08.10 05:48 UTC, `sc-noreply@google.com` (WNC-10030260): *"Kopya, Google
+kullanıcıdan farklı bir standart sayfa seçti"* sorunu için **3 sayfada doğrulama
+başladı**. Yani konsolda "Düzeltmeyi doğrula" düğmesine basılmış — bilgisayarda
+Search Console işi yapıldığının ilk somut kanıtı.
+
+> ⚠ **Düğmeye basmak sorunu çözmez.** 07.09'da da basılmıştı, 16.09'da
+> **başarısız** döndü. Baş şüpheli (`www` → apex 301 yönlendirmesi yok) hâlâ
+> test edilmedi — bu oturumdan `CONNECT 403` yüzünden test edilemiyor. Gerçek
+> düzeltme yapılmadıysa bu doğrulama da birkaç gün içinde başarısız döner.
 
 ## 0b. Önceki durum — 03.10.2026 (bulut oturumu tespiti)
 
@@ -396,6 +424,27 @@ süre boş 404 verdi — dağıtım sonrası 200 testi bu yüzden şart.)
   Edit). API, domain sil/ekle işinde UI'nin *"already associated"* hatasına takılmıyor.
   (26.08'de açılan geçici `pages-tamir-gecici` token'ı güvenlik gereği SİLİNDİ.)
 
+### ⛔ Google Play — açık inceleme sırasında hiçbir şey gönderilmez (08.10.2026)
+
+Mini Mühendis (`com.saemuhendislik.mini_muhendis`) incelemede ve Google
+incelemeyi hızlandırdı (destek kaydı `[3-2357000041354]`, 07.10). Google'ın
+yazılı talimatı: *"Please refrain from submitting any further versions until
+the current review is finished… each new submission will reset the review
+turnaround time."*
+
+İnceleme bitene kadar, bu uygulama için:
+- **yeni sürüm / AAB gönderilmez**, yeni üretim sürümü **oluşturulmaz**,
+  "incelemeye gönder"e **basılmaz** — her gönderim sayacı sıfırlar;
+- **ikinci destek kaydı açılmaz** — aynı konuda ikinci kayıt sırayı öne almaz;
+- Play Console yalnızca **okunur**, durum raporlanır.
+
+Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle,
+reklam beyanı, gizlilik URL'si) görülürse **doldurulabilir** ama **sürüm
+gönderilmez**.
+
+Bu kural Yol Okulu'nu (`com.saemuhendislik.yol_okulu_3b`) **kapsamıyor** — o
+ayrı bir uygulama, incelemede değil; üretime geçiş başvurusu serbest.
+
 ---
 
 ## 6. Google AdSense
@@ -561,14 +610,17 @@ Her gün takip edilen iki oyun (06.10.2026'da kimlikleri doğrulandı):
 ### Siteyle ilgili
 1. **AdSense — yeniden inceleme talebi** (36. gün, 21 eşiği aşıldı). Onay
    geldiyse Auto ads + CMP (bkz. §6). → *iş emri kuyrukta, bkz. §0*
-2. **Search Console — düzeltme başarısız oldu + iki yeni "Kopya" sorunu**
-   (16.09). Rapordan URL listesi alınıp üç hipotez doğrulanacak, düzeltilip
-   yeniden "Düzeltmeyi doğrula" başlatılacak. → *iş emri kuyrukta, bkz. §0*
+2. **Search Console** — 08.10'da "Kopya, Google farklı standart sayfa seçti"
+   sorunu için **doğrulama başlatıldı** (3 sayfa, WNC-10030260). Diğer iki sorun
+   açık. ⚠ Gerçek düzeltme (`www` → apex 301) hâlâ doğrulanmadı; yapılmadıysa bu
+   doğrulama da 07.09'daki gibi başarısız döner. → *bkz. §0*
 3. **Patent ve Ar-Ge Danışmanlığı sayfası** — AAE sıcak, henüz yapılmadı.
 4. **"YENİ" rozeti** — bir sonraki yayında taşınmalı ya da kaldırılmalı.
-5. **Uygulama bandı rozetleri** — **Mini Mühendis'e 12.09'da production access
-   verildi**, "YAKINDA" rozeti artık yanlış → Play Store linkine çevrilecek
-   (TR+EN). Malzeme Bilgisi hâlâ bekliyor; Moto Bakım eklenebilir.
+5. **Uygulama bandı rozetleri** — Mini Mühendis **incelemede** (08.10). Rozet
+   ancak store sayfası **gerçekten 200 döndüğü doğrulandıktan sonra** Play
+   linkine çevrilecek (TR+EN); yayında değilken link ölü sayfaya gider, o yüzden
+   "YAKINDA" şimdilik **doğru**. Malzeme Bilgisi hâlâ bekliyor; Moto Bakım
+   eklenebilir.
 6. **Blog** — trafik için önerildi, yapılmadı.
 7. `info@` e-postası — hosting askıda; gerekirse Cloudflare Email Routing.
 8. Eski sunucudaki çöp (artık erişilmiyor): `parca1-site.zip/.tar.gz`,
@@ -576,8 +628,11 @@ Her gün takip edilen iki oyun (06.10.2026'da kimlikleri doğrulandı):
 9. `dovme1.pdf` / `dovme2.pdf` eski sunucuda da yoktu — hâlâ kayıp.
 
 ### Yan projeler (aynı oturumda geçen, site dışı)
-- **Mini Mühendis** — ✅ **Play production access verildi (12.09.2026)**,
-  `com.saemuhendislik.mini_muhendis`. Sıradaki: yayına alma + site bandındaki link.
+- **Mini Mühendis** — 🔄 **İNCELEMEDE (08.10.2026)**,
+  `com.saemuhendislik.mini_muhendis`. 12.09'da production access verildi, 07.10'da
+  destek kaydı `[3-2357000041354]` ile inceleme hızlandırıldı. ⛔ **Yeni sürüm
+  gönderilmeyecek** (bkz. §5). Sıradaki: inceleme sonucunu beklemek, sonra site
+  bandındaki rozeti linke çevirmek.
 - **Malzeme Bilgisi** + **Moto Bakım** — mağaza paketleri hazır, Play Console'da
   uygulama oluşturma bekliyor. (`MalzemeBilgisi-v1.3.1-playstore.aab` hazır.)
 - **Yayın 0125-05** — normalize grup testleri + SEM kayıtları bekliyor.
