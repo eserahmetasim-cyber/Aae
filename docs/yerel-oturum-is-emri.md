@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **07.10.2026**
+> Son güncelleme: **08.10.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -17,7 +17,7 @@
 
 ---
 
-Merhaba. Aşağıdaki altı işi bu sırayla yap, her birini bitirince bana tek satır bildir. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
+Merhaba. Aşağıdaki altı işi bu sırayla yap, her birini bitirince bana tek satır bildir. ⛔ 2. madde salt-okunur: Mini Mühendis'te hiçbir şey gönderilmeyecek, gerekçesi orada yazılı. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
 
 **1) ⚠ EN ÖNCE — AdSense onayı geldi, reklamları yayına al.**
 Konsol: `https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites`
@@ -34,12 +34,17 @@ Hesap **ahmetasimeser008@gmail.com** (`u/1`). Panel geç yüklenir ve ekran gör
 
 Bu üçünde AdSense script'i hiç yok ve **eklenmeyecek**. `google19071191ddf4150f.html` (Search Console doğrulama dosyası) da silinmeyecek, değiştirilmeyecek.
 
-**2) Mini Mühendis'i yayına al.**
-Paket `com.saemuhendislik.mini_muhendis`. 12.09'da **yayınlama izni** (production access) verildi ama o mail uygulamayı yayına almıyor. 12.09–07.10 arası Play Console'dan hiç "sürüm incelemede / yayınlandı / reddedildi" maili gelmedi → **üretim sürümü muhtemelen hiç yayınlanmadı.**
-- Play Console → Mini Mühendis → **Üretim (Production)** track'i. Sürüm var mı?
-- **Yoksa:** yeni üretim sürümü oluştur → mevcut AAB'yi seç → sürüm notu yaz → **incelemeye gönder**. Eksik zorunlu bölüm varsa tamamla: içerik derecelendirmesi, veri güvenliği formu, hedef kitle ve içerik, reklam beyanı, gizlilik politikası URL'si.
-- **Varsa ve "İncelemede" ise:** kaç gündür incelemede olduğunu söyle. 7 günün altındaysa bekle, destek kaydı açma. Üstündeyse Play Console → **Yardım ve geri bildirim → Destek ekibiyle iletişime geç** üzerinden kayıt aç (Play desteğinin e-posta adresi yok, form üzerinden gidiliyor).
-- **Reddedilmişse:** gerekçeyi oku, düzeltilebiliyorsa düzelt ve yeniden gönder.
+**2) ⛔ Mini Mühendis — HİÇBİR ŞEY GÖNDERME, sadece oku.**
+Paket `com.saemuhendislik.mini_muhendis`. **Uygulama şu anda incelemede ve Google incelemeyi hızlandırdı.**
+07.10'da destek kaydı `[3-2357000041354]` açıldı, Google aynı gün cevapladı:
+
+> *"We've expedited your app to the Google Play Review Team… **Please refrain from submitting any further versions until the current review is finished and the issue is resolved.** Please be advised that each new submission will **reset the review turnaround time**, as the evaluation period is counted from the date of the most recent change."*
+
+- **YENİ SÜRÜM / AAB GÖNDERME. Yeni üretim sürümü OLUŞTURMA. "İncelemeye gönder"e BASMA.** Bunlardan biri yapılırsa inceleme sayacı sıfırlanır ve her şey baştan başlar.
+- **Yeni destek kaydı AÇMA** — kayıt zaten açık ve cevaplanmış.
+- Yapılacak tek şey: Play Console → Mini Mühendis → **Üretim** track'inde durumu **oku** ve bana tek satır bildir (İncelemede mi, Yayında mı, Reddedildi mi; kaç gündür öyle).
+- **Reddedilmişse** gerekçeyi oku ve bana yaz — düzeltmeyi birlikte kararlaştıracağız, kendi başına yeniden gönderme.
+- Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, reklam beyanı, gizlilik URL'si) görürsen **doldur** ama **sürüm gönderme**; sadece bana haber ver.
 
 **3) AAE Motosiklet Yol Okulu — üretime geçiş başvurusu.**
 Paket `com.saemuhendislik.yol_okulu_3b`. Kapalı test daveti 22.09'da 14 kişiye gönderildi, **14 günlük sayaç 06.10'da doldu.**
