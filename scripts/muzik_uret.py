@@ -409,6 +409,299 @@ def uret_atmosfer(bpm, sure, tohum):
     return mix * 0.6
 
 
+# ---------------------------------------------------------------------------
+#  OKUL  (seri adi "Motosiklet Yol Okulu")
+# ---------------------------------------------------------------------------
+# Do major, parlak ve tempolu. Marimba + alkis + glockenspiel: ders anlatan
+# videonun altinda nese verir ama konusma bandini doldurmaz.
+OKUL_ILERLEME = [                                   # I - vi - IV - V
+    (65.41, (261.63, 329.63, 392.00)),              # C
+    (55.00, (220.00, 261.63, 329.63)),              # Am
+    (43.65, (174.61, 261.63, 349.23)),              # F
+    (49.00, (196.00, 246.94, 392.00)),              # G
+]
+# (vurus, frekans, sure_vurus)
+OKUL_EZGI = [
+    [(0.0, 329.63, 0.5), (0.5, 392.00, 0.5), (1.0, 523.25, 1.0),
+     (2.0, 392.00, 0.5), (2.5, 329.63, 0.5), (3.0, 293.66, 1.0)],
+    [(0.0, 523.25, 0.75), (0.75, 440.00, 0.75), (1.5, 329.63, 1.0),
+     (2.5, 440.00, 1.5)],
+    [(0.0, 440.00, 0.5), (0.5, 523.25, 0.5), (1.0, 698.46, 1.0),
+     (2.0, 523.25, 1.0), (3.0, 440.00, 1.0)],
+    [(0.0, 493.88, 0.75), (0.75, 587.33, 0.75), (1.5, 392.00, 1.0),
+     (2.5, 587.33, 1.5)],
+]
+
+
+def marimba(frekans, sure, guc=1.0):
+    """Tahta cubuk: kismi sesleri 1 : 3.9 : 9.6 oraninda, armonik degil.
+    Duz sinus "tahta" duymuyor, bu oranlar veriyor."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    s = np.zeros(n)
+    # 9.58x kismi ses 0.10'da cok parlakti; tahta karakteri 3.93x'ten geliyor.
+    for kat, genlik, sonum in ((1.0, 1.0, 4.0), (3.93, 0.15, 11.0)):
+        s += genlik * np.sin(2 * np.pi * frekans * kat * t) * np.exp(-t * sonum)
+    # Tokmak gurultusu genis bantli: kisik ve cok kisa tutuluyor.
+    s += np.random.default_rng(int(frekans) % 977).normal(0, 1, n) * 0.022 \
+        * np.exp(-t * 320.0)                                   # tokmak sesi
+    return s / max(1e-9, np.abs(s).max()) * guc
+
+
+def can(frekans, sure, guc=1.0):
+    """Glockenspiel: metal cubuk, uzun sonumlu ve cok tiz."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    s = np.zeros(n)
+    for kat, genlik, sonum in ((1.0, 1.0, 2.2), (2.76, 0.42, 3.4), (5.40, 0.16, 5.0)):
+        s += genlik * np.sin(2 * np.pi * frekans * kat * t) * np.exp(-t * sonum)
+    return s / max(1e-9, np.abs(s).max()) * guc
+
+
+def shaker_yumusak(tohum=0):
+    """Yumusak shaker. hihat() turev filtresi kullaniyor (+6 dB/oktav), bu da
+    9 kHz ustunu dolduruyordu; olcumde begenilen piyano parcasina gore 22 dB
+    fazla tiz enerji cikti ve kulagi tirmaliyordu. Burada gurultu yumusatma
+    ile bant sinirlaniyor."""
+    n = int(0.07 * SR)
+    g = np.random.default_rng(300 + tohum).normal(0, 1, n)
+    g = np.convolve(g, np.ones(7) / 7, mode="same")        # ~6 kHz uzeri sonuk
+    g /= max(1e-9, np.abs(g).max())
+    return g * zarf(n, 0.002, 0.030, 0.0, 0.035)
+
+
+def alkis():
+    """El cirpmasi: tek gurultu patlamasi 'ss' gibi duyuluyor; ard arda
+    birkac kisa patlama + kisa kuyruk insan elini veriyor."""
+    n = int(0.26 * SR)
+    rng = np.random.default_rng(41)
+    g = np.diff(rng.normal(0, 1, n + 1))
+    # 3'luk yumusatma yetmiyordu: alkisin kuyrugu 9 kHz ustunu dolduruyordu.
+    # 9'luk yumusatma hala parlakti: olcumde 2. ve 4. vurusta 2.5 kHz ustu
+    # pay %7'ye cikiyordu, parcanin en tiz ani alkisti.
+    g = np.convolve(g, np.ones(21) / 21, mode="same")          # cok tizi kir
+    s = np.zeros(n)
+    for gecikme, kazanc in ((0.000, 1.0), (0.009, 0.8), (0.019, 0.65), (0.030, 0.5)):
+        i = int(gecikme * SR)
+        boy = min(len(g) - i, int(0.02 * SR))
+        s[i:i + boy] += g[:boy] * kazanc
+    s += g * 0.16 * np.exp(-np.arange(n) / SR * 34.0)          # oda kuyrugu
+    return s / max(1e-9, np.abs(s).max())
+
+
+def pizzicato_bas(frekans, sure, guc=1.0, tohum=0):
+    """Parmakla cekilen kontrbas: Karplus-Strong tel + kisa sinus govde.
+
+    Onceki yuruyen bas bas_cal ile caliniyordu: yumusak atakli, uzun
+    surdurmeli sinus yigini, yani YAYLA cekilmis gibi duyuluyordu ve okul
+    parcasinda keman varmis izlenimi veriyordu. Cekilen tel o izlenimi
+    birakmiyor ve marimba ile ayni aileden (vurmali/cekme) duruyor."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    # Karplus-Strong tohumu genis bantli gurultu: olcumde parcanin en tiz ani
+    # bas notasinin atagiydi (2.5 kHz ustu pay %8). Bas calgi 1 kHz ustunde is
+    # gormez, tel bileseni alcak geciren suzgecten geciriliyor.
+    tel = tel_cal(frekans, sure, 1.0, tohum)
+    tel = np.convolve(tel, np.ones(24) / 24, mode="same")      # ~900 Hz uzeri
+    govde = np.sin(2 * np.pi * frekans * t) * np.exp(-t * 5.5) * 0.55
+    s = tel * 0.70 + govde
+    s *= zarf(n, 0.006, 0.12, 0.45, 0.30)
+    return s / max(1e-9, np.abs(s).max()) * guc
+
+
+def uret_okul(bpm, sure, tohum):
+    """Okul havasi: marimba ezgi, alkis, hafif kick ve cekme kontrbas."""
+    vurus, n = 60.0 / bpm, int(sure * SR)
+    bar = 4 * vurus
+    davul, enstruman = np.zeros(n), np.zeros(n)
+
+    for b in range(int(np.ceil(sure / bar))):
+        t0 = b * bar
+        kok, akor = OKUL_ILERLEME[b % len(OKUL_ILERLEME)]
+
+        # Acilis yumusak: ilk bar vurmalisiz, sadece bas ve akorlar. Parca
+        # dogrudan vurmaliyla basladiginda ezgi henuz yokken alkis ve shaker
+        # tek basina kaliyor ve kulaga en tiz sey olarak giriyordu.
+        if b >= 1:
+            for v in (0.0, 2.0):                               # yumusak kick
+                ekle(davul, kick() * 0.62, t0 + v * vurus)
+            for v in (1.0, 3.0):                               # alkis
+                ekle(davul, alkis() * 0.13, t0 + v * vurus)
+            for k in range(8):                                 # shaker
+                ekle(davul, shaker_yumusak(b * 8 + k)
+                     * (0.06 if k % 2 == 0 else 0.035), t0 + k * vurus / 2)
+        # Ilk barda hicbir vurmali yok. Tek bir kick bile birakilinca parcanin
+        # ilk duyulan sesi o oluyordu.
+
+        # --- yuruyen bas: her vurusta bir nota, akorda gezer --------------
+        for k, oran in enumerate((1.0, 1.0, 1.5, 1.25)):
+            # Ilk bar iyice kisik: parca sessizlikten aciliyor.
+            ekle(enstruman, pizzicato_bas(kok * oran, vurus * 0.95,
+                                          0.34 if b else 0.16,
+                                          tohum + b * 4 + k),
+                 t0 + k * vurus)
+
+        # --- marimba eslik: kontra vuruslarda akor sesleri ----------------
+        # Eslik ve ezgi bir oktav asagi: marimbanin 3.93x kismi sesi C5'te
+        # 2 kHz'e, F5'te 2.7 kHz'e dusuyordu, yani tam sert banda.
+        for k in range(4):
+            for f in akor:
+                ekle(enstruman, marimba(f * 0.5, 0.65, 0.10),
+                     t0 + (k + 0.5) * vurus)
+
+        # --- ezgi: marimba, her dort barda bir glockenspiel iki katina ----
+        if b >= 1:
+            for v, f, uz in OKUL_EZGI[b % len(OKUL_EZGI)]:
+                # Ezgi kendi oktavinda kalir. Bir oktav indirilince 400-1200 Hz
+                # bandi 17 dB bosaldi, parca sadece bas ve gurultuye dondu.
+                # Tek tek gelen "tin tin" notalar one cikiyordu; ezgi fona
+                # cekildi, yatak akorlar ve bas tasiyor.
+                ekle(enstruman, marimba(f, max(0.6, uz * vurus * 1.8), 0.26),
+                     t0 + v * vurus)
+        # Glockenspiel kaldirildi: 5.40x kismi sesi 9 kHz ustunde en cok
+        # enerjiyi veren kaynakti. Yerine akorun sicak alt oktavi geliyor.
+        ekle(enstruman, yayli([f * 0.5 for f in akor], int(bar * SR)) * 0.20, t0)
+
+    enstruman = yanki_uygula(enstruman, oda_yankisi(1.3), islak=0.22)
+    mix = davul * 0.46 + enstruman
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.74
+
+
+# ---------------------------------------------------------------------------
+#  KEMAN + HIPHOP
+# ---------------------------------------------------------------------------
+# A minor, boom-bap kalip. Keman toplamali sentezle: harmonikler + vibrato +
+# yay gurultusu. Tek sinus "keman" gibi duymuyor; govdeyi veren sey harmonik
+# agirliklarindaki formant tepeleri (~300 Hz ve ~700 Hz).
+KEMAN_ILERLEME = [                       # (bas koku, keman akoru)
+    (55.00, (440.00, 523.25, 659.25)),   # Am
+    (43.65, (349.23, 440.00, 523.25)),   # F
+    (65.41, (392.00, 523.25, 659.25)),   # C
+    (49.00, (392.00, 493.88, 587.33)),   # G
+]
+# (vurus, frekans, sure_vurus) - dort barlik ezgi
+KEMAN_EZGI = [
+    [(0.0, 659.25, 1.5), (1.5, 523.25, 1.0), (2.5, 587.33, 1.5)],
+    [(0.0, 523.25, 2.0), (2.0, 440.00, 2.0)],
+    [(0.0, 783.99, 1.5), (1.5, 659.25, 1.0), (2.5, 523.25, 1.5)],
+    [(0.0, 587.33, 1.5), (1.5, 493.88, 1.0), (2.5, 440.00, 1.5)],
+]
+
+
+def keman_nota(frekans, sure, guc=1.0, vibrato=5.6, tohum=0, atak=0.055):
+    """Yayli calgi: 16 harmonik, formant agirlikli; vibrato faz uzerinden
+    uygulanir ki frekans gercekten salinsin, genlik degil."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    # vibrato ilk 120 ms'de yok, sonra aciliyor - gercek yay boyle calar
+    derinlik = 0.004 * np.clip((t - 0.12) / 0.25, 0.0, 1.0)
+    faz = 2 * np.pi * frekans * (t + derinlik / (2 * np.pi * vibrato)
+                                 * np.sin(2 * np.pi * vibrato * t))
+    s = np.zeros(n)
+    # Harmonik dususu dikleştirildi (-1.15 -> -1.7) ve tavan 7 kHz'e indi:
+    # 16-lik ostinatoda 16 harmonik ust bandi dolduruyor, kulagi tirmaliyordu.
+    for h in range(1, 13):
+        fh = frekans * h
+        if fh > 7000:
+            break
+        a = h ** -1.7
+        a *= 1.0 + 0.9 * np.exp(-((fh - 300.0) / 130.0) ** 2) \
+                 + 0.7 * np.exp(-((fh - 720.0) / 230.0) ** 2)
+        s += a * np.sin(faz * h + (h % 3))
+    s /= max(1e-9, np.abs(s).max())
+    # yay gurultusu: atakta duyulur, sonra siniri
+    rng = np.random.default_rng(500 + tohum)
+    g = np.diff(rng.normal(0, 1, n + 1))
+    g /= max(1e-9, np.abs(g).max())
+    s += g * 0.025 * np.exp(-t * 11.0)       # yay gurultusu kisildi
+    # Kisa atak = staccato (ostinato); uzun atak = yayli ezgi.
+    return s * zarf(n, atak, 0.18, 0.80, 0.30) * guc
+
+
+def yukselis(sure):
+    """Patlamadan onceki yukselis: tizlesen gurultu + yukari kayan sinus."""
+    n = int(sure * SR)
+    t = np.arange(n) / SR
+    rng = np.random.default_rng(99)
+    g = np.diff(rng.normal(0, 1, n + 1))                  # tiz gurultu
+    g /= max(1e-9, np.abs(g).max())
+    kayma = np.sin(2 * np.pi * np.cumsum(np.geomspace(380, 1700, n)) / SR)
+    return (g * 0.55 + kayma * 0.45) * np.linspace(0.0, 1.0, n) ** 2.2
+
+
+def uret_keman(bpm, sure, tohum):
+    """Keman + hiphop, hareketli kurgu.
+
+    Onceki surum boom-bap ve uzun keman notalariyla sakin kaliyordu; bu surum
+    16-lik hat, staccato keman ostinatosu, hareketli 808 ve dort barda bir
+    trampet dolgusu + yukselis ile surukluyor."""
+    vurus, n = 60.0 / bpm, int(sure * SR)
+    bar = 4 * vurus
+    davul, enstruman = np.zeros(n), np.zeros(n)
+    toplam_bar = int(np.ceil(sure / bar))
+
+    for b in range(toplam_bar):
+        t0 = b * bar
+        kok, akor = KEMAN_ILERLEME[b % len(KEMAN_ILERLEME)]
+        dolgu = (b % 4 == 3)                                # dort barda bir
+
+        # --- davul: surukleyen kick, 2 ve 4'te trampet, 16-lik hat --------
+        for v in (0.0, 0.75, 1.5, 2.0, 2.75, 3.5):
+            ekle(davul, kick() * 1.0, t0 + v * vurus)
+        for v in (1.0, 3.0):
+            ekle(davul, trampet() * 0.70, t0 + v * vurus)
+        for k in range(16):
+            if dolgu and k >= 12:                           # dolguya yer ac
+                continue
+            # 16-lik hat duz olunca makine gibi duyuluyor: vurusun basi daha
+            # kuvvetli, aralar kisik - insan eli boyle calar.
+            guc = 0.26 if k % 4 == 0 else (0.17 if k % 2 == 0 else 0.11)
+            # hihat() turev filtresiyle +6 dB/oktav tizlestiriyor ve 16-lik
+            # kalipta tiz bandi dolduruyordu; bant sinirli shaker kullaniliyor.
+            ses = hihat(True) * 0.16 if k == 14 else shaker_yumusak(b * 16 + k) * guc
+            ekle(davul, ses, t0 + k * vurus / 4)
+        if dolgu:                                           # trampet dolgusu
+            for k in range(6):
+                ekle(davul, trampet(int(0.13 * SR)) * (0.26 + 0.09 * k),
+                     t0 + (3.0 + k * 0.166) * vurus)
+            ekle(enstruman, yukselis(bar * 0.75) * 0.22, t0 + bar * 0.25)
+
+        # --- 808: barin ikinci yarisinda tekrar vurur, hareket hissi verir -
+        ekle(enstruman, bas_808(kok, bar * 0.48) * 0.62, t0)
+        ekle(enstruman, bas_808(kok, bar * 0.40) * 0.50, t0 + 2.5 * vurus)
+
+        # --- keman ostinatosu: 16-lik staccato akor sesleri ----------------
+        if b >= 1:
+            sira = (0, 1, 2, 1)
+            for k in range(16):
+                if dolgu and k >= 12:
+                    continue
+                f = akor[sira[k % 4]] * (2.0 if k % 8 == 4 else 1.0)
+                ekle(enstruman,
+                     keman_nota(f, vurus * 0.30, 0.17, atak=0.012,
+                                tohum=b * 17 + k),
+                     t0 + k * vurus / 4)
+
+        # --- keman ezgi: ostinatonun uzerinde uzun notalar -----------------
+        if b >= 2:
+            for v, f, uz in KEMAN_EZGI[b % len(KEMAN_EZGI)]:
+                ekle(enstruman, keman_nota(f, uz * vurus, 0.46,
+                                           tohum=b * 7 + int(v * 2)),
+                     t0 + v * vurus)
+        ekle(enstruman, yayli([f * 0.5 for f in akor], int(bar * SR)) * 0.26, t0)
+
+        # --- pizzicato: kontra vurus, ezgiye karsi ritim -------------------
+        for k, f in enumerate(akor):
+            ekle(enstruman, tel_cal(f / 2, 0.7, 0.55, tohum + k) * 0.15,
+                 t0 + (1.75 + k * 0.25) * vurus)
+
+    enstruman = yanki_uygula(enstruman, oda_yankisi(1.4), islak=0.20)
+    mix = davul * 0.60 + enstruman
+    mix /= max(1e-9, np.abs(mix).max())
+    return mix * 0.74
+
+
 def wav_yaz(yol: str, mono: np.ndarray) -> None:
     # Hafif genislik: sag kanali 11 ms geciktir
     gecikme = int(0.011 * SR)
@@ -422,12 +715,33 @@ def wav_yaz(yol: str, mono: np.ndarray) -> None:
         fh.writeframes(veri.tobytes())
 
 
+# Stile gore ton sekillendirme. Keman ustte daha genis birakilir, yoksa
+# yayli parlakligini kaybedip sentetik duyuluyor.
+TON_ZINCIRI = {
+    "sade": "highpass=f=38,lowpass=f=11000,equalizer=f=2800:t=q:w=1.4:g=-2.5,"
+            "alimiter=limit=0.92",
+    # Marimba ve glockenspiel parlakligini tizde tasiyor, ustte genis birakilir.
+    # Tepe sert sinirlandi: olcum begenilen piyano parcasina gore 5-9 kHz'de
+    # 18, 9 kHz ustunde 22 dB fazla enerji gosterdi.
+    # afade: parca sessizlikten acilir, ilk duyulan ses hicbir zaman bir
+    # vurus olmaz.
+    "okul": "highpass=f=45,lowpass=f=6500,equalizer=f=3000:t=q:w=1.0:g=-5,"
+            "equalizer=f=4800:t=q:w=1.0:g=-4,afade=t=in:st=0:d=2.6,"
+            "alimiter=limit=0.92",
+    "keman": "highpass=f=32,lowpass=f=8200,equalizer=f=3200:t=q:w=1.1:g=-4,"
+             "alimiter=limit=0.92",
+    "_": "highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
+         "alimiter=limit=0.92",
+}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="AAE fon muzigi uretici")
     ap.add_argument("--stil",
-                    choices=("sade", "phonk", "piyano", "lofi", "atmosfer"),
+                    choices=("sade", "phonk", "piyano", "lofi", "atmosfer",
+                             "keman", "okul"),
                     default="sade",
-                    help="sade | piyano | lofi | atmosfer | phonk")
+                    help="sade | piyano | lofi | atmosfer | phonk | keman | okul")
     ap.add_argument("--bpm", type=float, default=0.0, help="0 = stile gore secilir")
     ap.add_argument("--sure", type=float, default=64.0, help="saniye")
     ap.add_argument("--tohum", type=int, default=3, help="varyasyon icin")
@@ -435,12 +749,17 @@ def main() -> None:
     args = ap.parse_args()
 
     VARSAYILAN_BPM = {"sade": 70.0, "piyano": 64.0, "lofi": 76.0,
-                      "atmosfer": 60.0, "phonk": 82.0}
+                      "atmosfer": 60.0, "phonk": 82.0, "keman": 98.0,
+                      "okul": 104.0}
     URETICI = {"sade": uret_sade, "piyano": uret_piyano, "lofi": uret_lofi,
-               "atmosfer": uret_atmosfer, "phonk": uret}
+               "atmosfer": uret_atmosfer, "phonk": uret, "keman": uret_keman,
+               "okul": uret_okul}
     bpm = args.bpm or VARSAYILAN_BPM[args.stil]
     cikti = args.cikti or f"assets/muzik/aae_{args.stil}.mp3"
-    print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn · A minor")
+    # Ton stile gore degisiyor; sabit "A minor" basmak yaniltiyordu.
+    TON = {"okul": "C major"}
+    print(f">> Besteleniyor: {args.stil} · {bpm:.0f} BPM · {args.sure:.0f} sn"
+          f" · {TON.get(args.stil, 'A minor')}")
     mix = URETICI[args.stil](bpm, args.sure, args.tohum)
     args.cikti = cikti
 
@@ -453,13 +772,13 @@ def main() -> None:
             ["ffmpeg", "-y", "-v", "error", "-i", gecici,
              # 30 Hz alti gereksiz, 9.5 kHz ustu tiz anlatimla cakisiyor;
              # 2.5 kHz civarini da biraz acalim ki konusma bandi bos kalsin.
-             "-af", ("highpass=f=38,lowpass=f=11000,equalizer=f=2800:t=q:w=1.4:g=-2.5,"
-                     "alimiter=limit=0.92") if args.stil == "sade" else
-                    ("highpass=f=30,lowpass=f=9500,equalizer=f=2500:t=q:w=1.2:g=-3,"
-                     "alimiter=limit=0.92"),
+             # Tek zincir: once ton sekillendirme, sonra seviye. Daha once
+             # -af iki kez veriliyordu ve ikincisi birincisini eziyordu, yani
+             # highpass/lowpass hic uygulanmiyordu.
              # Stiller arasi seviye farki karsilastirmayi bozuyordu: hepsi
              # ayni hedefe (-16 LUFS) oturtulur, son miks zaten -14'e normalize.
-             "-af:a", "loudnorm=I=-16:TP=-1.5:LRA=11",
+             "-af", TON_ZINCIRI.get(args.stil, TON_ZINCIRI["_"])
+                    + ",loudnorm=I=-16:TP=-1.5:LRA=11",
              "-c:a", "libmp3lame", "-b:a", "192k", args.cikti],
             check=True)
     finally:
