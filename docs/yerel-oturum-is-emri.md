@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **08.10.2026**
+> Son güncelleme: **12.10.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -17,7 +17,7 @@
 
 ---
 
-Merhaba. Aşağıdaki altı işi bu sırayla yap, her birini bitirince bana tek satır bildir. ⛔ 2. madde salt-okunur: Mini Mühendis'te hiçbir şey gönderilmeyecek, gerekçesi orada yazılı. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
+Merhaba. Aşağıdaki altı işi bu sırayla yap, her birini bitirince bana tek satır bildir. ⛔ 2. madde salt-okunur: Mini Mühendis'te hiçbir şey gönderilmeyecek, gerekçesi orada yazılı. ⚠ 5. madde (www→apex 301) artık en acil olanı — Search Console doğrulaması 12.10'da onun yüzünden başarısız döndü. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
 
 **1) ⚠ EN ÖNCE — AdSense onayı geldi, reklamları yayına al.**
 Konsol: `https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites`
@@ -59,16 +59,27 @@ Paket `com.saemuhendislik.yol_okulu_3b`. Kapalı test daveti 22.09'da 14 kişiye
 - Console ana sayfasında "kaydedilmemiş" filtresini uygula; çıkan varsa kaydet.
 - Yarım kalmış **paket adı kaydı taslağı** varsa tamamla.
 
-**5) Search Console — üç açık sorun.**
-16.09'da bildirildi: "Yönlendirmeli sayfa" düzeltmesi **başarısız oldu** + "Kopya, Google kullanıcıdan farklı bir standart sayfa seçti" + "Kullanıcı tarafından seçilen standart sayfa olmadan kopya".
-- Dizine ekleme raporunu aç, üç sorunun **örnek URL listelerini** çıkar. Teşhisi tahminle değil bu listeyle yap.
+**5) ⚠ EN ACİL — www → apex 301 yönlendirmesini kur.**
+**12.10'da Search Console doğrulaması BAŞARISIZ döndü:** *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti… Sayfalarınızdan bazıları bu sorundan etkilenmeye devam ediyor"* (WNC-10031170). Aynı gün ikinci bir sorun (*"kullanıcı tarafından seçilen standart sayfa olmadan kopya"*) **başarıyla düzeltildi** (3 sayfa, WNC-10030335) — yani konsolda doğru şeyler yapılmış, ama bu sorunun kökü hâlâ duruyor.
 
-**6) www → apex yönlendirmesini doğrula (kopya sorununun baş şüphelisi).**
+**Kök sebep neredeyse kesin:** `www.saemuhendislik.com` apex'e 301 yönlendirmiyor, Google iki özdeş site görüyor. (10.09'da `www/ads.txt` 200 dönüyordu.)
+
 ```
 curl -sS --ssl-no-revoke -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.saemuhendislik.com/
 ```
-- **301 + `https://saemuhendislik.com/`** bekleniyor → sorun burada değil.
-- **200 dönüyorsa** Google iki özdeş site görüyor demektir, kopya sorununun en güçlü sebebi bu. Çözüm: Cloudflare zone'da Redirect Rule — `www.saemuhendislik.com/*` → `https://saemuhendislik.com/$1`, **301**, Active (mevcut `dokum-pdf-yonlendirme` kuralının deseni).
+- **301 + `https://saemuhendislik.com/`** dönüyorsa yönlendirme zaten var → bana söyle, başka yere bakacağız (sonraki şüpheliler: `404.html` ve `google19071191ddf4150f.html` canonical'sız; `gizlilik.html` ile `gizlilik-politikasi.html` neredeyse aynı).
+- **200 dönüyorsa** (beklenen): Cloudflare dash → `saemuhendislik.com` zone → **Rules → Redirect Rules → Create rule**:
+  - Eşleşme: Hostname **equals** `www.saemuhendislik.com`
+  - Hedef: **Dynamic** → `concat("https://saemuhendislik.com", http.request.uri.path)`
+  - Durum kodu: **301**, **Preserve query string** açık, kural **Active**
+  - (Mevcut `dokum-pdf-yonlendirme` kuralı örnek alınabilir.)
+- Kural kaydedildikten sonra `curl`'ü tekrar çalıştır, **301** gördüğünü teyit et ve bana yaz.
+- Sonra Search Console → Dizine ekleme → *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti"* → **Düzeltmeyi doğrula**'ya bas.
+
+**6) Search Console — kalan iki sorunun URL listesi.**
+Açık kalanlar: yukarıdaki kopya sorunu + **"Yönlendirmeli sayfa"** (16.09'da başarısız bildirilmişti, o günden beri durumu bilinmiyor).
+- Dizine ekleme raporunu aç, **her iki sorunun örnek URL listesini** çıkar ve bana yaz. Teşhisi tahminle değil bu listeyle yapacağız.
+- "Yönlendirmeli sayfa" listesinde `.html` uzantılı adres görürsen söyle — Cloudflare Pages uzantılı adresi 308 yönlendiriyor, link/canonical/sitemap'te `.html` olmamalı.
 
 **Son: rozetler.** Bir oyunun Play store sayfası **gerçekten 200 döndüğü doğrulandıktan sonra** ana sayfadaki "YAKINDA GOOGLE PLAY'DE" rozetini gerçek Play linkine çevir (TR + EN). Yayında değilken link koyma, ölü sayfaya gider.
 
