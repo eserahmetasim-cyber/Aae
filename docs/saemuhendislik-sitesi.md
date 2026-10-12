@@ -69,17 +69,35 @@ kullanılıyor.
 
 `docs/play-destek-mesaji.md` artık **arşiv** — başına "kullanma" uyarısı kondu.
 
-### 🟡 08.10.2026 — Search Console doğrulaması başladı
+### 🔴 12.10.2026 — Doğrulama sonuçlandı: biri düzeldi, biri BAŞARISIZ
 
-08.10 05:48 UTC, `sc-noreply@google.com` (WNC-10030260): *"Kopya, Google
-kullanıcıdan farklı bir standart sayfa seçti"* sorunu için **3 sayfada doğrulama
-başladı**. Yani konsolda "Düzeltmeyi doğrula" düğmesine basılmış — bilgisayarda
-Search Console işi yapıldığının ilk somut kanıtı.
+08.10'da başlayan doğrulama bugün iki ayrı mailde sonuçlandı:
 
-> ⚠ **Düğmeye basmak sorunu çözmez.** 07.09'da da basılmıştı, 16.09'da
-> **başarısız** döndü. Baş şüpheli (`www` → apex 301 yönlendirmesi yok) hâlâ
-> test edilmedi — bu oturumdan `CONNECT 403` yüzünden test edilemiyor. Gerçek
-> düzeltme yapılmadıysa bu doğrulama da birkaç gün içinde başarısız döner.
+| Saat (UTC) | Sorun | Sonuç | Kod |
+|---|---|---|---|
+| 05:39 | "Kullanıcı tarafından seçilen standart sayfa olmadan kopya" | ✅ **DÜZELTİLDİ** — 3 sayfa doğrulandı | WNC-10030335 |
+| 05:44 | "Kopya, Google kullanıcıdan farklı bir standart sayfa seçti" | ❌ **BAŞARISIZ** — *"Sayfalarınızdan bazıları bu sorundan etkilenmeye devam ediyor"* | WNC-10031170 |
+
+08.10'da yazdığım uyarı aynen gerçekleşti: *"Düğmeye basmak sorunu çözmez…
+gerçek düzeltme yapılmadıysa bu doğrulama da başarısız döner."* Başarısız olan,
+`www` teşhisinin doğrudan hedef aldığı sorun.
+
+**→ `www` teşhisi artık kanıta dayanıyor.** "Google farklı bir standart sayfa
+seçti" tam olarak `www.saemuhendislik.com` ile `saemuhendislik.com`'un iki ayrı
+özdeş site gibi görünmesinin verdiği hata. 10.09'da `www/ads.txt` 200
+dönüyordu — yani `www` apex'e 301 yönlendirmiyor.
+
+**Çözüm (AAE'nin bilgisayarını gerektiriyor), artık en acil iş:**
+Cloudflare dash → `saemuhendislik.com` zone → **Rules → Redirect Rules**:
+hostname `www.saemuhendislik.com` → `concat("https://saemuhendislik.com",
+http.request.uri.path)`, **301**, query string korunur, Active. (Mevcut
+`dokum-pdf-yonlendirme` kuralının deseni.) Sonra Search Console'da aynı sorun
+için yeniden **"Düzeltmeyi doğrula"**.
+
+Bu doğrudan para konusu: reklam geliri trafiğe, trafik de dizine eklenmeye bağlı.
+
+**Açık kalan ikinci sorun:** "Yönlendirmeli sayfa" — 16.09'da başarısız
+bildirilmişti, o günden beri durumu bilinmiyor; konsoldan URL listesi alınacak.
 
 ## 0b. Önceki durum — 03.10.2026 (bulut oturumu tespiti)
 

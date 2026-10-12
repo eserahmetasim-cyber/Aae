@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-08",
+  "guncelleme": "2026-10-12",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -57,21 +57,30 @@
     "_kalan": "Auto ads acma + CMP yayinlama yerel oturumda; is emri 07.10'da kuyruga alindi, bilgisayar aciliminda islenecek."
   },
   "search_console": {
-    "acik_sorun": 3,
+    "acik_sorun": 2,
     "sorunlar": [
-      "Yonlendirmeli sayfa — 07.09 duzeltmesi 16.09'da BASARISIZ bildirildi",
-      "Kopya, Google kullanicidan farkli bir standart sayfa secti (16.09, yeni)",
-      "Kullanici tarafindan secilen standart sayfa olmadan kopya (16.09, yeni)"
+      "Yonlendirmeli sayfa — 07.09 duzeltmesi 16.09'da BASARISIZ bildirildi, o gunden beri durum bilinmiyor",
+      "Kopya, Google kullanicidan farkli bir standart sayfa secti — 12.10'da dogrulama BASARISIZ (WNC-10031170)"
     ],
-    "son_mail": "2026-10-08 05:48 — \"Kopya, Google kullanicidan farkli bir standart sayfa sectildi\" sorunu icin DOGRULAMA BASLADI, 3 sayfa (WNC-10030260)",
+    "son_mail": "2026-10-12 — iki mail: 05:39 bir sorun DUZELTILDI (WNC-10030335), 05:44 digeri BASARISIZ (WNC-10031170)",
     "dogrulama": {
       "baslangic": "2026-10-08",
-      "sorun": "Kopya, Google kullanicidan farkli bir standart sayfa secti",
-      "etkilenen_sayfa": 3,
-      "mesaj_kodu": "WNC-10030260",
-      "sonuc": null,
-      "_uyari": "Dogrulama dugmesine basmak sorunu COZMEZ. 07.09da da basilmisti, 16.09da BASARISIZ dondu. Bas supheli (www -> apex 301 yok) hala test edilmedi. Gercek duzeltme yapilmadiysa bu dogrulama da birkac gun icinde basarisiz doner."
-    }
+      "sonuclandi": "2026-10-12",
+      "basarili": {
+        "sorun": "Kullanici tarafindan secilen standart sayfa olmadan kopya",
+        "sayfa": 3,
+        "kod": "WNC-10030335"
+      },
+      "basarisiz": {
+        "sorun": "Kopya, Google kullanicidan farkli bir standart sayfa secti",
+        "kod": "WNC-10031170",
+        "google_metni": "Sayfalarinizdan bazilari bu sorundan etkilenmeye devam ediyor"
+      },
+      "_not": "08.10'da uyarmistim: dogrulama dugmesine basmak sorunu cozmez, asil sebep (www -> apex 301 yok) duzeltilmediyse basarisiz doner. Aynen oyle oldu ve basarisiz olan tam da o sebebin hedef aldigi sorun."
+    },
+    "cozulen": [
+      "Kullanici tarafindan secilen standart sayfa olmadan kopya — 12.10'da 3 sayfa DUZELTILMIS dogrulandi (WNC-10030335)"
+    ]
   },
   "site": {
     "apex_http": null,
@@ -79,7 +88,8 @@
     "www_301_apexe": null,
     "ads_txt_http": null,
     "ads_txt_dogru": null,
-    "_www_notu": "BAS SUPHELI: www apex'e 301 yonlendirmiyorsa Google iki ozdes site goruyor — Search Console'daki 'Google farkli standart sayfa secti' sorununun en guclu sebebi. 10.09'da www/ads.txt 200 donuyordu."
+    "_www_notu": "KANITLANDI SAYILIR: 12.10'da 'Google farkli standart sayfa secti' dogrulamasi BASARISIZ dondu. Bu hata tam olarak www.saemuhendislik.com ile saemuhendislik.com'un iki ayri ozdes site gibi gorunmesinin verdigi hata. 10.09'da www/ads.txt 200 donuyordu. COZUM: Cloudflare zone -> Redirect Rule -> www.saemuhendislik.com/* -> https://saemuhendislik.com/$1, 301, Active (mevcut dokum-pdf-yonlendirme kuralinin deseni). Kural aktif olunca Search Console'da ayni sorun icin yeniden 'Duzeltmeyi dogrula'.",
+    "_oncelik": "EN ACIL — reklam geliri trafige bagli, trafik de dizine eklenmeye bagli."
   },
   "yerel_oturum": {
     "id": "session_014mvmA2G5DBuuSRYtxDLTwk",
