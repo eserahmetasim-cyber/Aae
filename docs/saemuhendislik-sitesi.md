@@ -11,6 +11,32 @@
 
 ## 0. GÜNCEL DURUM
 
+### 🟢 13.10.2026 — ADMOB HESABI ONAYLANDI + BANKA HESABI DOĞRULANDI
+
+AAE 13.10'da yeni bir para kanalı açtı. Bu depoda daha önce hiç geçmeyen bir konu:
+
+| Saat (UTC) | Olay |
+|---|---|
+| 09:08 | **Banka hesabı doğrulandı** — ödeme profili `3396-9499-8629`. *"Artık banka hesabınızdan ödeme yapmaya veya almaya başlayabilirsiniz."* |
+| 14:18 | "Google AdMob'a hoş geldiniz" |
+| 18:00 | **"Hesabınız onaylandı"** — yayıncı kimliği **`pub-7223494011776010`** |
+
+**AdMob ≠ AdSense.** İkisi ayrı ürün, ayrı hesap, ayrı yayıncı kimliği:
+
+| | AdSense | AdMob |
+|---|---|---|
+| Ne için | **Site** reklamı (saemuhendislik.com) | **Uygulama içi** reklam (iki oyun) |
+| Yayıncı | `ca-pub-8433209614215281` | `pub-7223494011776010` |
+| Hesap | `ahmetasimeser008@gmail.com` | `eserahmetasim@gmail.com` (ana) |
+| Onay | 07.10.2026 | 13.10.2026 |
+
+Banka doğrulaması ayrıca ödemelerin **gerçekten akabilmesi** demek — bugüne
+kadar hiç ödeme çıkmamıştı.
+
+⚠ **Burada bir tuzak var, bkz. §5 yeni kural:** AdMob reklamı göstermek
+uygulamaya SDK ekleyip **yeni sürüm yüklemeyi** gerektiriyor. Mini Mühendis şu
+anda incelemede ve Google yazılı olarak "yeni sürüm göndermeyin" dedi.
+
 ### 🟢 07.10.2026 — ADSENSE ONAYI GELDİ
 
 AAE panelde "site için reklam onayı alındı" yazdığını gördü ve reklamların
@@ -441,6 +467,21 @@ süre boş 404 verdi — dağıtım sonrası 200 testi bu yüzden şart.)
 - API gerekirse: dash → profile → API Tokens → Custom (Account / Cloudflare Pages /
   Edit). API, domain sil/ekle işinde UI'nin *"already associated"* hatasına takılmıyor.
   (26.08'de açılan geçici `pages-tamir-gecici` token'ı güvenlik gereği SİLİNDİ.)
+
+### ⛔ AdMob — incelemedeki uygulamaya SDK eklenmez (14.10.2026)
+
+AdMob 13.10'da onaylandı (`pub-7223494011776010`) ve iki oyuna reklam konabilir.
+Ama reklam göstermek **yeni bir sürüm yüklemeyi** gerektiriyor, bu da yukarıdaki
+Play kuralına çarpıyor:
+
+- **Mini Mühendis** (`com.saemuhendislik.mini_muhendis`) **incelemede** →
+  AdMob SDK'sı **şimdi eklenmez**. Önce inceleme bitsin, uygulama yayına girsin;
+  reklamlı sürüm **ayrı bir güncelleme** olarak çıkar.
+- **Yol Okulu** (`com.saemuhendislik.yol_okulu_3b`) kapalı testte, üretim
+  incelemesinde değil → AdMob şimdi eklenebilir, risk yok. (Üretime geçiş
+  başvurusu gönderilecekse önce onu bitirmek daha temiz.)
+- Play Console'daki **"reklam içerir" beyanı** ancak uygulamada gerçekten reklam
+  olduğunda işaretlenir; önceden işaretlemek yanlış beyan olur.
 
 ### ⛔ Google Play — açık inceleme sırasında hiçbir şey gönderilmez (08.10.2026)
 
