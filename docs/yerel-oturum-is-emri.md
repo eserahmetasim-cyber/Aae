@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **12.10.2026**
+> Son güncelleme: **15.10.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -44,13 +44,16 @@ Paket `com.saemuhendislik.mini_muhendis`. **Uygulama şu anda incelemede ve Goog
 - **Yeni destek kaydı AÇMA** — kayıt zaten açık ve cevaplanmış.
 - Yapılacak tek şey: Play Console → Mini Mühendis → **Üretim** track'inde durumu **oku** ve bana tek satır bildir (İncelemede mi, Yayında mı, Reddedildi mi; kaç gündür öyle).
 - **Reddedilmişse** gerekçeyi oku ve bana yaz — düzeltmeyi birlikte kararlaştıracağız, kendi başına yeniden gönderme.
-- Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, reklam beyanı, gizlilik URL'si) görürsen **doldur** ama **sürüm gönderme**; sadece bana haber ver.
+- Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, gizlilik URL'si) görürsen **doldur** ama **sürüm gönderme**; sadece bana haber ver.
+- ⛔ **AdMob'u bu uygulamaya ŞİMDİ EKLEME.** AdMob hesabı 13.10'da onaylandı (`pub-7223494011776010`), ama reklam göstermek SDK ekleyip yeni sürüm yüklemeyi gerektirir — yukarıdaki yasağa girer. Önce inceleme bitsin, uygulama yayına girsin; reklamlı sürüm ayrı bir güncelleme olarak çıkar.
+- ⛔ **"Reklam içerir" beyanını da şimdi işaretleme** — uygulamada henüz reklam yok, yanlış beyan olur.
 
 **3) AAE Motosiklet Yol Okulu — üretime geçiş başvurusu.**
 Paket `com.saemuhendislik.yol_okulu_3b`. Kapalı test daveti 22.09'da 14 kişiye gönderildi, **14 günlük sayaç 06.10'da doldu.**
 - Play Console → kapalı test track'i → kaç test kullanıcısının **kesintisiz opt-in kaldığını** oku. Google kişisel hesaplar için **12** istiyor; bu sayı yalnızca konsolda görünür.
 - **12 veya üzeriyse → üretime geçiş başvurusunu gönder.**
 - Altındaysa kaç kişi eksik olduğunu söyle, yeni davet göndereyim.
+- **AdMob:** bu uygulama üretim incelemesinde değil, dolayısıyla AdMob SDK'sı (`pub-7223494011776010`) buraya eklenebilir — ama önce üretime geçiş başvurusunu bitir, sonra reklamı ayrı adımda ekleriz. Karışık iki değişikliği aynı anda gönderme.
 
 **4) Android geliştirici doğrulaması — son tarih geçti.**
 `https://play.google.com/console/android-developer-verification`

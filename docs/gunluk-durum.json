@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-12",
+  "guncelleme": "2026-10-15",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -101,5 +101,24 @@
     "_takip_zinciri": "4 saatlik 6 kontrolluk zincir 08.10 13:26da planlandigi gibi bitti (1/6 07.10 09:40 … 6/6 08.10 13:26). Alti kontrolun hicbirinde yerel oturum baglanmadi. 5/6 iki gercek haber buldu. Yerine gunluk kontrol kuruldu.",
     "_calisan_pencere": "08.10: AAE bilgisayarini acti ve is emrini yapistirdi, ama list_sessions icinde yeni Claude Code oturumu YOK. Calisan sey muhtemelen masaustu uygulamasinin normal sohbet penceresi (claude.ai konusmasi) — ekrani gorebiliyor ama buradan izlenemiyor. Search Console dogrulamasinin baslamis olmasi orada is yapildiginin kaniti."
   },
-  "_mail_filtresi_dersi": "Google Play destek maillerinin gondericisi googleplay-developer-support@google.com. Dar gonderen listesi bir tam gun gecikmeye yol acti. Bundan sonraki tum Gmail taramalarinda from:google.com genis filtresi kullanilacak."
+  "_mail_filtresi_dersi": "Google Play destek maillerinin gondericisi googleplay-developer-support@google.com, AdMob'unki admob-noreply@google.com, odeme bildirimlerininki payments-noreply@google.com. Dar gonderen listesi 08.10'da bir tam gun gecikmeye yol acti. Gunluk taramada genis from:google.com filtresi kullaniliyor.",
+  "admob": {
+    "_aciklama": "AdMob = UYGULAMA ICI reklam. AdSense'ten (site reklami) tamamen ayri urun ve ayri hesap.",
+    "yayinci": "pub-7223494011776010",
+    "hesap": "eserahmetasim@gmail.com (ana hesap — AdSense 008'de)",
+    "durum": "ONAYLANDI",
+    "onay_tarihi": "2026-10-13",
+    "son_mail": "2026-10-13 18:00 UTC — 'Size guzel bir haberimiz var: Hesabiniz onaylandi'",
+    "hangi_uygulamalar": "Iki oyun: mini_muhendis ve yol_okulu_3b",
+    "sdk_eklendi": false,
+    "_KURAL_mini_muhendis": "MINI MUHENDIS'E SIMDI AdMob SDK'SI EKLENMEYECEK. Reklam gostermek yeni surum yuklemeyi gerektirir; uygulama su anda incelemede ve Google 07.10'da yazili olarak 'yeni surum gondermeyin, her gonderim inceleme sayacini sifirlar' dedi ([3-2357000041354]). Once inceleme bitsin ve yayina girsin, reklamli surum AYRI bir guncelleme olarak cikar.",
+    "_yol_okulu_notu": "Yol Okulu kapali testte, uretim incelemesinde DEGIL — AdMob simdi eklenebilir, risk yok. Ama uretime gecis basvurusu gonderilecekse once onu bitirmek daha temiz.",
+    "_beyan_notu": "Play Console'daki 'reklam icerir' beyani ancak uygulamada GERCEKTEN reklam oldugunda isaretlenir. Simdiden isaretlemek yanlis beyan olur."
+  },
+  "odeme": {
+    "banka_dogrulandi": true,
+    "dogrulama_tarihi": "2026-10-13",
+    "odeme_profili": "3396-9499-8629",
+    "_not": "13.10 09:08 UTC payments-noreply: 'Banka hesabiniz dogrulandi. Artik banka hesabinizdan odeme yapmaya veya almaya baslayabilirsiniz.' Bu ana hesabin (eserahmetasim) profili; AdSense 008 hesabinda ayri bir odeme profili olabilir, dogrulanmadi."
+  }
 }
