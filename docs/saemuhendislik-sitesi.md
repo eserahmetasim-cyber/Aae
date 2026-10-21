@@ -11,6 +11,20 @@
 
 ## 0. GÜNCEL DURUM
 
+### 📉 17.10.2026 — İLK TRAFİK ÖLÇÜMÜ: 28 günde 5 tıklama
+
+Search Console: *"28 gün içinde 5 tıklamaya ulaştığınız için tebrikler"*
+(eşik 15.10'da aşıldı). Bu, bu projede kaydedilen **ilk somut trafik sayısı**.
+
+**Okuması acı ama net: 5 tıklama/28 gün pratikte sıfır trafik.** Reklam geliri
+tamamen trafiğe bağlı olduğu için, Auto ads maksimum yoğunlukta açılsa bile bu
+sayıyla kayda değer gelir üretmez.
+
+→ **Asıl kaldıraç reklam ayarı değil, sayfaların Google'da dizine girmesi.**
+Yani `www` → apex 301 kuralı ve kalan Search Console sorunları. Reklamı açmak
+yine de doğru (açık olsun, trafik geldikçe çalışsın), ama gelir beklentisi
+indeksleme düzelene kadar gerçekçi değil.
+
 ### 🟢 13.10.2026 — ADMOB HESABI ONAYLANDI + BANKA HESABI DOĞRULANDI
 
 AAE 13.10'da yeni bir para kanalı açtı. Bu depoda daha önce hiç geçmeyen bir konu:
