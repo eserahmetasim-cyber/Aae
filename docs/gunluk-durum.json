@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-15",
+  "guncelleme": "2026-10-21",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -23,7 +23,8 @@
     "_yayin_notu": "DUZELTME 08.10: 07.10 teshisim YANLISTI. \"Uretim surumu hic yayinlanmamis\" demistim; gercek su ki surum incelemede ve destek kaydi acilmis. Bir gun gec gordum cunku takip zincirinin gonderen filtresinde googleplay-developer-support@google.com yoktu.",
     "destek_kaydi": "3-2357000041354",
     "_KURAL": "YENI SURUM GONDERILMEYECEK. Google acikca yaziyor: \"Please refrain from submitting any further versions until the current review is finished... each new submission will reset the review turnaround time.\" Yeni AAB/surum gonderilirse inceleme sayaci bastan baslar. Play Console yalnizca OKUNACAK, hicbir sey gonderilmeyecek.",
-    "destek_kaydi_durumu": "KAPANDI — 08.10 09:56 UTC memnuniyet anketi geldi (Re: [3-2357000041354] Google Play Developer Support Survey). Inceleme sonucu HENUZ gelmedi."
+    "destek_kaydi_durumu": "KAPANDI — 08.10 09:56 UTC memnuniyet anketi geldi (Re: [3-2357000041354] Google Play Developer Support Survey). Inceleme sonucu HENUZ gelmedi.",
+    "_gecen_sure_notu": "21.10 itibariyla destek 'incelemeyi hizlandirdik' dediginden beri 14 gun gecti ve hic sonuc maili gelmedi (yayinlandi/reddedildi yok). Play Console'dan durumun OKUNMASI gerekiyor. Hala 'Incelemede' ise MEVCUT destek konusuna (3-2357000041354) cevap yazmak makul — bu YENI kayit acmak degildir, yasak olan o. Yeni surum gondermek yine YASAK."
   },
   "yol_okulu": {
     "ad": "AAE Motosiklet Yol Okulu",
@@ -120,5 +121,12 @@
     "dogrulama_tarihi": "2026-10-13",
     "odeme_profili": "3396-9499-8629",
     "_not": "13.10 09:08 UTC payments-noreply: 'Banka hesabiniz dogrulandi. Artik banka hesabinizdan odeme yapmaya veya almaya baslayabilirsiniz.' Bu ana hesabin (eserahmetasim) profili; AdSense 008 hesabinda ayri bir odeme profili olabilir, dogrulanmadi."
+  },
+  "trafik": {
+    "_aciklama": "Search Console'dan gelen ILK somut trafik olcumu. Bu projede daha once hic trafik sayisi kaydedilmemisti.",
+    "kaynak": "sc-noreply@google.com, 2026-10-17 23:49 UTC — '28 gun icinde 5 tiklamaya ulastiginiz icin tebrikler'",
+    "esik_tarihi": "2026-10-15",
+    "tiklama_28_gun": 5,
+    "_yorum": "5 tiklama/28 gun pratikte SIFIR trafik demek. Reklam geliri tamamen trafige bagli; bu sayiyla maksimum yogunlukta reklam bile kayda deger gelir uretmez. Asil kaldirac reklam ayari degil, sayfalarin Google'da dizine girmesi — yani www->apex 301 ve kalan Search Console sorunlari."
   }
 }
