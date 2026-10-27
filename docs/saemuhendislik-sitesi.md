@@ -11,6 +11,45 @@
 
 ## 0. GÜNCEL DURUM
 
+### 🟢 27.10.2026 — YOL OKULU'NA ÜRETİM İZNİ VERİLDİ (yayın değil)
+
+`no-reply-googleplay-developer@google.com`, 02:57:
+
+> *"You applied for Google Play production access for your app **AAE Motosiklet
+> Yol Okulu (com.saemuhendislik.yol_okulu_3b)**, and this **has now been
+> granted**. … **Before you release to production**, we recommend testing your
+> app extensively…"*
+
+Kapalı test şartı (12 kesintisiz tester / 14 gün) tutmuş; 22.09'da başlayan test
+tamamlandı ve üretime geçiş başvurusu onaylandı.
+
+⚠ **İzin ≠ yayın.** Metin, Mini Mühendis'in 12.09 maliyle birebir aynı — o gün
+de "izin verildi" yayınlandı sanılmıştı ve yanlış çıkmıştı. Oyun **hâlâ yayında
+değil**; üretim sürümü oluşturulup yayına alınması gerekiyor. Ana sayfadaki
+**"YAKINDA GOOGLE PLAY'DE" rozeti hâlâ doğru.**
+
+**⚠ Sıralama kuralı — AdMob yayından ÖNCE.** Mini Mühendis'ten öğrenildi: sürüm
+bir kez incelemeye girince yeni sürüm gönderilemiyor (sayaç sıfırlanıyor) ve
+inceleme haftalarca sürebiliyor. Yol Okulu şu an incelemede **değil**, yani
+şimdi serbest. Doğru sıra:
+
+1. AdMob SDK'sı (`pub-7223494011776010`) eklenir, reklam birimleri kurulur, test edilir
+2. Play Console → **"reklam içerir"** beyanı işaretlenir (artık doğru beyan)
+3. Üretim sürümü oluşturulur ve **bir kez** incelemeye gönderilir
+
+Tersi sırada (önce yayınla, sonra reklam ekle) oyun incelemedeyken reklamlı
+güncelleme gönderilemez, bekleme uzar.
+
+### 🔴 26.10.2026 — Search Console'da ÜÇÜNCÜ sorun: "Bulunamadı (404)"
+
+`sc-noreply@google.com` (WNC-20237597): *"Search Console, sitenizdeki bazı sayfa
+içeriklerinin aşağıdaki **yeni nedenden** dolayı dizine eklenmediğini belirledi:
+**Bulunamadı (404)**"*
+
+Açık sorun sayısı 2 → **3**. Hangi URL'lerin 404 verdiği bilinmiyor; konsoldan
+**örnek URL listesi** alınmalı. Bu oturumdan site test edilemiyor
+(`CONNECT 403`), o yüzden tahminle uğraşılmayacak.
+
 ### 📉 17.10.2026 — İLK TRAFİK ÖLÇÜMÜ: 28 günde 5 tıklama
 
 Search Console: *"28 gün içinde 5 tıklamaya ulaştığınız için tebrikler"*

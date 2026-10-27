@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **15.10.2026**
+> Son güncelleme: **27.10.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -48,12 +48,18 @@ Paket `com.saemuhendislik.mini_muhendis`. **Uygulama şu anda incelemede ve Goog
 - ⛔ **AdMob'u bu uygulamaya ŞİMDİ EKLEME.** AdMob hesabı 13.10'da onaylandı (`pub-7223494011776010`), ama reklam göstermek SDK ekleyip yeni sürüm yüklemeyi gerektirir — yukarıdaki yasağa girer. Önce inceleme bitsin, uygulama yayına girsin; reklamlı sürüm ayrı bir güncelleme olarak çıkar.
 - ⛔ **"Reklam içerir" beyanını da şimdi işaretleme** — uygulamada henüz reklam yok, yanlış beyan olur.
 
-**3) AAE Motosiklet Yol Okulu — üretime geçiş başvurusu.**
-Paket `com.saemuhendislik.yol_okulu_3b`. Kapalı test daveti 22.09'da 14 kişiye gönderildi, **14 günlük sayaç 06.10'da doldu.**
-- Play Console → kapalı test track'i → kaç test kullanıcısının **kesintisiz opt-in kaldığını** oku. Google kişisel hesaplar için **12** istiyor; bu sayı yalnızca konsolda görünür.
-- **12 veya üzeriyse → üretime geçiş başvurusunu gönder.**
-- Altındaysa kaç kişi eksik olduğunu söyle, yeni davet göndereyim.
-- **AdMob:** bu uygulama üretim incelemesinde değil, dolayısıyla AdMob SDK'sı (`pub-7223494011776010`) buraya eklenebilir — ama önce üretime geçiş başvurusunu bitir, sonra reklamı ayrı adımda ekleriz. Karışık iki değişikliği aynı anda gönderme.
+**3) AAE Motosiklet Yol Okulu — üretim izni GELDİ, sıralamaya dikkat.**
+Paket `com.saemuhendislik.yol_okulu_3b`. **27.10 02:57'de üretim izni verildi** ("production access has now been granted"). Kapalı test şartı tuttu. Ama **izin yayın değil** — üretim sürümü oluşturulup yayına alınması gerekiyor.
+
+⚠ **AdMob'u yayından ÖNCE ekle. Sıra önemli.** Mini Mühendis'ten öğrendik: sürüm bir kez incelemeye girince yeni sürüm gönderilemiyor (sayaç sıfırlanıyor) ve inceleme haftalarca sürebiliyor. Yol Okulu şu an incelemede **değil**, şimdi serbest. Bu sırayla git:
+
+1. **AdMob SDK'sını ekle** — yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`. AdMob konsolunda uygulamayı oluştur, reklam birimlerini (banner / geçiş / ödüllü — hangisi oyuna uygunsa) tanımla, SDK'yı projeye bağla, **test reklamlarıyla** çalıştığını doğrula.
+2. **Play Console → "reklam içerir" beyanını işaretle.** Artık doğru beyan; bundan önce işaretlenmeyecekti.
+3. **Üretim sürümünü oluştur ve BİR KEZ incelemeye gönder.** Gönderdikten sonra yeni sürüm gönderme.
+
+Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, gizlilik politikası URL'si) varsa 3. adımdan önce tamamla.
+
+Bitince bana tek satır yaz: AdMob eklendi mi, beyan işaretlendi mi, sürüm gönderildi mi.
 
 **4) Android geliştirici doğrulaması — son tarih geçti.**
 `https://play.google.com/console/android-developer-verification`
@@ -79,9 +85,9 @@ curl -sS --ssl-no-revoke -o /dev/null -w "%{http_code} %{redirect_url}\n" https:
 - Kural kaydedildikten sonra `curl`'ü tekrar çalıştır, **301** gördüğünü teyit et ve bana yaz.
 - Sonra Search Console → Dizine ekleme → *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti"* → **Düzeltmeyi doğrula**'ya bas.
 
-**6) Search Console — kalan iki sorunun URL listesi.**
-Açık kalanlar: yukarıdaki kopya sorunu + **"Yönlendirmeli sayfa"** (16.09'da başarısız bildirilmişti, o günden beri durumu bilinmiyor).
-- Dizine ekleme raporunu aç, **her iki sorunun örnek URL listesini** çıkar ve bana yaz. Teşhisi tahminle değil bu listeyle yapacağız.
+**6) Search Console — ÜÇ açık sorunun URL listesi.**
+Açık kalanlar: yukarıdaki kopya sorunu + **"Yönlendirmeli sayfa"** (16.09'da başarısız bildirilmişti) + **"Bulunamadı (404)"** (26.10'da gelen YENİ sorun, WNC-20237597).
+- Dizine ekleme raporunu aç, **her üç sorunun örnek URL listesini** çıkar ve bana yaz. 404 listesi özellikle önemli — hangi adreslerin kaybolduğunu bilmeden düzeltilemez. Teşhisi tahminle değil bu listeyle yapacağız.
 - "Yönlendirmeli sayfa" listesinde `.html` uzantılı adres görürsen söyle — Cloudflare Pages uzantılı adresi 308 yönlendiriyor, link/canonical/sitemap'te `.html` olmamalı.
 
 **Son: rozetler.** Bir oyunun Play store sayfası **gerçekten 200 döndüğü doğrulandıktan sonra** ana sayfadaki "YAKINDA GOOGLE PLAY'DE" rozetini gerçek Play linkine çevir (TR + EN). Yayında değilken link koyma, ölü sayfaya gider.

@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-21",
+  "guncelleme": "2026-10-27",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -31,12 +31,16 @@
     "paket": "com.saemuhendislik.yol_okulu_3b",
     "store_http": null,
     "yayinda": false,
-    "asama": "kapali test; 14 gunluk sayac 06.10 ~17:49 UTC itibariyla doldu, uretime gecis basvurusu acilabilir",
+    "asama": "URETIM IZNI VERILDI (27.10 02:57) — 'You applied for Google Play production access... this has now been granted.' Kapali test sarti (12 kesintisiz tester / 14 gun) tutmus. AMA HENUZ YAYINDA DEGIL: uretim surumu olusturulup yayina alinmasi gerekiyor.",
     "kapali_test_baslangic": "2026-09-22",
     "davet_edilen_tester": 14,
-    "opt_in_kalan_tester": null,
+    "opt_in_kalan_tester": ">=12 (izin verildigine gore sart tutmus)",
     "_tester_notu": "Google kisisel hesaplar icin 14 gun boyunca 12 kesintisiz opt-in tester istiyor. Bu sayi YALNIZCA Play Console'da gorunur, mailden okunamaz.",
-    "son_mail": null
+    "son_mail": "2026-10-27 02:57 — production access granted",
+    "uretim_izni": true,
+    "uretim_izni_tarihi": "2026-10-27",
+    "_SIRALAMA_KURALI": "AdMob'u YAYINDAN ONCE ekle. Mini Muhendis deneyimi: surum bir kez incelemeye girdi mi yeni surum gonderilemiyor (sayac sifirlaniyor) ve inceleme haftalarca surebiliyor. Yol Okulu su an incelemede DEGIL, yani simdi serbest. Dogru sira: 1) AdMob SDK (pub-7223494011776010) eklenir, reklam birimleri kurulur, test edilir; 2) Play Console'da 'reklam icerir' beyani isaretlenir (artik dogru beyan); 3) uretim surumu olusturulup BIR KEZ incelemeye gonderilir. Tersi sirada (once yayinla sonra reklam ekle) oyun incelemedeyken reklamli guncelleme gonderilemez, bekleme uzar.",
+    "_rozet_notu": "Ana sayfadaki 'YAKINDA GOOGLE PLAY'DE' rozeti HALA DOGRU. Izin yayin demek degil; rozet ancak store sayfasi gercekten 200 donduktan sonra Play linkine cevrilir."
   },
   "adsense": {
     "yayinci": "ca-pub-8433209614215281",
@@ -58,12 +62,13 @@
     "_kalan": "Auto ads acma + CMP yayinlama yerel oturumda; is emri 07.10'da kuyruga alindi, bilgisayar aciliminda islenecek."
   },
   "search_console": {
-    "acik_sorun": 2,
+    "acik_sorun": 3,
     "sorunlar": [
       "Yonlendirmeli sayfa — 07.09 duzeltmesi 16.09'da BASARISIZ bildirildi, o gunden beri durum bilinmiyor",
-      "Kopya, Google kullanicidan farkli bir standart sayfa secti — 12.10'da dogrulama BASARISIZ (WNC-10031170)"
+      "Kopya, Google kullanicidan farkli bir standart sayfa secti — 12.10'da dogrulama BASARISIZ (WNC-10031170)",
+      "Bulunamadi (404) — YENI, 26.10'da bildirildi (WNC-20237597)"
     ],
-    "son_mail": "2026-10-12 — iki mail: 05:39 bir sorun DUZELTILDI (WNC-10030335), 05:44 digeri BASARISIZ (WNC-10031170)",
+    "son_mail": "2026-10-26 11:59 — 'sayfalarin dizine eklenmesini engelleyen YENI nedenler: Bulunamadi (404)' (WNC-20237597)",
     "dogrulama": {
       "baslangic": "2026-10-08",
       "sonuclandi": "2026-10-12",
@@ -81,7 +86,8 @@
     },
     "cozulen": [
       "Kullanici tarafindan secilen standart sayfa olmadan kopya — 12.10'da 3 sayfa DUZELTILMIS dogrulandi (WNC-10030335)"
-    ]
+    ],
+    "_404_notu": "Yeni sorun. Hangi URL'lerin 404 verdigi bilinmiyor; konsoldan ornek URL listesi alinmali. Buradan site test edilemiyor (CONNECT 403), tahminle ugrasilmayacak."
   },
   "site": {
     "apex_http": null,
