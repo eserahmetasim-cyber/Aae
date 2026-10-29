@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-27",
+  "guncelleme": "2026-10-29",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -130,9 +130,25 @@
   },
   "trafik": {
     "_aciklama": "Search Console'dan gelen ILK somut trafik olcumu. Bu projede daha once hic trafik sayisi kaydedilmemisti.",
-    "kaynak": "sc-noreply@google.com, 2026-10-17 23:49 UTC — '28 gun icinde 5 tiklamaya ulastiginiz icin tebrikler'",
-    "esik_tarihi": "2026-10-15",
-    "tiklama_28_gun": 5,
-    "_yorum": "5 tiklama/28 gun pratikte SIFIR trafik demek. Reklam geliri tamamen trafige bagli; bu sayiyla maksimum yogunlukta reklam bile kayda deger gelir uretmez. Asil kaldirac reklam ayari degil, sayfalarin Google'da dizine girmesi — yani www->apex 301 ve kalan Search Console sorunlari."
+    "kaynak": "sc-noreply@google.com esik mailleri (5 -> 40)",
+    "esik_tarihi": "2026-10-26",
+    "tiklama_28_gun": 40,
+    "_yorum": "DUZELTME 29.10: 21.10'da '5 tiklama pratikte sifir, reklam kayda deger gelir uretmez' demistim. O rakam icin dogruydu ama artik gecerli degil — 11 gunde 8 KAT artis var (5 -> 40) ve egri yukari. 40 hala kucuk ama 'hic' degil. Reklamlari acmanin degeri artti; AdSense Auto ads + CMP 22 gundur bekliyor ve trafik buyurken reklamin kapali olmasi artik dogrudan kacan gelir. Indeksleme isi (www->apex 301, uc Search Console sorunu) yine de en buyuk kaldirac: 40 tiklama, sayfalarin bir kismi dizine girememisken alinan rakam.",
+    "seri": [
+      {
+        "tarih": "2026-10-15",
+        "tiklama_28_gun": 5
+      },
+      {
+        "tarih": "2026-10-26",
+        "tiklama_28_gun": 40
+      }
+    ]
+  },
+  "_bilgisayar_baglantisi": {
+    "arac": "list_computer_folders / request_computer_folder (29.10'da bu oturuma geldi)",
+    "durum": "KULLANILAMIYOR",
+    "olcum": "list_computer_folders -> {\"folders\":[],\"cannot_be_used\":[]} — AAE'nin listesinde hic klasor yok",
+    "_neden": "Arac tanimi: klasor ancak Mac ya da Linux bilgisayarda olabilir ve bir git deposunun koku olmali. AAE Windows kullaniyor (13.10 ve 17.10 guvenlik mailleri 'Windows cihazinda yeni oturum acma' diyor). Yani klasor eklese bile kullanilamaz. Konsol isleri hala AAE'nin bilgisayarindaki Claude penceresini gerektiriyor."
   }
 }

@@ -50,6 +50,26 @@ Açık sorun sayısı 2 → **3**. Hangi URL'lerin 404 verdiği bilinmiyor; kons
 **örnek URL listesi** alınmalı. Bu oturumdan site test edilemiyor
 (`CONNECT 403`), o yüzden tahminle uğraşılmayacak.
 
+### 📈 28.10.2026 — TRAFİK 5'TEN 40'A ÇIKTI (11 günde 8 kat)
+
+`sc-noreply@google.com`: *"**Eki 26, 2026** tarihi itibarıyla sitenizin son 28
+gün içinde Google Arama'dan aldığı tıklama sayısı **40** değerine ulaştı."*
+
+| Tarih | 28 günlük tıklama |
+|---|---|
+| 15.10 | 5 |
+| 26.10 | **40** |
+
+**Aşağıdaki 17.10 değerlendirmemi düzeltiyorum.** O gün "5 tıklama pratikte
+sıfır, maksimum yoğunlukta reklam bile kayda değer gelir üretmez" demiştim. O
+rakam için doğruydu, **artık değil**: 11 günde 8 kat artış var, eğri yukarı.
+40 hâlâ küçük ama "hiç" değil.
+
+→ **Reklamı açmanın değeri arttı.** AdSense Auto ads + CMP 07.10'dan beri
+bekliyor; trafik büyürken reklamın kapalı olması artık doğrudan kaçan gelir.
+→ İndeksleme (www→apex 301 + üç Search Console sorunu) yine de en büyük
+kaldıraç: 40 tıklama, sayfaların bir kısmı dizine girememişken alınan rakam.
+
 ### 📉 17.10.2026 — İLK TRAFİK ÖLÇÜMÜ: 28 günde 5 tıklama
 
 Search Console: *"28 gün içinde 5 tıklamaya ulaştığınız için tebrikler"*
