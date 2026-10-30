@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **27.10.2026**
+> Son güncelleme: **30.10.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -17,7 +17,7 @@
 
 ---
 
-Merhaba. Aşağıdaki altı işi bu sırayla yap, her birini bitirince bana tek satır bildir. ⛔ 2. madde salt-okunur: Mini Mühendis'te hiçbir şey gönderilmeyecek, gerekçesi orada yazılı. ⚠ 5. madde (www→apex 301) artık en acil olanı — Search Console doğrulaması 12.10'da onun yüzünden başarısız döndü. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
+Merhaba. Aşağıdaki yedi işi bu sırayla yap, her birini bitirince bana tek satır bildir. ⛔ 2. madde salt-okunur: Mini Mühendis'te hiçbir şey gönderilmeyecek, gerekçesi orada yazılı. ⚠ 5. madde (www→apex 301) artık en acil olanı — Search Console doğrulaması 12.10'da onun yüzünden başarısız döndü. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
 
 **1) ⚠ EN ÖNCE — AdSense onayı geldi, reklamları yayına al.**
 Konsol: `https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites`
@@ -53,7 +53,7 @@ Paket `com.saemuhendislik.yol_okulu_3b`. **27.10 02:57'de üretim izni verildi**
 
 ⚠ **AdMob'u yayından ÖNCE ekle. Sıra önemli.** Mini Mühendis'ten öğrendik: sürüm bir kez incelemeye girince yeni sürüm gönderilemiyor (sayaç sıfırlanıyor) ve inceleme haftalarca sürebiliyor. Yol Okulu şu an incelemede **değil**, şimdi serbest. Bu sırayla git:
 
-1. **AdMob SDK'sını ekle** — yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`. AdMob konsolunda uygulamayı oluştur, reklam birimlerini (banner / geçiş / ödüllü — hangisi oyuna uygunsa) tanımla, SDK'yı projeye bağla, **test reklamlarıyla** çalıştığını doğrula.
+1. **AdMob SDK'sını ekle** — yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`. ⚠ Önce Play Console'da oyunun **hedef kitlesine** bak: çocuk/aile ise Google'ın **Families Self-Certified Ads SDK** şartı devreye giriyor, kullandığın AdMob sürümünün o listede olduğunu doğrula. AdMob konsolunda uygulamayı oluştur, reklam birimlerini (banner / geçiş / ödüllü — hangisi oyuna uygunsa) tanımla, SDK'yı projeye bağla, **test reklamlarıyla** çalıştığını doğrula.
 2. **Play Console → "reklam içerir" beyanını işaretle.** Artık doğru beyan; bundan önce işaretlenmeyecekti.
 3. **Üretim sürümünü oluştur ve BİR KEZ incelemeye gönder.** Gönderdikten sonra yeni sürüm gönderme.
 
@@ -61,14 +61,20 @@ Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, 
 
 Bitince bana tek satır yaz: AdMob eklendi mi, beyan işaretlendi mi, sürüm gönderildi mi.
 
-**4) Android geliştirici doğrulaması — son tarih geçti.**
+**4) ⏰ Trader status beyanı — Kasım 2026'da zorunlu oldu.**
+29.10'daki Play politika duyurusu: *"Starting in November 2026, you must declare your trader status in Play Console in accordance with new Console requirements."* Tüm geliştiriciler için; beyan edilmezse yayınlamayı engelleyebilir ve iki oyun da yayın sürecinde.
+- Play Console → hesap ayarları / geliştirici profili → **trader status (tacir durumu)** beyanını doldur.
+- Bitince bana ne seçtiğini tek satır yaz.
+- Aynı duyuruda: Japonya'ya veya Japonya'dan **satış** yapanların 01.12.2026'ya kadar yetkilendirme yapması gerekiyor, yoksa ödemeler küresel olarak tutuluyor. Oyunlar ücretsiz ve uygulama içi satın alma yok, yani muhtemelen kapsam dışı — ama Console'da bir bakışta teyit et.
+
+**5) Android geliştirici doğrulaması — son tarih geçti.**
 `https://play.google.com/console/android-developer-verification`
 04.09'daki "[Son hatırlatma]" maili: *"Kaydedilmeyen tüm Google Play uygulamaları 30 Eylül 2026'dan sonra dünya genelinde Play'den kaldırılacak."* Bugün 07.10 — kaldırma bildirimi gelmedi ama doğrulanması gerek.
 - `com.saemuhendislik.mini_muhendis` ve `com.saemuhendislik.yol_okulu_3b` **kayıtlı** mı?
 - Console ana sayfasında "kaydedilmemiş" filtresini uygula; çıkan varsa kaydet.
 - Yarım kalmış **paket adı kaydı taslağı** varsa tamamla.
 
-**5) ⚠ EN ACİL — www → apex 301 yönlendirmesini kur.**
+**6) ⚠ EN ACİL — www → apex 301 yönlendirmesini kur.**
 **12.10'da Search Console doğrulaması BAŞARISIZ döndü:** *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti… Sayfalarınızdan bazıları bu sorundan etkilenmeye devam ediyor"* (WNC-10031170). Aynı gün ikinci bir sorun (*"kullanıcı tarafından seçilen standart sayfa olmadan kopya"*) **başarıyla düzeltildi** (3 sayfa, WNC-10030335) — yani konsolda doğru şeyler yapılmış, ama bu sorunun kökü hâlâ duruyor.
 
 **Kök sebep neredeyse kesin:** `www.saemuhendislik.com` apex'e 301 yönlendirmiyor, Google iki özdeş site görüyor. (10.09'da `www/ads.txt` 200 dönüyordu.)
@@ -85,7 +91,7 @@ curl -sS --ssl-no-revoke -o /dev/null -w "%{http_code} %{redirect_url}\n" https:
 - Kural kaydedildikten sonra `curl`'ü tekrar çalıştır, **301** gördüğünü teyit et ve bana yaz.
 - Sonra Search Console → Dizine ekleme → *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti"* → **Düzeltmeyi doğrula**'ya bas.
 
-**6) Search Console — ÜÇ açık sorunun URL listesi.**
+**7) Search Console — ÜÇ açık sorunun URL listesi.**
 Açık kalanlar: yukarıdaki kopya sorunu + **"Yönlendirmeli sayfa"** (16.09'da başarısız bildirilmişti) + **"Bulunamadı (404)"** (26.10'da gelen YENİ sorun, WNC-20237597).
 - Dizine ekleme raporunu aç, **her üç sorunun örnek URL listesini** çıkar ve bana yaz. 404 listesi özellikle önemli — hangi adreslerin kaybolduğunu bilmeden düzeltilemez. Teşhisi tahminle değil bu listeyle yapacağız.
 - "Yönlendirmeli sayfa" listesinde `.html` uzantılı adres görürsen söyle — Cloudflare Pages uzantılı adresi 308 yönlendiriyor, link/canonical/sitemap'te `.html` olmamalı.

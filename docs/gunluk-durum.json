@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-29",
+  "guncelleme": "2026-10-30",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -150,5 +150,29 @@
     "durum": "KULLANILAMIYOR",
     "olcum": "list_computer_folders -> {\"folders\":[],\"cannot_be_used\":[]} — AAE'nin listesinde hic klasor yok",
     "_neden": "Arac tanimi: klasor ancak Mac ya da Linux bilgisayarda olabilir ve bir git deposunun koku olmali. AAE Windows kullaniyor (13.10 ve 17.10 guvenlik mailleri 'Windows cihazinda yeni oturum acma' diyor). Yani klasor eklese bile kullanilamaz. Konsol isleri hala AAE'nin bilgisayarindaki Claude penceresini gerektiriyor."
+  },
+  "play_politika": {
+    "_kaynak": "2026-10-29 19:08 UTC, googleplay-noreply@google.com, 'Google Play Developer Program Policy Update'",
+    "_nitelik": "Tum gelistiricilere giden GENEL duyuru, uygulamaya ozel degil. Maddelerin cogu (Local Network / Manage Contacts izinleri, AppFunctions, kripto, XR, abonelik indirimleri) iki basit oyunla ilgisiz. Mail 'en az 30 gun' veriyor.",
+    "ilgili_maddeler": [
+      {
+        "madde": "Trader status beyani — 'Starting in November 2026, you must declare your trader status in Play Console'",
+        "tarih": "2026-11 (iki gun sonra)",
+        "bizi_ilgilendiriyor": "EVET",
+        "neden": "Tum gelistiriciler icin Console zorunlulugu. Beyan edilmezse yayinlamayi engelleyebilir; iki oyun da yayin surecinde."
+      },
+      {
+        "madde": "Japonya'ya/Japonya'dan satis yapanlar 1 Aralik 2026'ya kadar yetkilendirme yapmazsa odemeler kuresel olarak TUTULUR",
+        "tarih": "2026-12-01",
+        "bizi_ilgilendiriyor": "MUHTEMELEN HAYIR",
+        "neden": "Oyunlar ucretsiz, uygulama ici satin alma yok. Yine de Console'da bir bakista teyit edilmeli."
+      },
+      {
+        "madde": "Families Self-Certified Ads SDK Program — yeni basvurulara acildi",
+        "tarih": null,
+        "bizi_ilgilendiriyor": "BELKI",
+        "neden": "Oyunlar cocuk/aile hedef kitlesindeyse gosterilen reklam SDK'sinin bu programda self-certified olmasi gerekiyor. AdMob EKLENMEDEN ONCE hedef kitle ayarina bakilmali."
+      }
+    ]
   }
 }
