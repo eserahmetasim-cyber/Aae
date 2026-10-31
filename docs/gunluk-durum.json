@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-30",
+  "guncelleme": "2026-10-31",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -47,7 +47,7 @@
     "hesap": "ahmetasimeser008@gmail.com",
     "basvuru": "2026-08-28",
     "durum": "ONAYLANDI (07.10 — AAE panelden okudu; bagimsiz dogrulanamadi)",
-    "auto_ads": false,
+    "auto_ads": true,
     "cmp_yayinda": false,
     "son_mail": null,
     "_mail_notu": "AdSense maili 008 hesabina gidiyor; Gmail baglayicisi eserahmetasim@gmail.com'a bagli. 008'den yonlendirme kurulana kadar onay/ret maili gorunmez.",
@@ -59,7 +59,9 @@
       "404.html"
     ],
     "_reklamsiz_notu": "Ilk ikisi Play Store'a verilen uygulama gizlilik politikalari, ucuncusu iceriksiz sayfa. AdSense script'i bu ucunde hic yok ve EKLENMEYECEK.",
-    "_kalan": "Auto ads acma + CMP yayinlama yerel oturumda; is emri 07.10'da kuyruga alindi, bilgisayar aciliminda islenecek."
+    "_kalan": "Riza mesaji (CMP) yayinlandi mi teyit edilecek; ads.txt panelde 'Yetkili'ye dondu mu bakilacak.",
+    "auto_ads_tarihi": "2026-10-31",
+    "_auto_ads_notu": "AAE 31.10'da 'adsense reklamlari actim' dedi. BAGIMSIZ DOGRULANAMADI: bu oturumda tarayici yok, site egress'te engelli (CONNECT 403), AdSense maili 008 hesabina gidiyor. Teyit icin AAE'den iki sey bekleniyor: (1) riza mesaji (Gizlilik ve mesajlasma -> Avrupa tuzukleri) 'Yayinda' mi, (2) sitede gercekten reklam goruluyor mu. Yeni onaylanan sitelerde ilk reklamlarin cikmasi birkac saat surebilir."
   },
   "search_console": {
     "acik_sorun": 3,
