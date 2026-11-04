@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-10-31",
+  "guncelleme": "2026-11-04",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -122,7 +122,16 @@
     "sdk_eklendi": false,
     "_KURAL_mini_muhendis": "MINI MUHENDIS'E SIMDI AdMob SDK'SI EKLENMEYECEK. Reklam gostermek yeni surum yuklemeyi gerektirir; uygulama su anda incelemede ve Google 07.10'da yazili olarak 'yeni surum gondermeyin, her gonderim inceleme sayacini sifirlar' dedi ([3-2357000041354]). Once inceleme bitsin ve yayina girsin, reklamli surum AYRI bir guncelleme olarak cikar.",
     "_yol_okulu_notu": "Yol Okulu kapali testte, uretim incelemesinde DEGIL — AdMob simdi eklenebilir, risk yok. Ama uretime gecis basvurusu gonderilecekse once onu bitirmek daha temiz.",
-    "_beyan_notu": "Play Console'daki 'reklam icerir' beyani ancak uygulamada GERCEKTEN reklam oldugunda isaretlenir. Simdiden isaretlemek yanlis beyan olur."
+    "_beyan_notu": "Play Console'daki 'reklam icerir' beyani ancak uygulamada GERCEKTEN reklam oldugunda isaretlenir. Simdiden isaretlemek yanlis beyan olur.",
+    "_sdk_konum_degisikligi": {
+      "kaynak": "2026-11-03 16:42 UTC, admob-noreply@google.com, 'Changes to coarse location collection in Google Mobile Ads SDK'",
+      "ne_degisiyor": "GMA SDK, uygulamanin konum izni varsa cihazin KABA (coarse) konumunu toplayip reklam cografi alakasini artirmak icin kullanacak. Hassas izin verilse bile yalnizca kaba konum aliniyor.",
+      "hangi_surumden": "Android 1.7.0 / iOS 13.12.0 ve uzeri",
+      "varsayilan": "Bu surumleri alirsan ve kapatmazsan ACIK gelir",
+      "kapatilabilir": true,
+      "KARAR": "Yol Okulu'na SDK eklenirken KONUM TOPLAMA KAPATILACAK (yapilandirma bayragiyla). Gerekce: (1) Yol Okulu'nun konum iznine ihtiyaci yok, varsa da reklam cografi alakasinin degeri bu asamada sifira yakin; (2) acik birakmak gizlilik politikasi ve Play 'Veri guvenligi' formunun guncellenmesini gerektiriyor — ilk uretim gonderiminde fazladan risk; (3) hedef kitle cocuk/aile ise Families politikasiyla ek surtunme cikarir. Maliyeti: biraz daha dusuk reklam alakasi, henuz kullanicisi olmayan bir oyunda ihmal edilebilir.",
+      "_not": "Uygulama konum izni hic istemiyorsa SDK zaten bir sey toplamaz; bayragi kapatmak yine de garanti olsun diye yapilacak."
+    }
   },
   "odeme": {
     "banka_dogrulandi": true,
