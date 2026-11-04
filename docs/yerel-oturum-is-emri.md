@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **30.10.2026**
+> Son güncelleme: **04.11.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -53,7 +53,8 @@ Paket `com.saemuhendislik.yol_okulu_3b`. **27.10 02:57'de üretim izni verildi**
 
 ⚠ **AdMob'u yayından ÖNCE ekle. Sıra önemli.** Mini Mühendis'ten öğrendik: sürüm bir kez incelemeye girince yeni sürüm gönderilemiyor (sayaç sıfırlanıyor) ve inceleme haftalarca sürebiliyor. Yol Okulu şu an incelemede **değil**, şimdi serbest. Bu sırayla git:
 
-1. **AdMob SDK'sını ekle** — yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`. ⚠ Önce Play Console'da oyunun **hedef kitlesine** bak: çocuk/aile ise Google'ın **Families Self-Certified Ads SDK** şartı devreye giriyor, kullandığın AdMob sürümünün o listede olduğunu doğrula. AdMob konsolunda uygulamayı oluştur, reklam birimlerini (banner / geçiş / ödüllü — hangisi oyuna uygunsa) tanımla, SDK'yı projeye bağla, **test reklamlarıyla** çalıştığını doğrula.
+1. **AdMob SDK'sını ekle** — yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`. ⚠ Önce Play Console'da oyunun **hedef kitlesine** bak: çocuk/aile ise Google'ın **Families Self-Certified Ads SDK** şartı devreye giriyor, kullandığın AdMob sürümünün o listede olduğunu doğrula.
+   ⚠ **Konum toplamayı KAPAT.** 03.11'de AdMob duyurdu: GMA SDK **Android 1.7.0 / iOS 13.12.0** ve üzeri sürümlerde, uygulamanın konum izni varsa cihazın **kaba konumunu** toplamaya başlıyor ve kapatmazsan **varsayılan açık** geliyor. SDK'yı eklerken **yapılandırma bayrağıyla kapat**. Gerekçe: açık bırakırsan gizlilik politikasını ve Play **Veri güvenliği** formunu güncellemen gerekir — ilk üretim gönderiminde gereksiz risk; hedef kitle çocuk/aile ise Families politikasıyla da sürtüşür. Kaybı sadece biraz daha az coğrafi-alakalı reklam, henüz kullanıcısı olmayan bir oyunda önemsiz. AdMob konsolunda uygulamayı oluştur, reklam birimlerini (banner / geçiş / ödüllü — hangisi oyuna uygunsa) tanımla, SDK'yı projeye bağla, **test reklamlarıyla** çalıştığını doğrula.
 2. **Play Console → "reklam içerir" beyanını işaretle.** Artık doğru beyan; bundan önce işaretlenmeyecekti.
 3. **Üretim sürümünü oluştur ve BİR KEZ incelemeye gönder.** Gönderdikten sonra yeni sürüm gönderme.
 
