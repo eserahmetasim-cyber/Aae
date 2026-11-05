@@ -10,7 +10,7 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-11-04",
+  "guncelleme": "2026-11-05",
   "ag_erisimi": false,
   "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
   "mini_muhendis": {
@@ -185,5 +185,16 @@
         "neden": "Oyunlar cocuk/aile hedef kitlesindeyse gosterilen reklam SDK'sinin bu programda self-certified olmasi gerekiyor. AdMob EKLENMEDEN ONCE hedef kitle ayarina bakilmali."
       }
     ]
+  },
+  "trader_status": {
+    "_kaynak": "2026-11-04 22:49 UTC, googleplay-noreply@google.com, 'Google Play'de uygulama dagitmaya devam etmek icin satici durumunuzu beyan edin' (Islem Gerekli)",
+    "SON_TARIH": "2027-02-01",
+    "_tarih_duzeltmesi": "30.10'da genel politika duyurusuna bakip 'Kasim 2026'dan itibaren zorunlu, tarihi iki gun sonra' demistim. Dogrusu: Kasim 2026 Console alaninin ACILDIGI tarih; BEYAN SON TARIHI 1 Subat 2027. Yani acil degil ama atlanamaz.",
+    "yapilmadiginda": "Uygulama GUNCELLEMESI gonderilemez VE gelistirici profili ile TUM uygulamalar Google Play'den dunya genelinde KALDIRILIR.",
+    "AAE_muhtemelen_satici": "Mail: 'uygulamalarinizdan gelir elde etmek (ucretli indirmeler, uygulama ici urunler, abonelikler veya REKLAMLAR) dahil ticari faaliyette bulunuyorsaniz genellikle satici sayilirsiniz.' AdMob ile reklam gelirine geciliyor → satici. Tek istisna: AEA/Birlesik Krallik'ta dagitim yapmamak.",
+    "DIKKAT_gizlilik": "Satici olarak beyan eden BIREYSEL gelistiricinin herkese acik bir TELEFON NUMARASI vermesi ve dogrulamasi gerekiyor; mail acikca 'telefon numaraniz ve ADRESINIZ Google Play'de herkese acik gosterilecek' diyor. AAE bireysel gelistirici — ev adresi ve telefonu magazada gorunur olacak. Karar vermeden once bunu bilmesi gerek. Alternatifler: isletme olarak kayit (isyeri adresi gorunur) ya da AEA/BK disinda dagitim (pazari daraltir).",
+    "adimlar_hesap": "Play Console → Hesabi yonet → Hesap ayrintilari → Hakkinizda → Satici durumu → beyan et → (satici ise) telefon dogrula + yerel yasalara uyum taahhudu → Kaydet.",
+    "adimlar_uygulama": "Her uygulama icin ayrica: Tum uygulamalar → uygulama sec → Izleyin ve gelistirin → Politika ve programlar → Uygulama icerigi → 'Ilgilenilmesi gerekiyor' bolumunde satici durumu beyani; gecerliyse Hizmet Sartlari baglantisi eklenir. Iki oyun icin de tekrarlanacak.",
+    "_yanlis_beyan": "Yanlis beyan Gelistirici Dagitim Sozlesmesi Bolum 11.4 ihlali; uygulama kaldirma veya hesap askiya alma sebebi. Dogru cevabi AAE kendi durumuna gore verecek, tahminle doldurulmayacak."
   }
 }

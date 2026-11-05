@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **04.11.2026**
+> Son güncelleme: **05.11.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -62,11 +62,16 @@ Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, 
 
 Bitince bana tek satır yaz: AdMob eklendi mi, beyan işaretlendi mi, sürüm gönderildi mi.
 
-**4) ⏰ Trader status beyanı — Kasım 2026'da zorunlu oldu.**
-29.10'daki Play politika duyurusu: *"Starting in November 2026, you must declare your trader status in Play Console in accordance with new Console requirements."* Tüm geliştiriciler için; beyan edilmezse yayınlamayı engelleyebilir ve iki oyun da yayın sürecinde.
-- Play Console → hesap ayarları / geliştirici profili → **trader status (tacir durumu)** beyanını doldur.
-- Bitince bana ne seçtiğini tek satır yaz.
-- Aynı duyuruda: Japonya'ya veya Japonya'dan **satış** yapanların 01.12.2026'ya kadar yetkilendirme yapması gerekiyor, yoksa ödemeler küresel olarak tutuluyor. Oyunlar ücretsiz ve uygulama içi satın alma yok, yani muhtemelen kapsam dışı — ama Console'da bir bakışta teyit et.
+**4) ⏰ Satıcı (trader) durumu beyanı — son tarih 1 Şubat 2027.**
+04.11'de Google doğrudan "İşlem Gerekli" maili gönderdi. **Yapılmazsa uygulama güncellemesi gönderilemiyor ve geliştirici profili ile tüm uygulamalar Google Play'den dünya genelinde kaldırılıyor.**
+
+⚠ **Bu maddeyi BANA SORMADAN DOLDURMA.** İçinde AAE'nin bilmesi gereken bir bedel var:
+- Reklamdan gelir elde etmek (AdMob) Google'a göre **ticari faaliyet** → büyük olasılıkla "satıcı"sın. Tek istisna: Avrupa Ekonomik Alanı ve Birleşik Krallık'ta dağıtım yapmamak.
+- **Satıcı olarak beyan eden bireysel geliştiricinin telefon numarası ve adresi Google Play'de herkese açık gösteriliyor.** Mailin kendi ifadesi bu. AAE bireysel geliştirici, yani ev adresi mağazada görünür olur.
+- Yanlış beyan, Geliştirici Dağıtım Sözleşmesi 11.4 ihlali — uygulama kaldırma ya da hesap askıya alma sebebi.
+
+**Yapılacak:** Play Console → Hesabı yönet → Hesap ayrıntıları → Hakkınızda → **Satıcı durumu** bölümünü AAE'ye göster, ne seçeceğini ona sor, sonra onun dediğini uygula. Satıcı seçilirse telefon doğrulaması + yerel yasalara uyum onayı gerekiyor.
+Sonra **her uygulama için ayrı ayrı:** Tüm uygulamalar → uygulama → İzleyin ve geliştirin → Politika ve programlar → Uygulama içeriği → "İlgilenilmesi gerekiyor" bölümündeki satıcı beyanı. İki oyun için de tekrarla.
 
 **5) Android geliştirici doğrulaması — son tarih geçti.**
 `https://play.google.com/console/android-developer-verification`
