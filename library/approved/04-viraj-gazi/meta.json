@@ -1,0 +1,69 @@
+{
+  "klasor": "04-viraj-gazi",
+  "ders_no": 4,
+  "slug": "viraj-gazi",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Virajda Gaz: Yavaş Gir, Hızlı Çık",
+  "alt_baslik": "Gaz kesmek seni dışarı taşır",
+  "handle": "@aae_motorcycle",
+  "video": "04-viraj-gazi.mp4",
+  "kaynak_render": "output/2026-10-07_ders04_viraj-gazi_v1.mp4",
+  "onay_tarihi": "2026-10-08T09:45:28+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Hızını viraja GİRMEDEN al"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Fren düz çizgide biter, sonra yat"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · İçeride sabit gaz: motosiklet oturur"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Viraj içinde gaz KESME — dışarı taşır"
+    },
+    {
+      "t": 35.0,
+      "bitis": 41.0,
+      "metin": "5 · Geniş kalıyorsan iç gidona bas"
+    },
+    {
+      "t": 42.0,
+      "bitis": 49.0,
+      "metin": "6 · Çıkışta doğruldukça gazı kademeli aç"
+    }
+  ],
+  "youtube": {
+    "baslik": "Virajda Gaz Kontrolü: Yavaş Gir, Hızlı Çık | Yol Okulu #4",
+    "aciklama": "Virajda hızını ayarladığın yer virajın içi değil, girişidir. İçeride yapılan\nher ani gaz hareketi — özellikle gaz kesmek — çizgini bozar ve seni dışarı\ntaşır. Bu derste girişten çıkışa gazın ne yapması gerektiğini anlatıyoruz.\n\n0:04 Hızını viraja girmeden al\n0:11 Fren düz çizgide biter, sonra yat\n0:19 İçeride sabit gaz: motosiklet oturur\n0:27 Viraj içinde gaz kesme — dışarı taşır\n0:35 Geniş kalıyorsan iç gidona bas\n0:42 Çıkışta doğruldukça gazı kademeli aç\n\nSABİT GAZ NE İŞE YARAR\nMotosiklet yatıp oturduktan sonra hızını koruyacak kadar hafif açık gaz\n(sabit gaz) tutarsın. Bu, ağırlığı biraz arkaya alır, arka lastiğin\ntutuşunu artırır, süspansiyonu oturtur ve yerden açıklığı korur. Motosiklet\nvirajda en kararlı hâline böyle gelir.\n\nGAZ KESMEK NEDEN DIŞARI TAŞIR\nViraj ortasında gazı kapatınca ağırlık öne geçer, ön süspansiyon çöker,\narka hafifler. Motosiklet doğrulmaya başlar; doğrulan motosiklet daha geniş\nbir yay çizer, yani şeridinden dışarı taşarsın. Ani kesmede arka lastik\nkayabilir. Kazaların önemli bir kısmı gazın düzensiz AÇILMASINDAN değil,\ndüzensiz KAPATILMASINDAN çıkar — çünkü panikte ilk refleks gazı kesmektir.\n\nGENİŞ KALIYORSAN NE YAPILIR\nGazı kesme, fren yapma. İç gidona biraz daha bastır (bkz. Ders 3) ve\nbakışını virajın çıkışında tut (bkz. Ders 2). Motosiklet yatar, yay daralır.\n\nÇIKIŞTA\nViraj açılmaya başlayınca gazı kademeli aç. Açılan gaz motosikleti\nkendiliğinden doğrultur ve seni çıkışa doğru sürükler — \"yavaş gir,\nhızlı çık\" tam olarak budur.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez. Boş ve\ngüvenli bir alanda, tam koruyucu ekipmanla, düşük hızdan başlayarak çalış.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "viraj",
+      "gaz kontrolü",
+      "sürüş eğitimi",
+      "yavaş gir hızlı çık",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "motovlog"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Virajda hızını ayarladığın yer virajın içi değil, GİRİŞİ.\n\nİçeride motosikleti oturtan şey sabit gazdır: ağırlık biraz arkaya gider,\narka lastik tutar, süspansiyon oturur.\n\nViraj ortasında gazı kesersen ağırlık öne geçer, motosiklet doğrulur ve\ndaha geniş bir yay çizer — yani şeridinden dışarı taşarsın.\nGeniş kalıyorsan gazı kesme: iç gidona bastır, bakışın çıkışta kalsın.\n\nÇıkışta gazı kademeli aç. Yavaş gir, hızlı çık.\n\nBoş bir alanda, tam ekipmanla çalış.\n\n@aae_motorcycle\n#motosiklet #viraj #gazkontrolü #sürüşeğitimi #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

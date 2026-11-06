@@ -56,9 +56,17 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   sertleştirir ki yol birkaç metrede kadrajdan çıkar.
 - **Motosiklet şeritten taşmaz.** "Dışarı taşıyor" gibi hata anlatan fazlarda
   bile kenar çizgisine yanaşılır, çizgi geçilmez — hatayı şerit içinde göster.
-- **Sürücünün kaskında AAE yazar.** Yazı arkaya ve iki yana, küre yüzeyine
+- **Kask kapalı (full face) kasktır, küre değil.** Kafa kalıbı "ara oval":
+  önden arkaya yanlardan uzun, arkadan bakışta daireden dar ve yüksek. Arkadan
+  dört şey okunmalı — yukarı daralan kabuk, tepeye yakın spoiler, altında egzoz
+  delikleri, en altta ense rulosu. Önde çene barı öne taşar, vizör açıklığı
+  gözleri kapsar.
+- **Sürücünün kaskında AAE yazar.** Yazı arkaya ve iki yana, kabuk yüzeyine
   sarılarak konur; düz düzlemde bırakılırsa kaskın siluetinden taşıyor.
   Teğet düzlemin sağ ekseni `cross(bakış, yukarı)` — ters sırada yazı aynalanır.
+  Kabuğa oturan koyu yamalar (havalandırma ağzı, vizör çerçevesi) kabuğun
+  **dışında** durmalı; içeride bırakılınca ressam sıralaması onları siluet
+  kenarına taşıyor.
 - **Viraj sahnesi kapalı daire değil.** Yol üç parçalı: düz giriş, yay, düz
   çıkış. "Gazı kademeli aç" adımında viraj biter ve yol düzleşir; motosiklet
   teğet noktasına varmadan doğrulmaya başlar — yol düzken yatık duramaz.
@@ -79,9 +87,17 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
 - **YouTube:** varsayılan `private`. Başlık/açıklamaya `#Shorts` otomatik eklenir.
   Herkese açmak ayrı ve bilinçli bir adım.
 - **Instagram:** yayınlanan Reel **anında herkese açıktır** — geri alınamaz.
-  Bu yüzden Instagram yüklemesi **hiçbir zaman kendiliğinden çalışmaz**; her seferinde
-  elle seçilir (`yayin: instagram` veya `both`).
-- Önce YouTube'a private yükle, videoyu orada izle, sonra Instagram'a gönder.
+  `egitim-videosu` iş akışında Instagram **hiçbir zaman kendiliğinden çalışmaz**;
+  her seferinde elle seçilir (`yayin: instagram` veya `hepsi`).
+- **Günlük yayın bu kuralın bilinçli istisnasıdır.** `gunluk-yayin` iş akışı her
+  sabah 10:00'da (Istanbul) sıradaki dersi YouTube'a `public`, Instagram'a Reel
+  olarak yayınlar. Tek freni Secret'ların varlığıdır: Secret yoksa o platform
+  atlanır ve ders sırada kalır. Durdurmak için iş akışını GitHub Actions'tan
+  devre dışı bırak ya da ilgili Secret'ı sil.
+- Sıra `content/yayin_kaydi.json` içinde tutulur ve her yayından sonra depoya
+  geri yazılır. "En küçük numaralı ders" mantığı her gün aynı videoyu yayınlardı.
+- Elle yüklerken: önce YouTube'a private yükle, videoyu orada izle, sonra
+  Instagram'a gönder.
 - Caption ≤ 2200 karakter, ≤ 30 etiket, ≤ 20 `@` anma.
 
 ## Sırlar

@@ -1,0 +1,69 @@
+{
+  "klasor": "01-acil-fren",
+  "ders_no": 1,
+  "slug": "acil-fren",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Acil Frende Ağırlık Transferi",
+  "alt_baslik": "Sık — kapma",
+  "handle": "@aae_motorcycle",
+  "video": "01-acil-fren.mp4",
+  "kaynak_render": "output/2026-10-07_ders01_acil-fren_v1.mp4",
+  "onay_tarihi": "2026-10-08T09:45:22+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Gazı kapat, dizlerinle depoyu sık"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Ön frene ÖNCE hafif bas: çatal çöker"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Yük öne oturunca basıncı artır"
+    },
+    {
+      "t": 27.0,
+      "bitis": 33.0,
+      "metin": "4 · Arka fren hafif — sadece dengeler"
+    },
+    {
+      "t": 34.0,
+      "bitis": 40.0,
+      "metin": "5 · Gidon düz: sert fren dik konumda"
+    },
+    {
+      "t": 41.0,
+      "bitis": 48.0,
+      "metin": "6 · Debriyaj son anda, bakış ileride"
+    }
+  ],
+  "youtube": {
+    "baslik": "Acil Frende Ağırlık Transferi — Sık, Kapma | Yol Okulu #1",
+    "aciklama": "Acil frende motosikleti durduran asıl şey ön frendir. Ama frene ani \"kapmak\"\nlastik daha yüklenmeden tutuş isteyeceği için tekerleği kilitler. Doğrusu\nkademeli sıkmak: önce hafif basınçla çatalı çöktürüp ağırlığı öne alırsın,\nön lastiğin yere basan alanı büyür, tutuş artar — sonra basıncı yükseltirsin.\n\n0:04 Gazı kapat, dizlerinle depoyu sık\n0:11 Ön frene önce hafif bas — çatal çöker\n0:19 Yük öne oturunca basıncı artır\n0:27 Arka fren hafif, sadece dengeler\n0:34 Gidon düz — sert fren dik konumda\n0:41 Debriyaj son anda, bakış ileride\n\nRakamlar: kuru ve iyi asfaltta frenlemenin yaklaşık %70-80'i ön tekerlekten\ngelir, sert acil frende bu oran daha da yükselir. Islak zeminde dağılım\n50-50'ye yaklaşır — ıslakta ön frene aynı şekilde yüklenme.\n\nNotlar:\n• ABS'li motosiklette fren kararlı ve sert basılır; sistem titreşim verdiğinde\n  bırakma, basmaya devam et.\n• Arka teker kilitlenir ve motosiklet düz gidiyorsa freni bırakma, düz tutup\n  durana kadar götür. Motosiklet açılanmışken arka freni ani bırakmak\n  tehlikelidir.\n• Fren öğrenilen bir beceridir, refleks değil. Boş ve güvenli bir alanda,\n  tam koruyucu ekipmanla, düşük hızdan başlayarak çalış.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "acil fren",
+      "ön fren",
+      "motosiklet eğitimi",
+      "ağırlık transferi",
+      "yol okulu",
+      "motovlog"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Acil frende seni durduran ön frendir — ama frene kapmak tekerleği kilitler.\n\nÖnce hafif bas: çatal çöker, ağırlık öne gider, ön lastiğin temas alanı\nbüyür. Tutuş geldikten SONRA basıncı artır. Kuru asfaltta işin %70-80'i\nön frendedir; ıslakta bu oran düşer.\n\nArka fren sadece dengeler. Gidon düz, motosiklet dik olsun.\n\nBoş bir alanda, tam ekipmanla, düşük hızdan başlayarak çalış.\nKaydet — bir sonraki sürüşte dene.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #acilfren #frenleme #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

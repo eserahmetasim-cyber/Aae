@@ -1,0 +1,69 @@
+{
+  "klasor": "03-kontra",
+  "ders_no": 3,
+  "slug": "kontra",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Kontra: Motosiklet Nasıl Döner",
+  "alt_baslik": "Sola gitmek için sol gidonu it",
+  "handle": "@aae_motorcycle",
+  "video": "03-kontra.mp4",
+  "kaynak_render": "output/2026-10-07_ders03_kontra_v1.mp4",
+  "onay_tarihi": "2026-10-08T09:45:27+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · 30 km/h üstünde gidon TERS çalışır"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Sola gitmek için SOL gidonu ileri it"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Ön teker bir an ters yöne döner"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Motosiklet yatar — dönüş yatıştan gelir"
+    },
+    {
+      "t": 35.0,
+      "bitis": 41.0,
+      "metin": "5 · Kolların gevşek, itiş nazik olsun"
+    },
+    {
+      "t": 42.0,
+      "bitis": 49.0,
+      "metin": "6 · Virajda geniş kalıyorsan iç gidona daha bas"
+    }
+  ],
+  "youtube": {
+    "baslik": "Kontra Tekniği: Motosiklet Aslında Nasıl Döner | Yol Okulu #3",
+    "aciklama": "Motosiklet, araba gibi ön tekerleği gitmek istediğin yöne çevirerek dönmez.\nYatarak döner. Yatışı başlatan şey de gidona verdiğin ters yönlü itiştir:\nsola gitmek için SOL gidonu ileri itersin. Ters gelir, adı da bu yüzden\nkontra (counter-steering).\n\n0:04 30 km/h üstünde gidon ters çalışır\n0:11 Sola gitmek için sol gidonu ileri it\n0:19 Ön teker bir an ters yöne döner\n0:27 Motosiklet yatar — dönüş yatıştan gelir\n0:35 Kolların gevşek, itiş nazik olsun\n0:42 Virajda geniş kalıyorsan iç gidona daha bas\n\nNEDEN BÖYLE?\nSol gidonu ittiğinde ön teker bir an için sağa döner. Lastiğin yere basan\nnoktası motosikletin ağırlık merkezinin altından sağa kayar, motosiklet de\nsola devrilmeye başlar. Yani direksiyon yatışı başlatır, dönüşü yatış yapar.\nİşin tamamında jiroskopik presesyon, trail ve kamber itişi de var; ama\nsürerken aklında tutman gereken tek şey: itiş yatışı doğurur.\n\nNE KADAR BASARSAN O KADAR YATAR\nVirajın ortasında dışarı açılıyorsan çözüm gazı kesmek ya da fren yapmak\ndeğil — iç gidona biraz daha bastırmaktır. Gaz kesmek motosikleti\ndoğrultur ve seni daha da dışarı taşır.\n\nNOTLAR\n• 30 km/h'in altında gidon normal çalışır; manevra hızlarında gidonu\n  gitmek istediğin yöne çevirirsin.\n• Gidonu sıkı kavrama. Kollar gevşek, dirsekler aşağıda olsun; kasılmış\n  kollar farkında olmadan ters giriş yapar.\n• Ani ve sert itiş dengeyi bozar — basınç kademeli artırılır.\n• Bakışın her zaman gitmek istediğin yerde kalsın (bkz. Ders 2).\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez. Boş ve\ngüvenli bir alanda, tam koruyucu ekipmanla, düşük hızdan başlayarak çalış.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "kontra tekniği",
+      "counter steering",
+      "sürüş eğitimi",
+      "viraj",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "motovlog"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Motosiklet ön tekerleği çevirerek dönmez — yatarak döner.\nYatışı başlatan şey ters yönlü itiştir: sola gitmek için SOL gidonu ileri.\n\nSol gidonu ittiğinde ön teker bir an sağa döner, lastiğin temas noktası\nağırlık merkezinin altından kayar ve motosiklet sola devrilir.\nNe kadar basarsan o kadar yatar.\n\nVirajda dışarı açılıyorsan gazı kesme, iç gidona biraz daha bas.\n30 km/h altında gidon normal çalışır.\n\nBoş bir alanda, tam ekipmanla, düşük hızdan başlayarak dene.\n\n@aae_motorcycle\n#motosiklet #kontratekniği #countersteering #sürüşeğitimi #viraj #motosikleteğitimi #yolokulu #motovlog #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}
