@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **05.11.2026**
+> Son güncelleme: **06.11.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -17,104 +17,58 @@
 
 ---
 
-Merhaba. Aşağıdaki yedi işi bu sırayla yap, her birini bitirince bana tek satır bildir. ⛔ 2. madde salt-okunur: Mini Mühendis'te hiçbir şey gönderilmeyecek, gerekçesi orada yazılı. ⚠ 5. madde (www→apex 301) artık en acil olanı — Search Console doğrulaması 12.10'da onun yüzünden başarısız döndü. Hepsi tarayıcı/konsol işi; Chrome'da Google hesaplarım açık. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın bir madde olursa sebebini yaz, uydurma.
+Merhaba. 06.11'de siteyi ve Play sayfalarını canlı test ettim; eski iş emrinin yarısı geçersiz kaldı, bu güncel liste. Sırayla yap, her biri bitince bana tek satır bildir. Sormadan yap, yetkiyi veriyorum. Şifre gerekirse bana sor, sen girmeye çalışma. Yapamadığın madde olursa sebebini yaz, uydurma.
 
-**1) ⚠ EN ÖNCE — AdSense onayı geldi, reklamları yayına al.**
-Konsol: `https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites`
-Hesap **ahmetasimeser008@gmail.com** (`u/1`). Panel geç yüklenir ve ekran görüntüsü sık sık hata verir → **JS / sayfa metni** ile oku.
-- **Durumu teyit et:** panelde site "Hazır"/onaylı mı? Onaylıysa devam. Hâlâ "Hazırlanıyor" ise Auto ads'i yine aç (zararsız) ve durumu bana yaz.
-- **Auto ads — MAKSİMUM:** Reklamlar → Siteye göre → `saemuhendislik.com` → düzenle → **Otomatik reklamlar AÇIK**, **tüm formatlar açık** (sayfa içi, **vignette**, **anchor**, **yan panel**), **yoğunluk kaydırıcısı en yükseğe**, sayfa hariç tutma varsa temizle (**ana sayfa dahil**) → Siteye uygula / Kaydet.
-- **Rıza mesajını yayınla:** Gizlilik ve mesajlaşma → Avrupa tüzükleri → mesaj oluştur → **Yayınla**. Bilgiler hesapta kayıtlı: site adı "SAE Mühendislik", gizlilik URL'si `https://saemuhendislik.com/cerez-politikasi`, logo `images/sae-logo-yatay.png`, 198 iş ortağı. 30.08'de kurulmuştu ama hesap onayı beklediği için "Yayınla" pasifti.
-- **ads.txt:** panelde "Yetkili"ye dönmeli. Dönmezse 24-48 saat normal, uğraşma. İçerik doğru olmalı: `google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0`
-- **Kod kontrolü:** `C:\SAE-yukleme` içinde ara → `pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8433209614215281` 22 içerik sayfasının `<head>`'inde mi? Eksikse Python + UTF-8 ile ekle (PowerShell `-replace` Türkçe karakteri bozuyor), sonra dağıt (aşağıdaki dağıtım reçetesi).
+**Önce bilmen gerekenler (hepsi ölçüldü, tahmin değil):**
+- İki oyun da **Google Play'de yayında** (`com.saemuhendislik.mini_muhendis`, `com.saemuhendislik.yol_okulu_3b` — mağaza sayfaları anonim olarak 200 dönüyor).
+- `www` → apex **301 çalışıyor**. Cloudflare Redirect Rule işine gerek yok.
+- `ads.txt` doğru, AdSense script'i ana sayfada ve içerik sayfalarında var.
+- Sitemap'teki 87 adresin hepsi 200.
 
-⚠ **Üç sayfa reklamsız KALACAK** — bu bir tercih değil, zorunluluk. Maksimum ayarı bunları kapsamıyor:
-- `gizlilik.html` ve `gizlilik-politikasi.html` → Play Store'a verdiğim uygulama gizlilik politikaları; reklam koymak uygulama incelemesinde sorun çıkarır.
-- `404.html` → içeriksiz sayfa, AdSense politikası reklam istemiyor.
+**1) Ana sayfaya Yol Okulu'nu ekle.**
+Mini Mühendis'in Play linki ana sayfada zaten var ama **AAE Motosiklet Yol Okulu hiç geçmiyor** — oyun yayında olduğu halde siteden görünmüyor.
+- Mini Mühendis rozetinin/kartının yanına aynı biçimde Yol Okulu'nu ekle, link: `https://play.google.com/store/apps/details?id=com.saemuhendislik.yol_okulu_3b`
+- TR ve EN sayfaların ikisinde de yap.
+- Dağıtım reçetesi aşağıda. Bitince alan adından 200 doğrula.
 
-Bu üçünde AdSense script'i hiç yok ve **eklenmeyecek**. `google19071191ddf4150f.html` (Search Console doğrulama dosyası) da silinmeyecek, değiştirilmeyecek.
+**2) AdMob'u iki oyuna da ekle.** (Yasak kalktı: inceleme bitti, ikisi de yayında.)
+Yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`.
+- AdMob konsolunda her iki uygulamayı oluştur, reklam birimlerini tanımla, test reklamlarıyla doğrula.
+- ⚠ **Konum toplamayı KAPAT.** GMA SDK Android 1.7.0 / iOS 13.12.0+ sürümlerinde konum izni varsa kaba konum topluyor ve kapatmazsan varsayılan açık geliyor. Yapılandırma bayrağıyla kapat — açık bırakırsan gizlilik politikası + Play "Veri güvenliği" formu güncellemesi gerekir, hedef kitle çocuk/aile ise Families politikasıyla da sürtüşür.
+- ⚠ Hedef kitle çocuk/aile ise **Families Self-Certified Ads SDK** listesinde olan bir AdMob sürümü kullan.
+- Play Console'da **"reklam içerir" beyanını** işaretle (artık doğru beyan).
+- Güncellemeleri gönder, sonra bana durumu yaz.
 
-**2) ⛔ Mini Mühendis — HİÇBİR ŞEY GÖNDERME, sadece oku.**
-Paket `com.saemuhendislik.mini_muhendis`. **Uygulama şu anda incelemede ve Google incelemeyi hızlandırdı.**
-07.10'da destek kaydı `[3-2357000041354]` açıldı, Google aynı gün cevapladı:
+**3) ⏰ Satıcı (trader) durumu beyanı — son tarih 1 Şubat 2027.**
+Yapılmazsa güncelleme gönderilemez ve iki oyun da Play'den kaldırılır.
+⚠ **BANA SORMADAN DOLDURMA.** Satıcı beyanı bireysel geliştiricinin **telefon numarasını ve adresini Play'de herkese açık** yapıyor. AAE'ye seçenekleri göster (satıcı / işletme kaydı / AEA-BK'de dağıtmama), ne diyeceğini sor, sonra onun dediğini uygula.
+Yol: Hesabı yönet → Hesap ayrıntıları → Hakkınızda → Satıcı durumu. Sonra her uygulama için ayrı: Tüm uygulamalar → uygulama → İzleyin ve geliştirin → Politika ve programlar → Uygulama içeriği.
 
-> *"We've expedited your app to the Google Play Review Team… **Please refrain from submitting any further versions until the current review is finished and the issue is resolved.** Please be advised that each new submission will **reset the review turnaround time**, as the evaluation period is counted from the date of the most recent change."*
+**4) AdSense — rıza mesajını teyit et.**
+Auto ads açıldı (AAE 31.10'da yaptı) ve reklam kodu canlıda doğrulandı. Kalan tek şey:
+- Gizlilik ve mesajlaşma → Avrupa tüzükleri → mesaj **"Yayında"** mı? Değilse yayınla.
+- Panelde `ads.txt` satırı "Yetkili" mi? (Dosya ve içeriği doğru, Google'ın taraması gecikebilir.)
 
-- **YENİ SÜRÜM / AAB GÖNDERME. Yeni üretim sürümü OLUŞTURMA. "İncelemeye gönder"e BASMA.** Bunlardan biri yapılırsa inceleme sayacı sıfırlanır ve her şey baştan başlar.
-- **Yeni destek kaydı AÇMA** — kayıt zaten açık ve cevaplanmış.
-- Yapılacak tek şey: Play Console → Mini Mühendis → **Üretim** track'inde durumu **oku** ve bana tek satır bildir (İncelemede mi, Yayında mı, Reddedildi mi; kaç gündür öyle).
-- **Reddedilmişse** gerekçeyi oku ve bana yaz — düzeltmeyi birlikte kararlaştıracağız, kendi başına yeniden gönderme.
-- Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, gizlilik URL'si) görürsen **doldur** ama **sürüm gönderme**; sadece bana haber ver.
-- ⛔ **AdMob'u bu uygulamaya ŞİMDİ EKLEME.** AdMob hesabı 13.10'da onaylandı (`pub-7223494011776010`), ama reklam göstermek SDK ekleyip yeni sürüm yüklemeyi gerektirir — yukarıdaki yasağa girer. Önce inceleme bitsin, uygulama yayına girsin; reklamlı sürüm ayrı bir güncelleme olarak çıkar.
-- ⛔ **"Reklam içerir" beyanını da şimdi işaretleme** — uygulamada henüz reklam yok, yanlış beyan olur.
+**5) Search Console — üç sorunun örnek URL listesi.**
+Açık: "Yönlendirmeli sayfa", "Kopya, Google farklı standart sayfa seçti" (WNC-10031170), "Bulunamadı (404)" (WNC-20237597).
+Ölçtüklerim: sitemap'teki 87 adresin hepsi 200, yani 404'ler **eski/dış bağlantılardan** geliyor. `.html` adresleri 308 ile temiz URL'ye gidiyor — "Yönlendirmeli sayfa" bundan.
+- Dizine ekleme raporundan **üç sorunun da örnek URL listesini** çıkar ve bana yaz. Asıl teşhis bu listeyle yapılacak.
 
-**3) AAE Motosiklet Yol Okulu — üretim izni GELDİ, sıralamaya dikkat.**
-Paket `com.saemuhendislik.yol_okulu_3b`. **27.10 02:57'de üretim izni verildi** ("production access has now been granted"). Kapalı test şartı tuttu. Ama **izin yayın değil** — üretim sürümü oluşturulup yayına alınması gerekiyor.
-
-⚠ **AdMob'u yayından ÖNCE ekle. Sıra önemli.** Mini Mühendis'ten öğrendik: sürüm bir kez incelemeye girince yeni sürüm gönderilemiyor (sayaç sıfırlanıyor) ve inceleme haftalarca sürebiliyor. Yol Okulu şu an incelemede **değil**, şimdi serbest. Bu sırayla git:
-
-1. **AdMob SDK'sını ekle** — yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`. ⚠ Önce Play Console'da oyunun **hedef kitlesine** bak: çocuk/aile ise Google'ın **Families Self-Certified Ads SDK** şartı devreye giriyor, kullandığın AdMob sürümünün o listede olduğunu doğrula.
-   ⚠ **Konum toplamayı KAPAT.** 03.11'de AdMob duyurdu: GMA SDK **Android 1.7.0 / iOS 13.12.0** ve üzeri sürümlerde, uygulamanın konum izni varsa cihazın **kaba konumunu** toplamaya başlıyor ve kapatmazsan **varsayılan açık** geliyor. SDK'yı eklerken **yapılandırma bayrağıyla kapat**. Gerekçe: açık bırakırsan gizlilik politikasını ve Play **Veri güvenliği** formunu güncellemen gerekir — ilk üretim gönderiminde gereksiz risk; hedef kitle çocuk/aile ise Families politikasıyla da sürtüşür. Kaybı sadece biraz daha az coğrafi-alakalı reklam, henüz kullanıcısı olmayan bir oyunda önemsiz. AdMob konsolunda uygulamayı oluştur, reklam birimlerini (banner / geçiş / ödüllü — hangisi oyuna uygunsa) tanımla, SDK'yı projeye bağla, **test reklamlarıyla** çalıştığını doğrula.
-2. **Play Console → "reklam içerir" beyanını işaretle.** Artık doğru beyan; bundan önce işaretlenmeyecekti.
-3. **Üretim sürümünü oluştur ve BİR KEZ incelemeye gönder.** Gönderdikten sonra yeni sürüm gönderme.
-
-Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle, gizlilik politikası URL'si) varsa 3. adımdan önce tamamla.
-
-Bitince bana tek satır yaz: AdMob eklendi mi, beyan işaretlendi mi, sürüm gönderildi mi.
-
-**4) ⏰ Satıcı (trader) durumu beyanı — son tarih 1 Şubat 2027.**
-04.11'de Google doğrudan "İşlem Gerekli" maili gönderdi. **Yapılmazsa uygulama güncellemesi gönderilemiyor ve geliştirici profili ile tüm uygulamalar Google Play'den dünya genelinde kaldırılıyor.**
-
-⚠ **Bu maddeyi BANA SORMADAN DOLDURMA.** İçinde AAE'nin bilmesi gereken bir bedel var:
-- Reklamdan gelir elde etmek (AdMob) Google'a göre **ticari faaliyet** → büyük olasılıkla "satıcı"sın. Tek istisna: Avrupa Ekonomik Alanı ve Birleşik Krallık'ta dağıtım yapmamak.
-- **Satıcı olarak beyan eden bireysel geliştiricinin telefon numarası ve adresi Google Play'de herkese açık gösteriliyor.** Mailin kendi ifadesi bu. AAE bireysel geliştirici, yani ev adresi mağazada görünür olur.
-- Yanlış beyan, Geliştirici Dağıtım Sözleşmesi 11.4 ihlali — uygulama kaldırma ya da hesap askıya alma sebebi.
-
-**Yapılacak:** Play Console → Hesabı yönet → Hesap ayrıntıları → Hakkınızda → **Satıcı durumu** bölümünü AAE'ye göster, ne seçeceğini ona sor, sonra onun dediğini uygula. Satıcı seçilirse telefon doğrulaması + yerel yasalara uyum onayı gerekiyor.
-Sonra **her uygulama için ayrı ayrı:** Tüm uygulamalar → uygulama → İzleyin ve geliştirin → Politika ve programlar → Uygulama içeriği → "İlgilenilmesi gerekiyor" bölümündeki satıcı beyanı. İki oyun için de tekrarla.
-
-**5) Android geliştirici doğrulaması — son tarih geçti.**
-`https://play.google.com/console/android-developer-verification`
-04.09'daki "[Son hatırlatma]" maili: *"Kaydedilmeyen tüm Google Play uygulamaları 30 Eylül 2026'dan sonra dünya genelinde Play'den kaldırılacak."* Bugün 07.10 — kaldırma bildirimi gelmedi ama doğrulanması gerek.
-- `com.saemuhendislik.mini_muhendis` ve `com.saemuhendislik.yol_okulu_3b` **kayıtlı** mı?
-- Console ana sayfasında "kaydedilmemiş" filtresini uygula; çıkan varsa kaydet.
-- Yarım kalmış **paket adı kaydı taslağı** varsa tamamla.
-
-**6) ⚠ EN ACİL — www → apex 301 yönlendirmesini kur.**
-**12.10'da Search Console doğrulaması BAŞARISIZ döndü:** *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti… Sayfalarınızdan bazıları bu sorundan etkilenmeye devam ediyor"* (WNC-10031170). Aynı gün ikinci bir sorun (*"kullanıcı tarafından seçilen standart sayfa olmadan kopya"*) **başarıyla düzeltildi** (3 sayfa, WNC-10030335) — yani konsolda doğru şeyler yapılmış, ama bu sorunun kökü hâlâ duruyor.
-
-**Kök sebep neredeyse kesin:** `www.saemuhendislik.com` apex'e 301 yönlendirmiyor, Google iki özdeş site görüyor. (10.09'da `www/ads.txt` 200 dönüyordu.)
-
-```
-curl -sS --ssl-no-revoke -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.saemuhendislik.com/
-```
-- **301 + `https://saemuhendislik.com/`** dönüyorsa yönlendirme zaten var → bana söyle, başka yere bakacağız (sonraki şüpheliler: `404.html` ve `google19071191ddf4150f.html` canonical'sız; `gizlilik.html` ile `gizlilik-politikasi.html` neredeyse aynı).
-- **200 dönüyorsa** (beklenen): Cloudflare dash → `saemuhendislik.com` zone → **Rules → Redirect Rules → Create rule**:
-  - Eşleşme: Hostname **equals** `www.saemuhendislik.com`
-  - Hedef: **Dynamic** → `concat("https://saemuhendislik.com", http.request.uri.path)`
-  - Durum kodu: **301**, **Preserve query string** açık, kural **Active**
-  - (Mevcut `dokum-pdf-yonlendirme` kuralı örnek alınabilir.)
-- Kural kaydedildikten sonra `curl`'ü tekrar çalıştır, **301** gördüğünü teyit et ve bana yaz.
-- Sonra Search Console → Dizine ekleme → *"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti"* → **Düzeltmeyi doğrula**'ya bas.
-
-**7) Search Console — ÜÇ açık sorunun URL listesi.**
-Açık kalanlar: yukarıdaki kopya sorunu + **"Yönlendirmeli sayfa"** (16.09'da başarısız bildirilmişti) + **"Bulunamadı (404)"** (26.10'da gelen YENİ sorun, WNC-20237597).
-- Dizine ekleme raporunu aç, **her üç sorunun örnek URL listesini** çıkar ve bana yaz. 404 listesi özellikle önemli — hangi adreslerin kaybolduğunu bilmeden düzeltilemez. Teşhisi tahminle değil bu listeyle yapacağız.
-- "Yönlendirmeli sayfa" listesinde `.html` uzantılı adres görürsen söyle — Cloudflare Pages uzantılı adresi 308 yönlendiriyor, link/canonical/sitemap'te `.html` olmamalı.
-
-**Son: rozetler.** Bir oyunun Play store sayfası **gerçekten 200 döndüğü doğrulandıktan sonra** ana sayfadaki "YAKINDA GOOGLE PLAY'DE" rozetini gerçek Play linkine çevir (TR + EN). Yayında değilken link koyma, ölü sayfaya gider.
+**6) Android geliştirici doğrulaması.**
+`https://play.google.com/console/android-developer-verification` — iki paket de kayıtlı mı? Değilse kaydet.
 
 ---
 
 ### Dağıtım reçetesi (site dosyası değişirse)
 1. Değişiklikler **`C:\SAE-yukleme`** içine (tek kaynak; OneDrive klasöründen dağıtım yapma).
-2. **.NET ZipFile** ile zip'le — girdi adları **düz bölü** olmalı. PowerShell `Compress-Archive` KULLANMA, ters bölü yazıyor ve bozuyor. Zip'i scratchpad'e yaz.
-3. Cloudflare dash → `pages/view/saemuhendislik/deployments/new` → gizli zip input'u (sayfada `button type="file"` olarak görünür) → zip'i yükle → **"N/N files uploaded"** bekle (aradaki "Unzipped N" mesajları yanıltıcı; takılırsa sayfayı yenile ve aynı zip'i tekrar yükle) → **Save and deploy** (ilk tık sık sık işlemez; ref çalışmazsa ekran görüntüsünden koordinatla tıkla) → **"Success!"**.
-4. Doğrulama **alan adı üzerinden** (pages.dev Türk ISS'lerinde engelli): `/`, `/hasar`, `/en/`, `/cerez-politikasi`, `/sitemap.xml`, `/ads.txt` → hepsi **200**.
+2. **.NET ZipFile** ile zip'le — girdi adları **düz bölü** olmalı. PowerShell `Compress-Archive` KULLANMA.
+3. Cloudflare dash → `pages/view/saemuhendislik/deployments/new` → zip'i yükle → **"N/N files uploaded"** bekle → **Save and deploy** → **"Success!"**.
+4. Doğrulama **alan adı üzerinden**: `/`, `/hasar`, `/en/`, `/ads.txt` → hepsi 200.
 
 ### Değişmez kurallar
-- Link / canonical / sitemap'te **`.html` yazılmaz** — Cloudflare Pages uzantılı adresi 308 yönlendiriyor, Google "yönlendirmeli sayfa" diyip dizine almıyor.
+- Link / canonical / sitemap'te **`.html` yazılmaz**.
 - `gizlilik.html`, `gizlilik-politikasi.html`, `google19071191ddf4150f.html` **silinmez**.
+- `gizlilik.html`, `gizlilik-politikasi.html`, `404.html` **reklamsız kalır**, AdSense script'i bu üçüne eklenmez.
 - Hiçbir panele **şifre girilmez**.
 - Türkçe metin düzenlemede PowerShell `-replace` kullanılmaz; Python + UTF-8.
-- Bitince wiki kavram sayfası `saemuhendislik-sitesi.md` ve kalıcı hafıza güncellenir.
+- Bitince `docs/saemuhendislik-sitesi.md` ve `docs/gunluk-durum.json` güncellenir.

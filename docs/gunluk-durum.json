@@ -10,28 +10,29 @@
     "maliyet_usd": 0.2,
     "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
   },
-  "guncelleme": "2026-11-05",
-  "ag_erisimi": false,
-  "_ag_notu": "saemuhendislik.com ve play.google.com 06.10 itibariyla egress'te engelli (CONNECT 403). Acilinca ag_erisimi true yapilacak ve canli kontroller devreye girecek.",
+  "guncelleme": "2026-11-06",
+  "ag_erisimi": true,
+  "_ag_notu": "06.11'de bu oturumun ortam izin listesine saemuhendislik.com, www.saemuhendislik.com ve play.google.com eklendi (update_environment, AAE onayladi). 30 gunluk CONNECT 403 engeli kalkti; canli testler artik buradan yapilabiliyor.",
   "mini_muhendis": {
     "ad": "Mini Mühendis: Malzeme Oyunu",
     "paket": "com.saemuhendislik.mini_muhendis",
-    "store_http": null,
-    "yayinda": false,
-    "asama": "INCELEMEDE (dogrulandi) — 07.10 09:24 UTC destek kaydi 3-2357000041354 acildi, 09:33 UTC Google cevapladi: \"We have expedited your app to the Google Play Review Team.\"",
+    "store_http": 200,
+    "yayinda": true,
+    "asama": "YAYINDA — 06.11'de anonim olarak Play sayfasi dogrulandi (200, gercek icerik, yukleme dugmesi)",
     "son_mail": "2026-10-07 — Play Developer Support [3-2357000041354], inceleme hizlandirildi",
     "_yayin_notu": "DUZELTME 08.10: 07.10 teshisim YANLISTI. \"Uretim surumu hic yayinlanmamis\" demistim; gercek su ki surum incelemede ve destek kaydi acilmis. Bir gun gec gordum cunku takip zincirinin gonderen filtresinde googleplay-developer-support@google.com yoktu.",
     "destek_kaydi": "3-2357000041354",
-    "_KURAL": "YENI SURUM GONDERILMEYECEK. Google acikca yaziyor: \"Please refrain from submitting any further versions until the current review is finished... each new submission will reset the review turnaround time.\" Yeni AAB/surum gonderilirse inceleme sayaci bastan baslar. Play Console yalnizca OKUNACAK, hicbir sey gonderilmeyecek.",
+    "_KURAL": "KALKTI. Inceleme bitti ve uygulama yayinda; 'yeni surum gonderme' yasagi artik gecerli degil. AdMob SDK'si bu uygulamaya da eklenebilir (konum toplama kapali olarak).",
     "destek_kaydi_durumu": "KAPANDI — 08.10 09:56 UTC memnuniyet anketi geldi (Re: [3-2357000041354] Google Play Developer Support Survey). Inceleme sonucu HENUZ gelmedi.",
-    "_gecen_sure_notu": "21.10 itibariyla destek 'incelemeyi hizlandirdik' dediginden beri 14 gun gecti ve hic sonuc maili gelmedi (yayinlandi/reddedildi yok). Play Console'dan durumun OKUNMASI gerekiyor. Hala 'Incelemede' ise MEVCUT destek konusuna (3-2357000041354) cevap yazmak makul — bu YENI kayit acmak degildir, yasak olan o. Yeni surum gondermek yine YASAK."
+    "_gecen_sure_notu": "21.10 itibariyla destek 'incelemeyi hizlandirdik' dediginden beri 14 gun gecti ve hic sonuc maili gelmedi (yayinlandi/reddedildi yok). Play Console'dan durumun OKUNMASI gerekiyor. Hala 'Incelemede' ise MEVCUT destek konusuna (3-2357000041354) cevap yazmak makul — bu YENI kayit acmak degildir, yasak olan o. Yeni surum gondermek yine YASAK.",
+    "_inceleme_notu": "Inceleme sonucu maili hic gelmedi ya da 008/baska bir adrese gitti; yayina girdigini ancak 06.11'de magaza sayfasini test ederek anladim. Ders: mail beklemek yerine magaza sayfasini dogrudan test etmek gerekiyordu — ag acilir acilmaz ilk yapilan bu oldu."
   },
   "yol_okulu": {
     "ad": "AAE Motosiklet Yol Okulu",
     "paket": "com.saemuhendislik.yol_okulu_3b",
-    "store_http": null,
-    "yayinda": false,
-    "asama": "URETIM IZNI VERILDI (27.10 02:57) — 'You applied for Google Play production access... this has now been granted.' Kapali test sarti (12 kesintisiz tester / 14 gun) tutmus. AMA HENUZ YAYINDA DEGIL: uretim surumu olusturulup yayina alinmasi gerekiyor.",
+    "store_http": 200,
+    "yayinda": true,
+    "asama": "YAYINDA — 06.11'de anonim olarak Play sayfasi dogrulandi (200, gercek icerik, yukleme dugmesi)",
     "kapali_test_baslangic": "2026-09-22",
     "davet_edilen_tester": 14,
     "opt_in_kalan_tester": ">=12 (izin verildigine gore sart tutmus)",
@@ -89,16 +90,17 @@
     "cozulen": [
       "Kullanici tarafindan secilen standart sayfa olmadan kopya — 12.10'da 3 sayfa DUZELTILMIS dogrulandi (WNC-10030335)"
     ],
-    "_404_notu": "Yeni sorun. Hangi URL'lerin 404 verdigi bilinmiyor; konsoldan ornek URL listesi alinmali. Buradan site test edilemiyor (CONNECT 403), tahminle ugrasilmayacak."
+    "_404_notu": "Yeni sorun. Hangi URL'lerin 404 verdigi bilinmiyor; konsoldan ornek URL listesi alinmali. Buradan site test edilemiyor (CONNECT 403), tahminle ugrasilmayacak.",
+    "_06_11_bulgulari": "www->apex 301 CALISIYOR, yani 'Kopya/farkli standart sayfa' icin bir aydir surdurdugum bas teshis YANLIS. Sitemap'teki 87 adresin hepsi 200, yani 404'ler sitemap'ten degil eski/disaridan gelen adreslerden. 'Yonlendirmeli sayfa' sorunu .html adreslerinin 308 ile temiz URL'ye gitmesinden; bu Cloudflare Pages'in normal davranisi. Kalan gercek is: konsoldan uc sorunun ornek URL listesini almak — artik tahmin yerine olcum var."
   },
   "site": {
-    "apex_http": null,
-    "www_http": null,
-    "www_301_apexe": null,
-    "ads_txt_http": null,
-    "ads_txt_dogru": null,
-    "_www_notu": "KANITLANDI SAYILIR: 12.10'da 'Google farkli standart sayfa secti' dogrulamasi BASARISIZ dondu. Bu hata tam olarak www.saemuhendislik.com ile saemuhendislik.com'un iki ayri ozdes site gibi gorunmesinin verdigi hata. 10.09'da www/ads.txt 200 donuyordu. COZUM: Cloudflare zone -> Redirect Rule -> www.saemuhendislik.com/* -> https://saemuhendislik.com/$1, 301, Active (mevcut dokum-pdf-yonlendirme kuralinin deseni). Kural aktif olunca Search Console'da ayni sorun icin yeniden 'Duzeltmeyi dogrula'.",
-    "_oncelik": "EN ACIL — reklam geliri trafige bagli, trafik de dizine eklenmeye bagli."
+    "apex_http": 200,
+    "www_http": 301,
+    "www_301_apexe": true,
+    "ads_txt_http": 200,
+    "ads_txt_dogru": true,
+    "_www_notu": "DUZELTILDI 06.11: www APEX'E 301 YONLENDIRIYOR. 10.09'da www/ads.txt'nin 200 donmesine dayanarak bir aydir 'www yonlendirmiyor, kopya sorununun koku bu' diyordum; canli test bunu curuttu. Ya arada duzeltildi ya da o cikarim bastan yanlisti.",
+    "_oncelik": "Cloudflare Redirect Rule isine GEREK YOK — yonlendirme zaten calisiyor."
   },
   "yerel_oturum": {
     "id": "session_014mvmA2G5DBuuSRYtxDLTwk",
@@ -196,5 +198,23 @@
     "adimlar_hesap": "Play Console → Hesabi yonet → Hesap ayrintilari → Hakkinizda → Satici durumu → beyan et → (satici ise) telefon dogrula + yerel yasalara uyum taahhudu → Kaydet.",
     "adimlar_uygulama": "Her uygulama icin ayrica: Tum uygulamalar → uygulama sec → Izleyin ve gelistirin → Politika ve programlar → Uygulama icerigi → 'Ilgilenilmesi gerekiyor' bolumunde satici durumu beyani; gecerliyse Hizmet Sartlari baglantisi eklenir. Iki oyun icin de tekrarlanacak.",
     "_yanlis_beyan": "Yanlis beyan Gelistirici Dagitim Sozlesmesi Bolum 11.4 ihlali; uygulama kaldirma veya hesap askiya alma sebebi. Dogru cevabi AAE kendi durumuna gore verecek, tahminle doldurulmayacak."
+  },
+  "_canli_dogrulama_06_11": {
+    "www_301": "DOGRULANDI — www.saemuhendislik.com/ -> 301 -> https://saemuhendislik.com/ ; /ads.txt de 301 veriyor",
+    "apex": "200",
+    "ads_txt": "200, icerik dogru: google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0",
+    "adsbygoogle": "Ana sayfada ve /hasar'da pagead2.googlesyndication.com/.../adsbygoogle.js?client=ca-pub-8433209614215281 VAR",
+    "canonical": "/hasar -> <link rel=canonical href=https://saemuhendislik.com/hasar> dogru",
+    "sitemap": "87 adresin TAMAMI 200 — 404'ler sitemap'ten gelmiyor",
+    "html_uzantili": ".html adresleri 308 ile temiz URL'ye gidiyor (hasar.html, index.html, dokum.html...). 'Yonlendirmeli sayfa' sorununun kaynagi bu; eski baglantilardan geliyor.",
+    "dogrulama_dosyasi": "google19071191ddf4150f.html 308 ile yonleniyor AMA hedefte dogru token 200 ile servis ediliyor — Search Console dogrulamasi saglam",
+    "404_davranisi": "/404 -> 200 (yumusak 404 deseni, kucuk sorun); gercekten olmayan adres -> 404 dogru",
+    "play_mini_muhendis": "200, gercek magaza sayfasi, gelistirici 'SAE Muhendislik', yukleme dugmesi var",
+    "play_yol_okulu": "200, gercek magaza sayfasi, ayni gelistirici, yukleme dugmesi var"
+  },
+  "_rozetler": {
+    "mini_muhendis": "Ana sayfada ZATEN gercek Play linki var (06.11 dogrulandi)",
+    "yol_okulu": "Ana sayfada HIC GECMIYOR. Oyun yayinda; siteye eklenmeli — somut ve kolay is.",
+    "_not": "Rozet kurali ('store sayfasi gercekten 200 donmeden link koyma') artik saglandi, ikisi de 200."
   }
 }

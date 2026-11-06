@@ -11,6 +11,60 @@
 
 ## 0. GÜNCEL DURUM
 
+### 🎉 06.11.2026 — AĞ AÇILDI, CANLI TEST YAPILDI: İKİ OYUN DA YAYINDA
+
+Bu oturumun ortam izin listesine `saemuhendislik.com`, `www.saemuhendislik.com`
+ve `play.google.com` eklendi (AAE onayladı). 30 günlük `CONNECT 403` engeli
+kalktı ve bir aydır tahminle yürütülen her şey ölçüldü.
+
+**İki büyük sonuç — ikisi de benim yürüttüğüm varsayımları çürütüyor:**
+
+#### 1. ✅ İki oyun da GOOGLE PLAY'DE YAYINDA
+
+| Paket | Sonuç |
+|---|---|
+| `com.saemuhendislik.mini_muhendis` | **200**, gerçek mağaza sayfası, geliştirici "SAE Muhendislik", yükleme düğmesi |
+| `com.saemuhendislik.yol_okulu_3b` | **200**, aynı |
+
+Anonim olarak (Google oturumu olmayan bir bulut konteynerinden) çekildi, yani
+gerçekten herkese açık. **İnceleme sonucu maili hiç gelmedi** — Mini Mühendis'i
+29 gündür "incelemede" diye takip ediyordum, meğer yayına girmiş.
+
+→ **"Yeni sürüm gönderme / AdMob ekleme" yasağı KALKTI.** İnceleme bitti.
+AdMob artık iki oyuna da eklenebilir (konum toplama kapalı olarak).
+
+> **Ders:** mail beklemek yerine mağaza sayfasını doğrudan test etmek
+> gerekiyordu. Ağ açılır açılmaz ilk yapılan bu oldu ve bir aylık yanlış
+> varsayımı tek komutla bitirdi.
+
+#### 2. ✅ `www` → apex 301 ÇALIŞIYOR — bir aylık baş teşhisim YANLIŞMIŞ
+
+```
+https://www.saemuhendislik.com/         → 301 → https://saemuhendislik.com/
+https://www.saemuhendislik.com/ads.txt  → 301 → https://saemuhendislik.com/ads.txt
+```
+
+12.10'dan beri "kopya sorununun kökü www'nin yönlendirmemesi" diyordum ve
+Cloudflare Redirect Rule'u **en acil iş** olarak işaretlemiştim. Yanlışmış: ya
+arada düzeltildi ya da 10.09'da `www/ads.txt` 200 döndüğü için yaptığım çıkarım
+baştan hatalıydı. **O iş listeden düşüyor.**
+
+#### Diğer ölçümler
+
+| Ne | Sonuç |
+|---|---|
+| `ads.txt` | 200, içerik doğru (`google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0`) |
+| AdSense script | Ana sayfada **ve** `/hasar`'da var — reklam kodu canlıda |
+| `/hasar` canonical | `https://saemuhendislik.com/hasar` — doğru |
+| Sitemap | **87 adresin hepsi 200** → 404'ler sitemap'ten gelmiyor, eski/dış bağlantılardan |
+| `.html` adresleri | 308 ile temiz URL'ye gidiyor → **"Yönlendirmeli sayfa" sorununun kaynağı bu** |
+| `google19071191ddf4150f.html` | 308 yönleniyor **ama** hedefte doğru token 200 ile servis ediliyor → Search Console doğrulaması sağlam |
+| `/404` | 200 dönüyor (yumuşak 404 deseni, küçük sorun); gerçekten olmayan adres doğru 404 veriyor |
+| Ana sayfa rozetleri | Mini Mühendis'in **gerçek Play linki zaten var**; **Yol Okulu hiç geçmiyor** |
+
+**Sıradaki somut iş:** Yol Okulu yayında ama sitede hiç yok — ana sayfaya Play
+linkiyle eklenmeli. (Dağıtım gerektirir: `C:\SAE-yukleme` → Pages.)
+
 ### 🟢 27.10.2026 — YOL OKULU'NA ÜRETİM İZNİ VERİLDİ (yayın değil)
 
 `no-reply-googleplay-developer@google.com`, 02:57:
@@ -541,7 +595,14 @@ süre boş 404 verdi — dağıtım sonrası 200 testi bu yüzden şart.)
   Edit). API, domain sil/ekle işinde UI'nin *"already associated"* hatasına takılmıyor.
   (26.08'de açılan geçici `pages-tamir-gecici` token'ı güvenlik gereği SİLİNDİ.)
 
-### ⛔ AdMob — incelemedeki uygulamaya SDK eklenmez (14.10.2026)
+### ✅ ~~Google Play — açık inceleme sırasında hiçbir şey gönderilmez~~ — KALKTI (06.11.2026)
+
+Bu kural Mini Mühendis incelemedeyken konmuştu. **06.11'de iki oyunun da Play'de
+yayında olduğu doğrulandı** → inceleme bitti, kural geçersiz. Yeni sürüm
+gönderilebilir, AdMob iki oyuna da eklenebilir. Aşağıdaki iki bölüm tarihsel
+kayıt olarak duruyor.
+
+### ⛔ AdMob — incelemedeki uygulamaya SDK eklenmez (14.10.2026, 06.11'de KALKTI)
 
 AdMob 13.10'da onaylandı (`pub-7223494011776010`) ve iki oyuna reklam konabilir.
 Ama reklam göstermek **yeni bir sürüm yüklemeyi** gerektiriyor, bu da yukarıdaki
@@ -556,7 +617,7 @@ Play kuralına çarpıyor:
 - Play Console'daki **"reklam içerir" beyanı** ancak uygulamada gerçekten reklam
   olduğunda işaretlenir; önceden işaretlemek yanlış beyan olur.
 
-### ⛔ Google Play — açık inceleme sırasında hiçbir şey gönderilmez (08.10.2026)
+### ⛔ Google Play — açık inceleme sırasında hiçbir şey gönderilmez (08.10.2026, 06.11'de KALKTI)
 
 Mini Mühendis (`com.saemuhendislik.mini_muhendis`) incelemede ve Google
 incelemeyi hızlandırdı (destek kaydı `[3-2357000041354]`, 07.10). Google'ın
