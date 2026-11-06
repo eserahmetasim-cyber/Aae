@@ -91,7 +91,23 @@
       "Kullanici tarafindan secilen standart sayfa olmadan kopya — 12.10'da 3 sayfa DUZELTILMIS dogrulandi (WNC-10030335)"
     ],
     "_404_notu": "Yeni sorun. Hangi URL'lerin 404 verdigi bilinmiyor; konsoldan ornek URL listesi alinmali. Buradan site test edilemiyor (CONNECT 403), tahminle ugrasilmayacak.",
-    "_06_11_bulgulari": "www->apex 301 CALISIYOR, yani 'Kopya/farkli standart sayfa' icin bir aydir surdurdugum bas teshis YANLIS. Sitemap'teki 87 adresin hepsi 200, yani 404'ler sitemap'ten degil eski/disaridan gelen adreslerden. 'Yonlendirmeli sayfa' sorunu .html adreslerinin 308 ile temiz URL'ye gitmesinden; bu Cloudflare Pages'in normal davranisi. Kalan gercek is: konsoldan uc sorunun ornek URL listesini almak — artik tahmin yerine olcum var."
+    "_06_11_bulgulari": "www->apex 301 CALISIYOR, yani 'Kopya/farkli standart sayfa' icin bir aydir surdurdugum bas teshis YANLIS. Sitemap'teki 87 adresin hepsi 200, yani 404'ler sitemap'ten degil eski/disaridan gelen adreslerden. 'Yonlendirmeli sayfa' sorunu .html adreslerinin 308 ile temiz URL'ye gitmesinden; bu Cloudflare Pages'in normal davranisi. Kalan gercek is: konsoldan uc sorunun ornek URL listesini almak — artik tahmin yerine olcum var.",
+    "_404_TESHIS_06_11": {
+      "yontem": "Sitemap'teki 87 sayfanin tamami indirildi, icindeki 298 benzersiz ic link cikarildi ve hepsi tek tek test edildi.",
+      "sonuc": "77 adres 404 veriyor ve 77'sinin de TAMAMI /cdn-cgi/l/email-protection#... biciminde",
+      "cdn_disi_404": 0,
+      "KOK_SEBEP": "Cloudflare'in Email Address Obfuscation (Scrape Shield) ozelligi. mailto: baglantilarini /cdn-cgi/l/email-protection#<hex> + JavaScript cozucu ile degistiriyor. JavaScript calistiran tarayicida sorun yok, ama JS calistirmayan tarayici/bot bunu gercek bir link sanip istiyor ve 404 aliyor. Search Console'un 26.10'da bildirdigi 'Bulunamadi (404)' (WNC-20237597) bu.",
+      "robots_txt": "/cdn-cgi/ icin Disallow YOK; robots.txt 'Allow: /' diyor, yani Googlebot bu adresleri taramakta serbest ve 404 aliyor.",
+      "DEGERLENDIRME": "CIDDI DEGIL. Gercek icerik sayfalarinin hicbiri 404 vermiyor — sitemap'teki 87 adresin hepsi 200. Bu 404'ler rapor gurultusu; dizine girmesi gereken hicbir sayfayi engellemiyor.",
+      "secenekler": [
+        "A) Hicbir sey yapma — en makul. Gercek sayfalar etkilenmiyor, rapor kalabaligina katlanilir.",
+        "B) Cloudflare → Scrape Shield → Email Address Obfuscation KAPAT. 404'ler biter ama e-posta adresleri HTML'de duz gorunur, spam toplama riski artar. Ozellik zaten bunun icin var.",
+        "C) robots.txt'te /cdn-cgi/ engelle — Cloudflare bu blogu kendi yonetiyor ve /cdn-cgi/ engellemek baska seyleri bozabiliyor; onerilmez."
+      ],
+      "ONERIM": "A — dokunma. Fayda/zarar dengesi B'yi hakli cikarmiyor."
+    },
+    "_ic_link_taramasi": "298 ic linkin 298'i kontrol edildi; email-protection disinda tek bir kirik link yok.",
+    "_html_link_kurali": "Canli sitede .html iceren TEK BIR link yok — kural tutuyor (06.11 taramasi)."
   },
   "site": {
     "apex_http": 200,

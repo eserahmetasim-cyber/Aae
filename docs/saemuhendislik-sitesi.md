@@ -65,6 +65,33 @@ baştan hatalıydı. **O iş listeden düşüyor.**
 **Sıradaki somut iş:** Yol Okulu yayında ama sitede hiç yok — ana sayfaya Play
 linkiyle eklenmeli. (Dağıtım gerektirir: `C:\SAE-yukleme` → Pages.)
 
+### 🔍 06.11.2026 — "Bulunamadı (404)" sorununun kök sebebi bulundu
+
+Ağ açılınca tam tarama yapıldı: sitemap'teki **87 sayfa** indirildi, içlerindeki
+**298 benzersiz iç link** çıkarıldı, hepsi tek tek test edildi.
+
+**Sonuç: 77 adres 404 veriyor ve 77'sinin de tamamı aynı biçimde —**
+`/cdn-cgi/l/email-protection#<hex>`. **cdn-cgi dışında tek bir 404 yok.**
+
+**Kök sebep: Cloudflare'in Email Address Obfuscation'ı** (Scrape Shield).
+`mailto:` bağlantılarını bu adrese + bir JavaScript çözücüye çeviriyor.
+Tarayıcıda sorun yok; ama JS çalıştırmayan bir bot bunu gerçek link sanıp
+istiyor ve 404 alıyor. `robots.txt`'te `/cdn-cgi/` için `Disallow` yok, yani
+Googlebot taramakta serbest. 26.10'daki WNC-20237597 bu.
+
+**Değerlendirme: ciddi değil.** Gerçek içerik sayfalarının hiçbiri 404
+vermiyor — sitemap'teki 87 adresin hepsi 200. Bunlar rapor gürültüsü, dizine
+girmesi gereken hiçbir sayfayı engellemiyor.
+
+| Seçenek | Sonuç |
+|---|---|
+| **A) Dokunma** ✅ **önerim** | Gerçek sayfalar etkilenmiyor; rapordaki kalabalığa katlanılır |
+| B) Scrape Shield → Email Address Obfuscation'ı kapat | 404'ler biter, ama e-posta adresleri HTML'de düz görünür → spam riski. Özellik zaten bunun için var. |
+| C) `robots.txt`'te `/cdn-cgi/` engelle | Cloudflare bu bloğu kendi yönetiyor; `/cdn-cgi/` engellemek başka şeyleri bozabiliyor — önerilmez |
+
+Aynı taramanın yan bulgusu: **canlı sitede `.html` içeren tek bir link yok** —
+"link/canonical/sitemap'te `.html` yazılmaz" kuralı tutuyor.
+
 ### 🟢 27.10.2026 — YOL OKULU'NA ÜRETİM İZNİ VERİLDİ (yayın değil)
 
 `no-reply-googleplay-developer@google.com`, 02:57:
