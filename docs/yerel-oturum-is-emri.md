@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **06.11.2026**
+> Son güncelleme: **07.11.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -25,11 +25,12 @@ Merhaba. 06.11'de siteyi ve Play sayfalarını canlı test ettim; eski iş emrin
 - `ads.txt` doğru, AdSense script'i ana sayfada ve içerik sayfalarında var.
 - Sitemap'teki 87 adresin hepsi 200.
 
-**1) Ana sayfaya Yol Okulu'nu ekle.**
-Mini Mühendis'in Play linki ana sayfada zaten var ama **AAE Motosiklet Yol Okulu hiç geçmiyor** — oyun yayında olduğu halde siteden görünmüyor.
-- Mini Mühendis rozetinin/kartının yanına aynı biçimde Yol Okulu'nu ekle, link: `https://play.google.com/store/apps/details?id=com.saemuhendislik.yol_okulu_3b`
-- TR ve EN sayfaların ikisinde de yap.
-- Dağıtım reçetesi aşağıda. Bitince alan adından 200 doğrula.
+**1) Ana sayfaya Yol Okulu'nu ekle — hazır yama var, uydurma.**
+Oyun yayında ama sitede hiç geçmiyor. **Birebir yapıştırılacak yama: `docs/yol-okulu-yamasi.md`** — TR ve EN kartları, güncellenmiş giriş cümleleri, ikon talimatı ve dağıtım adımları orada. Kart metni oyunun kendi Play açıklamasından alındı, yeniden yazma.
+- Önce ikon: oyunun ikonunu `C:\SAE-yukleme\images\yol-okulu-ikon.png` olarak kaydet (sitede yok, 404).
+- Sonra `index.html` ve `en/index.html` için yamadaki BUL/YERİNE bloklarını uygula. EN tarafında görsel yolu `../images/` — atlama.
+- Türkçe metinde PowerShell `-replace` kullanma, Python + UTF-8.
+- Dağıt, sonra bana haber ver; doğrulamayı ben yapacağım.
 
 **2) AdMob'u iki oyuna da ekle.** (Yasak kalktı: inceleme bitti, ikisi de yayında.)
 Yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`.
