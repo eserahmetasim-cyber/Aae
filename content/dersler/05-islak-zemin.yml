@@ -1,0 +1,138 @@
+# Ders 05 · Islak zeminde sürüş
+# Kaynaklar (teknik doğrulama):
+#   https://www.pirelli.com/global/en-ww/road/motorcycles/tips/riding-motorbike-wet-tarmac-200380/
+#   https://hart.honda.com.au/resources/safety-and-riding-tips/wet-weather-riding
+#   https://www.rideapart.com/articles/how-to-ride-a-motorcycle-in-the-rain
+#   https://www.ontario.ca/document/official-ministry-transportation-mto-motorcycle-handbook/driving-difficult-weather-conditions
+#   https://phoenixmotorcycletraining.co.uk/motorcycle-4-second-rule/
+#
+# NOT: Kaynaklar ıslakta tutuş kaybını %30 ile %50 arasında veriyor, tek bir
+# rakamda birleşmiyorlar. Bu yüzden ne videoda ne açıklamada kesin bir oran
+# söylenmiyor; sahne kuru ve ıslak fren mesafesini göreli karşılaştırıyor.
+# Üzerinde bütün kaynakların hemfikir olduğu şey bu: mesafe belirgin uzuyor.
+
+ders_no: 5
+slug: islak-zemin
+baslik: "Islak Zeminde Sürüş"
+alt_baslik: "Her şey daha erken, daha yumuşak"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: islak
+boyut: 3
+kamera: yan
+gunduz: true            # yağmurlu gündüz: kurşuni ama okunur
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "Islakta erken karar ver, yumuşak uygula"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · İlk yağmur en kaygan: yağ yüzeye çıkar" }
+  - { t: 11, sure: 7, metin: "2 · Takip mesafeni 4 saniyeye çıkar" }
+  - { t: 19, sure: 7, metin: "3 · Frene kademeli bin — asla kapma" }
+  - { t: 27, sure: 7, metin: "4 · Şeridin tam ortası yağ toplar" }
+  - { t: 35, sure: 6, metin: "5 · Boya, rögar, zift dolgusu buz gibi" }
+  - { t: 42, sure: 7, metin: "6 · Vücudu içeri al, motoru dik tut" }
+
+youtube:
+  baslik: "Islak Zeminde Sürüş: Her Şey Daha Erken, Daha Yumuşak | Yol Okulu #5"
+  aciklama: |
+    Yağmurda motosiklet sürmenin tek kuralı var: her şeyi daha erken yap ve
+    daha yumuşak uygula. Fren, gaz, gidon — hepsi. Çünkü lastiğin yere
+    tutunduğu alan aynı kalıyor ama o alandan alabileceğin kuvvet düşüyor.
+
+    0:04 İlk yağmur en kaygan — yağ yüzeye çıkar
+    0:11 Takip mesafeni 4 saniyeye çıkar
+    0:19 Frene kademeli bin, asla kapma
+    0:27 Şeridin tam ortası yağ toplar
+    0:35 Boya, rögar kapağı, zift dolgusu buz gibi
+    0:42 Vücudu içeri al, motoru dik tut
+
+    NEDEN İLK DAKİKALAR?
+    Asfalt kuru günlerde üstüne damlayan yağı ve kiri içine çeker. Yağmur
+    başladığında su bunları yüzeye kaldırır ve ince, kaygan bir film oluşur.
+    Bu yüzden yağmurun ilk dakikaları, sağanağın ortasından daha tehlikelidir.
+    Yağmur devam ettikçe bu film yıkanır ve tutuş kısmen geri gelir.
+
+    FREN MESAFESİ NE KADAR UZAR?
+    Dürüst cevap: kaynaklar aynı fikirde değil. Kimi ıslakta tutuşun yaklaşık
+    %30 düştüğünü, kimi yarıya indiğini ve fren mesafesinin ikiye katlandığını
+    söylüyor. Gerçek rakam lastiğe, sıcaklığa, asfaltın cinsine ve su
+    kalınlığına göre değişiyor. Bu yüzden videoda rakam vermiyoruz: bilmen
+    gereken şey mesafenin BELİRGİN uzadığı ve bunu önceden hesaba katman
+    gerektiği.
+
+    FRENLEME
+    Önce hafif bas. Lastik yere otursun, temas alanı şekillensin, tutuş
+    gelsin — sonra basıncı artır. Ani kapmak ıslakta tekerleği doğrudan
+    kilitler. Mümkün olduğunca motosiklet DİK haldeyken fren yap; yatıkken
+    fren için ayrılan tutuş payı zaten azalmış durumda. İki freni birlikte
+    kullan. ABS varsa sistem titreşim verdiğinde bırakma, basmaya devam et.
+
+    NEREDE SÜRMELİ?
+    Diğer araçların yağı şeridin ortasında birikir, özellikle kavşak
+    yaklaşımlarında ve araçların durduğu yerlerde. Tekerlek izleri yağmur
+    sonrası daha hızlı kuruyabilir ama yağ da taşıyabilir — ikisini birlikte
+    değerlendir ve şeridin en kuru görünen kısmını seç.
+
+    KAYGAN YÜZEYLER
+    Yol boyası, rögar kapakları, zift dolguları, tren rayları ve metal
+    plakalar ıslanınca çok kayganlaşır. Bunların üzerinde fren yapma, gaz
+    verme, gidon çevirme. Üzerlerinden gaz sabit ve motosiklet dik geç.
+
+    VİRAJDA
+    Yatış açısını azalt. Vücudunu virajın içine kaydırırsan motosiklet aynı
+    virajı daha dik alır, lastiğin yere basan alanı büyür ve tutuş artar.
+
+    LASTİK
+    Diş derinliği suyu temas alanından tahliye eder. Diş azaldıkça ıslakta
+    tutuş düşer. Yasal sınıra kadar beklemeden değiştir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez. Islak
+    zeminde fren çalışmasını boş ve güvenli bir alanda, tam ekipmanla, düşük
+    hızdan başlayarak yap.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "yağmurda sürüş"
+    - "ıslak zemin"
+    - "motosiklet eğitimi"
+    - "fren mesafesi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Yağmurda tek kural: her şeyi daha ERKEN yap, daha YUMUŞAK uygula.
+
+    Asfalt kuru günlerde yağ ve kir emer. Yağmur başlayınca su bunları
+    yüzeye kaldırır — bu yüzden ilk dakikalar sağanağın ortasından daha
+    tehlikelidir.
+
+    Fren mesafesi ne kadar uzar? Kaynaklar %30 ile %50 arasında ayrışıyor,
+    kesin rakam lastiğe ve asfalta göre değişir. Bilmen gereken: belirgin
+    uzuyor. Takip mesafeni 4 saniyeye çıkar.
+
+    Frene kademeli bin — önce hafif, tutuş gelsin, sonra artır. Ani kapmak
+    ıslakta tekerleği direkt kilitler. Motosiklet dikken fren yap.
+
+    Şeridin tam ortasından kaç: yağ orada birikir. Boya, rögar kapağı, zift
+    dolgusu buz gibidir — üstünde fren yapma, gaz verme.
+
+    Virajda vücudunu içeri al, motoru dik tut. Temas alanı büyür.
+
+    Kaydet — ilk yağmurda işine yarar.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #yağmurdasürüş #ıslakzemin #motosikleteğitimi #frenmesafesi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

@@ -506,6 +506,150 @@ def kare_fren3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  ISLAK ZEMIN  (yagmurda surus)
+# ---------------------------------------------------------------------------
+# Kaynaklar: Pirelli ve Honda HART yagmur rehberleri, RideApart, Ontario MTO
+# motosiklet el kitabi. Tutunma kaybi icin kaynaklar %30 ile %50 arasinda
+# ayrisiyor, bu yuzden sahne SAYI vermez: kuru ve islak fren mesafesini
+# goreli olarak karsilastirir. Uzerinde hepsi hemfikir.
+ISLAK_DONGU = 13.0
+
+
+def _islak_palet():
+    """Islak asfalt koyu ve yansiticidir, gok kursuni."""
+    # Yagmurlu gunduz: kursuni ama okunur. Daha koyu degerlerde sahne gece
+    # gibi duruyordu.
+    return (152, 160, 170), (76, 98, 72), (78, 82, 90)
+
+
+def _yagmur(d, t, adet=150):
+    """Egik yagmur cizgileri. Her damla kendi hizinda duser."""
+    rng = np.random.default_rng(17)
+    for x0, y0, h in rng.random((adet, 3)):
+        x = (x0 * (G + 220) - 110 + t * 70) % (G + 220) - 110
+        y = (y0 * Y + t * (820 + h * 760)) % Y
+        uz = 40 + h * 54
+        d.line([(x, y), (x - 10, y + uz)], fill=(208, 222, 238, 64), width=2)
+
+
+def _sprey(d, kamera, konum, guc):
+    """Arka tekerin savurdugu su. Kameraya gore ekrana yansitilir."""
+    if guc <= 0.02:
+        return
+    rng = np.random.default_rng(29)
+    for dx, dy, dz, bb in rng.random((22, 4)):
+        p = np.array([[konum[0] + (dx - 0.5) * 0.5,
+                       0.05 + dy * 0.55 * guc,
+                       konum[2] - 0.5 - dz * 2.2 * guc]])
+        kn = kamera.kameraya(p)
+        if kn[0, 2] <= 0.3:
+            continue
+        ex, ey = kamera.ekrana(kn)[0]
+        r = (3 + bb * 7) * guc
+        d.ellipse([ex - r, ey - r, ex + r, ey + r],
+                  fill=(200, 212, 226, int(70 * guc)))
+
+
+def kare_islak3b(t):
+    """Islak zeminde fren: ayni hiz, cok daha uzun mesafe."""
+    hiz, fren = s2.fren_evre(t)
+    gok, cim, asfalt = _islak_palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _islak_s, _islak_tek
+    _islak_s = (globals().get("_islak_s", 0.0) + hiz * 0.62) % 8.0
+    _islak_tek = (globals().get("_islak_tek", 0.0) + hiz * 0.45) % (2 * math.pi)
+
+    z = -30.0
+    while z < 150:
+        z2 = z + 6.0
+        s.yuzey([[-60, 0, z], [60, 0, z], [60, 0, z2], [-60, 0, z2]], cim, katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        # Islak asfalt gogu yansitir: tekerlek izleri disinda parlak seritler.
+        for x0, x1 in ((-3.9, -2.6), (-0.6, 0.6), (2.6, 3.9)):
+            s.yuzey([[x0, 0.012, z], [x1, 0.012, z], [x1, 0.012, z2], [x0, 0.012, z2]],
+                    (108, 118, 130), katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (188, 190, 190), katman=2)
+        z = z2
+    for i in range(-3, 22):                      # kesikli orta cizgi
+        z = i * 8.0 - _islak_s
+        s.yuzey([[-0.11, 0.02, z], [0.11, 0.02, z], [0.11, 0.02, z + 3.6],
+                 [-0.11, 0.02, z + 3.6]], (198, 200, 198), katman=2)
+
+    # --- kaygan yuzeyler: rogar kapagi ve yol boyasi ----------------------
+    for i in range(-1, 8):
+        zr = i * 26.0 - _islak_s * 0.98
+        s.yuzey([[FREN_SERIT - 0.45, 0.025, zr], [FREN_SERIT + 0.45, 0.025, zr],
+                 [FREN_SERIT + 0.45, 0.025, zr + 0.9],
+                 [FREN_SERIT - 0.45, 0.025, zr + 0.9]], (122, 126, 132), katman=2)
+    for i in range(-1, 6):                       # yaya gecidi benzeri boya
+        zb = i * 38.0 - _islak_s * 0.98 + 14.0
+        for k in range(4):
+            s.yuzey([[-3.6 + k * 2.0, 0.024, zb], [-2.8 + k * 2.0, 0.024, zb],
+                     [-2.8 + k * 2.0, 0.024, zb + 2.6],
+                     [-3.6 + k * 2.0, 0.024, zb + 2.6]], (216, 218, 214), katman=2)
+
+    # Bina kutleleri yoldan uzakta ve alcak: genis kamerada yakin ve yuksek
+    # birakilinca kadrajin onune gecip motosikleti kapatiyorlardi.
+    for i in range(-2, 18):
+        z = i * 13.0 - _islak_s * 0.92
+        for yan in (-1, 1):
+            h = 3.4 + ((i * 7 + (yan + 1) * 3) % 9) * 1.1
+            s.kutu([yan * (13.5 + (i % 3) * 2.6), h / 2, z + 4], [4.4, h, 5.4],
+                   (92, 100, 114), katman=3)
+
+    model, _, kask_n = motosiklet(fren, _islak_tek)
+    yat = donus([1, 0, 0], 0.085 * fren)
+    pivot = np.array([0, 0.31, 0.70])
+    s.ekle(model, R=yat,
+           t=pivot - yat @ pivot + np.array([FREN_SERIT, 0.0, 0.0]))
+
+    # Fren sahnesinin kamerasi cok yakin: islak derste ileriyi, yani fren
+    # mesafesini de gormek gerekiyor. Kask modu aynen korunur.
+    if KAMERA_MODU == "kask":
+        kamera, mod = _fren_kamera(t, fren, kask_n, yat, pivot)
+    else:
+        mod = "yan"
+        kamera = Kamera([FREN_SERIT + 2.85 + 0.14 * math.sin(t * 0.21),
+                         2.48 + 0.07 * math.sin(t * 0.13),
+                         -6.1 + 0.20 * math.cos(t * 0.17)],
+                        [FREN_SERIT + 0.15, 0.88, 3.1], G, Y, fov=50)
+    s.ciz(d, kamera, gok)
+    _sprey(d, kamera, np.array([FREN_SERIT, 0.0, 0.0]), hiz)
+    _yagmur(d, t)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    d.rounded_rectangle([G - 320, 470, G - 72, 612], 18, fill=(0, 0, 0, 170),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 196, 482), f"{int(hiz * 52)}", 82,
+            KREM if hiz > 0.02 else YESIL, ortala=True)
+    s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
+
+    # Fren mesafesi: kuru ve islak yan yana. Kaynaklar tutunma kaybini %30 ile
+    # %50 arasinda verdigi icin sayi yazilmaz, oran gosterilir.
+    # Blok saga yaslanir: ortada birakilinca motosikletin uzerine biniyordu.
+    x0, yb = 430, 1150
+    tam = G - x0 - 70
+    s2.yazi(d, (x0, yb - 52), "FREN MESAFESİ", 34, (160, 168, 178))
+    for i, (etiket, oran, renk) in enumerate(
+            (("KURU", 0.54, YESIL), ("ISLAK", 1.00, KIRMIZI))):
+        yy = yb + i * 76
+        d.rounded_rectangle([x0, yy, x0 + tam, yy + 46], 10, fill=(255, 255, 255, 18))
+        dolu = tam * oran * min(1.0, fren * 1.25 + 0.12)
+        d.rounded_rectangle([x0, yy, x0 + dolu, yy + 46], 10, fill=renk)
+        s2.yazi(d, (x0 + 14, yy + 6), etiket, 34, (16, 18, 20))
+    if mod == "kask":
+        s2.yazi(d, (G - 320, 636), "KASK KAMERASI", 26, TURUNCU)
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -1069,7 +1213,9 @@ def kare_viraj3b(t, toplam=55.0, gosterge=True):
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
-    ap.add_argument("--sahne", choices=("fren", "viraj", "kontra", "gaz"), required=True)
+    ap.add_argument("--sahne",
+                    choices=("fren", "viraj", "kontra", "gaz", "islak"),
+                    required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
     ap.add_argument("--cikti", default=None)
@@ -1090,6 +1236,8 @@ def main():
     os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)
     if args.sahne == "fren":
         cizer = kare_fren3b
+    elif args.sahne == "islak":
+        cizer = kare_islak3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":
