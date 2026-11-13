@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-13T20:22:20+00:00",
+  "guncelleme": "2026-11-13T20:53:34+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -7,7 +7,7 @@
       "baslik": "Acil Frende Ağırlık Transferi",
       "video": "library/approved/01-acil-fren/01-acil-fren.mp4",
       "meta": "library/approved/01-acil-fren/meta.json",
-      "onay_tarihi": "2026-10-08T09:45:22+00:00",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
       "durum": "onaylandi"
     },
     {
@@ -16,7 +16,7 @@
       "baslik": "Virajda Bakış",
       "video": "library/approved/02-viraj-bakisi/02-viraj-bakisi.mp4",
       "meta": "library/approved/02-viraj-bakisi/meta.json",
-      "onay_tarihi": "2026-10-08T09:45:26+00:00",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
       "durum": "onaylandi"
     },
     {
@@ -25,7 +25,7 @@
       "baslik": "Kontra: Motosiklet Nasıl Döner",
       "video": "library/approved/03-kontra/03-kontra.mp4",
       "meta": "library/approved/03-kontra/meta.json",
-      "onay_tarihi": "2026-10-08T09:45:27+00:00",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
       "durum": "onaylandi"
     },
     {
@@ -34,7 +34,7 @@
       "baslik": "Virajda Gaz: Yavaş Gir, Hızlı Çık",
       "video": "library/approved/04-viraj-gazi/04-viraj-gazi.mp4",
       "meta": "library/approved/04-viraj-gazi/meta.json",
-      "onay_tarihi": "2026-10-08T09:45:28+00:00",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
       "durum": "onaylandi"
     },
     {
@@ -43,7 +43,7 @@
       "baslik": "Islak Zeminde Sürüş",
       "video": "library/approved/05-islak-zemin/05-islak-zemin.mp4",
       "meta": "library/approved/05-islak-zemin/meta.json",
-      "onay_tarihi": "2026-11-13T15:10:51+00:00",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
       "durum": "onaylandi"
     },
     {
@@ -52,7 +52,7 @@
       "baslik": "Kör Nokta: Seni Neden Görmüyorlar",
       "video": "library/approved/06-kor-nokta/06-kor-nokta.mp4",
       "meta": "library/approved/06-kor-nokta/meta.json",
-      "onay_tarihi": "2026-11-13T20:22:20+00:00",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
       "durum": "onaylandi"
     }
   ]
