@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-13T15:10:51+00:00",
+  "guncelleme": "2026-11-13T20:22:20+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -44,6 +44,15 @@
       "video": "library/approved/05-islak-zemin/05-islak-zemin.mp4",
       "meta": "library/approved/05-islak-zemin/meta.json",
       "onay_tarihi": "2026-11-13T15:10:51+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "06-kor-nokta",
+      "ders_no": 6,
+      "baslik": "Kör Nokta: Seni Neden Görmüyorlar",
+      "video": "library/approved/06-kor-nokta/06-kor-nokta.mp4",
+      "meta": "library/approved/06-kor-nokta/meta.json",
+      "onay_tarihi": "2026-11-13T20:22:20+00:00",
       "durum": "onaylandi"
     }
   ]
