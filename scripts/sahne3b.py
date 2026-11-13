@@ -650,6 +650,139 @@ def kare_islak3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  KOR NOKTA  (SMIDSY: "pardon, seni gormedim")
+# ---------------------------------------------------------------------------
+# Kaynaklar: Motorcycle Safety CA, Bennetts BikeSocial, Motorcycle.com serit
+# konumu rehberi, RideApart, webBikeWorld SMIDSY yazilari.
+# Olcut: "surucunun gozlerini aynasinda goremiyorsan muhtemelen kor
+# noktadasin." Kor nokta bir aracin YANINDA ve biraz ARKASINDA, komsu
+# seritte olusur; kamyon ve SUV'de daha buyuktur.
+KOR_DONGU = 14.0
+KOR_ARABA_X = -2.0            # araba sol seritte
+# Kor nokta kamasi, arabanin kendi cercevesinde (x, z) kose noktalari.
+# Arabanin tam arkasi ic aynadan gorunur, o yuzden kama x=0.2'den baslar.
+KOR_KAMA = [(0.2, 0.4), (0.2, -3.2), (4.5, -4.4), (4.5, 1.2)]
+
+
+def kor_evre(t):
+    """(bagil_z, durum) dondurur. Bagil z: motorun arabaya gore boyuna yeri."""
+    u = (t % KOR_DONGU) / KOR_DONGU
+    if u < 0.25:                       # arkadan yaklasir
+        z = -12.0 + 7.0 * s2.yumusak(u / 0.25)
+    elif u < 0.54:                     # kor noktada oyalanir
+        z = -5.0 + 3.5 * s2.yumusak((u - 0.25) / 0.29)
+    elif u < 0.72:                     # gecip gider
+        z = -1.5 + 7.5 * s2.yumusak((u - 0.54) / 0.18)
+    else:                              # onde, aynada net
+        z = 6.0 + 7.0 * s2.yumusak((u - 0.72) / 0.28)
+    return z, "gorunur" if not _kor_nokta_mi(z) else "kor"
+
+
+def _kor_nokta_mi(bagil_z, bagil_x=None):
+    """Motor kor nokta kamasinin icinde mi? Kamanin x=bagil_x kesitinde
+    z araligi dogrusal aradegerlemeyle bulunur."""
+    if bagil_x is None:
+        bagil_x = FREN_SERIT - KOR_ARABA_X
+    (x0, z_on0), (_, z_ar0), (x1, z_ar1), (_, z_on1) = KOR_KAMA
+    if not x0 <= bagil_x <= x1:
+        return False
+    p = (bagil_x - x0) / (x1 - x0)
+    return (z_ar0 + (z_ar1 - z_ar0) * p) <= bagil_z <= (z_on0 + (z_on1 - z_on0) * p)
+
+
+def _araba(s, x, z, renk=(58, 92, 150)):
+    """Basit binek arac: govde, kabin, camlar, tekerlekler, aynalar."""
+    s.kutu([x, 0.62, z], [1.82, 0.74, 4.40], renk)
+    s.kutu([x, 1.22, z - 0.25], [1.66, 0.52, 2.30],
+           tuple(int(k * 0.82) for k in renk))
+    for dz, boy in ((1.00, 1.58), (-1.45, 1.52)):            # on ve arka cam
+        s.kutu([x, 1.24, z + dz], [boy, 0.44, 0.10], (36, 46, 60))
+    for yan in (-1, 1):                                      # yan camlar
+        s.kutu([x + yan * 0.84, 1.26, z - 0.25], [0.06, 0.40, 2.10], (36, 46, 60))
+        s.kutu([x + yan * 1.02, 1.08, z + 0.95], [0.26, 0.14, 0.12],
+               (30, 34, 40))                                 # dis ayna
+        for dz in (1.35, -1.45):                             # tekerlekler
+            s.kutu([x + yan * 0.86, 0.32, z + dz], [0.22, 0.60, 0.68], (26, 26, 28))
+    s.kutu([x, 0.74, z + 2.22], [1.60, 0.26, 0.10], (236, 236, 228))   # far
+    s.kutu([x, 0.78, z - 2.22], [1.56, 0.24, 0.10], (198, 52, 44))     # stop
+
+
+def kare_kornokta3b(t):
+    """Kusbakisi: motor arabanin kor noktasina girer ve cikar."""
+    bagil_z, durum = kor_evre(t)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _kor_s, _kor_tek
+    _kor_s = (globals().get("_kor_s", 0.0) + 0.58) % 8.0
+    _kor_tek = (globals().get("_kor_tek", 0.0) + 0.45) % (2 * math.pi)
+
+    # Araba sabit sayilir, yol ve motor ona gore hareket eder.
+    araba_z = 0.0
+    motor_z = araba_z + bagil_z
+
+    z = motor_z - 40.0
+    while z < motor_z + 70:
+        z2 = z + 5.0
+        s.yuzey([[-90, 0, z], [90, 0, z], [90, 0, z2], [-90, 0, z2]], cim, katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(int((motor_z - 40) / 8), int((motor_z + 70) / 8) + 1):
+        zc = i * 8.0 - _kor_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # --- kor nokta kamasi: yola boyanir, durum rengini alir ---------------
+    kama_renk = (226, 59, 46) if durum == "kor" else (46, 204, 113)
+    s.yuzey([[KOR_ARABA_X + kx, 0.03, araba_z + kz] for kx, kz in KOR_KAMA],
+            kama_renk, isiksiz=True, katman=2)
+
+    _araba(s, KOR_ARABA_X, araba_z)
+    model, _, _ = motosiklet(0.0, _kor_tek, 0.0)
+    s.ekle(model, t=[FREN_SERIT, 0.0, motor_z])
+
+    # --- kusbakisi takip kamerasi -----------------------------------------
+    kamera = Kamera([FREN_SERIT - 1.4, 16.5, motor_z - 12.0],
+                    [FREN_SERIT - 1.6, 0.0, motor_z + 2.0], G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    etiket = "KÖR NOKTADA" if durum == "kor" else "AYNADA GÖRÜNÜYOR"
+    renk = KIRMIZI if durum == "kor" else YESIL
+    f = s2.font(44)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 32, 320, (G + tw) / 2 + 32, 404], 16,
+                        fill=(0, 0, 0, 185), outline=renk, width=5)
+    s2.yazi(d, (G / 2, 332), etiket, 44, renk, ortala=True)
+
+    # Surucunun aynasi: motor ancak gorunurken ayna icinde belirir. Olcut
+    # "gozlerini aynasinda goremiyorsan kor noktadasin" bunun gorsel karsiligi.
+    # Panel SAGDA: araba sol seritte, solda birakilinca uzerine biniyordu.
+    aw, ah = 300, 182
+    ax, ay = G - 72 - aw, 470
+    d.rounded_rectangle([ax, ay, ax + aw, ay + ah], 14, fill=(22, 26, 32, 210),
+                        outline=(96, 106, 118), width=4)
+    s2.yazi(d, (ax + 14, ay + 10), "SÜRÜCÜNÜN AYNASI", 26, (158, 166, 176))
+    if durum == "gorunur":
+        mx, my = ax + aw / 2, ay + 108
+        d.ellipse([mx - 13, my - 42, mx + 13, my - 16], fill=KREM)      # kask
+        d.rounded_rectangle([mx - 19, my - 18, mx + 19, my + 26], 8, fill=(108, 122, 140))
+        d.rounded_rectangle([mx - 7, my + 22, mx + 7, my + 46], 5, fill=(32, 32, 36))
+        s2.yazi(d, (mx, my + 52), "görünüyorsun", 24, YESIL, ortala=True)
+    else:
+        s2.yazi(d, (ax + aw / 2, ay + 76), "BOŞ", 52, KIRMIZI, ortala=True)
+        s2.yazi(d, (ax + aw / 2, ay + 132), "seni göremiyor", 24, KIRMIZI, ortala=True)
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -1214,7 +1347,8 @@ def kare_viraj3b(t, toplam=55.0, gosterge=True):
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
     ap.add_argument("--sahne",
-                    choices=("fren", "viraj", "kontra", "gaz", "islak"),
+                    choices=("fren", "viraj", "kontra", "gaz", "islak",
+                             "kornokta"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -1238,6 +1372,8 @@ def main():
         cizer = kare_fren3b
     elif args.sahne == "islak":
         cizer = kare_islak3b
+    elif args.sahne == "kornokta":
+        cizer = kare_kornokta3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":
