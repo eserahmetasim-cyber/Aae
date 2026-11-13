@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 import os
 import subprocess
 import sys
@@ -68,6 +69,105 @@ def _dersler() -> list:
             continue
         cikti.append((d["no"], d["baslik"]))
     return sorted(cikti)[:4]
+
+
+AYLAR = ["", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz",
+         "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+
+
+def _ders_sozlugu() -> dict:
+    """dosya adi (01-acil-fren) -> (no, baslik)."""
+    s = {}
+    for yol in lesson.dersleri_bul():
+        try:
+            d = lesson.yukle(yol)
+        except Exception:
+            continue
+        s[os.path.splitext(os.path.basename(yol))[0]] = (d["no"], d["baslik"])
+    return s
+
+
+def _hafta_verisi(gun: int = 7) -> tuple:
+    """(durum, dersler, bas, bit) dondurur.
+
+    durum "yayinda": son `gun` gunde gercekten yayinlanan dersler.
+    durum "hazir"  : hic yayin yoksa onayli/hazir dersler.
+
+    Yayin kaydi bosken "bu hafta yayinlandi" demek gercek disi olurdu; kart
+    metnini bu yuzden veri belirliyor.
+    """
+    bit = dt.datetime.now(dt.timezone.utc)
+    bas = bit - dt.timedelta(days=gun - 1)
+    sozluk = _ders_sozlugu()
+
+    kayit = []
+    yol = "content/yayin_kaydi.json"
+    if os.path.exists(yol):
+        with open(yol, encoding="utf-8") as f:
+            kayit = json.load(f).get("yayinlananlar", [])
+    hafta = []
+    for k in kayit:
+        try:
+            tarih = dt.datetime.fromisoformat(k["tarih"])
+        except (KeyError, ValueError):
+            continue
+        if tarih >= bas and k["ders"] in sozluk:
+            hafta.append(sozluk[k["ders"]])
+    if hafta:
+        return "yayinda", sorted(hafta), bas, bit
+    return "hazir", sorted(sozluk.values())[:4], bas, bit
+
+
+def kare_ozet(t: float, sure: float, veri: tuple) -> Image.Image:
+    """Haftalik ozet karti. Duyurudan ayrilsin diye gece sahnesi."""
+    durum, dersler, bas, bit = veri
+    arka = s3.kare_viraj3b(22.0 + t, 55.0, gosterge=False).convert("RGBA")
+    _perde(arka)
+    d = ImageDraw.Draw(arka, "RGBA")
+
+    g = _gir(t, 0.25)
+    if g > 0:
+        y0 = UST_GUVENLI + 36 - int(26 * (1 - g))
+        s2.yazi(d, (G / 2, y0), "HAFTALIK ÖZET", 46, s2.TURUNCU, ortala=True)
+        aralik = (f"{bas.day} – {bit.day} {AYLAR[bit.month]}" if bas.month == bit.month
+                  else f"{bas.day} {AYLAR[bas.month]} – {bit.day} {AYLAR[bit.month]}")
+        s2.yazi(d, (G / 2, y0 + 64), aralik, 40, (168, 176, 186), ortala=True)
+
+    g2 = _gir(t, 1.5, 0.6)
+    if g2 > 0:
+        s2.yazi(d, (G / 2, UST_GUVENLI + 168), f"{len(dersler)}", 190,
+                (*s2.KREM, int(255 * g2)), ortala=True)
+        s2.yazi(d, (G / 2, UST_GUVENLI + 372),
+                "DERS YAYINLANDI" if durum == "yayinda" else "DERS HAZIRLANDI",
+                52, (*s2.MAVI, int(255 * g2)), ortala=True)
+
+    for i, (no, baslik) in enumerate(dersler):
+        gi = _gir(t, 3.4 + i * 1.2, 0.5)
+        if gi <= 0:
+            continue
+        yy = 1152 + i * 88
+        x0 = 96 - int(40 * (1 - gi))
+        d.rounded_rectangle([x0, yy, x0 + 64, yy + 64], 12,
+                            fill=(*s2.TURUNCU, int(235 * gi)))
+        s2.yazi(d, (x0 + 32, yy + 10), f"{no}", 40, (18, 18, 20), ortala=True)
+        s2.yazi(d, (x0 + 88, yy + 12), baslik, 40, (*s2.KREM, int(255 * gi)))
+
+    g3 = _gir(t, 10.4, 0.6)
+    if g3 > 0:
+        s2.yazi(d, (G / 2, 1540),
+                "Haftaya devam" if durum == "yayinda" else "Yayına hazır",
+                42, (*s2.KREM, int(235 * g3)), ortala=True)
+        s2.yazi(d, (G / 2, 1596), "@aae_motorcycle", 44,
+                (*s2.TURUNCU, int(255 * g3)), ortala=True)
+
+    kar = 0.0
+    if t < 0.6:
+        kar = 1.0 - _yumusak(t / 0.6)
+    elif t > sure - 0.7:
+        kar = _yumusak((t - (sure - 0.7)) / 0.7)
+    if kar > 0:
+        d.rectangle([0, 0, G, Y], fill=(0, 0, 0, int(255 * kar)))
+    return arka.convert("RGB")
 
 
 def kare(t: float, sure: float, dersler: list) -> Image.Image:
@@ -126,24 +226,40 @@ def kare(t: float, sure: float, dersler: list) -> Image.Image:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="AAE Instagram Story karti")
+    ap.add_argument("--tur", choices=("duyuru", "ozet"), default="duyuru",
+                    help="duyuru = seri tanitimi, ozet = haftalik ozet")
     ap.add_argument("--sure", type=float, default=15.0, help="saniye (Story siniri 15)")
+    ap.add_argument("--gun", type=int, default=7, help="ozet: kac gunluk pencere")
     ap.add_argument("--cikti", default="")
     args = ap.parse_args()
 
-    dersler = _dersler()
-    if not dersler:
-        raise SystemExit("HATA: content/dersler icinde ders yok.")
-    cikti = args.cikti or (f"output/{dt.date.today():%Y-%m-%d}_story_yol-okulu.mp4")
-    os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)
+    if args.tur == "ozet":
+        veri = _hafta_verisi(args.gun)
+        durum, dersler = veri[0], veri[1]
+        if not dersler:
+            raise SystemExit("HATA: ozetlenecek ders yok.")
+        cizici = lambda t: kare_ozet(t, args.sure, veri)      # noqa: E731
+        ad = "haftalik-ozet"
+        s3.GUNDUZ = False                                     # gece: duyurudan ayrilsin
+        bilgi = f"{len(dersler)} ders · {'yayinlanan' if durum == 'yayinda' else 'hazir'}"
+    else:
+        dersler = _dersler()
+        if not dersler:
+            raise SystemExit("HATA: content/dersler icinde ders yok.")
+        cizici = lambda t: kare(t, args.sure, dersler)        # noqa: E731
+        ad = "yol-okulu"
+        s3.GUNDUZ = True
+        bilgi = f"{len(dersler)} ders"
 
-    s3.GUNDUZ = True
+    cikti = args.cikti or f"output/{dt.date.today():%Y-%m-%d}_story_{ad}.mp4"
+    os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)
     s2.fazlari_ayarla("0:sabit, 8:uzak, 16:acilir, 26:kapanir, 38:engel")
 
     toplam = int(args.sure * FPS)
-    print(f">> Story: {args.sure:.0f} sn · {toplam} kare · {len(dersler)} ders")
+    print(f">> Story ({args.tur}): {args.sure:.0f} sn · {toplam} kare · {bilgi}")
     with tempfile.TemporaryDirectory() as gecici:
         for f in range(toplam):
-            kare(f / FPS, args.sure, dersler).save(
+            cizici(f / FPS).save(
                 os.path.join(gecici, f"k{f:05d}.png"))
             if f % 60 == 0:
                 print(f"   kare {f}/{toplam}")
