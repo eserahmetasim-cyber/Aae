@@ -906,7 +906,8 @@ def _agac(s, x, z, h, govde, yaprak):
                  [x, h, z]], yaprak)
 
 
-def kare_viraj3b(t, toplam=55.0):
+def kare_viraj3b(t, toplam=55.0, gosterge=True):
+    """gosterge=False: HUD'suz temiz kare (Story arka plani icin)."""
     if s2.VIRAJ_FAZLAR:
         derinlik, bukum, (etiket, renk) = s2.viraj_evre_fazli(t, toplam)
         engel = etiket.startswith("ENGELE")
@@ -1018,6 +1019,9 @@ def kare_viraj3b(t, toplam=55.0):
     bak = np.array([0.62 * bx + 0.38 * ax, 1.05, 18.0])
     kamera = Kamera(goz, bak, G, Y, fov=52)
     s.ciz(d, kamera, gok)
+
+    if not gosterge:          # Story gibi kullanimlar icin temiz kare
+        return im
 
     # --- kaybolus noktasi isareti (3B noktanin ekrandaki yeri) ------------
     limit = _limit_mesafe(_serit, egri, ic)
