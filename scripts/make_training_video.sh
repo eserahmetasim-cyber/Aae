@@ -153,7 +153,9 @@ while read -r satir; do
   A_BIT="$(jq -r '.bitis' <<<"${satir}")"
   A_PUNTO="$(jq -r '.punto' <<<"${satir}")"
   A_SATIR="$(jq -r '.satir' <<<"${satir}")"
-  A_Y="$(python3 -c "print(int(1920 - ${ALT_H} - 60 - ${A_SATIR} * ${A_PUNTO} * 1.3))")"
+  # Bosluk 60'ti: iki satirlik adim kutusu alt banda deger haldeydi.
+  # 150'de kutu banttan ~90 px ayriliyor ve metin biraz yukari geliyor.
+  A_Y="$(python3 -c "print(int(1920 - ${ALT_H} - 150 - ${A_SATIR} * ${A_PUNTO} * 1.3))")"
   # Adim penceresi acilis/kapanis kartlarinin disina tasmasin
   A_T="$(python3 -c "print(round(max(${A_T}, ${INTRO}), 2))")"
   A_BIT="$(python3 -c "print(round(min(${A_BIT}, ${OUTRO_BAS}), 2))")"
