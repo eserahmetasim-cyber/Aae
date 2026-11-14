@@ -66,6 +66,36 @@ DISK = (104, 112, 120)
 KROM = (196, 206, 214)
 
 
+def _pahli(s, merkez, boyut, renk, pah=0.26, on_olcek=1.0, arka_olcek=1.0,
+           R=None, katman=3):
+    """Kose yontulmus (pahli) ve ucu daralabilen govde parcasi.
+
+    Motor, depo, sele ve kuyruk duz kutulardan kuruluydu; dik koseler
+    motosikleti oyuncak gibi gosteriyordu. Kesit dikdortgen yerine sekizgen:
+    dort kose kesiliyor. on_olcek/arka_olcek ile parca one ya da arkaya
+    dogru daralabiliyor (depo one dogru incelir, kuyruk arkaya)."""
+    merkez = np.asarray(merkez, dtype=float)
+    sx, sy, sz = np.asarray(boyut, dtype=float) / 2.0
+    c = pah * min(sx, sy)
+    kesit = [(sx - c, sy), (sx, sy - c), (sx, -(sy - c)), (sx - c, -sy),
+             (-(sx - c), -sy), (-sx, -(sy - c)), (-sx, sy - c), (-(sx - c), sy)]
+
+    def halka(z, olcek):
+        p = [np.array([x * olcek, y * olcek, z]) for x, y in kesit]
+        if R is not None:
+            p = [np.asarray(R) @ q for q in p]
+        return [merkez + q for q in p]
+
+    on, arka = halka(sz, on_olcek), halka(-sz, arka_olcek)
+    n = len(kesit)
+    for i in range(n):
+        j = (i + 1) % n
+        s.yuzey([arka[i], arka[j], on[j], on[i]], renk, katman=katman)
+    koyu = tuple(int(k * 0.88) for k in renk)
+    s.yuzey(on, koyu, katman=katman)
+    s.yuzey(arka[::-1], koyu, katman=katman)
+
+
 def _tekerlek(s, z, aci, yaricap=0.31, disk=True, on=True):
     """aci: tekerlegin donme acisi (radyan). Daha once sabit 0 geciliyordu,
     bu yuzden tekerlekler hic donmuyordu.
@@ -393,21 +423,36 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     s.silindir([0.11, 0.31, arka_z], [0.11, 0.31, arka_z], 0.12, (60, 60, 64))   # disli
     for yan in (0.105, -0.105):                                                  # zincir
         s.kutu([yan, 0.40, arka_z + 0.34], [0.02, 0.025, 0.72], (96, 100, 104))
-    s.kutu([0, 0.55, -0.02], [0.33, 0.44, 0.58], (72, 82, 94))                   # motor
-    s.kutu([0, 0.62, 0.26], [0.30, 0.34, 0.10], (108, 116, 124))                 # radyator
-    s.kutu([0, 0.33, 0.02], [0.30, 0.14, 0.46], (58, 64, 72))                    # karter
-    s.kutu([0, 0.84, 0.10], [0.30, 0.26, 0.66], TURUNCU)                         # depo
-    s.kutu([0, 0.95, 0.10], [0.22, 0.06, 0.52], (255, 128, 80))                  # depo ustu
-    s.kutu([0, 0.82, -0.44], [0.25, 0.10, 0.52], (28, 28, 30))                   # sele
-    s.kutu([0, 0.88, -0.76], [0.21, 0.13, 0.30], (28, 28, 30))                   # kuyruk
+    # Govde parcalari pahli: duz kutularin dik koseleri motosikleti oyuncak
+    # gibi gosteriyordu. Depo one dogru incelir, kuyruk arkaya dogru daralir.
+    # Blok daha dar ve kisa: eskisi govdenin ortasinda kalin bir levha
+    # gibi duruyordu, sasi hic gorunmuyordu.
+    _pahli(s, [0, 0.57, -0.02], [0.27, 0.38, 0.50], (72, 82, 94),
+           on_olcek=0.86, arka_olcek=0.92)                                       # motor
+    _pahli(s, [0, 0.62, 0.26], [0.30, 0.34, 0.10], (108, 116, 124), pah=0.20)    # radyator
+    _pahli(s, [0, 0.33, 0.02], [0.30, 0.14, 0.46], (58, 64, 72),
+           on_olcek=0.82, arka_olcek=0.88)                                       # karter
+    # Depo iki parcali: ust kabuk genis, alt etek dizlerin degdigi yerde dar.
+    _pahli(s, [0, 0.88, 0.10], [0.30, 0.19, 0.66], TURUNCU,
+           pah=0.34, on_olcek=0.80)                                              # depo
+    _pahli(s, [0, 0.74, 0.14], [0.21, 0.13, 0.52], (228, 112, 68),
+           pah=0.30, on_olcek=0.84)                                              # depo etegi
+    _pahli(s, [0, 0.96, 0.08], [0.21, 0.05, 0.50], (255, 142, 96),
+           pah=0.40, on_olcek=0.76)                                              # depo ustu
+    _pahli(s, [0, 0.83, -0.44], [0.24, 0.08, 0.52], (28, 28, 30),
+           pah=0.36, on_olcek=0.84, arka_olcek=0.92)                             # sele
+    _pahli(s, [0, 0.88, -0.76], [0.21, 0.13, 0.30], (28, 28, 30),
+           pah=0.32, arka_olcek=0.68)                                            # kuyruk
     s.kutu([0, 0.89, -0.91], [0.15, 0.07, 0.05], KIRMIZI)                        # stop
     s.kutu([0, 0.74, -0.95], [0.16, 0.11, 0.02], (222, 222, 216))                # plaka
     # Egzoz arka tekerlegin YANINDAN gecer. Onceki guzergah tekerlek duzlemine
     # cok yakindi (x~0.17) ve aks hizasindaydi; lastige saplanmis gibi duruyordu.
     s.silindir([0.10, 0.40, 0.02], [0.19, 0.46, -0.30], 0.032, (150, 158, 164))  # egzoz borusu
     s.silindir([0.19, 0.46, -0.30], [0.26, 0.58, -0.58], 0.034, (150, 158, 164))
-    s.silindir([0.26, 0.58, -0.58], [0.28, 0.62, -1.00], 0.065, (124, 132, 140)) # susturucu
-    s.silindir([0.28, 0.62, -1.00], [0.285, 0.62, -1.03], 0.052, (40, 40, 44))   # cikis
+    # Susturucu 0.065 yaricaptaydi ve top gibi duruyordu.
+    s.silindir([0.25, 0.56, -0.58], [0.27, 0.60, -0.98], 0.048,
+               (124, 132, 140))                                                 # susturucu
+    s.silindir([0.27, 0.60, -0.98], [0.275, 0.60, -1.01], 0.040, (40, 40, 44))   # cikis
 
     # --- on takim (direksiyonla birlikte doner) ---------------------------
     # Kontra dersi icin on takim AYRI bir sahnede kurulur: catal, teker,
