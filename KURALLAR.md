@@ -83,6 +83,17 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
 örn. 2026-10-03_ders01_acil-fren_v1.mp4
 ```
 
+## Geriye dönük üretim yok
+- **Biten ders bitmiştir.** Format, yerleşim, müzik ya da sahne değişikliği
+  yapıldığında onaylı kütüphanedeki eski dersler yeniden üretilmez; değişiklik
+  yalnızca o günden sonra üretilen derslere uygulanır.
+- Sebep: altı dersi yeniden üretmek bir saat sürüyor ve her küçük düzeltmede
+  bunu yapmak üretimi durduruyor. Seride ufak biçim farkları olması, yeni ders
+  çıkmamasından iyidir.
+- İstisna: derste **yanlış bilgi** ya da yayını engelleyecek teknik bir kusur
+  varsa o ders tek başına yeniden üretilir. Estetik fark bu kapsamda değil.
+- Eski bir dersi yine de yenilemek gerekirse bu açıkça istenir.
+
 ## Yayın kuralları
 - **YouTube:** varsayılan `private`. Başlık/açıklamaya `#Shorts` otomatik eklenir.
   Herkese açmak ayrı ve bilinçli bir adım.
