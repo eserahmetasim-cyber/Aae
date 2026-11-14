@@ -1939,7 +1939,8 @@ def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
-                             "kornokta", "manevra", "gece", "kontrol"),
+                             "kornokta", "manevra", "gece", "kontrol",
+                             "kacinma"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -1972,6 +1973,8 @@ def main():
     elif args.sahne == "kontrol":
         kontrol_zaman_ayarla(args.fazlar)
         cizer = kare_kontrol3b
+    elif args.sahne == "kacinma":
+        cizer = kare_kacinma3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":
