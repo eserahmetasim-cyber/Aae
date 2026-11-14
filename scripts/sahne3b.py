@@ -68,19 +68,48 @@ KROM = (196, 206, 214)
 
 def _tekerlek(s, z, aci, yaricap=0.31, disk=True, on=True):
     """aci: tekerlegin donme acisi (radyan). Daha once sabit 0 geciliyordu,
-    bu yuzden tekerlekler hic donmuyordu."""
-    s.silindir([-0.075, yaricap, z], [0.075, yaricap, z], yaricap, LASTIK, segment=20)
-    s.silindir([-0.085, yaricap, z], [0.085, yaricap, z], yaricap * 0.72, (34, 34, 36),
-               segment=18)                                        # lastik yanagi
-    s.silindir([-0.07, yaricap, z], [0.07, yaricap, z], yaricap * 0.50, (44, 44, 48),
-               segment=16)                                        # jant tabani
+    bu yuzden tekerlekler hic donmuyordu.
+
+    Lastik tek silindirdi ve yandan duz bir disk gibi duruyordu. Motosiklet
+    lastiginin sirti YUVARLAKTIR (arabanınki gibi duz degil): profil ust uste
+    binen uc silindirle veriliyor, uzerine de dis blogu geciyor."""
     R = donus([1, 0, 0], aci)
-    for i in range(6):                                            # jant kollari
-        a = 2 * math.pi * i / 6
+
+    # --- lastik: yuvarlak sirt profili -----------------------------------
+    for yari_g, r_k in ((0.082, 1.000), (0.062, 0.998), (0.030, 0.993)):
+        s.silindir([-yari_g, yaricap, z], [yari_g, yaricap, z],
+                   yaricap * r_k, LASTIK, segment=22)
+    # Yanak 0.80 yaricaptaydi ve janti tamamen orluyordu.
+    s.silindir([-0.086, yaricap, z], [0.086, yaricap, z], yaricap * 0.68,
+               (30, 30, 32), segment=20)                          # yanak
+
+    # --- dis blogu: cevrede, sirta hafif cikintili ------------------------
+    # Dis: ince kanal izleri. Ilk denemede bloklar 3.5 cm yuksekti ve lastik
+    # traktor lastigi gibi duruyordu; yol lastiginin disi neredeyse duzdur.
+    N = 26
+    for i in range(N):
+        a = 2 * math.pi * i / N
         yon = np.array([0.0, math.cos(a), math.sin(a)])
-        s.kutu([0, yaricap, z] + (R @ yon) * yaricap * 0.33,
-               [0.085, yaricap * 0.62, 0.05], JANT,
+        s.kutu([0, yaricap, z] + (R @ yon) * yaricap * 0.995,
+               [0.090 if i % 2 else 0.052, 0.010, 0.018], (22, 22, 24),
                R=R @ donus([1, 0, 0], -a))
+
+    # --- jant: tabani, bilezik dudaklari ve kollari -----------------------
+    s.silindir([-0.062, yaricap, z], [0.062, yaricap, z], yaricap * 0.52,
+               (46, 46, 50), segment=18)
+    for yan in (-1, 1):                                           # bilezik dudagi
+        s.silindir([yan * 0.070, yaricap, z], [yan * 0.082, yaricap, z],
+                   yaricap * 0.74, JANT, segment=20)
+    for i in range(5):                                            # kollar
+        a = 2 * math.pi * i / 5
+        yon = np.array([0.0, math.cos(a), math.sin(a)])
+        s.kutu([0, yaricap, z] + (R @ yon) * yaricap * 0.36,
+               [0.062, yaricap * 0.60, 0.042], JANT,
+               R=R @ donus([1, 0, 0], -a))
+    sup = np.array([0.0, math.cos(aci + 1.1), math.sin(aci + 1.1)])
+    s.kutu([0, yaricap, z] + sup * yaricap * 0.60, [0.030, 0.055, 0.030],
+           (28, 28, 30))                                          # sibop
+
     if disk:
         # Disk daha KUCUK ve KOYU; ayrica arka tekerlekte tek disk var ve o da
         # kameranin ters tarafinda. Onceki parlak buyuk disk janti kapatiyor,
@@ -91,6 +120,31 @@ def _tekerlek(s, z, aci, yaricap=0.31, disk=True, on=True):
                        yaricap * (0.54 if on else 0.44), DISK, segment=18)
             s.kutu([yan * 0.125, yaricap + 0.17, z - 0.03], [0.055, 0.12, 0.09], TURUNCU)
     s.silindir([-0.05, yaricap, z], [0.05, yaricap, z], 0.062, KROM, segment=10)  # gobek
+    s.silindir([-0.125, yaricap, z], [0.125, yaricap, z], 0.018, (170, 172, 176),
+               segment=8)                                         # aks
+
+
+def _camurluk(s, z, yaricap=0.31, renk=TURUNCU):
+    """Tekerlegin yayini izleyen kavisli camurluk. Duz bir kutu olarak
+    konulunca tekerlegin uzerinde duran bir tahta gibi duruyordu.
+
+    Camurluk catal ayagina baglidir, ayak da aksi tasir: bu yuzden tekerlekle
+    birlikte durur, suspansiyon cokmesiyle asagi inmez."""
+    # Ilk denemede R1 = yaricap + 0.085 ve yay -0.35..1.75 idi: camurluk
+    # tekerlekten kopuk, kalin bir kemer gibi duruyordu.
+    R0, R1 = yaricap + 0.020, yaricap + 0.042
+    A0, A1, N = -0.10, 1.45, 10                # radyan: on-alttan arka-uste
+    def p(a, r, x):
+        return [x, yaricap + r * math.sin(a), z + r * math.cos(a)]
+    for i in range(N):
+        a0 = A0 + (A1 - A0) * i / N
+        a1 = A0 + (A1 - A0) * (i + 1) / N
+        s.yuzey([p(a0, R1, -0.074), p(a0, R1, 0.074),
+                 p(a1, R1, 0.074), p(a1, R1, -0.074)], renk)       # ust yuz
+        for yan in (-1, 1):                                        # yan etek
+            s.yuzey([p(a0, R1, yan * 0.074), p(a0, R0, yan * 0.074),
+                     p(a1, R0, yan * 0.074), p(a1, R1, yan * 0.074)],
+                    tuple(int(k * 0.80) for k in renk))
 
 
 # ---------------------------------------------------------------------------
@@ -360,15 +414,25 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     # camurluk, far, cam, gosterge, gidon ve aynalar birlikte donmeli.
     onk = Sahne()
     ucgen_y = 0.98 - cokme
+    # Catal tek silindirdi, duz bir cubuk gibi duruyordu. Gercek catal iki
+    # kademeli: ustte ince ic boru, altta kalin ayak, arasinda toz kecesi.
     for yan in (-1, 1):
-        onk.silindir([yan * 0.105, 0.31, on_z], [yan * 0.095, ucgen_y, on_z - 0.11],
-                   0.040, JANT)                                                  # catal
+        ust = np.array([yan * 0.095, ucgen_y, on_z - 0.11])
+        alt = np.array([yan * 0.105, 0.31, on_z])
+        orta = alt + (ust - alt) * 0.46
+        onk.silindir(list(orta), list(ust), 0.030, KROM)               # ic boru
+        onk.silindir(list(alt), list(orta + (ust - alt) * 0.04), 0.042,
+                     (52, 56, 64))                                     # ayak
+        onk.silindir(list(orta), list(orta + (ust - alt) * 0.05), 0.047,
+                     (28, 30, 34))                                     # toz kecesi
+        onk.kutu(list(alt + np.array([yan * 0.022, 0.085, -0.055])),
+                 [0.045, 0.13, 0.10], (64, 70, 80))                    # kaliper kulagi
     onk.kutu([0, ucgen_y + 0.03, on_z - 0.13], [0.24, 0.08, 0.13], (62, 72, 84))   # ucgen
     onk.kutu([0, ucgen_y + 0.12, on_z - 0.22], [0.17, 0.09, 0.05], (24, 26, 30),
            R=donus([1, 0, 0], 0.5))                                              # gosterge govdesi
     onk.kutu([0, ucgen_y + 0.133, on_z - 0.195], [0.14, 0.06, 0.015], (30, 150, 180),
            R=donus([1, 0, 0], 0.5))                                              # ekran
-    onk.kutu([0, 0.62 - cokme, on_z + 0.06], [0.17, 0.05, 0.48], TURUNCU)         # camurluk
+    _camurluk(onk, on_z)                                                         # camurluk
     onk.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], (46, 50, 56))    # far govdesi
     onk.kutu([0, 0.98 - cokme, on_z + 0.195], [0.22, 0.19, 0.02], KREM)           # far cami
     onk.kutu([0, 1.09 - cokme, on_z + 0.02], [0.19, 0.10, 0.03], (146, 176, 196),
