@@ -55,7 +55,7 @@ Konsol: `https://adsense.google.com/adsense/u/1/pub-7223494011776010/`
 Ayrıca aynı hesapta teyit et:
 - Gizlilik ve mesajlaşma → Avrupa tüzükleri → rıza mesajı **"Yayında"** mı? Değilse yayınla.
 - Siteler listesinde `saemuhendislik.com` **"Hazır"** mı, `ads.txt` satırı **"Yetkili"** mi?
-- ⚠ **AAE'ye sor:** eski hesap `pub-8433209614215281` (`ahmetasimeser008@gmail.com`) ne durumda? Aynı kişinin iki ayrı AdSense hesabı tutması AdSense politikasına aykırı. Kapandıysa/siteden çıkarıldıysa sorun yok; hâlâ açıksa ve siteyi tanımlıyorsa bunu çözmek gerek. **Kendi başına hesap kapatma.**
+- ℹ Eski hesap (`pub-8433209614215281`, `ahmetasimeser008@gmail.com`) **kapatılmış** — AAE 14.11'de teyit etti. Mükerrer hesap sorunu yok, bu konuda yapılacak iş kalmadı.
 
 **5) Search Console — üç sorunun örnek URL listesi.**
 Açık: "Yönlendirmeli sayfa", "Kopya, Google farklı standart sayfa seçti" (WNC-10031170), "Bulunamadı (404)" (WNC-20237597).
