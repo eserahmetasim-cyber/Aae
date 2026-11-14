@@ -783,6 +783,140 @@ def kare_kornokta3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  DUSUK HIZDA MANEVRA  (U donusu)
+# ---------------------------------------------------------------------------
+# Kaynaklar: Team Arizona (motorcycletraining.com) dusuk hiz serisi, Rider
+# Magazine (Quinn Redeker arka fren yazisi), Riding in the Zone, Women
+# Riders Now. Hepsi ayni uc seyi soyluyor: bas ve gozler cikis noktasinda,
+# debriyaj surtunme bolgesinde, arka fren hafif basili - on frene DOKUNMA.
+MAN_DONGU = 13.0
+MAN_R = 3.4                   # U donusu yaricapi (m) - yol genisligine sigar
+
+
+def man_evre(t):
+    """(konum, sapma, yatis, bakis_noktasi, durum) dondurur."""
+    u = (t % MAN_DONGU) / MAN_DONGU
+    if u < 0.23:                                   # duz giris
+        p = u / 0.23
+        konum = np.array([MAN_R, 0.0, -10.0 + 10.0 * s2.yumusak(p)])
+        sapma, yatis = 0.0, 0.0
+        hedef = np.array([MAN_R, 0.0, konum[2] + 9.0])
+        durum = "bak" if p > 0.45 else "giris"
+        if durum == "bak":                         # bas once doner
+            hedef = np.array([-MAN_R, 0.0, 1.2])
+    elif u < 0.69:                                 # U donusu
+        p = s2.yumusak((u - 0.23) / 0.46)
+        th = math.pi * p
+        konum = np.array([MAN_R * math.cos(th), 0.0, MAN_R * math.sin(th)])
+        sapma = -th
+        yatis = 0.34 * min(1.0, p * 4.0) * min(1.0, (1 - p) * 4.0)
+        ileri = min(math.pi, th + 1.25)            # bakis donusun ilerisinde
+        hedef = np.array([MAN_R * math.cos(ileri) * 1.25, 0.0,
+                          MAN_R * math.sin(ileri) * 1.25 - 1.5])
+        durum = "donus"
+    else:                                          # duz cikis
+        p = s2.yumusak((u - 0.69) / 0.31)
+        # Cikis kisa tutulur: 9.5 m gidince hem motosiklet hem bakis halkasi
+        # kadrajin altindan cikiyordu.
+        konum = np.array([-MAN_R, 0.0, -6.2 * p])
+        sapma, yatis = -math.pi, 0.0
+        hedef = np.array([-MAN_R, 0.0, max(konum[2] - 6.5, -10.4)])
+        durum = "cikis"
+    return konum, sapma, yatis, hedef, durum
+
+
+MAN_DURUM = {
+    "giris": ("YAVAŞLA, DEBRİYAJI AYIR", MAVI),
+    "bak":   ("ÖNCE BAŞINI ÇEVİR", TURUNCU),
+    "donus": ("SÜRTÜNME BÖLGESİ + ARKA FREN", YESIL),
+    "cikis": ("BAKIŞ ÇIKIŞTA", MAVI),
+}
+
+
+def _bakis_oku(d, kamera, bas, uc, renk):
+    """Yoldaki bakis cizgisi ve ucundaki halka."""
+    n = 14
+    nokta = np.array([bas + (uc - bas) * (i / n) + np.array([0, 0.05, 0])
+                      for i in range(n + 1)])
+    kn = kamera.kameraya(nokta)
+    if kn[:, 2].min() <= 0.3:
+        return
+    ek = kamera.ekrana(kn)
+    for i in range(0, n, 2):                       # kesikli
+        d.line([tuple(ek[i]), tuple(ek[i + 1])], fill=(*renk, 150), width=7)
+    ux, uy = ek[-1]
+    d.ellipse([ux - 26, uy - 26, ux + 26, uy + 26], outline=(*renk, 235), width=7)
+
+
+def kare_manevra3b(t):
+    """Kusbakisi U donusu: bakis, surtunme bolgesi, arka fren."""
+    konum, sapma, yatis, hedef, durum = man_evre(t)
+    etiket, renk = MAN_DURUM[durum]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _man_tek
+    _man_tek = (globals().get("_man_tek", 0.0) + 0.16) % (2 * math.pi)
+
+    s.yuzey([[-70, 0, -70], [70, 0, -70], [70, 0, 70], [-70, 0, 70]], cim, katman=0)
+    z = -26.0
+    while z < 26:
+        z2 = z + 4.0
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+
+    # --- donus cemberi: manevranin yol genisligine sigdigini gosterir ------
+    N = 56
+    for i in range(N):
+        a0, a1 = math.pi * i / N, math.pi * (i + 1) / N
+        for r0, r1 in ((MAN_R - 0.07, MAN_R + 0.07),):
+            s.yuzey([[r0 * math.cos(a0), 0.022, r0 * math.sin(a0)],
+                     [r1 * math.cos(a0), 0.022, r1 * math.sin(a0)],
+                     [r1 * math.cos(a1), 0.022, r1 * math.sin(a1)],
+                     [r0 * math.cos(a1), 0.022, r0 * math.sin(a1)]],
+                    (156, 164, 174), katman=2)
+
+    model, _, _ = motosiklet(0.0, _man_tek, 0.0)
+    R = donus([0, 1, 0], sapma) @ donus([0, 0, 1], yatis)
+    s.ekle(model, R=R, t=konum)
+
+    kamera = Kamera([0.0, 19.5, -13.5], [0.0, 0.0, 0.6], G, Y, fov=47)
+    s.ciz(d, kamera, gok)
+    _bakis_oku(d, kamera, konum + np.array([0, 1.4, 0]),
+               hedef + np.array([0, 0.1, 0]), TURUNCU)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    f = s2.font(42)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 30, 318, (G + tw) / 2 + 30, 398], 16,
+                        fill=(0, 0, 0, 185), outline=renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 42, renk, ortala=True)
+
+    # Uc kumanda: donuste debriyaj surtunme bolgesinde, arka fren hafif,
+    # on fren hic. Kaynaklarin uzerinde birlestigi tek sey bu.
+    aktif = durum == "donus"
+    satirlar = (("DEBRİYAJ", "sürtünme bölgesi" if aktif else "ayrık", YESIL if aktif else (120, 128, 138)),
+                ("ARKA FREN", "hafif basılı" if aktif else "serbest", YESIL if aktif else (120, 128, 138)),
+                ("ÖN FREN", "DOKUNMA", KIRMIZI))
+    px, py, pw = 70, 470, 420
+    d.rounded_rectangle([px, py, px + pw, py + 266], 16, fill=(18, 22, 28, 205),
+                        outline=(92, 102, 112), width=4)
+    for i, (ad, deger, c) in enumerate(satirlar):
+        yy = py + 22 + i * 80
+        d.rounded_rectangle([px + 18, yy + 6, px + 28, yy + 54], 5, fill=c)
+        s2.yazi(d, (px + 46, yy), ad, 36, KREM)
+        s2.yazi(d, (px + 46, yy + 42), deger, 28, c)
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -1348,7 +1482,7 @@ def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
-                             "kornokta"),
+                             "kornokta", "manevra"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -1374,6 +1508,8 @@ def main():
         cizer = kare_islak3b
     elif args.sahne == "kornokta":
         cizer = kare_kornokta3b
+    elif args.sahne == "manevra":
+        cizer = kare_manevra3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":
