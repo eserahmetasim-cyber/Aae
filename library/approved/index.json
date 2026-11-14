@@ -1,0 +1,104 @@
+{
+  "guncelleme": "2026-11-14T08:51:44+00:00",
+  "dersler": [
+    {
+      "klasor": "01-acil-fren",
+      "ders_no": 1,
+      "baslik": "Acil Frende Ağırlık Transferi",
+      "video": "library/approved/01-acil-fren/01-acil-fren.mp4",
+      "meta": "library/approved/01-acil-fren/meta.json",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "02-viraj-bakisi",
+      "ders_no": 2,
+      "baslik": "Virajda Bakış",
+      "video": "library/approved/02-viraj-bakisi/02-viraj-bakisi.mp4",
+      "meta": "library/approved/02-viraj-bakisi/meta.json",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "03-kontra",
+      "ders_no": 3,
+      "baslik": "Kontra: Motosiklet Nasıl Döner",
+      "video": "library/approved/03-kontra/03-kontra.mp4",
+      "meta": "library/approved/03-kontra/meta.json",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "04-viraj-gazi",
+      "ders_no": 4,
+      "baslik": "Virajda Gaz: Yavaş Gir, Hızlı Çık",
+      "video": "library/approved/04-viraj-gazi/04-viraj-gazi.mp4",
+      "meta": "library/approved/04-viraj-gazi/meta.json",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "05-islak-zemin",
+      "ders_no": 5,
+      "baslik": "Islak Zeminde Sürüş",
+      "video": "library/approved/05-islak-zemin/05-islak-zemin.mp4",
+      "meta": "library/approved/05-islak-zemin/meta.json",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "06-kor-nokta",
+      "ders_no": 6,
+      "baslik": "Kör Nokta: Seni Neden Görmüyorlar",
+      "video": "library/approved/06-kor-nokta/06-kor-nokta.mp4",
+      "meta": "library/approved/06-kor-nokta/meta.json",
+      "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "07-dusuk-hiz-manevra",
+      "ders_no": 7,
+      "baslik": "Düşük Hızda Manevra",
+      "video": "library/approved/07-dusuk-hiz-manevra/07-dusuk-hiz-manevra.mp4",
+      "meta": "library/approved/07-dusuk-hiz-manevra/meta.json",
+      "onay_tarihi": "2026-11-14T07:16:58+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "08-gece-surusu",
+      "ders_no": 8,
+      "baslik": "Gece Sürüşü",
+      "video": "library/approved/08-gece-surusu/08-gece-surusu.mp4",
+      "meta": "library/approved/08-gece-surusu/meta.json",
+      "onay_tarihi": "2026-11-14T07:42:41+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "09-on-kontrol",
+      "ders_no": 9,
+      "baslik": "Lastik Basıncı ve Ön Kontrol",
+      "video": "library/approved/09-on-kontrol/09-on-kontrol.mp4",
+      "meta": "library/approved/09-on-kontrol/meta.json",
+      "onay_tarihi": "2026-11-14T08:18:29+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "10-kacinma",
+      "ders_no": 10,
+      "baslik": "Kaçınma Manevrası",
+      "video": "library/approved/10-kacinma/10-kacinma.mp4",
+      "meta": "library/approved/10-kacinma/meta.json",
+      "onay_tarihi": "2026-11-14T08:25:15+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "11-yolcu",
+      "ders_no": 11,
+      "baslik": "Yolcu ile Sürüş",
+      "video": "library/approved/11-yolcu/11-yolcu.mp4",
+      "meta": "library/approved/11-yolcu/meta.json",
+      "onay_tarihi": "2026-11-14T08:51:44+00:00",
+      "durum": "onaylandi"
+    }
+  ]
+}

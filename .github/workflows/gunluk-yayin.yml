@@ -1,0 +1,174 @@
+name: Gunluk Yayin
+
+# Her sabah 10:00'da (Istanbul) siradaki dersi render edip YouTube ve
+# Instagram'a yayinlar, sonra yayin kaydini depoya geri yazar.
+#
+# ACMA ANAHTARI: secret'lar. Secret yoksa o platform atlanir, is akisi yesil
+# biter. Yani asagidaki secret'lari girene kadar hicbir sey yayinlanmaz:
+#   YouTube  : YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN
+#   Instagram: IG_USER_ID, IG_ACCESS_TOKEN
+#
+# Instagram Reel yayinlandigi anda herkese acik olur ve API'den geri alinamaz.
+# KURALLAR.md bunu normalde elle secime birakir; gunluk yayin bu kuralin
+# bilincli istisnasidir ve tek frenı secret'larin varligidir.
+on:
+  schedule:
+    # 07:00 UTC = 10:00 Istanbul (Turkiye'de yaz saati uygulamasi yok).
+    # GitHub zamanlanmis isleri yogunlukta birkac dakika gecikmeli baslatabilir.
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      ders:
+        description: "Ders dosyasi (bos = siradaki yayinlanmamis ders)"
+        default: ""
+        required: false
+      gizlilik:
+        description: "YouTube gizliligi"
+        default: "public"
+        type: choice
+        options: [public, unlisted, private]
+        required: false
+      instagram:
+        description: "Instagram'a da yayinlansin mi"
+        default: "evet"
+        type: choice
+        options: [evet, hayir]
+        required: false
+      kuru:
+        description: "Kuru calistirma (hicbir sey yayinlanmaz)"
+        default: "hayir"
+        type: choice
+        options: [hayir, evet]
+        required: false
+
+permissions:
+  contents: write        # yayin kaydini geri yazmak icin
+
+concurrency:
+  group: gunluk-yayin
+  cancel-in-progress: false
+
+jobs:
+  yayinla:
+    runs-on: ubuntu-latest
+    env:
+      YT_VAR: ${{ secrets.YT_REFRESH_TOKEN != '' }}
+      IG_VAR: ${{ secrets.IG_ACCESS_TOKEN != '' }}
+      IG_ISTENDI: ${{ inputs.instagram != 'hayir' }}
+      KURU: ${{ inputs.kuru == 'evet' && '--kuru' || '' }}
+    steps:
+      - name: Depoyu indir
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Araclari kur
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg jq fonts-dejavu-core
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Paketleri kur
+        run: pip install -r requirements-publish.txt
+
+      - name: Siradaki dersi sec
+        id: sec
+        run: |
+          DERS="${{ inputs.ders }}"
+          if [ -z "$DERS" ]; then
+            if ! DERS="$(python3 scripts/yayin_sirasi.py --sonraki)"; then
+              echo "::notice::Sirada yayinlanmamis ders kalmadi; bugun atlanıyor."
+              echo "bos=evet" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          echo "Secilen ders: $DERS"
+          CIKTI="$(python3 scripts/lesson.py "$DERS" --json | jq -r .cikti)"
+          {
+            echo "DERS=$DERS"
+            echo "CIKTI=$CIKTI"
+          } >> "$GITHUB_ENV"
+
+      - name: Videoyu render et
+        if: steps.sec.outputs.bos != 'evet'
+        run: |
+          chmod +x scripts/make_training_video.sh
+          ./scripts/make_training_video.sh "$DERS" "$CIKTI"
+
+      - name: Hazir videoyu artifact olarak ver
+        if: steps.sec.outputs.bos != 'evet'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gunluk-yayin-videosu
+          path: ${{ env.CIKTI }}
+          if-no-files-found: error
+          retention-days: 30
+
+      # --- YouTube -----------------------------------------------------------
+      - name: YouTube'a yayinla
+        if: ${{ steps.sec.outputs.bos != 'evet' && env.YT_VAR == 'true' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python3 scripts/publish_youtube.py "$CIKTI" --ders "$DERS" \
+            --gizlilik "${{ inputs.gizlilik || 'public' }}" \
+            --id-dosyasi yt_id.txt $KURU
+          echo "YT_ID=$(cat yt_id.txt 2>/dev/null || true)" >> "$GITHUB_ENV"
+
+      - name: YouTube atlandi (bilgi)
+        if: ${{ steps.sec.outputs.bos != 'evet' && env.YT_VAR != 'true' }}
+        run: |
+          echo "::warning::YouTube secret'lari yok (YT_CLIENT_ID/SECRET/REFRESH_TOKEN) — yayinlanmadi."
+          echo "::notice::Kurulum: README 'YouTube kurulumu'. Secret girilince bu adim kendiliginden calisir."
+
+      # --- Instagram ---------------------------------------------------------
+      - name: Instagram'a yayinla
+        if: ${{ steps.sec.outputs.bos != 'evet' && env.IG_VAR == 'true' && env.IG_ISTENDI == 'true' }}
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          echo "::warning::Instagram Reel yayinlaniyor — aninda herkese acik olacak, geri alinamaz."
+          python3 scripts/publish_instagram.py "$CIKTI" --ders "$DERS" \
+            --id-dosyasi ig_id.txt $KURU
+          echo "IG_ID=$(cat ig_id.txt 2>/dev/null || true)" >> "$GITHUB_ENV"
+
+      - name: Instagram atlandi (bilgi)
+        if: ${{ steps.sec.outputs.bos != 'evet' && env.IG_VAR != 'true' && env.IG_ISTENDI == 'true' }}
+        run: |
+          echo "::warning::Instagram secret'lari yok (IG_USER_ID / IG_ACCESS_TOKEN) — yayinlanmadi."
+          echo "::notice::Kurulum: README 'Instagram kurulumu'."
+
+      # --- kayit -------------------------------------------------------------
+      # Yalnizca gercekten yayinlanmissa isaretlenir; aksi halde ders sirada
+      # kalir ve secret'lar girilince ilk calismada yayinlanir.
+      - name: Yayin kaydini guncelle
+        if: ${{ steps.sec.outputs.bos != 'evet' && inputs.kuru != 'evet' && (env.YT_ID != '' || env.IG_ID != '') }}
+        run: |
+          python3 scripts/yayin_sirasi.py --isaretle "$DERS" \
+            --youtube "${YT_ID:-}" --instagram "${IG_ID:-}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/yayin_kaydi.json
+          git commit -m "Yayin kaydi: $(basename "$DERS" .yml)" || exit 0
+          git push
+
+      - name: Ozet
+        if: always()
+        run: |
+          {
+            echo "### Gunluk yayin"
+            if [ "${{ steps.sec.outputs.bos }}" = "evet" ]; then
+              echo "- Sirada ders kalmadi. Yeni ders eklenince devam eder."
+            else
+              echo "- Ders: \`${DERS:-?}\`"
+              echo "- YouTube: ${YT_ID:+https://youtu.be/$YT_ID}${YT_ID:-_yayinlanmadi_}"
+              echo "- Instagram: ${IG_ID:-_yayinlanmadi_}"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

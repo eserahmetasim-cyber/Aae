@@ -1,0 +1,69 @@
+{
+  "klasor": "08-gece-surusu",
+  "ders_no": 8,
+  "slug": "gece-surusu",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Gece Sürüşü",
+  "alt_baslik": "Işığın bittiği yerde durabilmelisin",
+  "handle": "@aae_motorcycle",
+  "video": "08-gece-surusu.mp4",
+  "kaynak_render": "output/2026-11-14_ders08_gece-surusu_v1.mp4",
+  "onay_tarihi": "2026-11-14T07:42:41+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Farını aşma: ışık biterken durabilmelisin"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Virajda far yoldan kayar — daha yavaş gir"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Vizör ve far temiz olsun, ışığı dağıtır"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Gece renkli vizör takma — şeffaf kullan"
+    },
+    {
+      "t": 35.0,
+      "bitis": 41.0,
+      "metin": "5 · Takip mesafeni aç, geç fark ediyorsun"
+    },
+    {
+      "t": 42.0,
+      "bitis": 49.0,
+      "metin": "6 · Hayvan çıkar: bilinen yerlerde yavaşla"
+    }
+  ],
+  "youtube": {
+    "baslik": "Gece Sürüşü: Farını Aşma | Yol Okulu #8",
+    "aciklama": "Gece sürüşünün tek bir altın kuralı var: farını aşma. Yani farının\naydınlattığı mesafe içinde durabilecek hızda git. Çoğu sürücü gece de\ngündüzkü hızıyla gidiyor — işte sorun tam orada.\n\n0:04 Farını aşma\n0:11 Virajda far yoldan kayar\n0:19 Vizör ve far temiz olsun\n0:27 Gece renkli vizör takma\n0:35 Takip mesafeni aç\n0:42 Hayvan çıkar, bilinen yerlerde yavaşla\n\nHESAP\nDurma mesafesi iki parçadır: tepki yolu (fark edene kadar gittiğin yol)\nve fren yolu. Formül: d = v·t + v²/(2a).\n\nVideodaki rakamlar şu varsayımlarla: 1 saniye tepki süresi, 7 m/s²\nyavaşlama (kuru asfalt), 55 metre kısa hüzme menzili. Üçü de değişkendir\n— yorgunsan tepkin uzar, ıslakta yavaşlama düşer, farın ayarı ve temizliği\nmenzili değiştirir. O yüzden varsayımları ekranda yazıyoruz.\n\nBu varsayımlarla: 50 km/h'de durma mesafesi ~28 m, yani far menzilinin\nçok içinde. 95 km/h'de ~76 m — farın 20 metre ötesi. O 20 metrede ne\nolduğunu görmeden gidiyorsun demektir.\n\nVİRAJ DAHA KÖTÜ\nMotosiklet yattığında far da onunla yatar, hüzme yoldan dışarı kayar ve\nvirajın içini aydınlatmaz. Gece virajlara gündüzkünden belirgin daha\nyavaş gir.\n\nVİZÖR VE FAR\nVizördeki ince kir tabakası karşıdan gelen ışığı dağıtır ve gözünü\nkamaştırır. Fardaki kir ise hüzmenin şiddetini ciddi biçimde düşürür.\nİkisini de temiz tut. Vizörü yumuşak bir bezle ve uygun temizleyiciyle\nsil — kuru silmek mikro çizik bırakır, o çizikler zamanla görüşü\nbulandırır.\n\nGece renkli ya da koyu vizör takma. Şeffaf kullan. Alacakaranlıkta sarı\ntonlu vizör işe yarayabilir, ama karanlıkta değil.\n\nHAYVANLAR\nHayvanlar gece çok geç fark edilir ve çoğu farın ışığında donup kalır.\nHayvan çıkma ihtimali bilinen yollarda hızını düşür.\n\nGÖRÜNÜRLÜK\nGece sen de daha az görünürsün. Reflektörlü yelek ya da açık renk\nekipman, gündüz süsü değil gece gereğidir.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "gece sürüşü",
+      "far",
+      "durma mesafesi",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Gecenin tek altın kuralı: FARINI AŞMA. Farının aydınlattığı mesafe\niçinde durabilecek hızda git.\n\nHesap basit: durma mesafesi = tepki yolu + fren yolu.\n1 sn tepki ve 7 m/s² yavaşlama varsayımıyla —\n50 km/h'de ~28 m, 95 km/h'de ~76 m.\n\nKısa hüzme yaklaşık 55 m. Yani 95'te farının 20 metre ötesini görmeden\ngidiyorsun.\n\nVirajda daha da kötü: motor yattığında far da yatar, hüzme yoldan dışarı\nkayar. Gece virajlara belirgin daha yavaş gir.\n\nVizör ve far temiz olsun — kirli vizör karşıdan geleni dağıtıp gözünü\nkamaştırır, kirli far menzili düşürür. Gece renkli vizör takma, şeffaf\nkullan.\n\nTakip mesafeni aç. Hayvan çıkabilecek yollarda yavaşla.\n\nKaydet — ilk gece sürüşünde lazım olacak.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #gecesürüşü #far #durmamesafesi #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

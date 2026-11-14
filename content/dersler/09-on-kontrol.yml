@@ -1,0 +1,143 @@
+# Ders 09 · Lastik basıncı ve ön kontrol (T-CLOCS)
+# Kaynaklar (teknik doğrulama):
+#   https://www.mic.org/Downloads/Tire_Guide.pdf
+#   https://www.ustires.org/motorcycle-tire-guide
+#   https://www.harley-davidson.com/us/en/content/expert-advice/pre-inspection-checklist-tclocs.html
+#   https://dld.utah.gov/?p=8943          (MSF T-CLOCS kontrol listesi)
+#   https://us.haynes.com/blogs/tips-tutorials/essential-motorcycle-pre-ride-checklist-get-there-and-back-safely
+#
+# T-CLOCS: Tires, Controls, Lights, Oil, Chassis, Stands.
+# Kritik nokta: yan duvardaki sayı lastiğin AZAMİ basıncıdır, motosikletin
+# önerilen basıncı değil. Önerilen değer el kitabında ve şasi/salıncak/zincir
+# muhafazası etiketindedir. Basınç SOĞUKKEN ölçülür.
+# NOT: Videoda psi/bar rakamı verilmiyor — doğru değer motosikletten
+# motosiklete, hatta tek/çift kişilik yüke göre değişir.
+
+ders_no: 9
+slug: on-kontrol
+baslik: "Lastik Basıncı ve Ön Kontrol"
+alt_baslik: "Binmeden önce iki dakika"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+# BEKLETILIYOR: diger fabrika 7 Ekim'de "Lastik Basıncı" yayınladı; bu ders
+# onunla aynı konu (scripts/cakisma.py bunu lastik ve diş anahtarlarından
+# yakalıyor). Aynı kanalda aynı konuyu iki kez yayınlamamak için sırada
+# bekletiliyor. Yayınlanacaksa açısı değişmeli: başlık ve ilk adımlar lastik
+# basıncından T-CLOCS turuna kaydırılmalı.
+yayin_beklet: true
+yayin_beklet_notu: "diğer fabrika 7 Ekim'de 'Lastik Basıncı' yayınladı"
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: kontrol
+boyut: 3
+kamera: yan
+gunduz: true
+sahne_fazlari: "4:lastik, 35:kumanda, 37.5:isik, 40:yag, 44:zincir, 47:sehpa"
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "İki dakikalık kontrol, bir günlük yol"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Basıncı SOĞUKKEN ölç — sürdükten sonra şişer" }
+  - { t: 11, sure: 7, metin: "2 · Yan duvardaki sayı AZAMİ, önerilen değil" }
+  - { t: 19, sure: 7, metin: "3 · Doğru değer el kitabında ve şasi etiketinde" }
+  - { t: 27, sure: 7, metin: "4 · Diş derinliği, çatlak, saplanmış cisim" }
+  - { t: 35, sure: 6, metin: "5 · Kumanda, ışık, yağ, zincir, sehpa" }
+  - { t: 42, sure: 7, metin: "6 · Her bindiğinde — iki dakika sürer" }
+
+youtube:
+  baslik: "Lastik Basıncı ve Ön Kontrol: Binmeden Önce İki Dakika | Yol Okulu #9"
+  aciklama: |
+    Motosikletin seni yola bağlayan tek şey iki avuç içi kadar lastik. Ön
+    kontrol o yüzden lüks değil, alışkanlık olmalı. İki dakika sürüyor.
+
+    0:04 Basıncı soğukken ölç
+    0:11 Yan duvardaki sayı azami basınçtır
+    0:19 Doğru değer el kitabında ve şasi etiketinde
+    0:27 Diş derinliği, çatlak, saplanmış cisim
+    0:35 Kumanda, ışık, yağ, zincir, sehpa
+    0:42 Her bindiğinde
+
+    BASINÇ: SOĞUKKEN
+    Lastik sürdükçe ısınır ve içindeki hava genleşir, basınç yükselir. Sıcak
+    lastikte ölçüp "tamam" dersen aslında eksik basınçla gidiyorsundur. Ölçümü
+    motosiklet en az birkaç saat durduktan sonra yap.
+
+    EN SIK YAPILAN HATA
+    Lastiğin yan duvarında yazan basınç, o lastiğin dayanabileceği AZAMİ
+    değerdir — motosikletin için önerilen değer değildir. Önerilen basınç
+    üreticinin el kitabında ve genelde şasi, salıncak ya da zincir muhafazası
+    üzerindeki etikette yazar. Bazı motosikletlerde tek kişilik ve çift
+    kişilik için iki ayrı değer bulunur; yüke göre olanı kullan.
+
+    Bu videoda bilerek psi ya da bar rakamı vermiyoruz: doğru değer her
+    motosiklette farklıdır. Kendi etiketine bak.
+
+    DÜŞÜK BASINCIN BEDELİ
+    Eksik basınç lastiği fazla ezer, ısıtır, direksiyonu belirsizleştirir,
+    aşınmayı hızlandırır. Yüksek basınç ise temas alanını küçültür ve tutuşu
+    düşürür. Azami değeri de asla aşma — ne lastiğin azami basıncını ne de
+    motosikletin yük sınırını (sürücü + yolcu + yük + aksesuar).
+
+    LASTİĞİN GERİ KALANI
+    Diş derinliğine bak: diş suyu temas alanından tahliye eder, azaldıkça
+    ıslakta tutuş düşer. Yan duvarda çatlak, şişkinlik, sırtta saplanmış çivi
+    ya da taş var mı kontrol et.
+
+    GERİ KALAN KONTROLLER
+    MSF'in T-CLOCS listesi altı başlık veriyor:
+    • Lastik ve jant — basınç, diş, hasar
+    • Kumandalar — kol, pedal, kablo, gaz dönüşü
+    • Işıklar — far, stop, sinyal, korna, aynalar
+    • Yağ ve sıvılar — seviye, kaçak
+    • Şasi ve zincir — gerginlik, yağlama, süspansiyon
+    • Sehpa — yay ve kilit sağlam mı
+
+    MSF her bindiğin gün bu kontrolü öneriyor. Alıştıktan sonra gerçekten
+    iki dakika sürüyor.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "lastik basıncı"
+    - "ön kontrol"
+    - "t-clocs"
+    - "motosiklet bakımı"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Seni yola bağlayan tek şey iki avuç içi kadar lastik. Ön kontrol iki
+    dakika sürüyor.
+
+    BASINCI SOĞUKKEN ÖLÇ. Lastik sürdükçe ısınır, hava genleşir, basınç
+    yükselir. Sıcakken ölçersen eksik basınçla gidiyorsundur.
+
+    EN SIK YAPILAN HATA: yan duvardaki sayı lastiğin AZAMİ basıncıdır,
+    motosikletin önerilen basıncı değil. Doğru değer el kitabında ve şasi
+    (ya da salıncak/zincir muhafazası) etiketinde yazar. Bazı motorlarda
+    tek ve çift kişilik için iki ayrı değer var.
+
+    Bilerek rakam vermiyorum — doğru değer her motosiklette farklı. Kendi
+    etiketine bak.
+
+    Sonra: diş derinliği, çatlak, saplanmış cisim. Ardından kumandalar,
+    ışıklar, yağ, zincir, sehpa.
+
+    Kaydet, yarın sabah dene.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #lastikbasıncı #önkontrol #tclocs #motosikletbakımı #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

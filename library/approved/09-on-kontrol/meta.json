@@ -1,0 +1,69 @@
+{
+  "klasor": "09-on-kontrol",
+  "ders_no": 9,
+  "slug": "on-kontrol",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Lastik Basıncı ve Ön Kontrol",
+  "alt_baslik": "Binmeden önce iki dakika",
+  "handle": "@aae_motorcycle",
+  "video": "09-on-kontrol.mp4",
+  "kaynak_render": "output/2026-11-14_ders09_on-kontrol_v1.mp4",
+  "onay_tarihi": "2026-11-14T08:18:29+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Basıncı SOĞUKKEN ölç — sürdükten sonra şişer"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Yan duvardaki sayı AZAMİ, önerilen değil"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Doğru değer el kitabında ve şasi etiketinde"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Diş derinliği, çatlak, saplanmış cisim"
+    },
+    {
+      "t": 35.0,
+      "bitis": 41.0,
+      "metin": "5 · Kumanda, ışık, yağ, zincir, sehpa"
+    },
+    {
+      "t": 42.0,
+      "bitis": 49.0,
+      "metin": "6 · Her bindiğinde — iki dakika sürer"
+    }
+  ],
+  "youtube": {
+    "baslik": "Lastik Basıncı ve Ön Kontrol: Binmeden Önce İki Dakika | Yol Okulu #9",
+    "aciklama": "Motosikletin seni yola bağlayan tek şey iki avuç içi kadar lastik. Ön\nkontrol o yüzden lüks değil, alışkanlık olmalı. İki dakika sürüyor.\n\n0:04 Basıncı soğukken ölç\n0:11 Yan duvardaki sayı azami basınçtır\n0:19 Doğru değer el kitabında ve şasi etiketinde\n0:27 Diş derinliği, çatlak, saplanmış cisim\n0:35 Kumanda, ışık, yağ, zincir, sehpa\n0:42 Her bindiğinde\n\nBASINÇ: SOĞUKKEN\nLastik sürdükçe ısınır ve içindeki hava genleşir, basınç yükselir. Sıcak\nlastikte ölçüp \"tamam\" dersen aslında eksik basınçla gidiyorsundur. Ölçümü\nmotosiklet en az birkaç saat durduktan sonra yap.\n\nEN SIK YAPILAN HATA\nLastiğin yan duvarında yazan basınç, o lastiğin dayanabileceği AZAMİ\ndeğerdir — motosikletin için önerilen değer değildir. Önerilen basınç\nüreticinin el kitabında ve genelde şasi, salıncak ya da zincir muhafazası\nüzerindeki etikette yazar. Bazı motosikletlerde tek kişilik ve çift\nkişilik için iki ayrı değer bulunur; yüke göre olanı kullan.\n\nBu videoda bilerek psi ya da bar rakamı vermiyoruz: doğru değer her\nmotosiklette farklıdır. Kendi etiketine bak.\n\nDÜŞÜK BASINCIN BEDELİ\nEksik basınç lastiği fazla ezer, ısıtır, direksiyonu belirsizleştirir,\naşınmayı hızlandırır. Yüksek basınç ise temas alanını küçültür ve tutuşu\ndüşürür. Azami değeri de asla aşma — ne lastiğin azami basıncını ne de\nmotosikletin yük sınırını (sürücü + yolcu + yük + aksesuar).\n\nLASTİĞİN GERİ KALANI\nDiş derinliğine bak: diş suyu temas alanından tahliye eder, azaldıkça\nıslakta tutuş düşer. Yan duvarda çatlak, şişkinlik, sırtta saplanmış çivi\nya da taş var mı kontrol et.\n\nGERİ KALAN KONTROLLER\nMSF'in T-CLOCS listesi altı başlık veriyor:\n• Lastik ve jant — basınç, diş, hasar\n• Kumandalar — kol, pedal, kablo, gaz dönüşü\n• Işıklar — far, stop, sinyal, korna, aynalar\n• Yağ ve sıvılar — seviye, kaçak\n• Şasi ve zincir — gerginlik, yağlama, süspansiyon\n• Sehpa — yay ve kilit sağlam mı\n\nMSF her bindiğin gün bu kontrolü öneriyor. Alıştıktan sonra gerçekten\niki dakika sürüyor.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "lastik basıncı",
+      "ön kontrol",
+      "t-clocs",
+      "motosiklet bakımı",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Seni yola bağlayan tek şey iki avuç içi kadar lastik. Ön kontrol iki\ndakika sürüyor.\n\nBASINCI SOĞUKKEN ÖLÇ. Lastik sürdükçe ısınır, hava genleşir, basınç\nyükselir. Sıcakken ölçersen eksik basınçla gidiyorsundur.\n\nEN SIK YAPILAN HATA: yan duvardaki sayı lastiğin AZAMİ basıncıdır,\nmotosikletin önerilen basıncı değil. Doğru değer el kitabında ve şasi\n(ya da salıncak/zincir muhafazası) etiketinde yazar. Bazı motorlarda\ntek ve çift kişilik için iki ayrı değer var.\n\nBilerek rakam vermiyorum — doğru değer her motosiklette farklı. Kendi\netiketine bak.\n\nSonra: diş derinliği, çatlak, saplanmış cisim. Ardından kumandalar,\nışıklar, yağ, zincir, sehpa.\n\nKaydet, yarın sabah dene.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #lastikbasıncı #önkontrol #tclocs #motosikletbakımı #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

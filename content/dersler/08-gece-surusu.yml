@@ -1,0 +1,133 @@
+# Ders 08 · Gece sürüşü
+# Kaynaklar (teknik doğrulama):
+#   https://webbikeworld.com/10-tips-better-night-rider
+#   https://rideapart.com/2013/09/how-to-ride-a-motorcycle-at-night/
+#   https://www.foremost.com/learning-center/tips-for-riding-at-night/
+#   https://www.dairylandinsurance.com/resources/riding-at-night
+#   https://www.brixton-motorcycles.com/news/riding-at-night/
+#
+# Kaynakların ortak kuralı: FARINI AŞMA. Sahnedeki durma mesafesi fizikten
+# hesaplanıyor: d = v·t_tepki + v²/(2a). Varsayımlar (1 sn tepki, 7 m/s²
+# yavaşlama, 55 m kısa hüzme) ekranda yazılı — ikisi de sürücüye, motora ve
+# zemine göre değişir, bu yüzden gizlenmiyor.
+
+ders_no: 8
+slug: gece-surusu
+baslik: "Gece Sürüşü"
+alt_baslik: "Işığın bittiği yerde durabilmelisin"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: gece
+boyut: 3
+kamera: yan
+gunduz: false
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "Farını aşma, mesafeni aç"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Farını aşma: ışık biterken durabilmelisin" }
+  - { t: 11, sure: 7, metin: "2 · Virajda far yoldan kayar — daha yavaş gir" }
+  - { t: 19, sure: 7, metin: "3 · Vizör ve far temiz olsun, ışığı dağıtır" }
+  - { t: 27, sure: 7, metin: "4 · Gece renkli vizör takma — şeffaf kullan" }
+  - { t: 35, sure: 6, metin: "5 · Takip mesafeni aç, geç fark ediyorsun" }
+  - { t: 42, sure: 7, metin: "6 · Hayvan çıkar: bilinen yerlerde yavaşla" }
+
+youtube:
+  baslik: "Gece Sürüşü: Farını Aşma | Yol Okulu #8"
+  aciklama: |
+    Gece sürüşünün tek bir altın kuralı var: farını aşma. Yani farının
+    aydınlattığı mesafe içinde durabilecek hızda git. Çoğu sürücü gece de
+    gündüzkü hızıyla gidiyor — işte sorun tam orada.
+
+    0:04 Farını aşma
+    0:11 Virajda far yoldan kayar
+    0:19 Vizör ve far temiz olsun
+    0:27 Gece renkli vizör takma
+    0:35 Takip mesafeni aç
+    0:42 Hayvan çıkar, bilinen yerlerde yavaşla
+
+    HESAP
+    Durma mesafesi iki parçadır: tepki yolu (fark edene kadar gittiğin yol)
+    ve fren yolu. Formül: d = v·t + v²/(2a).
+
+    Videodaki rakamlar şu varsayımlarla: 1 saniye tepki süresi, 7 m/s²
+    yavaşlama (kuru asfalt), 55 metre kısa hüzme menzili. Üçü de değişkendir
+    — yorgunsan tepkin uzar, ıslakta yavaşlama düşer, farın ayarı ve temizliği
+    menzili değiştirir. O yüzden varsayımları ekranda yazıyoruz.
+
+    Bu varsayımlarla: 50 km/h'de durma mesafesi ~28 m, yani far menzilinin
+    çok içinde. 95 km/h'de ~76 m — farın 20 metre ötesi. O 20 metrede ne
+    olduğunu görmeden gidiyorsun demektir.
+
+    VİRAJ DAHA KÖTÜ
+    Motosiklet yattığında far da onunla yatar, hüzme yoldan dışarı kayar ve
+    virajın içini aydınlatmaz. Gece virajlara gündüzkünden belirgin daha
+    yavaş gir.
+
+    VİZÖR VE FAR
+    Vizördeki ince kir tabakası karşıdan gelen ışığı dağıtır ve gözünü
+    kamaştırır. Fardaki kir ise hüzmenin şiddetini ciddi biçimde düşürür.
+    İkisini de temiz tut. Vizörü yumuşak bir bezle ve uygun temizleyiciyle
+    sil — kuru silmek mikro çizik bırakır, o çizikler zamanla görüşü
+    bulandırır.
+
+    Gece renkli ya da koyu vizör takma. Şeffaf kullan. Alacakaranlıkta sarı
+    tonlu vizör işe yarayabilir, ama karanlıkta değil.
+
+    HAYVANLAR
+    Hayvanlar gece çok geç fark edilir ve çoğu farın ışığında donup kalır.
+    Hayvan çıkma ihtimali bilinen yollarda hızını düşür.
+
+    GÖRÜNÜRLÜK
+    Gece sen de daha az görünürsün. Reflektörlü yelek ya da açık renk
+    ekipman, gündüz süsü değil gece gereğidir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "gece sürüşü"
+    - "far"
+    - "durma mesafesi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Gecenin tek altın kuralı: FARINI AŞMA. Farının aydınlattığı mesafe
+    içinde durabilecek hızda git.
+
+    Hesap basit: durma mesafesi = tepki yolu + fren yolu.
+    1 sn tepki ve 7 m/s² yavaşlama varsayımıyla —
+    50 km/h'de ~28 m, 95 km/h'de ~76 m.
+
+    Kısa hüzme yaklaşık 55 m. Yani 95'te farının 20 metre ötesini görmeden
+    gidiyorsun.
+
+    Virajda daha da kötü: motor yattığında far da yatar, hüzme yoldan dışarı
+    kayar. Gece virajlara belirgin daha yavaş gir.
+
+    Vizör ve far temiz olsun — kirli vizör karşıdan geleni dağıtıp gözünü
+    kamaştırır, kirli far menzili düşürür. Gece renkli vizör takma, şeffaf
+    kullan.
+
+    Takip mesafeni aç. Hayvan çıkabilecek yollarda yavaşla.
+
+    Kaydet — ilk gece sürüşünde lazım olacak.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #gecesürüşü #far #durmamesafesi #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""
