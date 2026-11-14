@@ -43,15 +43,21 @@ def kaydi_yaz(veri: dict, yol: str = KAYIT_YOLU) -> None:
         f.write("\n")
 
 
-def dersler() -> list:
-    """Gecerli dersler, numara sirasinda."""
+def dersler(bekletilenler: bool = False) -> list:
+    """Gecerli dersler, YAYIN SIRASINDA (yayin_oncelik, sonra ders no).
+
+    bekletilenler=False ise yayin_beklet: true olanlar dislanir. Bir ders
+    baska bir kanalda ayni konu yayinlandigi icin bekletilebiliyor."""
     cikti = []
     for yol in lesson.dersleri_bul():
         try:
-            cikti.append(lesson.yukle(yol))
-        except SystemExit:
+            d = lesson.yukle(yol)
+        except Exception:
             continue
-    return sorted(cikti, key=lambda d: d["no"])
+        if d.get("yayin_beklet") and not bekletilenler:
+            continue
+        cikti.append(d)
+    return sorted(cikti, key=lambda d: (d.get("yayin_oncelik", d["no"]), d["no"]))
 
 
 def _anahtar(yol: str) -> str:
@@ -105,13 +111,19 @@ def main() -> None:
 
     if args.durum:
         yapildi = {k["ders"]: k for k in veri["yayinlananlar"]}
-        for d in dersler():
+        for i, d in enumerate(dersler(), 1):
             a = _anahtar(d["dosya"])
             k = yapildi.get(a)
             durum = f"yayinda  {k['tarih'][:10]}" if k else "bekliyor"
-            print(f"  {d['no']:>2}  {a:<28} {durum}")
+            print(f"  {i:>2}. sira  ders {d['no']:02d}  {a:<24} {durum}")
         kalan = sum(1 for d in dersler() if _anahtar(d["dosya"]) not in yapildi)
-        print(f"\n  {kalan} ders bekliyor.")
+        print(f"\n  {kalan} ders sirada.")
+        tutulan = [d for d in dersler(True) if d.get("yayin_beklet")]
+        if tutulan:
+            print("\n  BEKLETILEN:")
+            for d in tutulan:
+                not_ = d.get("yayin_beklet_notu") or "sebep yazilmamis"
+                print(f"    ders {d['no']:02d}  {d['baslik']} — {not_}")
         return
 
     if args.sonraki:

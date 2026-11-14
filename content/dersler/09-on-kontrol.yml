@@ -20,6 +20,14 @@ alt_baslik: "Binmeden önce iki dakika"
 seri: "MOTOSİKLET YOL OKULU"
 surum: 1
 
+# BEKLETILIYOR: diger fabrika 7 Ekim'de "Lastik Basıncı" yayınladı; bu ders
+# onunla aynı konu (scripts/cakisma.py bunu lastik ve diş anahtarlarından
+# yakalıyor). Aynı kanalda aynı konuyu iki kez yayınlamamak için sırada
+# bekletiliyor. Yayınlanacaksa açısı değişmeli: başlık ve ilk adımlar lastik
+# basıncından T-CLOCS turuna kaydırılmalı.
+yayin_beklet: true
+yayin_beklet_notu: "diğer fabrika 7 Ekim'de 'Lastik Basıncı' yayınladı"
+
 kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
 sahne: kontrol
 boyut: 3

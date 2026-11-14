@@ -1374,6 +1374,135 @@ def kare_kacinma3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  YOLCU ILE SURUS  (cift kisilik)
+# ---------------------------------------------------------------------------
+# Kaynaklar: Rider Magazine "Riding With A Passenger", Bennetts BikeSocial
+# pillion rehberi, RevZilla, SGI (Saskatchewan) ve WA Road Safety el
+# kitaplari, uretici kullanim kilavuzlari (on yuk ayari ve azami yuk).
+# Uzerinde birlestikleri noktalar: on yuk artirilir, durma mesafesi uzar,
+# yolcu ONCEDEN bilgilendirilir, ayaklar durakta bile basamakta kalir,
+# yolcu motosikletle birlikte yatar, surucunun her hareketi yumusar.
+# NOT: "tanka yaslanma" gibi tavsiyeler tek tek surucu gorusu; kullanilmadi.
+YOLCU_DONGU = 13.2
+YOLCU_NOKTA = {
+    "onyuk":  ("ARKA ÖN YÜK", (0.0, 0.70, -0.42), "yolcu için artır"),
+    "eller":  ("YOLCUNUN ELLERİ", (0.17, 1.16, -0.44), "bel ya da tutamak"),
+    "ayak":   ("AYAKLAR BASAMAKTA", (0.23, 0.52, -0.52), "durakta bile inmez"),
+    "yatis":  ("BİRLİKTE YATAR", (0.0, 1.66, -0.56), "kendi başına kaymaz"),
+    "fren":   ("ERKEN VE YUMUŞAK", (0.0, 0.33, 0.70), "mesafe uzar"),
+}
+YOLCU_SIRA = list(YOLCU_NOKTA)
+YOLCU_FAZ = [(4.0, "onyuk")]
+
+
+def yolcu_faz_ayarla(metin):
+    """sahne_fazlari: "4:onyuk, 11:eller, ..." """
+    global YOLCU_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in YOLCU_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen yolcu noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    YOLCU_FAZ = sorted(f)
+
+
+def yolcu_evre(t):
+    ad, bas = YOLCU_FAZ[0][1], YOLCU_FAZ[0][0]
+    for z, a in YOLCU_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, s2.yumusak((t - bas) / 0.5)
+
+
+def _yolcu(s, mont=(96, 110, 128)):
+    """Sele arkasinda oturan yolcu: kalca, govde, kask, kollar ve bacaklar."""
+    kalca = np.array([0.0, 1.00, -0.76])
+    omuz = np.array([0.0, 1.40, -0.64])
+    s.kure(kalca, 0.18, mont, dilim=12, halka=7)
+    s.silindir(kalca, omuz, 0.175, mont, segment=14)
+    s.kure(omuz, 0.18, mont, dilim=12, halka=7)
+    _kask(s, omuz + np.array([0.0, 0.27, 0.06]), kabuk=(216, 220, 226),
+          aksan=(58, 150, 196))
+    for yan in (-1, 1):
+        s.silindir([yan * 0.17, 1.38, -0.62], [yan * 0.19, 1.14, -0.40],
+                   0.052, mont)                                   # kol
+        s.kure([yan * 0.19, 1.13, -0.38], 0.052, (34, 34, 36))    # eldiven
+        s.silindir([yan * 0.16, 0.96, -0.72], [yan * 0.235, 0.66, -0.58],
+                   0.072, mont)                                   # ust bacak
+        s.silindir([yan * 0.235, 0.66, -0.58], [yan * 0.235, 0.40, -0.54],
+                   0.060, mont)                                   # alt bacak
+        s.kutu([yan * 0.235, 0.34, -0.52], [0.10, 0.09, 0.24], (26, 26, 28))
+        s.kutu([yan * 0.205, 0.50, -0.52], [0.09, 0.03, 0.12], KROM)  # basamak
+
+
+def kare_yolcu3b(t):
+    """Yan gorunum: yolcuyla birlikte duran motosiklet, sirayla kurallar."""
+    anahtar, gecis = yolcu_evre(t)
+    ad, nokta, aciklama = YOLCU_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _yol_tek
+    _yol_tek = (globals().get("_yol_tek", 0.0) + 0.42) % (2 * math.pi)
+
+    z = -24.0
+    while z < 90:
+        z2 = z + 5.0
+        s.yuzey([[-60, 0, z], [60, 0, z], [60, 0, z2], [-60, 0, z2]], cim, katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+
+    # Yolcu yuku arkayi cokertir: suspansiyon farki gozle gorulsun.
+    cokme = 0.055
+    model, _, _ = motosiklet(0.0, _yol_tek, 0.0)
+    _yolcu(model)
+    s.ekle(model, R=donus([1, 0, 0], -0.030), t=[FREN_SERIT, -cokme, 0.0])
+
+    # 4.35 m'de motosiklet kadraja sigmiyor, kasklar ustten tekerlekler
+    # alttan kesiliyordu. Iki kisi birden gorunmeli.
+    kamera = Kamera([FREN_SERIT + 6.9, 2.15, 1.30],
+                    [FREN_SERIT - 0.05, 0.95, -0.35], G, Y, fov=45)
+    s.ciz(d, kamera, gok)
+
+    kn = kamera.kameraya(np.array([[FREN_SERIT + nokta[0], nokta[1] - cokme,
+                                    nokta[2]]]))
+    if kn[0, 2] > 0.3:
+        hx, hy = kamera.ekrana(kn)[0]
+        r = (44 + 9 * math.sin(t * 5)) * (0.4 + 0.6 * gecis)
+        d.ellipse([hx - r, hy - r, hx + r, hy + r], outline=TURUNCU, width=8)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    f = s2.font(44)
+    tw = d.textlength(ad, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 30, 318, (G + tw) / 2 + 30, 400], 16,
+                        fill=(0, 0, 0, 190), outline=TURUNCU, width=5)
+    s2.yazi(d, (G / 2, 330), ad, 44, TURUNCU, ortala=True)
+    s2.yazi(d, (G / 2, 414), aciklama, 32, (190, 198, 208), ortala=True)
+
+    d.rounded_rectangle([56, 480, 408, 496 + len(YOLCU_SIRA) * 52], 14,
+                        fill=(14, 18, 24, 190), outline=(78, 86, 96), width=3)
+    for k, nk in enumerate(YOLCU_SIRA):
+        yy = 496 + k * 52
+        aktif = nk == anahtar
+        d.rounded_rectangle([64, yy, 76, yy + 34], 4,
+                            fill=TURUNCU if aktif else (72, 80, 90))
+        s2.yazi(d, (92, yy), YOLCU_NOKTA[nk][0], 28,
+                KREM if aktif else (124, 132, 142))
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -1940,7 +2069,7 @@ def main():
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
-                             "kacinma"),
+                             "kacinma", "yolcu"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -1975,6 +2104,9 @@ def main():
         cizer = kare_kontrol3b
     elif args.sahne == "kacinma":
         cizer = kare_kacinma3b
+    elif args.sahne == "yolcu":
+        yolcu_faz_ayarla(args.fazlar)
+        cizer = kare_yolcu3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":

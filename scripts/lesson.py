@@ -138,12 +138,12 @@ def yukle(yol: str) -> dict:
     sahne = str(ham.get("sahne") or "").strip()
     if sahne and sahne not in ("fren", "viraj", "kontra", "gaz", "islak",
                                "kornokta", "manevra", "gece", "kontrol",
-                               "kacinma"):
+                               "kacinma", "yolcu"):
         raise DersHatasi(
             f"{yol}: 'sahne' fren|viraj|kontra|gaz|islak|kornokta|manevra|"
-            "gece|kontrol|kacinma olmali (ya da bos).")
+            "gece|kontrol|kacinma|yolcu olmali (ya da bos).")
     if sahne in ("kontra", "gaz", "islak", "kornokta", "manevra",
-                 "gece", "kontrol", "kacinma") and boyut != 3:
+                 "gece", "kontrol", "kacinma", "yolcu") and boyut != 3:
         raise DersHatasi(f"{yol}: '{sahne}' sahnesi yalnizca 3 boyutlu uretilir.")
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
     baslangic = float(ham.get("baslangic", 0))
@@ -156,9 +156,18 @@ def yukle(yol: str) -> dict:
     tarih = str(ham.get("tarih") or dt.date.today().isoformat())
     cikti_adi = f"{tarih}_ders{no:02d}_{slug}_v{surum}.mp4"
 
+    # Yayin sirasi ders numarasindan bagimsiz olabilmeli: konu cakismasi
+    # yuzunden bir dersi geriye atmak ya da bekletmek gerekebiliyor.
+    oncelik = int(ham.get("yayin_oncelik", no))
+    beklet = bool(ham.get("yayin_beklet", False))
+    beklet_not = str(ham.get("yayin_beklet_notu") or "").strip()
+
     return {
         "dosya": yol,
         "no": no,
+        "yayin_oncelik": oncelik,
+        "yayin_beklet": beklet,
+        "yayin_beklet_notu": beklet_not,
         "slug": slug,
         "baslik": baslik,
         "alt_baslik": str(ham.get("alt_baslik") or "").strip(),
