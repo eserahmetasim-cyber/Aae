@@ -11,6 +11,46 @@
 
 ## 0. GÜNCEL DURUM
 
+### ⚠️ 14.11.2026 — SİTENİN ADSENSE HESABI DEĞİŞTİ (ölçüldü)
+
+Günlük kontrol ilk kez gerçek bir değişiklik yakaladı. İki bağımsız kanıt:
+
+**1. Mail.** 13.11.2026 14:59 UTC, `adsense-noreply@google.com` →
+`eserahmetasim@gmail.com`, konu **"AdSense'e hoş geldiniz"**. Gövdesinde
+*"Yayıncı kimliğiniz: pub-7223494011776010"* ve *"Sitenizi eklediniz"* yazıyor.
+
+**2. Canlı ölçüm.**
+
+| | 06.11'de | 14.11'de |
+|---|---|---|
+| `ads.txt` | `google.com, pub-8433209614215281, DIRECT, …` | **`google.com, pub-7223494011776010, DIRECT, …`** |
+| ana sayfa `adsbygoogle` client | `ca-pub-8433209614215281` | **`ca-pub-7223494011776010`** |
+| `/en/` client | — | **`ca-pub-7223494011776010`** |
+
+Yani site, eski AdSense hesabından (`pub-8433209614215281`,
+`ahmetasimeser008@gmail.com`) **AdMob hesabına** (`pub-7223494011776010`,
+`eserahmetasim@gmail.com`) taşındı. `ads.txt` ve sayfa script'i birlikte
+değişti. Bu, §6'daki "eserahmetasim'de AdSense hesabı YOK" kaydını geçersiz
+kılar.
+
+**Eksik iş (AAE'de):** mail iki adım sayıyor — **geçerli ödeme adresi** ve
+**telefon doğrulaması**. Bunlar tamamlanmadan ödeme alınamıyor.
+
+**Sorulacak:** eski hesap (`pub-8433209614215281`) ne durumda? Aynı kişinin iki
+ayrı AdSense hesabı tutması AdSense politikasına aykırı. Eskisi kapandıysa ya da
+site oradan çıkarıldıysa sorun yok; hâlâ açık ve siteyi tanımlıyorsa bakılmalı.
+
+**Kendi hatam, açıkça:** 07.11–13.11 günlük kontrollerinde `ads.txt` için
+yalnızca HTTP durumunu (200) ölçüyordum, **içeriğini okumuyordum**. Bu yüzden
+değişimin tam günü bilinmiyor — 07.11 ile 13.11 arasında bir gün. 15.11'den
+itibaren günlük kontrol `ads.txt` içeriğini ve ana sayfadaki `ca-pub-` değerini
+de ölçüyor.
+
+**Yan bulgu:** sayfa HTML'i değiştiğine göre site bu arada **yeniden
+dağıtıldı** — ama ana sayfada `yol_okulu` hâlâ 0, `images/yol-okulu-ikon.png`
+hâlâ 404. Reklam değişikliği için dağıtım yapıldı, hazır Yol Okulu yaması
+(`docs/yol-okulu-yamasi.md`) uygulanmadı.
+
 ### 🎉 06.11.2026 — AĞ AÇILDI, CANLI TEST YAPILDI: İKİ OYUN DA YAYINDA
 
 Bu oturumun ortam izin listesine `saemuhendislik.com`, `www.saemuhendislik.com`
@@ -53,7 +93,7 @@ baştan hatalıydı. **O iş listeden düşüyor.**
 
 | Ne | Sonuç |
 |---|---|
-| `ads.txt` | 200, içerik doğru (`google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0`) |
+| `ads.txt` | 200, içerik (`google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0`) — **14.11'de `pub-7223494011776010` oldu, bkz. §0** |
 | AdSense script | Ana sayfada **ve** `/hasar`'da var — reklam kodu canlıda |
 | `/hasar` canonical | `https://saemuhendislik.com/hasar` — doğru |
 | Sitemap | **87 adresin hepsi 200** → 404'ler sitemap'ten gelmiyor, eski/dış bağlantılardan |
@@ -180,7 +220,7 @@ AAE 13.10'da yeni bir para kanalı açtı. Bu depoda daha önce hiç geçmeyen b
 | | AdSense | AdMob |
 |---|---|---|
 | Ne için | **Site** reklamı (saemuhendislik.com) | **Uygulama içi** reklam (iki oyun) |
-| Yayıncı | `ca-pub-8433209614215281` | `pub-7223494011776010` |
+| Yayıncı | `ca-pub-8433209614215281` — **14.11'de site `pub-7223494011776010`'a taşındı, bkz. §0** | `pub-7223494011776010` |
 | Hesap | `ahmetasimeser008@gmail.com` | `eserahmetasim@gmail.com` (ana) |
 | Onay | 07.10.2026 | 13.10.2026 |
 
@@ -492,7 +532,7 @@ o yüzden dosya adı ile menü adı örtüşmüyor:
 | `gizlilik-politikasi.html` | İkinci uygulama gizlilik politikası (Play Store) — **KORUNMALI** |
 | `404.html` | Şık 404 |
 | `google19071191ddf4150f.html` | Search Console sahiplik doğrulama dosyası — **SİLİNMEMELİ** |
-| `ads.txt` | AdSense; içeriği aynen: `google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0` |
+| `ads.txt` | AdSense; **14.11'den beri** içeriği: `google.com, pub-7223494011776010, DIRECT, f08c47fec0942fa0` (öncesi `pub-8433209614215281`, bkz. §0) |
 | `robots.txt`, `sitemap.xml`, `favicon.svg` | — |
 
 ### Ana sayfadaki özel bloklar
@@ -671,9 +711,9 @@ ayrı bir uygulama, incelemede değil; üretime geçiş başvurusu serbest.
 
 | | |
 |---|---|
-| Yayıncı kimliği | **ca-pub-8433209614215281** |
-| Hesap | **ahmetasimeser008@gmail.com** (eserahmetasim'de AdSense hesabı YOK) |
-| Konsol | https://adsense.google.com/adsense/u/1/pub-8433209614215281/sites |
+| Yayıncı kimliği | ~~**ca-pub-8433209614215281**~~ → **14.11'den beri `pub-7223494011776010`** (bkz. §0) |
+| Hesap | ~~**ahmetasimeser008@gmail.com**~~ → **14.11'den beri `eserahmetasim@gmail.com`**. ("eserahmetasim'de AdSense hesabı YOK" kaydı 13.11'de geçersizleşti: o adrese AdSense hoş geldiniz maili geldi.) |
+| Konsol | Güncel: https://adsense.google.com/adsense/u/1/pub-7223494011776010/sites — eski: `.../pub-8433209614215281/sites` |
 | Başvuru | 28.08.2026 14:19 |
 | Son bilinen durum | **ONAYLANDI — 07.10.2026** (AAE panelden okudu; bkz. §0). Öncesinde 12.09'da "Hazırlanıyor" idi. |
 
@@ -681,7 +721,8 @@ Yayıncı kimliği eski 2020 sitesinin AdSense hesabından geri kazanıldı
 (`eski-site-yedek\` içinde grep ile bulundu) — ödeme bilgileri bile hazırdı.
 
 - **Auto Ads kodu 22 içerik sayfasının `<head>`'inde** (TR 11 + EN 11):
-  `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8433209614215281`
+  `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7223494011776010`
+  (14.11'e kadar `ca-pub-8433209614215281` idi; bkz. §0)
 - `ads.txt` kökte ve 200. Google'ın kendi bot kimlikleriyle test edildi
   (AdsBot-Google, Mediapartners-Google, Googlebot, `www`, http→https) → hepsi 200.
 - Panelde **"ads.txt: Bulunamadı"** uyarısı çıkıyor ama **bizim tarafta sorun yok** —

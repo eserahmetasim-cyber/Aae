@@ -44,14 +44,15 @@
     "_rozet_notu": "Ana sayfadaki 'YAKINDA GOOGLE PLAY'DE' rozeti HALA DOGRU. Izin yayin demek degil; rozet ancak store sayfasi gercekten 200 donduktan sonra Play linkine cevrilir."
   },
   "adsense": {
-    "yayinci": "ca-pub-8433209614215281",
-    "hesap": "ahmetasimeser008@gmail.com",
+    "yayinci": "pub-7223494011776010",
+    "hesap": "eserahmetasim@gmail.com",
+    "_yayinci_eski": "ca-pub-8433209614215281 (hesap ahmetasimeser008@gmail.com) — 14.11'de ARTIK KULLANILMIYOR, ayrintisi _adsense_hesap_degisikligi_14_11 bolumunde",
     "basvuru": "2026-08-28",
-    "durum": "ONAYLANDI (07.10 — AAE panelden okudu; bagimsiz dogrulanamadi)",
+    "durum": "SITE YENI HESABA TASINDI (14.11 olculdu). Reklamlar pub-7223494011776010 uzerinden. Profil EKSIK: odeme adresi + telefon dogrulama bekliyor.",
     "auto_ads": true,
     "cmp_yayinda": false,
-    "son_mail": null,
-    "_mail_notu": "AdSense maili 008 hesabina gidiyor; Gmail baglayicisi eserahmetasim@gmail.com'a bagli. 008'den yonlendirme kurulana kadar onay/ret maili gorunmez.",
+    "son_mail": "2026-11-13 14:59 — 'AdSense'e hos geldiniz' (adsense-noreply@google.com -> eserahmetasim@gmail.com), yayinci pub-7223494011776010, 'Sitenizi eklediniz'",
+    "_mail_notu": "ARTIK GORUNUYOR: yeni hesap eserahmetasim@gmail.com'da, yani Gmail baglayicisi AdSense mailini dogrudan goruyor. Eski 008 hesabinin mailleri hala gorunmez.",
     "onay_tarihi": "2026-10-07",
     "yogunluk_karari": "MAKSIMUM — tum formatlar (vignette, anchor, yan panel) acik, yogunluk en yuksek, ANA SAYFA DAHIL (AAE karari 07.10)",
     "reklamsiz_kalacak": [
@@ -218,8 +219,8 @@
   "_canli_dogrulama_06_11": {
     "www_301": "DOGRULANDI — www.saemuhendislik.com/ -> 301 -> https://saemuhendislik.com/ ; /ads.txt de 301 veriyor",
     "apex": "200",
-    "ads_txt": "200, icerik dogru: google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0",
-    "adsbygoogle": "Ana sayfada ve /hasar'da pagead2.googlesyndication.com/.../adsbygoogle.js?client=ca-pub-8433209614215281 VAR",
+    "ads_txt": "200, icerik: google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0 — DIKKAT: bu 06.11 kaydi, 14.11'de icerik pub-7223494011776010 olarak DEGISTI",
+    "adsbygoogle": "Ana sayfada ve /hasar'da ...adsbygoogle.js?client=ca-pub-8433209614215281 VAR — DIKKAT: bu 06.11 kaydi, 14.11'de client ca-pub-7223494011776010 oldu",
     "canonical": "/hasar -> <link rel=canonical href=https://saemuhendislik.com/hasar> dogru",
     "sitemap": "87 adresin TAMAMI 200 — 404'ler sitemap'ten gelmiyor",
     "html_uzantili": ".html adresleri 308 ile temiz URL'ye gidiyor (hasar.html, index.html, dokum.html...). 'Yonlendirmeli sayfa' sorununun kaynagi bu; eski baglantilardan geliyor.",
@@ -228,9 +229,18 @@
     "play_mini_muhendis": "200, gercek magaza sayfasi, gelistirici 'SAE Muhendislik', yukleme dugmesi var",
     "play_yol_okulu": "200, gercek magaza sayfasi, ayni gelistirici, yukleme dugmesi var"
   },
+  "_adsense_hesap_degisikligi_14_11": {
+    "ne_oldu": "Site, eski AdSense hesabindan (pub-8433209614215281, ahmetasimeser008@gmail.com) AdMob hesabina (pub-7223494011776010, eserahmetasim@gmail.com) tasindi. ads.txt VE sayfa icindeki adsbygoogle script'i birlikte degisti.",
+    "kanit_mail": "13.11.2026 14:59 UTC, adsense-noreply@google.com -> eserahmetasim@gmail.com, konu 'AdSense'e hos geldiniz'. Govdesinde 'Yayinci kimliginiz: pub-7223494011776010' ve 'Sitenizi eklediniz' yaziyor.",
+    "kanit_olcum": "14.11 canli: ads.txt -> 'google.com, pub-7223494011776010, DIRECT, f08c47fec0942fa0'; ana sayfa ve /en/ -> client=ca-pub-7223494011776010. 06.11'de ikisi de 8433209614215281'di.",
+    "EKSIK_IS": "Mail iki eksik adim sayiyor: (1) gecerli ODEME ADRESI eklenmesi, (2) TELEFON NUMARASI dogrulamasi. Bunlar tamamlanmadan odeme alinamaz. AAE'nin yapmasi gereken is.",
+    "_sorulacak": "Eski hesap (pub-8433209614215281) ne durumda? Ayni kisinin iki ayri AdSense hesabi tutmasi AdSense politikasina aykiri. Eskisi kapandiysa/siteden cikarildiysa sorun yok; hala acik ve siteyi tanimliyorsa AAE'nin bakmasi gerek.",
+    "_benim_kacirdigim": "07.11-13.11 gunluk kontrollerinde ads.txt icin yalnizca HTTP durumu (200) olculuyordu, ICERIGI okunmuyordu. Bu yuzden degisimin tam gunu bilinmiyor; 07.11 ile 13.11 arasinda bir gun. 15.11'den itibaren gunluk kontrol ads.txt icerigini ve ana sayfadaki ca-pub- degerini de olcuyor.",
+    "_yan_bulgu": "Sayfa HTML'i degistigine gore site bu arada YENIDEN DAGITILDI — ama Yol Okulu karti eklenmedi (yol_okulu 0, ikon 404). Yani reklam degisikligi icin dagitim yapildi, hazir yama uygulanmadi."
+  },
   "_rozetler": {
     "mini_muhendis": "Ana sayfada ZATEN gercek Play linki var (06.11 dogrulandi)",
-    "yol_okulu": "Ana sayfada HIC GECMIYOR. Oyun yayinda; siteye eklenmeli — somut ve kolay is.",
+    "yol_okulu": "Ana sayfada HIC GECMIYOR (14.11'de de 0). Site 06.11-14.11 arasinda reklam degisikligi icin yeniden dagitildi ama kart konmadi. Yama docs/yol-okulu-yamasi.md'de hazir bekliyor.",
     "_not": "Rozet kurali ('store sayfasi gercekten 200 donmeden link koyma') artik saglandi, ikisi de 200."
   }
 }
