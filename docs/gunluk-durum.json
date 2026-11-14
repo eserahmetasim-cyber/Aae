@@ -234,7 +234,7 @@
     "kanit_mail": "13.11.2026 14:59 UTC, adsense-noreply@google.com -> eserahmetasim@gmail.com, konu 'AdSense'e hos geldiniz'. Govdesinde 'Yayinci kimliginiz: pub-7223494011776010' ve 'Sitenizi eklediniz' yaziyor.",
     "kanit_olcum": "14.11 canli: ads.txt -> 'google.com, pub-7223494011776010, DIRECT, f08c47fec0942fa0'; ana sayfa ve /en/ -> client=ca-pub-7223494011776010. 06.11'de ikisi de 8433209614215281'di.",
     "EKSIK_IS": "Mail iki eksik adim sayiyor: (1) gecerli ODEME ADRESI eklenmesi, (2) TELEFON NUMARASI dogrulamasi. Bunlar tamamlanmadan odeme alinamaz. AAE'nin yapmasi gereken is.",
-    "_sorulacak": "Eski hesap (pub-8433209614215281) ne durumda? Ayni kisinin iki ayri AdSense hesabi tutmasi AdSense politikasina aykiri. Eskisi kapandiysa/siteden cikarildiysa sorun yok; hala acik ve siteyi tanimliyorsa AAE'nin bakmasi gerek.",
+    "_eski_hesap": "KAPANDI. AAE 14.11'de teyit etti: 'eski hesabi kapatmistim zaten'. Yani pub-8433209614215281 artik acik degil, mukerrer AdSense hesabi sorunu YOK. Bu soru kapandi, tekrar sorulmayacak.",
     "_benim_kacirdigim": "07.11-13.11 gunluk kontrollerinde ads.txt icin yalnizca HTTP durumu (200) olculuyordu, ICERIGI okunmuyordu. Bu yuzden degisimin tam gunu bilinmiyor; 07.11 ile 13.11 arasinda bir gun. 15.11'den itibaren gunluk kontrol ads.txt icerigini ve ana sayfadaki ca-pub- degerini de olcuyor.",
     "_yan_bulgu": "Sayfa HTML'i degistigine gore site bu arada YENIDEN DAGITILDI — ama Yol Okulu karti eklenmedi (yol_okulu 0, ikon 404). Yani reklam degisikligi icin dagitim yapildi, hazir yama uygulanmadi."
   },

@@ -36,9 +36,9 @@ kılar.
 **Eksik iş (AAE'de):** mail iki adım sayıyor — **geçerli ödeme adresi** ve
 **telefon doğrulaması**. Bunlar tamamlanmadan ödeme alınamıyor.
 
-**Sorulacak:** eski hesap (`pub-8433209614215281`) ne durumda? Aynı kişinin iki
-ayrı AdSense hesabı tutması AdSense politikasına aykırı. Eskisi kapandıysa ya da
-site oradan çıkarıldıysa sorun yok; hâlâ açık ve siteyi tanımlıyorsa bakılmalı.
+**Eski hesap: kapalı.** AAE 14.11'de teyit etti — *"eski hesabı kapatmıştım
+zaten"*. Yani `pub-8433209614215281` artık açık değil, mükerrer AdSense hesabı
+sorunu yok. Bu soru kapandı.
 
 **Kendi hatam, açıkça:** 07.11–13.11 günlük kontrollerinde `ads.txt` için
 yalnızca HTTP durumunu (200) ölçüyordum, **içeriğini okumuyordum**. Bu yüzden
