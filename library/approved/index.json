@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-13T20:53:34+00:00",
+  "guncelleme": "2026-11-14T07:16:58+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -53,6 +53,15 @@
       "video": "library/approved/06-kor-nokta/06-kor-nokta.mp4",
       "meta": "library/approved/06-kor-nokta/meta.json",
       "onay_tarihi": "2026-11-13T20:53:34+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "07-dusuk-hiz-manevra",
+      "ders_no": 7,
+      "baslik": "Düşük Hızda Manevra",
+      "video": "library/approved/07-dusuk-hiz-manevra/07-dusuk-hiz-manevra.mp4",
+      "meta": "library/approved/07-dusuk-hiz-manevra/meta.json",
+      "onay_tarihi": "2026-11-14T07:16:58+00:00",
       "durum": "onaylandi"
     }
   ]
