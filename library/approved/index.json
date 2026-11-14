@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-14T07:16:58+00:00",
+  "guncelleme": "2026-11-14T07:42:41+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -62,6 +62,15 @@
       "video": "library/approved/07-dusuk-hiz-manevra/07-dusuk-hiz-manevra.mp4",
       "meta": "library/approved/07-dusuk-hiz-manevra/meta.json",
       "onay_tarihi": "2026-11-14T07:16:58+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "08-gece-surusu",
+      "ders_no": 8,
+      "baslik": "Gece Sürüşü",
+      "video": "library/approved/08-gece-surusu/08-gece-surusu.mp4",
+      "meta": "library/approved/08-gece-surusu/meta.json",
+      "onay_tarihi": "2026-11-14T07:42:41+00:00",
       "durum": "onaylandi"
     }
   ]
