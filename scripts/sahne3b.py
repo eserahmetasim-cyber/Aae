@@ -1250,6 +1250,130 @@ def kare_kontrol3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  KACINMA MANEVRASI  (swerve)
+# ---------------------------------------------------------------------------
+# Kaynaklar: TEAM Arizona kacinma yazilari, Women Riders Now "Avoiding
+# Hazards", BC/Oregon motosiklet el kitaplari, MSF tabanli alistirma notlari.
+# Uzerinde hepsinin birlestigi uc sey:
+#   1. Kacinma IKI ayri gidon itisidir: biri yatirir, otekisi dogrultur.
+#      Ikinci itis olmazsa motosiklet donmeye devam eder ve karsi seride cikar.
+#   2. Kacinirken FREN YAPILMAZ. Once biri, sonra oteki.
+#   3. Bakis engele degil, kacis bosluguna.
+# NOT: Kaynaklarda gecen "su hizin ustunde kacinma frenden kisa surer" turu
+# rakamlar ikincil kaynaklara dayaniyor, dogrulanamadigi icin kullanilmiyor.
+KACINMA_DONGU = 13.0
+KACINMA_HIZ = 50.0 / 3.6          # m/s
+# Kacis SERIT ICINDE: engel seridin solunda, motosiklet saga kaciyor.
+# Ilk kurulumda engel serit ortasindaydi ve motosiklet 2.5 m sola kacip
+# orta cizgiyi geciyordu - KURALLAR.md bunu yasakliyor.
+KACINMA_KAYMA = 1.55              # yanal kacis mesafesi (m, saga)
+KACINMA_ENGEL_X = FREN_SERIT - 1.05
+
+
+def kacinma_evre(t):
+    """(engel_z, yanal, yatis, durum) dondurur."""
+    u = t % KACINMA_DONGU
+    engel_z = 56.0 - KACINMA_HIZ * u
+    if u < 2.6:
+        return engel_z, 0.0, 0.0, "karar"
+    if u < 4.3:                                    # 1. itis: yatir
+        p = s2.yumusak((u - 2.6) / 1.7)
+        return engel_z, KACINMA_KAYMA * p, -0.34 * math.sin(math.pi * p), "itis1"
+    if u < 5.6:                                    # 2. itis: dogrult
+        p = s2.yumusak((u - 4.3) / 1.3)
+        return engel_z, KACINMA_KAYMA, 0.26 * math.sin(math.pi * p), "itis2"
+    if u < 9.0:
+        return engel_z, KACINMA_KAYMA, 0.0, "duz"
+    return engel_z, KACINMA_KAYMA, 0.0, "fren"
+
+
+KACINMA_DURUM = {
+    "karar": ("FREN YA DA KAÇIN — İKİSİ BİRDEN DEĞİL", TURUNCU),
+    "itis1": ("1. İTİŞ · YATIR", MAVI),
+    "itis2": ("2. İTİŞ · DOĞRULT", YESIL),
+    "duz":   ("ENGEL GEÇİLDİ", YESIL),
+    "fren":  ("ŞİMDİ FREN — DÜZ ÇİZGİDE", MAVI),
+}
+
+
+def _engel(s, x, z):
+    """Yolda duran engel: koyu govde, uzerinde uyari seritleri."""
+    s.kutu([x, 0.22, z], [1.30, 0.44, 0.90], (46, 46, 50))
+    for i in range(3):
+        s.kutu([x - 0.45 + i * 0.45, 0.45, z], [0.22, 0.04, 0.92], TURUNCU)
+
+
+def kare_kacinma3b(t):
+    """Kusbakisi: engel, iki itis ve ayri fren."""
+    engel_z, yanal, yatis, durum = kacinma_evre(t)
+    etiket, renk = KACINMA_DURUM[durum]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _kac_s, _kac_tek
+    _kac_s = (globals().get("_kac_s", 0.0) + KACINMA_HIZ / FPS) % 8.0
+    _kac_tek = (globals().get("_kac_tek", 0.0) + 0.45) % (2 * math.pi)
+
+    z = -16.0
+    while z < 74:
+        z2 = z + 5.0
+        s.yuzey([[-80, 0, z], [80, 0, z], [80, 0, z2], [-80, 0, z2]], cim, katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, 0.02, z], [yan * 3.86, 0.02, z],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(-2, 12):
+        zc = i * 8.0 - _kac_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    if -3.0 < engel_z < 70.0:
+        _engel(s, KACINMA_ENGEL_X, engel_z)
+
+    motor_x = FREN_SERIT + yanal
+    model, _, _ = motosiklet(0.0, _kac_tek, 0.0)
+    s.ekle(model, R=donus([0, 0, 1], yatis), t=[motor_x, 0.0, 0.0])
+
+    kamera = Kamera([FREN_SERIT + 0.5, 11.0, -13.0],
+                    [FREN_SERIT + 0.35, 0.0, 10.0], G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # Bakis engele degil kacis bosluguna: hedef, engelin YANINDAKI bosluk.
+    if -3.0 < engel_z < 60.0 and durum in ("karar", "itis1", "itis2"):
+        _bakis_oku(d, kamera, np.array([motor_x, 1.4, 0.4]),
+                   np.array([FREN_SERIT + KACINMA_KAYMA, 0.1,
+                             max(engel_z + 6.0, 8.0)]), TURUNCU)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, renk, ortala=True)
+
+    # Iki kumanda asla ayni anda yanmaz: dersin butun mesaji bu.
+    kacin = durum in ("itis1", "itis2")
+    frende = durum == "fren"
+    px, py, pw = 70, 466, 440
+    d.rounded_rectangle([px, py, px + pw, py + 196], 16, fill=(16, 20, 26, 205),
+                        outline=(92, 102, 112), width=4)
+    for i, (ad, acik, c) in enumerate((("KAÇINMA", kacin, YESIL),
+                                       ("FREN", frende, MAVI))):
+        yy = py + 24 + i * 84
+        d.rounded_rectangle([px + 20, yy, px + 34, yy + 52], 6,
+                            fill=c if acik else (64, 70, 80))
+        s2.yazi(d, (px + 52, yy), ad, 36, KREM if acik else (118, 126, 136))
+        s2.yazi(d, (px + 52, yy + 40), "AÇIK" if acik else "kapalı", 26,
+                c if acik else (104, 112, 122))
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
