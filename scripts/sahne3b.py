@@ -326,7 +326,7 @@ def _kask(s, merkez, kabuk=KREM, aksan=TURUNCU):
         _kask_bayrak(s, merkez, 0.140, [yan, 0.45, 0.25], [0, 1, 0], yuk=0.046)
 
 
-def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
+def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     """fren 0-1: catal cokmesi + surucunun one yuklenmesi."""
     s = Sahne()
     cokme = 0.085 * fren
@@ -387,25 +387,29 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0):
         onk.kutu([yan * 0.47, gid_y + 0.33, gid_z - 0.02], [0.05, 0.13, 0.17],
                (70, 86, 104), R=donus([0, 1, 0], yan * 0.35))                    # ayna
 
-    # --- surucu -----------------------------------------------------------
-    one = 0.12 * fren
-    omuz_y, omuz_z = 1.50 - 0.10 * fren, -0.12 + one
-    kalca_n = np.array([0.0, 1.02, -0.40])
-    omuz_n = np.array([0.0, omuz_y, omuz_z])
-    s.kure(kalca_n, 0.19, MONT, dilim=12, halka=7)
-    s.silindir(kalca_n, omuz_n, 0.185, MONT, segment=14)
-    s.kure(omuz_n, 0.19, MONT, dilim=12, halka=7)
-    for yan in (-1, 1):
-        s.silindir([yan * 0.19, omuz_y, omuz_z], [yan * 0.30, gid_y + 0.03, gid_z],
-                   0.055, MONT)                                                  # kol
-        s.kure([yan * 0.32, gid_y + 0.02, gid_z + 0.01], 0.055, (34, 34, 36))    # eldiven
-        s.silindir([yan * 0.17, 0.98, -0.34], [yan * 0.25, 0.64, 0.10], 0.075, MONT)
-        s.silindir([yan * 0.25, 0.64, 0.10], [yan * 0.23, 0.36, -0.02], 0.065, MONT)
-        s.kutu([yan * 0.23, 0.30, 0.02], [0.10, 0.09, 0.26], (26, 26, 28))       # bot
-    boyun = omuz_n + np.array([0.0, 0.13, 0.05])
-    s.silindir(omuz_n, boyun, 0.085, (70, 80, 92), segment=10)
-    kask_n = np.array([0.0, omuz_y + 0.27, omuz_z + 0.07])
-    _kask(s, kask_n)
+    # On kontrol dersinde motosiklet surucusuz cizilir: kontrol
+    # motordan inmis halde yapilir.
+    kask_n = np.array([0.0, 1.0, 0.0])
+    if surucu:
+        # --- surucu -----------------------------------------------------------
+        one = 0.12 * fren
+        omuz_y, omuz_z = 1.50 - 0.10 * fren, -0.12 + one
+        kalca_n = np.array([0.0, 1.02, -0.40])
+        omuz_n = np.array([0.0, omuz_y, omuz_z])
+        s.kure(kalca_n, 0.19, MONT, dilim=12, halka=7)
+        s.silindir(kalca_n, omuz_n, 0.185, MONT, segment=14)
+        s.kure(omuz_n, 0.19, MONT, dilim=12, halka=7)
+        for yan in (-1, 1):
+            s.silindir([yan * 0.19, omuz_y, omuz_z], [yan * 0.30, gid_y + 0.03, gid_z],
+                       0.055, MONT)                                                  # kol
+            s.kure([yan * 0.32, gid_y + 0.02, gid_z + 0.01], 0.055, (34, 34, 36))    # eldiven
+            s.silindir([yan * 0.17, 0.98, -0.34], [yan * 0.25, 0.64, 0.10], 0.075, MONT)
+            s.silindir([yan * 0.25, 0.64, 0.10], [yan * 0.23, 0.36, -0.02], 0.065, MONT)
+            s.kutu([yan * 0.23, 0.30, 0.02], [0.10, 0.09, 0.26], (26, 26, 28))       # bot
+        boyun = omuz_n + np.array([0.0, 0.13, 0.05])
+        s.silindir(omuz_n, boyun, 0.085, (70, 80, 92), segment=10)
+        kask_n = np.array([0.0, omuz_y + 0.27, omuz_z + 0.07])
+        _kask(s, kask_n)
 
     _tekerlek(s, arka_z, tekerlek_aci, on=False)
     _tekerlek(onk, on_z, tekerlek_aci, on=True)
@@ -1044,6 +1048,118 @@ def kare_gece3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  ON KONTROL ve LASTIK BASINCI  (MSF T-CLOCS)
+# ---------------------------------------------------------------------------
+# Kaynaklar: MSF T-CLOCS kontrol listesi, US Tire Manufacturers / MIC
+# Motorcycle Tire Guide, Harley-Davidson T-CLOCS rehberi, Haynes.
+# T-CLOCS: Tires, Controls, Lights, Oil, Chassis, Stands.
+# Kritik nokta: yan duvardaki sayi lastigin AZAMI basincidir, motorun
+# onerilen basinci degil. Onerilen deger el kitabinda ve sasi/salincak
+# etiketindedir; basinc SOGUKKEN olculur.
+KONTROL_DONGU = 13.2
+KONTROL_NOKTA = [
+    ("LASTİK ve JANT", (0.0, 0.33, 0.70), "basıncı SOĞUKKEN ölç"),
+    ("KUMANDALAR", (0.30, 1.07, 0.54), "kol, pedal, kablo, gaz"),
+    ("IŞIKLAR", (0.0, 0.98, 0.82), "far, stop, sinyal, korna"),
+    ("YAĞ ve SIVILAR", (0.0, 0.40, 0.02), "seviye ve kaçak"),
+    ("ŞASİ ve ZİNCİR", (0.11, 0.31, -0.62), "gerginlik ve yağ"),
+    ("SEHPA", (0.14, 0.20, -0.26), "yay ve kilit"),
+]
+
+
+def kontrol_evre(t):
+    """(sira, gecis) dondurur. gecis: halkanin yerlesme carpani."""
+    pay = KONTROL_DONGU / len(KONTROL_NOKTA)
+    u = t % KONTROL_DONGU
+    i = min(len(KONTROL_NOKTA) - 1, int(u / pay))
+    return i, s2.yumusak((u - i * pay) / 0.5)
+
+
+def _basinc_gostergesi(d, x, y, w, oran):
+    """Yatay basinc cubugu: dusuk bolge, dogru bolge, azami cizgisi.
+    oran 0-1.4 arasi; 1.0 onerilen basinc."""
+    h = 56
+    d.rounded_rectangle([x, y, x + w, y + h], 10, fill=(255, 255, 255, 22))
+    d.rounded_rectangle([x, y, x + w * 0.74, y + h], 10, fill=(150, 46, 40, 190))
+    d.rectangle([x + w * 0.74, y, x + w * 0.96, y + h], fill=(32, 128, 72, 205))
+    d.rectangle([x + w * 0.96, y, x + w, y + h], fill=(118, 40, 34, 205))
+    ix = x + w * min(1.0, oran / 1.35)
+    d.polygon([(ix, y - 14), (ix - 15, y - 38), (ix + 15, y - 38)], fill=KREM)
+    d.rectangle([ix - 3, y, ix + 3, y + h], fill=KREM)
+    s2.yazi(d, (x + w * 0.36, y + 12), "DÜŞÜK", 30, (236, 190, 186), ortala=True)
+    s2.yazi(d, (x + w * 0.85, y + 12), "DOĞRU", 30, (210, 255, 226), ortala=True)
+    s2.yazi(d, (x + w - 6, y + h + 12), "AZAMİ", 24, (226, 150, 144), ortala=True)
+
+
+def kare_kontrol3b(t):
+    """On kontrol: sirayla T-CLOCS noktalari, lastikte basinc gostergesi."""
+    i, gecis = kontrol_evre(t)
+    ad, nokta, aciklama = KONTROL_NOKTA[i]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    s.yuzey([[-40, 0, -40], [40, 0, -40], [40, 0, 40], [-40, 0, 40]], asfalt,
+            katman=1)
+    for k in range(-6, 7):                         # zemin dokusu: park cizgileri
+        s.yuzey([[k * 3.0 - 0.06, 0.01, -14], [k * 3.0 + 0.06, 0.01, -14],
+                 [k * 3.0 + 0.06, 0.01, 14], [k * 3.0 - 0.06, 0.01, 14]],
+                (92, 96, 102), katman=2)
+
+    model, _, _ = motosiklet(0.0, 0.0, 0.0, surucu=False)   # motordan inilmis
+    s.ekle(model)
+
+    # Lastik fazinda kamera on tekerlege yaklasir: hem lastik gercekten
+    # gorunur hem de basinc gostergesine yer kalir. Diger fazlarda genis
+    # cerceve - ders motosikletin etrafinda bir tur atma dersi.
+    if i == 0:
+        kamera = Kamera([2.45, 0.95, 2.30], [0.0, 0.40, 0.64], G, Y, fov=40)
+    else:
+        kamera = Kamera([5.15, 2.30, 3.95], [0.0, 0.72, 0.0], G, Y, fov=48)
+    s.ciz(d, kamera, gok)
+
+    # --- isaret halkasi: 3B noktanin ekrandaki yeri -----------------------
+    kn = kamera.kameraya(np.array([nokta]))
+    if kn[0, 2] > 0.3:
+        hx, hy = kamera.ekrana(kn)[0]
+        r = (46 + 10 * math.sin(t * 5)) * (0.4 + 0.6 * gecis)
+        d.ellipse([hx - r, hy - r, hx + r, hy + r], outline=TURUNCU, width=8)
+        d.ellipse([hx - r * 0.3, hy - r * 0.3, hx + r * 0.3, hy + r * 0.3],
+                  fill=(*TURUNCU, 120))
+
+    # --- 2B gostergeler ----------------------------------------------------
+    f = s2.font(46)
+    tw = d.textlength(ad, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 32, 318, (G + tw) / 2 + 32, 404], 16,
+                        fill=(0, 0, 0, 190), outline=TURUNCU, width=5)
+    s2.yazi(d, (G / 2, 330), ad, 46, TURUNCU, ortala=True)
+    s2.yazi(d, (G / 2, 416), aciklama, 34, (190, 198, 208), ortala=True)
+
+    # Sol sutun: alti baslik, sirasi gelen vurgulanir. Arkasinda panel var,
+    # yoksa motosikletin uzerine dustugunde okunmuyor.
+    d.rounded_rectangle([56, 470, 392, 486 + len(KONTROL_NOKTA) * 52], 14,
+                        fill=(14, 18, 24, 190), outline=(78, 86, 96), width=3)
+    for k, (kad, _, _) in enumerate(KONTROL_NOKTA):
+        yy = 486 + k * 52
+        aktif = k == i
+        d.rounded_rectangle([64, yy, 76, yy + 34], 4,
+                            fill=TURUNCU if aktif else (72, 80, 90))
+        s2.yazi(d, (92, yy), kad, 30,
+                KREM if aktif else (124, 132, 142))
+
+    if i == 0:                                     # lastik: basinc gostergesi
+        oran = 0.52 + 0.33 * s2.yumusak(min(1.0, (t % KONTROL_DONGU) / 1.9))
+        s2.yazi(d, (70, 1086), "LASTİK BASINCI", 32, (158, 166, 176))
+        _basinc_gostergesi(d, 70, 1138, G - 140, oran)
+        s2.yazi(d, (70, 1232), "Yan duvardaki sayı AZAMİ basınçtır — önerilen",
+                26, (150, 158, 168))
+        s2.yazi(d, (70, 1268), "değer el kitabında ve şasi etiketinde yazar.",
+                26, (150, 158, 168))
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -1609,7 +1725,7 @@ def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
-                             "kornokta", "manevra", "gece"),
+                             "kornokta", "manevra", "gece", "kontrol"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -1639,6 +1755,8 @@ def main():
         cizer = kare_manevra3b
     elif args.sahne == "gece":
         cizer = kare_gece3b
+    elif args.sahne == "kontrol":
+        cizer = kare_kontrol3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":
