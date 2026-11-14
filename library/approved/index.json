@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-14T08:18:29+00:00",
+  "guncelleme": "2026-11-14T08:25:15+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -80,6 +80,15 @@
       "video": "library/approved/09-on-kontrol/09-on-kontrol.mp4",
       "meta": "library/approved/09-on-kontrol/meta.json",
       "onay_tarihi": "2026-11-14T08:18:29+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "10-kacinma",
+      "ders_no": 10,
+      "baslik": "Kaçınma Manevrası",
+      "video": "library/approved/10-kacinma/10-kacinma.mp4",
+      "meta": "library/approved/10-kacinma/meta.json",
+      "onay_tarihi": "2026-11-14T08:25:15+00:00",
       "durum": "onaylandi"
     }
   ]
