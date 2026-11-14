@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri
 
-> Son güncelleme: **07.11.2026**
+> Son güncelleme: **14.11.2026**
 >
 > **Nasıl kullanılır:** Bilgisayarındaki Claude uygulamasını aç → **yeni bir
 > sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi yapıştır.
@@ -22,7 +22,7 @@ Merhaba. 06.11'de siteyi ve Play sayfalarını canlı test ettim; eski iş emrin
 **Önce bilmen gerekenler (hepsi ölçüldü, tahmin değil):**
 - İki oyun da **Google Play'de yayında** (`com.saemuhendislik.mini_muhendis`, `com.saemuhendislik.yol_okulu_3b` — mağaza sayfaları anonim olarak 200 dönüyor).
 - `www` → apex **301 çalışıyor**. Cloudflare Redirect Rule işine gerek yok.
-- `ads.txt` doğru, AdSense script'i ana sayfada ve içerik sayfalarında var.
+- `ads.txt` ve AdSense script'i canlıda var — **ama 14.11'de ölçtüm: site artık `pub-7223494011776010` (AdMob/eserahmetasim hesabı) üzerinden reklam veriyor**, eski `pub-8433209614215281` değil. Aşağıdaki 4. madde bununla ilgili.
 - Sitemap'teki 87 adresin hepsi 200.
 
 **1) Ana sayfaya Yol Okulu'nu ekle — hazır yama var, uydurma.**
@@ -31,6 +31,7 @@ Oyun yayında ama sitede hiç geçmiyor. **Birebir yapıştırılacak yama: `doc
 - Sonra `index.html` ve `en/index.html` için yamadaki BUL/YERİNE bloklarını uygula. EN tarafında görsel yolu `../images/` — atlama.
 - Türkçe metinde PowerShell `-replace` kullanma, Python + UTF-8.
 - Dağıt, sonra bana haber ver; doğrulamayı ben yapacağım.
+- ⚠ Not: site 06.11–14.11 arasında reklam değişikliği için **bir kez yeniden dağıtıldı**, ama bu kart konmadı. Yani dağıtım yolu çalışıyor; eksik olan sadece bu yama.
 
 **2) AdMob'u iki oyuna da ekle.** (Yasak kalktı: inceleme bitti, ikisi de yayında.)
 Yayıncı `pub-7223494011776010`, hesap `eserahmetasim@gmail.com`.
@@ -45,10 +46,16 @@ Yapılmazsa güncelleme gönderilemez ve iki oyun da Play'den kaldırılır.
 ⚠ **BANA SORMADAN DOLDURMA.** Satıcı beyanı bireysel geliştiricinin **telefon numarasını ve adresini Play'de herkese açık** yapıyor. AAE'ye seçenekleri göster (satıcı / işletme kaydı / AEA-BK'de dağıtmama), ne diyeceğini sor, sonra onun dediğini uygula.
 Yol: Hesabı yönet → Hesap ayrıntıları → Hakkınızda → Satıcı durumu. Sonra her uygulama için ayrı: Tüm uygulamalar → uygulama → İzleyin ve geliştirin → Politika ve programlar → Uygulama içeriği.
 
-**4) AdSense — rıza mesajını teyit et.**
-Auto ads açıldı (AAE 31.10'da yaptı) ve reklam kodu canlıda doğrulandı. Kalan tek şey:
-- Gizlilik ve mesajlaşma → Avrupa tüzükleri → mesaj **"Yayında"** mı? Değilse yayınla.
-- Panelde `ads.txt` satırı "Yetkili" mi? (Dosya ve içeriği doğru, Google'ın taraması gecikebilir.)
+**4) ⚠ AdSense profilini tamamla — ÖDEME BUNA BAĞLI.**
+13.11'de `eserahmetasim@gmail.com`'a "AdSense'e hoş geldiniz" maili geldi; yayıncı **`pub-7223494011776010`**, "Sitenizi eklediniz" diyor. 14.11 canlı ölçümü bunu doğruluyor: `ads.txt` ve sayfa script'i artık bu kimliği taşıyor (06.11'de `pub-8433209614215281`'di). Yani site eski AdSense hesabından AdMob hesabına taşınmış.
+Mailin saydığı iki eksik adım — **bunlar bitmeden hiç ödeme çıkmaz**:
+- **Geçerli ödeme adresi** ekle.
+- **Telefon numarasını doğrula.**
+Konsol: `https://adsense.google.com/adsense/u/1/pub-7223494011776010/`
+Ayrıca aynı hesapta teyit et:
+- Gizlilik ve mesajlaşma → Avrupa tüzükleri → rıza mesajı **"Yayında"** mı? Değilse yayınla.
+- Siteler listesinde `saemuhendislik.com` **"Hazır"** mı, `ads.txt` satırı **"Yetkili"** mi?
+- ⚠ **AAE'ye sor:** eski hesap `pub-8433209614215281` (`ahmetasimeser008@gmail.com`) ne durumda? Aynı kişinin iki ayrı AdSense hesabı tutması AdSense politikasına aykırı. Kapandıysa/siteden çıkarıldıysa sorun yok; hâlâ açıksa ve siteyi tanımlıyorsa bunu çözmek gerek. **Kendi başına hesap kapatma.**
 
 **5) Search Console — üç sorunun örnek URL listesi.**
 Açık: "Yönlendirmeli sayfa", "Kopya, Google farklı standart sayfa seçti" (WNC-10031170), "Bulunamadı (404)" (WNC-20237597).
