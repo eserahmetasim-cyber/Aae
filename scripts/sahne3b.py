@@ -1056,23 +1056,48 @@ def kare_gece3b(t):
 # Kritik nokta: yan duvardaki sayi lastigin AZAMI basincidir, motorun
 # onerilen basinci degil. Onerilen deger el kitabinda ve sasi/salincak
 # etiketindedir; basinc SOGUKKEN olculur.
-KONTROL_DONGU = 13.2
-KONTROL_NOKTA = [
-    ("LASTİK ve JANT", (0.0, 0.33, 0.70), "basıncı SOĞUKKEN ölç"),
-    ("KUMANDALAR", (0.30, 1.07, 0.54), "kol, pedal, kablo, gaz"),
-    ("IŞIKLAR", (0.0, 0.98, 0.82), "far, stop, sinyal, korna"),
-    ("YAĞ ve SIVILAR", (0.0, 0.40, 0.02), "seviye ve kaçak"),
-    ("ŞASİ ve ZİNCİR", (0.11, 0.31, -0.62), "gerginlik ve yağ"),
-    ("SEHPA", (0.14, 0.20, -0.26), "yay ve kilit"),
-]
+# Isaret noktalari. Anahtar ders dosyasindaki sahne_fazlari ile eslesir.
+KONTROL_NOKTA = {
+    "lastik":  ("LASTİK ve JANT", (0.0, 0.33, 0.70), "basıncı SOĞUKKEN ölç"),
+    "kumanda": ("KUMANDALAR", (0.30, 1.07, 0.54), "kol, pedal, kablo, gaz"),
+    "isik":    ("IŞIKLAR", (0.0, 0.98, 0.82), "far, stop, sinyal, korna"),
+    "yag":     ("YAĞ ve SIVILAR", (0.0, 0.40, 0.02), "seviye ve kaçak"),
+    "zincir":  ("ŞASİ ve ZİNCİR", (0.11, 0.31, -0.62), "gerginlik ve yağ"),
+    "sehpa":   ("SEHPA", (0.14, 0.20, -0.26), "yay ve kilit"),
+}
+KONTROL_SIRA = list(KONTROL_NOKTA)
+# Isaretin hangi saniyede hangi noktaya gectigi. Sabit dongu kullanilinca
+# sahne ile ekrandaki adim kayiyordu: 6. saniyede yazi "basinci olc" derken
+# halka IŞIKLAR'daydi. Adimlarin ilk dordu lastikle ilgili oldugu icin
+# eslesme 1:1 degil; zamanlar ders dosyasindan geliyor.
+KONTROL_FAZ = [(4.0, "lastik")]
+
+
+def kontrol_zaman_ayarla(metin):
+    """sahne_fazlari: "4:lastik, 35:kumanda, 37:isik, ..." """
+    global KONTROL_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in KONTROL_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen kontrol noktasi '{ad}'")
+        try:
+            f.append((float(t_str), ad))
+        except ValueError:
+            raise SystemExit(f"HATA: kontrol fazi zamani sayi olmali: '{t_str}'")
+    KONTROL_FAZ = sorted(f)
 
 
 def kontrol_evre(t):
-    """(sira, gecis) dondurur. gecis: halkanin yerlesme carpani."""
-    pay = KONTROL_DONGU / len(KONTROL_NOKTA)
-    u = t % KONTROL_DONGU
-    i = min(len(KONTROL_NOKTA) - 1, int(u / pay))
-    return i, s2.yumusak((u - i * pay) / 0.5)
+    """(anahtar, gecis) dondurur. gecis: halkanin yerlesme carpani."""
+    ad, bas = KONTROL_FAZ[0][1], KONTROL_FAZ[0][0]
+    for z, a in KONTROL_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, s2.yumusak((t - bas) / 0.5)
 
 
 def _basinc_gostergesi(d, x, y, w, oran):
@@ -1093,8 +1118,8 @@ def _basinc_gostergesi(d, x, y, w, oran):
 
 def kare_kontrol3b(t):
     """On kontrol: sirayla T-CLOCS noktalari, lastikte basinc gostergesi."""
-    i, gecis = kontrol_evre(t)
-    ad, nokta, aciklama = KONTROL_NOKTA[i]
+    anahtar, gecis = kontrol_evre(t)
+    ad, nokta, aciklama = KONTROL_NOKTA[anahtar]
     gok, cim, asfalt = _palet()
     im = Image.new("RGB", (G, Y), gok)
     d = ImageDraw.Draw(im, "RGBA")
@@ -1113,7 +1138,7 @@ def kare_kontrol3b(t):
     # Lastik fazinda kamera on tekerlege yaklasir: hem lastik gercekten
     # gorunur hem de basinc gostergesine yer kalir. Diger fazlarda genis
     # cerceve - ders motosikletin etrafinda bir tur atma dersi.
-    if i == 0:
+    if anahtar == "lastik":
         kamera = Kamera([2.45, 0.95, 2.30], [0.0, 0.40, 0.64], G, Y, fov=40)
     else:
         kamera = Kamera([5.15, 2.30, 3.95], [0.0, 0.72, 0.0], G, Y, fov=48)
@@ -1140,16 +1165,17 @@ def kare_kontrol3b(t):
     # yoksa motosikletin uzerine dustugunde okunmuyor.
     d.rounded_rectangle([56, 470, 392, 486 + len(KONTROL_NOKTA) * 52], 14,
                         fill=(14, 18, 24, 190), outline=(78, 86, 96), width=3)
-    for k, (kad, _, _) in enumerate(KONTROL_NOKTA):
+    for k, nk in enumerate(KONTROL_SIRA):
+        kad = KONTROL_NOKTA[nk][0]
         yy = 486 + k * 52
-        aktif = k == i
+        aktif = nk == anahtar
         d.rounded_rectangle([64, yy, 76, yy + 34], 4,
                             fill=TURUNCU if aktif else (72, 80, 90))
         s2.yazi(d, (92, yy), kad, 30,
                 KREM if aktif else (124, 132, 142))
 
-    if i == 0:                                     # lastik: basinc gostergesi
-        oran = 0.52 + 0.33 * s2.yumusak(min(1.0, (t % KONTROL_DONGU) / 1.9))
+    if anahtar == "lastik":                        # basinc gostergesi
+        oran = 0.52 + 0.33 * s2.yumusak(min(1.0, (t - KONTROL_FAZ[0][0]) / 2.4))
         s2.yazi(d, (70, 1086), "LASTİK BASINCI", 32, (158, 166, 176))
         _basinc_gostergesi(d, 70, 1138, G - 140, oran)
         s2.yazi(d, (70, 1232), "Yan duvardaki sayı AZAMİ basınçtır — önerilen",
@@ -1756,6 +1782,7 @@ def main():
     elif args.sahne == "gece":
         cizer = kare_gece3b
     elif args.sahne == "kontrol":
+        kontrol_zaman_ayarla(args.fazlar)
         cizer = kare_kontrol3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b

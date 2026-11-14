@@ -25,6 +25,7 @@ sahne: kontrol
 boyut: 3
 kamera: yan
 gunduz: true
+sahne_fazlari: "4:lastik, 35:kumanda, 37.5:isik, 40:yag, 44:zincir, 47:sehpa"
 baslangic: 0
 sure: 55
 kaynak_ses: 0.035
