@@ -137,11 +137,12 @@ def yukle(yol: str) -> dict:
     gunduz = bool(ham.get("gunduz", False))
     sahne = str(ham.get("sahne") or "").strip()
     if sahne and sahne not in ("fren", "viraj", "kontra", "gaz", "islak",
-                               "kornokta", "manevra"):
+                               "kornokta", "manevra", "gece"):
         raise DersHatasi(
-            f"{yol}: 'sahne' fren|viraj|kontra|gaz|islak|kornokta|manevra"
+            f"{yol}: 'sahne' fren|viraj|kontra|gaz|islak|kornokta|manevra|gece"
             " olmali (ya da bos).")
-    if sahne in ("kontra", "gaz", "islak", "kornokta", "manevra") and boyut != 3:
+    if sahne in ("kontra", "gaz", "islak", "kornokta", "manevra",
+                 "gece") and boyut != 3:
         raise DersHatasi(f"{yol}: '{sahne}' sahnesi yalnizca 3 boyutlu uretilir.")
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
     baslangic = float(ham.get("baslangic", 0))
@@ -199,6 +200,9 @@ def yukle(yol: str) -> dict:
 # ---------------------------------------------------------------------------
 TR_BUYUK = str.maketrans("ıi", "Iİ")
 GENISLIK_PX = 980          # 1080 - 2x50 kenar bosluk
+# Adim kutusu Instagram Reels'te sagdaki begen/yorum/paylas sutununun
+# hizasina dusuyor; metin oraya kaymasin diye daha dar tutulur.
+ADIM_GENISLIK_PX = 800
 
 
 def tr_upper(metin: str) -> str:
@@ -213,7 +217,8 @@ def _sar(metin: str, genislik: int) -> list:
 FONT_YOLU = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 
-def _punto(satirlar: list, maks_punto: int, kat: float = 0.70) -> int:
+def _punto(satirlar: list, maks_punto: int, kat: float = 0.70,
+           genislik: int = GENISLIK_PX) -> int:
     """Metnin sigdigi en buyuk puntoyu bulur. Karakter sayisindan TAHMIN
     etmek yetmiyordu: buyuk harfler daha genis, 'DERS 03 · KONTRA: MOTOSIKLET
     NASIL' ust banttan tasiyordu. Font varsa gercekten olculur."""
@@ -221,12 +226,12 @@ def _punto(satirlar: list, maks_punto: int, kat: float = 0.70) -> int:
         from PIL import ImageFont
         for punto in range(maks_punto, 21, -1):
             f = ImageFont.truetype(FONT_YOLU, punto)
-            if max(f.getlength(s) for s in satirlar) <= GENISLIK_PX:
+            if max(f.getlength(s) for s in satirlar) <= genislik:
                 return punto
         return 22
     except Exception:
         en_uzun = max((len(s) for s in satirlar), default=1) or 1
-        return max(22, min(maks_punto, int(GENISLIK_PX / (en_uzun * kat))))
+        return max(22, min(maks_punto, int(genislik / (en_uzun * kat))))
 
 
 def metinleri_yaz(ders: dict, dizin: str) -> dict:
@@ -264,7 +269,7 @@ def metinleri_yaz(ders: dict, dizin: str) -> dict:
             "dosya": ad,
             "t": a["t"],
             "bitis": a["bitis"],
-            "punto": _punto(satirlar, 52),
+            "punto": _punto(satirlar, 52, genislik=ADIM_GENISLIK_PX),
             "satir": len(satirlar),
         })
 

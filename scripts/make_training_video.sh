@@ -153,9 +153,11 @@ while read -r satir; do
   A_BIT="$(jq -r '.bitis' <<<"${satir}")"
   A_PUNTO="$(jq -r '.punto' <<<"${satir}")"
   A_SATIR="$(jq -r '.satir' <<<"${satir}")"
-  # Bosluk 60'ti: iki satirlik adim kutusu alt banda deger haldeydi.
-  # 150'de kutu banttan ~90 px ayriliyor ve metin biraz yukari geliyor.
-  A_Y="$(python3 -c "print(int(1920 - ${ALT_H} - 150 - ${A_SATIR} * ${A_PUNTO} * 1.3))")"
+  # Instagram Reels altta basligi ve butonlariyla kareyi ortuyor. Kaynaklar
+  # rezervi 280-672 px arasi veriyor, organik icerik icin en cok tekrar eden
+  # deger ~420 px. Bosluk 320'de kutunun alti 1482'de bitiyor, yani 1500
+  # cizgisinin uzerinde kaliyor. (150'de 1652'ydi ve altta kalip okunmuyordu.)
+  A_Y="$(python3 -c "print(int(1920 - ${ALT_H} - 320 - ${A_SATIR} * ${A_PUNTO} * 1.3))")"
   # Adim penceresi acilis/kapanis kartlarinin disina tasmasin
   A_T="$(python3 -c "print(round(max(${A_T}, ${INTRO}), 2))")"
   A_BIT="$(python3 -c "print(round(min(${A_BIT}, ${OUTRO_BAS}), 2))")"

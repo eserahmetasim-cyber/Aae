@@ -917,6 +917,133 @@ def kare_manevra3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  GECE SURUSU  (farini asma)
+# ---------------------------------------------------------------------------
+# Kaynaklar: webBikeWorld "10 tips better night rider", RideApart gece
+# surusu, Foremost, Dairyland, Brixton. Hepsinin ortak kurali: FARINI ASMA -
+# farin gosterdigi mesafe icinde durabilmelisin.
+# Sahnedeki durma mesafesi fizikten: tepki yolu + fren yolu,
+# d = v*t_tepki + v^2 / (2a). Varsayimlar ekranda yaziyor cunku ikisi de
+# surucuye ve zemine gore degisir.
+GECE_DONGU = 14.0
+FAR_MENZIL = 55.0             # kisa huzme yaklasik menzili (m)
+GECE_TEPKI = 1.0              # saniye
+GECE_YAVASLAMA = 7.0          # m/s^2, kuru asfalt
+
+
+def gece_evre(t):
+    """(hiz_kmh, durma_mesafesi_m) dondurur."""
+    u = (t % GECE_DONGU) / GECE_DONGU
+    if u < 0.46:                                   # hizlanir
+        hiz = 50.0 + 45.0 * s2.yumusak(u / 0.46)
+    elif u < 0.60:                                 # tepe hizda kalir
+        hiz = 95.0
+    else:                                          # yavaslar
+        hiz = 95.0 - 45.0 * s2.yumusak((u - 0.60) / 0.40)
+    v = hiz / 3.6
+    return hiz, v * GECE_TEPKI + v * v / (2 * GECE_YAVASLAMA)
+
+
+def _yol_cubugu(s, z, renk, yari=4.2, kalin=1.3):
+    """Yola enlemesine isaret cubugu."""
+    s.yuzey([[-yari, 0.04, z], [yari, 0.04, z],
+             [yari, 0.04, z + kalin], [-yari, 0.04, z + kalin]],
+            renk, isiksiz=True, katman=2)
+
+
+def kare_gece3b(t):
+    """Gece: far menzili ile durma mesafesi yan yana."""
+    hiz, durma = gece_evre(t)
+    asiyor = durma > FAR_MENZIL
+    gok, cim, asfalt = (10, 13, 20), (18, 26, 20), (30, 32, 37)
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _gece_s, _gece_tek
+    _gece_s = (globals().get("_gece_s", 0.0) + hiz / 3.6 / FPS) % 8.0
+    _gece_tek = (globals().get("_gece_tek", 0.0) + 0.45) % (2 * math.pi)
+
+    z = -14.0
+    while z < 130:
+        z2 = z + 5.0
+        s.yuzey([[-70, 0, z], [70, 0, z], [70, 0, z2], [-70, 0, z2]], cim, katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2], [-4.2, 0.01, z2]],
+                asfalt, katman=1)
+        z = z2
+
+    # --- far huzmesi: motordan baslar, menzilde biter ---------------------
+    # Isiksiz cizilir, yoksa sahne isigiyla sonuyor ve "aydinlatma" hissi
+    # kayboluyordu. Yakin uc parlak, uzak uc sonuk: huzme dagiliyor.
+    DILIM = 10
+    for i in range(DILIM):
+        z0 = 1.2 + (FAR_MENZIL - 1.2) * i / DILIM
+        z1 = 1.2 + (FAR_MENZIL - 1.2) * (i + 1) / DILIM
+        # Far yaklasik 12 derece yayilir: 55 m'de yaklasik +-6 m.
+        # 0.055 katsayisi cok dardi, huzme yolda seritten dar bir hali
+        # gibi duruyordu.
+        g0, g1 = 0.65 + z0 * 0.105, 0.65 + z1 * 0.105
+        k = 1.0 - i / DILIM
+        c = (int(46 + 150 * k), int(45 + 144 * k), int(36 + 112 * k))
+        s.yuzey([[FREN_SERIT - g0, 0.03, z0], [FREN_SERIT + g0, 0.03, z0],
+                 [FREN_SERIT + g1, 0.03, z1], [FREN_SERIT - g1, 0.03, z1]],
+                c, isiksiz=True, katman=2)
+
+    for i in range(-2, 24):                        # kesikli orta cizgi
+        zc = i * 8.0 - _gece_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (120, 120, 116), katman=2)
+
+    # Mesafe karsilastirmasi 3B isaret cubuklariyla denendi: 55 ve 76 m'de
+    # cubuklar ufka yakin, ince birer cizgi olarak kaliyor ve okunmuyordu.
+    # Karsilastirma 2B cubuk grafige tasindi (ders 05'teki duzen).
+    _yol_cubugu(s, FAR_MENZIL, (240, 236, 212), yari=5.6, kalin=1.6)
+
+    model, _, _ = motosiklet(0.0, _gece_tek, 0.0)
+    s.ekle(model, t=[FREN_SERIT, 0.0, 0.0])
+
+    # Kamera motorun TAM ARKASINDA ve yuksekte: yandan bakinca motosiklet
+    # kendi huzmesinin disinda kaliyor gibi duruyordu, uzaktaki isaret
+    # cubuklari da goze carpmiyordu.
+    # Kamera huzme EKSENINDE: yanal kayma huzmeyi carpik bir paralelkenar
+    # gibi gosteriyordu.
+    kamera = Kamera([FREN_SERIT, 5.2, -10.6],
+                    [FREN_SERIT, 0.4, 26.0], G, Y, fov=47)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler ----------------------------------------------------
+    d.rounded_rectangle([G - 320, 470, G - 72, 612], 18, fill=(0, 0, 0, 180),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 196, 482), f"{int(hiz)}", 82, KREM, ortala=True)
+    s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
+
+    # Iki mesafe yan yana cubuk olarak. Olcek ikisinin buyugune gore,
+    # boylece durma mesafesi farin otesine gectiginde bu gozle goruluyor.
+    olcek = max(FAR_MENZIL, durma) * 1.08
+    px, pw, yb = 70, G - 140, 1010
+    s2.yazi(d, (px, yb - 48), "FAR MENZİLİ / DURMA MESAFESİ", 30, (158, 166, 176))
+    for i, (ad, deger, c) in enumerate(
+            ((f"FAR  {FAR_MENZIL:.0f} m", FAR_MENZIL, (240, 236, 212)),
+             (f"DURMA  {durma:.0f} m", durma, KIRMIZI if asiyor else YESIL))):
+        yy = yb + i * 78
+        d.rounded_rectangle([px, yy, px + pw, yy + 56], 10, fill=(255, 255, 255, 20))
+        d.rounded_rectangle([px, yy, px + pw * min(1.0, deger / olcek), yy + 56],
+                            10, fill=c)
+        s2.yazi(d, (px + 16, yy + 10), ad, 36, (16, 18, 20))
+    s2.yazi(d, (px, yb + 166), f"{GECE_TEPKI:.0f} sn tepki + "
+            f"{GECE_YAVASLAMA:.0f} m/s² fren varsayildi", 24, (120, 128, 138))
+
+    if asiyor:
+        uyari = "FARINI AŞIYORSUN"
+        f = s2.font(46)
+        tw = d.textlength(uyari, font=f)
+        d.rounded_rectangle([(G - tw) / 2 - 32, 318, (G + tw) / 2 + 32, 404], 16,
+                            fill=(118, 20, 16, 215), outline=KIRMIZI, width=5)
+        s2.yazi(d, (G / 2, 330), uyari, 46, (255, 220, 215), ortala=True)
+    return im
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -1482,7 +1609,7 @@ def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
-                             "kornokta", "manevra"),
+                             "kornokta", "manevra", "gece"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -1510,6 +1637,8 @@ def main():
         cizer = kare_kornokta3b
     elif args.sahne == "manevra":
         cizer = kare_manevra3b
+    elif args.sahne == "gece":
+        cizer = kare_gece3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":
