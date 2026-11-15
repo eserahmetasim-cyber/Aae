@@ -29,6 +29,7 @@ from PIL import Image, ImageDraw
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from uc_boyut import Kamera, Sahne, birim, donus, isik_ayarla   # noqa: E402
 import sahne_uret as s2                              # ses + 2B yardimcilar  # noqa: E402
+import adv_motor                                  # AAE'nin onayli motoru  # noqa: E402
 from sahne_uret import yumusak                       # noqa: E402
 
 G, Y, FPS = s2.G, s2.Y, s2.FPS
@@ -410,7 +411,16 @@ def _kask(s, merkez, kabuk=KREM, aksan=TURUNCU):
         _kask_bayrak(s, merkez, 0.140, [yan, 0.45, 0.25], [0, 1, 0], yuk=0.046)
 
 
+
 def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
+    """AAE'nin KENDI motoru: Blender'da kurulup 14 Kas'ta onaylanan adventure
+    model (assets/adv_motor/). Asagidaki _motosiklet_yaklasik() o model elime
+    ulasmadan once elle kurulmus yaklasiktir; artik hicbir sahne kullanmiyor,
+    sadece referans icin duruyor."""
+    return adv_motor.motosiklet(fren, tekerlek_aci, direksiyon, surucu)
+
+
+def _motosiklet_yaklasik(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     """fren 0-1: catal cokmesi + surucunun one yuklenmesi."""
     s = Sahne()
     cokme = 0.085 * fren
@@ -1488,25 +1498,34 @@ def yolcu_evre(t):
 
 def _yolcu(s, mont=(96, 110, 128)):
     """Sele arkasinda oturan yolcu: kalca, govde, kask, kollar ve bacaklar."""
-    # Surucu gibi yolcu da adventure sasiye gore yukseldi; eskisinde selenin
-    # icine gomulu kaliyordu.
-    kalca = np.array([0.0, 1.17, -0.84])
-    omuz = np.array([0.0, 1.56, -0.72])
+    # AAE'nin onayli ADV modeline gore olculdu (adv_motor):
+    #   arka sele yuzeyi  y = 1.00, z = -0.85..-0.55
+    #   surucunun govdesi z = -0.49..0.29, kaski y = 1.83
+    #   arka bagaj/canta  z = -1.10..-0.70, y = 1.34'e kadar
+    # Eski degerler (kalca z=-0.84) yaklasik motora aitti; yolcu bagajin
+    # icinde oturuyor, bacaklari da bosluga sarkiyordu.
+    kalca = np.array([0.0, 1.15, -0.70])
+    omuz = np.array([0.0, 1.53, -0.60])
     s.kure(kalca, 0.18, mont, dilim=12, halka=7)
     s.silindir(kalca, omuz, 0.175, mont, segment=14)
     s.kure(omuz, 0.18, mont, dilim=12, halka=7)
     _kask(s, omuz + np.array([0.0, 0.27, 0.06]), kabuk=(216, 220, 226),
           aksan=(58, 150, 196))
     for yan in (-1, 1):
-        s.silindir([yan * 0.17, 1.54, -0.70], [yan * 0.19, 1.28, -0.46],
+        # eller surucunun belinde (surucunun govdesi z = -0.40 civarinda)
+        s.silindir([yan * 0.17, 1.51, -0.58], [yan * 0.20, 1.22, -0.33],
                    0.052, mont)                                   # kol
-        s.kure([yan * 0.19, 1.27, -0.44], 0.052, (34, 34, 36))    # eldiven
-        s.silindir([yan * 0.16, 1.13, -0.80], [yan * 0.24, 0.80, -0.64],
+        s.kure([yan * 0.20, 1.21, -0.31], 0.052, (34, 34, 36))    # eldiven
+        # Kalca (1.08, -0.66) ile basamak (0.48, -0.38) arasi 66 cm; 45+43 cm'lik
+        # iki uzuv bu araligi ancak diz ONE cikarak kapatir. Diz duz hat uzerinde
+        # birakilinca bacak tek bir boru gibi gorunuyordu.
+        s.silindir([yan * 0.17, 1.08, -0.66], [yan * 0.30, 0.91, -0.25],
                    0.072, mont)                                   # ust bacak
-        s.silindir([yan * 0.24, 0.80, -0.64], [yan * 0.24, 0.54, -0.60],
+        s.silindir([yan * 0.30, 0.91, -0.25], [yan * 0.28, 0.54, -0.36],
                    0.060, mont)                                   # alt bacak
-        s.kutu([yan * 0.24, 0.48, -0.58], [0.10, 0.09, 0.24], (26, 26, 28))
-        s.kutu([yan * 0.215, 0.43, -0.58], [0.09, 0.03, 0.12], KROM)  # basamak
+        s.kure([yan * 0.30, 0.91, -0.25], 0.072, mont, dilim=10, halka=6)  # diz
+        s.kutu([yan * 0.28, 0.48, -0.33], [0.10, 0.09, 0.24], (26, 26, 28))
+        s.kutu([yan * 0.255, 0.43, -0.36], [0.09, 0.03, 0.12], KROM)  # basamak
 
 
 def kare_yolcu3b(t):

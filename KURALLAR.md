@@ -41,6 +41,17 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
   Viraj sahnesinde `sahne_fazlari` ile hizalanır; aksi halde animasyon
   "KAPANIYOR" derken yazı "açılıyor" diyebiliyor.
 - İçerik 300–1400 px bandında durur: üstte ders bandı, altta adım kutuları var.
+- **Motosiklet AAE'nin kendi motorudur.** Tüm 3B sahneler
+  `assets/adv_motor/adv_motor_ucgen.npz` içindeki onaylı adventure modeli
+  (~7300 üçgen, KASKAFA oturumunda Blender'da kuruldu, 14 Kas 2026'da
+  onaylandı) `scripts/adv_motor.py` üzerinden kullanır. `sahne3b.motosiklet`
+  artık bu modülün önüne geçen ince bir sarmaldır. Elle kurulmuş eski
+  yaklaşık motor `sahne3b._motosiklet_yaklasik` adıyla sadece referans olarak
+  durur; **hiçbir sahnede kullanılmaz**. Model ölçüleri: aks arası 1.47 m,
+  ön teker r=0.345, arka r=0.322, sürücünün kaskı y=1.83, arka sele y=1.00
+  (z = −0.85…−0.55). Sahneye yeni figür eklenecekse bu ölçülere bakılır —
+  yolcu bir kez eski motorun ölçüleriyle kurulup bagajın içinde oturmuştu.
+  Marka logosu ve model numarası yok.
 - **Motosiklet orta çizginin üzerinde gitmez**, sağ şeritte durur. Viraj sahnesinde
   şerit içi konum virajla değişir: sola dönen virajda şeridin sağına, sağa dönende
   soluna kayar — görüşü açan gerçek sürüş tekniği budur.
