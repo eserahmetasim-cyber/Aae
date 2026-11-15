@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-15T16:41:42+00:00",
+  "guncelleme": "2026-11-15T17:42:50+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -107,6 +107,15 @@
       "video": "library/approved/12-kavsak/12-kavsak.mp4",
       "meta": "library/approved/12-kavsak/meta.json",
       "onay_tarihi": "2026-11-15T16:41:42+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "13-takip-mesafesi",
+      "ders_no": 13,
+      "baslik": "Takip Mesafesi: İki Saniye",
+      "video": "library/approved/13-takip-mesafesi/13-takip-mesafesi.mp4",
+      "meta": "library/approved/13-takip-mesafesi/meta.json",
+      "onay_tarihi": "2026-11-15T17:42:50+00:00",
       "durum": "onaylandi"
     }
   ]
