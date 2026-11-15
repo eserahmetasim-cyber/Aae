@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-15T17:42:50+00:00",
+  "guncelleme": "2026-11-15T18:12:00+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -116,6 +116,15 @@
       "video": "library/approved/13-takip-mesafesi/13-takip-mesafesi.mp4",
       "meta": "library/approved/13-takip-mesafesi/meta.json",
       "onay_tarihi": "2026-11-15T17:42:50+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "14-serit-ici-konum",
+      "ders_no": 14,
+      "baslik": "Şerit İçi Konum",
+      "video": "library/approved/14-serit-ici-konum/14-serit-ici-konum.mp4",
+      "meta": "library/approved/14-serit-ici-konum/meta.json",
+      "onay_tarihi": "2026-11-15T18:12:00+00:00",
       "durum": "onaylandi"
     }
   ]
