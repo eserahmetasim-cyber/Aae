@@ -54,6 +54,89 @@ def _ekle(s, grup, R=None, t=None):
         s.yuzey(p, (int(rk[0]), int(rk[1]), int(rk[2])), isiksiz=bool(isk))
 
 
+
+# ---------------------------------------------------------------- arka bolum
+# Blender modelinde arka tekerlek ile sele arasi bos kaliyordu: gercek bir
+# adventure motorda o ucgende monoamortisor, yan panel, lastigin ustune oturan
+# camurluk, susturucu ve zincir muhafazasi bulunur. Model dosyasina
+# dokunmadan, ayni renk paletiyle burada kuruluyor.
+KOYU = (40, 40, 42)
+KOYU2 = (48, 49, 53)
+METAL = (153, 148, 148)
+AMBER = (243, 178, 63)
+
+AKS_Y, AKS_Z = 0.322, -0.73          # arka aks
+TEKER_R = 0.322
+
+
+def _yay_kabuk(s, merkez, r0, r1, a0, a1, yari_en, renk, n=9):
+    """Aks etrafinda donen ince kabuk (camurluk). Aci 0 = ileri, +pi/2 = yukari."""
+    cy, cz = merkez
+    for i in range(n):
+        t0 = a0 + (a1 - a0) * i / n
+        t1 = a0 + (a1 - a0) * (i + 1) / n
+        for rr, isaret in ((r1, 1), (r0, -1)):
+            p = [[-yari_en, cy + rr * math.sin(t0), cz + rr * math.cos(t0)],
+                 [yari_en, cy + rr * math.sin(t0), cz + rr * math.cos(t0)],
+                 [yari_en, cy + rr * math.sin(t1), cz + rr * math.cos(t1)],
+                 [-yari_en, cy + rr * math.sin(t1), cz + rr * math.cos(t1)]]
+            s.yuzey(p if isaret > 0 else p[::-1], renk)
+        for yan in (-1, 1):                                   # yan duvarlar
+            p = [[yan * yari_en, cy + r0 * math.sin(t0), cz + r0 * math.cos(t0)],
+                 [yan * yari_en, cy + r1 * math.sin(t0), cz + r1 * math.cos(t0)],
+                 [yan * yari_en, cy + r1 * math.sin(t1), cz + r1 * math.cos(t1)],
+                 [yan * yari_en, cy + r0 * math.sin(t1), cz + r0 * math.cos(t1)]]
+            s.yuzey(p if yan > 0 else p[::-1], KOYU)
+
+
+def _arka_bolum(s):
+    """Sele ile arka tekerlek arasindaki ucgeni dolduran parcalar.
+
+    Olculer kucuk tutuldu: ilk denemede yan panel selenin hizasina kadar
+    cikinca siluet tek bir kara levhaya donusuyor ve amortisoru de kapatiyordu.
+    Panel artik selenin ALTINDA kaliyor, amortisor onunde acikta duruyor."""
+    # 1) MONOAMORTISOR: salincaktan sasiye, panelin onunde acikta. Yay amber.
+    alt = np.array([0.0, 0.46, -0.49])
+    ust = np.array([0.0, 0.92, -0.37])
+    s.silindir(alt, ust, 0.026, KOYU, segment=10)             # mil
+    s.silindir(alt, alt + (ust - alt) * 0.20, 0.048, KOYU2, segment=10)
+    s.kure(alt, 0.036, KOYU2, dilim=8, halka=5)
+    s.kure(ust, 0.034, KOYU2, dilim=8, halka=5)
+    for i in range(7):                                        # yay sarimlari
+        a = 0.24 + 0.68 * i / 7.0
+        s.silindir(alt + (ust - alt) * a, alt + (ust - alt) * (a + 0.048),
+                   0.054, AMBER, segment=10, kapak=False)
+
+    # 2) YAN PANEL: selenin ALTINDA, arkaya dogru daralan ince levha
+    for yan in (-1, 1):
+        x = yan * 0.185
+        kose = [(0.94, -0.52), (0.95, -0.78), (0.72, -0.79), (0.69, -0.54)]
+        p = [[x, y, z] for y, z in kose]
+        s.yuzey(p if yan > 0 else p[::-1], KOYU2)
+        serit = [(0.79, -0.53), (0.81, -0.77), (0.76, -0.775), (0.745, -0.535)]
+        q = [[x + yan * 0.004, y, z] for y, z in serit]
+        s.yuzey(q if yan > 0 else q[::-1], AMBER)
+
+    # 3) CAMURLUK: lastigin ustune oturur (0 = ileri, +pi/2 = yukari)
+    _yay_kabuk(s, (AKS_Y, AKS_Z), TEKER_R + 0.028, TEKER_R + 0.048,
+               1.25, 2.45, 0.098, KOYU2, n=7)
+
+    # 4) SUSTURUCU: sag yan, yukari egimli. Parlak krom yerine koyu metal -
+    #    acik renk birakilinca kucuk kadrajda tum arkayi yutuyor.
+    e0 = np.array([0.125, 0.50, -0.42])
+    e1 = np.array([0.215, 0.60, -0.88])
+    s.silindir(e0, e1, 0.026, KOYU, segment=10)               # baglanti borusu
+    s.silindir(e0 + (e1 - e0) * 0.36, e1, 0.055, (92, 92, 96), segment=12)
+    s.silindir(e1, e1 + (e1 - e0) * 0.05, 0.044, (26, 26, 28), segment=12)
+
+    # 5) ZINCIR MUHAFAZASI: sol yan, zincirin ustunde
+    s.kutu([-0.112, 0.46, -0.52], [0.014, 0.050, 0.30], KOYU2)
+
+    # 6) ARKA SINYALLER
+    for yan in (-1, 1):
+        s.kure([yan * 0.170, 0.950, -0.87], 0.028, AMBER, dilim=8, halka=5)
+
+
 def adv_motosiklet(tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     """Duz (frensiz) model; sadece Sahne dondurur."""
     return motosiklet(0.0, tekerlek_aci, direksiyon, surucu)[0]
@@ -64,6 +147,7 @@ def motosiklet(fren=0.0, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     cokme = 0.085 * fren
     ust = Sahne()
     _ekle(ust, "govde")
+    _arka_bolum(ust)
     if surucu:
         _ekle(ust, "surucu")
     on = Sahne()
