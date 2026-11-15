@@ -60,6 +60,15 @@ def _perde(im: Image.Image) -> None:
     im.alpha_composite(perde.resize((G, Y)))
 
 
+def _yayinlanan_sayisi() -> int:
+    """content/yayin_kaydi.json'daki gercek yayin sayisi."""
+    yol = "content/yayin_kaydi.json"
+    if not os.path.exists(yol):
+        return 0
+    with open(yol, encoding="utf-8") as f:
+        return len(json.load(f).get("yayinlananlar", []))
+
+
 def _dersler() -> list:
     cikti = []
     for yol in sorted(lesson.dersleri_bul()):
@@ -68,7 +77,7 @@ def _dersler() -> list:
         except Exception:          # sablon ve yarim dosyalar atlanir
             continue
         cikti.append((d["no"], d["baslik"]))
-    return sorted(cikti)[:4]
+    return sorted(cikti)
 
 
 AYLAR = ["", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz",
@@ -114,13 +123,14 @@ def _hafta_verisi(gun: int = 7) -> tuple:
         if tarih >= bas and k["ders"] in sozluk:
             hafta.append(sozluk[k["ders"]])
     if hafta:
-        return "yayinda", sorted(hafta), bas, bit
-    return "hazir", sorted(sozluk.values())[:4], bas, bit
+        return "yayinda", sorted(hafta)[-5:], len(hafta), bas, bit
+    tum = sorted(sozluk.values())
+    return "hazir", tum[-5:], len(tum), bas, bit
 
 
 def kare_ozet(t: float, sure: float, veri: tuple) -> Image.Image:
     """Haftalik ozet karti. Duyurudan ayrilsin diye gece sahnesi."""
-    durum, dersler, bas, bit = veri
+    durum, dersler, toplam, bas, bit = veri
     arka = s3.kare_viraj3b(22.0 + t, 55.0, gosterge=False).convert("RGBA")
     _perde(arka)
     d = ImageDraw.Draw(arka, "RGBA")
@@ -135,7 +145,7 @@ def kare_ozet(t: float, sure: float, veri: tuple) -> Image.Image:
 
     g2 = _gir(t, 1.5, 0.6)
     if g2 > 0:
-        s2.yazi(d, (G / 2, UST_GUVENLI + 168), f"{len(dersler)}", 190,
+        s2.yazi(d, (G / 2, UST_GUVENLI + 168), f"{toplam}", 190,
                 (*s2.KREM, int(255 * g2)), ortala=True)
         s2.yazi(d, (G / 2, UST_GUVENLI + 372),
                 "DERS YAYINLANDI" if durum == "yayinda" else "DERS HAZIRLANDI",
@@ -188,11 +198,19 @@ def kare(t: float, sure: float, dersler: list) -> Image.Image:
                             fill=s2.TURUNCU)
 
     # --- alt blok: dersler -------------------------------------------------
+    # Sayi ve durum VERIDEN gelir. Onceden "4 DERS YAYINDA" sabitti: ders
+    # sayisi 11'e cikinca yanlis oldu ve hicbiri yayinlanmadigi halde
+    # "yayinda" diyordu.
+    toplam = len(dersler)
+    yayinda = _yayinlanan_sayisi()
     g2 = _gir(t, 2.3)
     if g2 > 0:
-        s2.yazi(d, (G / 2, 1072), "4 DERS YAYINDA", 50, s2.MAVI, ortala=True)
+        metin = (f"{yayinda} DERS YAYINDA" if yayinda
+                 else f"{toplam} DERS HAZIR")
+        s2.yazi(d, (G / 2, 1072), metin, 50, s2.MAVI, ortala=True)
 
-    for i, (no, baslik) in enumerate(dersler):
+    # Kartta bes satir yer var; 11 ders sigmaz, en yenileri gosterilir.
+    for i, (no, baslik) in enumerate(dersler[-5:]):
         gi = _gir(t, 3.6 + i * 1.25, 0.5)
         if gi <= 0:
             continue
@@ -235,13 +253,13 @@ def main() -> None:
 
     if args.tur == "ozet":
         veri = _hafta_verisi(args.gun)
-        durum, dersler = veri[0], veri[1]
+        durum, dersler, toplam = veri[0], veri[1], veri[2]
         if not dersler:
             raise SystemExit("HATA: ozetlenecek ders yok.")
         cizici = lambda t: kare_ozet(t, args.sure, veri)      # noqa: E731
         ad = "haftalik-ozet"
         s3.GUNDUZ = False                                     # gece: duyurudan ayrilsin
-        bilgi = f"{len(dersler)} ders · {'yayinlanan' if durum == 'yayinda' else 'hazir'}"
+        bilgi = f"{toplam} ders · {'yayinlanan' if durum == 'yayinda' else 'hazir'}"
     else:
         dersler = _dersler()
         if not dersler:
@@ -249,7 +267,7 @@ def main() -> None:
         cizici = lambda t: kare(t, args.sure, dersler)        # noqa: E731
         ad = "yol-okulu"
         s3.GUNDUZ = True
-        bilgi = f"{len(dersler)} ders"
+        bilgi = f"{len(dersler)} ders (son 5 gosteriliyor)"
 
     cikti = args.cikti or f"output/{dt.date.today():%Y-%m-%d}_story_{ad}.mp4"
     os.makedirs(os.path.dirname(cikti) or ".", exist_ok=True)
