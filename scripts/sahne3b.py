@@ -1592,6 +1592,252 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  SERIT ICI KONUM
+# ---------------------------------------------------------------------------
+# Kaynaklar: MSF surucu el kitabi (seridi uc esit parcaya bol), Florida ve
+# Idaho motosiklet el kitaplari, Motorcycle Riders Hub (UK).
+# Uzerinde birlestikleri:
+#   1. Serit uc parcaya bolunur: sol - orta - sag.
+#   2. Konumu degistirmenin sebeplerinden biri GORUS HATTINI UZATMAK'tir.
+#   3. Viraja yaklasirken virajin DISINA gecilir; Florida el kitabi bunu
+#      saga donen viraj icin acikca soyluyor, UK kaynagi sola donen viraj
+#      icin ayna goruntusunu veriyor. Ikisi ayni ilke.
+# ONEMLI DUZELTME: "seridin ortasi yaglidir, ortadan kacin" yaygin bir
+# inanis ama Idaho el kitabi acikca "seridin hicbir kismindan kacinmak
+# gerekmez - orta dahil" diyor. Derste kural degil, ZEMINE BAK deniyor.
+#
+# GEOMETRI (sahnede gosterilen rakamlar buradan):
+# Yol saga R = 140 m ile kiviriliyor, gorusu kapatan ic yamac yol
+# kenarinda (4.2 m). Surucunun yanal konumu x0 ise bakis cizgisi ic kenara
+# TEGET oldugu yerde biter:
+#     kappa*z^2/2 - m*z + (4.2 - x0) = 0  -> cift kok -> z = sqrt(2*(4.2-x0)*R)
+#   sol ucte bir (x=1.0) -> 29.9 m
+#   orta         (x=2.0) -> 24.8 m
+#   sag ucte bir (x=3.1) -> 17.5 m
+# Yani ayni virajda sol ucte bir, sag ucte birin 1.7 katini gosteriyor.
+KONUM_R = 140.0                 # viraj yaricapi (m) - saga kiviriliyor
+KONUM_KENAR = 4.2               # ic yamacin yol eksenine uzakligi (m)
+KONUM_DONGU = 10.0              # yanal kayma dongusu (sn)
+KONUM_SOL, KONUM_ORTA, KONUM_SAG = 1.0, 2.0, 3.1
+KONUM_ARAC_Z = 22.0
+
+KONUM_NOKTA = {
+    "ucte":  ("ŞERİDİ ÜÇE BÖL", "sol · orta · sağ"),
+    "disa":  ("VİRAJIN DIŞINA GEÇ", "görüş uzar"),
+    "olcu":  ("AYNI VİRAJ, İKİ KONUM", "17 m ↔ 30 m"),
+    "bedel": ("BEDELİ VAR", "karşı şeride fazla yanaşma"),
+    "arka":  ("TAM ARKASINA OTURMA", "ne görürsün ne görünürsün"),
+    "orta":  ("'ORTA KİRLİDİR' KURALI YOK", "zemine bak, kurala değil"),
+}
+KONUM_SIRA = list(KONUM_NOKTA)
+KONUM_FAZ = [(4.0, "ucte")]
+
+
+def konum_faz_ayarla(metin):
+    """sahne_fazlari: "4:ucte, 11:disa, ..." """
+    global KONUM_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in KONUM_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen konum noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    KONUM_FAZ = sorted(f)
+
+
+def konum_evre(t):
+    """(ad, fazin basladigi an). Yanal konum ADIMA bagli oldugu icin
+    fazin basi lazim: kendi dongusunde kaldiginda "tam arkasina oturma"
+    denirken motosiklet arkada olmayabiliyordu."""
+    ad, bas = KONUM_FAZ[0][1], KONUM_FAZ[0][0]
+    for z, a in KONUM_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _konum_kx(z):
+    """Yolun z metre ileride saga kaymasi."""
+    return z * z / (2.0 * KONUM_R)
+
+
+def _konum_gorus(x0):
+    """Bakis cizgisinin ic yamaca teget oldugu uzaklik (m)."""
+    pay = max(0.25, KONUM_KENAR - x0)
+    return math.sqrt(2.0 * pay * KONUM_R)
+
+
+def _konum_x(anahtar, gecen):
+    """Yanal konum: her adim kendi konumunu gosterir."""
+    def ara(a, b, p):
+        return a + (b - a) * yumusak(min(1.0, max(0.0, p)))
+
+    if anahtar == "ucte":                      # uc parca tanitiliyor
+        return KONUM_ORTA
+    if anahtar == "disa":                      # sagdan sola yuru
+        return ara(KONUM_SAG, KONUM_SOL, (gecen - 0.6) / 3.2)
+    if anahtar == "olcu":                      # iki konum arasinda git gel
+        p = (gecen % 5.0) / 5.0
+        return (ara(KONUM_SAG, KONUM_SOL, p / 0.5) if p < 0.5
+                else ara(KONUM_SOL, KONUM_SAG, (p - 0.5) / 0.5))
+    if anahtar == "bedel":                     # karsi serit dibinde kal
+        return ara(KONUM_ORTA, KONUM_SOL, gecen / 1.6)
+    if anahtar == "arka":                      # once tam arkasinda, sonra kay
+        return (KONUM_ORTA if gecen < 3.6
+                else ara(KONUM_ORTA, KONUM_SOL, (gecen - 3.6) / 1.8))
+    p = (gecen % 6.0) / 6.0                    # orta: uc parcayi tara
+    return (ara(KONUM_SOL, KONUM_SAG, p / 0.5) if p < 0.5
+            else ara(KONUM_SAG, KONUM_SOL, (p - 0.5) / 0.5))
+
+
+def _konum_ad(x0):
+    if x0 < 1.45:
+        return 0
+    return 1 if x0 < 2.65 else 2
+
+
+def _konum_yamac(s, z0, z1, renk):
+    """Virajin IC tarafindaki yamac: gorusu kapatan sey bu.
+
+    Ad "_yamac" degil: dosyada baska imzayla bir _yamac zaten var ve
+    sonra tanimlandigi icin bunu golgeliyordu."""
+    z = z0
+    while z < z1:
+        z2 = min(z + 4.0, z1)
+        a, b = _konum_kx(z) + KONUM_KENAR, _konum_kx(z2) + KONUM_KENAR
+        s.yuzey([[a, 0.0, z], [a + 1.5, 2.3, z], [b + 1.5, 2.3, z2],
+                 [b, 0.0, z2]], renk, katman=3)
+        s.yuzey([[a + 1.5, 2.3, z], [a + 7.0, 2.6, z], [b + 7.0, 2.6, z2],
+                 [b + 1.5, 2.3, z2]], tuple(int(k * 0.86) for k in renk),
+                katman=3)
+        z = z2
+
+
+def kare_konum3b(t):
+    """Saga donen viraj: serit ici konum degistikce gorus hatti uzayip kisalir."""
+    anahtar, faz_bas = konum_evre(t)
+    etiket, aciklama = KONUM_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    x0 = _konum_x(anahtar, max(0.0, t - faz_bas))
+    hangi = _konum_ad(x0)
+    arac_var = anahtar == "arka"
+    gorus = _konum_gorus(x0)
+    # Onundeki arac bakisi keser: serit ortasindaysan yoldan once onu gorursun.
+    if arac_var and abs(x0 - KONUM_ORTA) < 0.62:
+        gorus = min(gorus, KONUM_ARAC_Z - 4.0)
+
+    global _kon_s, _kon_tek
+    _kon_s = (globals().get("_kon_s", 0.0) + 16.0 / FPS) % 8.0
+    _kon_tek = (globals().get("_kon_tek", 0.0)
+                + 16.0 / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -16.0
+    while z < 150:
+        z2 = z + 4.0
+        a, b = _konum_kx(z), _konum_kx(z2)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[a - 4.2, 0.01, z], [a + 4.2, 0.01, z],
+                 [b + 4.2, 0.01, z2], [b - 4.2, 0.01, z2]], asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[a + yan * 4.0, 0.02, z], [a + yan * 3.86, 0.02, z],
+                     [b + yan * 3.86, 0.02, z2], [b + yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(-2, 22):
+        zc = i * 8.0 - _kon_s
+        a, b = _konum_kx(zc), _konum_kx(zc + 3.6)
+        s.yuzey([[a - 0.11, 0.02, zc], [a + 0.11, 0.02, zc],
+                 [b + 0.11, 0.02, zc + 3.6], [b - 0.11, 0.02, zc + 3.6]],
+                (210, 210, 205), katman=2)
+
+    # Seridi uce bolen soluk kilavuz cizgileri
+    for pay in (4.0 / 3.0, 8.0 / 3.0):
+        for i in range(0, 24):
+            zc = i * 4.0 - (_kon_s % 4.0)
+            if zc < -4.0:
+                continue
+            a, b = _konum_kx(zc) + pay, _konum_kx(zc + 1.3) + pay
+            s.yuzey([[a - 0.06, 0.025, zc], [a + 0.06, 0.025, zc],
+                     [b + 0.06, 0.025, zc + 1.3], [b - 0.06, 0.025, zc + 1.3]],
+                    (150, 152, 148), katman=2)
+
+    _konum_yamac(s, 0.0, 150.0, (72, 86, 62))
+    if anahtar == "bedel":                 # karsi seridin dibi: uyari bandi
+        zz = 2.0
+        while zz < 60.0:
+            z2 = zz + 2.2
+            a0, b0 = _konum_kx(zz), _konum_kx(z2)
+            s.yuzey([[a0 + 0.18, 0.03, zz], [a0 + 0.62, 0.03, zz],
+                     [b0 + 0.62, 0.03, z2], [b0 + 0.18, 0.03, z2]],
+                    KIRMIZI, katman=2)
+            zz += 4.4
+
+    if arac_var:
+        a = Sahne()
+        _araba(a, 0.0, 0.0, (52, 86, 142))
+        s.ekle(a, t=[_konum_kx(KONUM_ARAC_Z) + KONUM_ORTA, 0.0, KONUM_ARAC_Z])
+
+    model, _, _ = motosiklet(0.0, _kon_tek, 0.0)
+    s.ekle(model, t=[x0, 0.0, 0.0])
+
+    kam_x = 0.9 + 0.5 * x0
+    kamera = Kamera([kam_x, 5.4, -16.0], [_konum_kx(13.0) + 1.4, 0.6, 13.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- bakis cizgisi: ic yamaca teget bittigi yere kadar ------------------
+    uc_x = (_konum_kx(gorus) + KONUM_KENAR) if not (
+        arac_var and gorus < KONUM_ARAC_Z - 3.0) else (
+        _konum_kx(gorus) + KONUM_ORTA)
+    _bakis_oku(d, kamera, np.array([x0, 0.9, 1.2]),
+               np.array([uc_x, 0.1, gorus]),
+               KIRMIZI if gorus < 20.0 else YESIL)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if anahtar in ("bedel", "arka") else TURUNCU
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    g_renk = KIRMIZI if gorus < 20.0 else YESIL
+    d.rounded_rectangle([G - 340, 470, G - 72, 612], 18, fill=(0, 0, 0, 175),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 206, 478), "GÖRÜŞ", 26, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 206, 512), f"{gorus:.0f}", 72, g_renk, ortala=True)
+    s2.yazi(d, (G - 206, 578), "metre", 26, (150, 155, 160), ortala=True)
+
+    px, py, pw = 62, 470, 420
+    d.rounded_rectangle([px, py, px + pw, py + 196], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 14), "ŞERİT İÇİ KONUM", 26, (150, 155, 162))
+    hx, hy, hw, hh = px + 22, py + 58, pw - 44, 62
+    for i, ad in enumerate(("SOL", "ORTA", "SAĞ")):
+        x1 = hx + hw * i / 3.0
+        acik = i == hangi
+        d.rounded_rectangle([x1 + 4, hy, x1 + hw / 3.0 - 4, hy + hh], 8,
+                            fill=(TURUNCU if acik else (40, 46, 54)),
+                            outline=(92, 102, 112), width=2)
+        s2.yazi(d, (x1 + hw / 6.0, hy + 16), ad, 30,
+                (12, 12, 14) if acik else (128, 136, 146), ortala=True)
+    s2.yazi(d, (px + 22, py + 138),
+            "iç yamaç yol kenarında · R=140 m", 24, (130, 138, 148))
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  TAKIP MESAFESI: IKI SANIYE
 # ---------------------------------------------------------------------------
 # Iki ayri kural var ve ikisi de dogrulandi:
@@ -2489,7 +2735,7 @@ def main():
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
-                             "kacinma", "yolcu", "kavsak", "takip"),
+                             "kacinma", "yolcu", "kavsak", "takip", "konum"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -2527,6 +2773,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "konum":
+        konum_faz_ayarla(args.fazlar)
+        cizer = kare_konum3b
     elif args.sahne == "takip":
         takip_faz_ayarla(args.fazlar)
         cizer = kare_takip3b
