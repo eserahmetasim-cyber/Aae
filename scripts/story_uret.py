@@ -155,7 +155,7 @@ def kare_ozet(t: float, sure: float, veri: tuple) -> Image.Image:
         gi = _gir(t, 3.4 + i * 1.2, 0.5)
         if gi <= 0:
             continue
-        yy = 1152 + i * 88
+        yy = 1100 + i * 84
         x0 = 96 - int(40 * (1 - gi))
         d.rounded_rectangle([x0, yy, x0 + 64, yy + 64], 12,
                             fill=(*s2.TURUNCU, int(235 * gi)))
@@ -207,14 +207,14 @@ def kare(t: float, sure: float, dersler: list) -> Image.Image:
     if g2 > 0:
         metin = (f"{yayinda} DERS YAYINDA" if yayinda
                  else f"{toplam} DERS HAZIR")
-        s2.yazi(d, (G / 2, 1072), metin, 50, s2.MAVI, ortala=True)
+        s2.yazi(d, (G / 2, 1024), metin, 50, s2.MAVI, ortala=True)
 
     # Kartta bes satir yer var; 11 ders sigmaz, en yenileri gosterilir.
     for i, (no, baslik) in enumerate(dersler[-5:]):
         gi = _gir(t, 3.6 + i * 1.25, 0.5)
         if gi <= 0:
             continue
-        yy = 1152 + i * 88
+        yy = 1100 + i * 84
         x0 = 96 - int(40 * (1 - gi))
         d.rounded_rectangle([x0, yy, x0 + 64, yy + 64], 12,
                             fill=(*s2.TURUNCU, int(235 * gi)))
