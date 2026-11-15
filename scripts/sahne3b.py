@@ -1592,106 +1592,214 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
-#  KAVSAK: KARSIDAN GELIP SOLA DONEN ARAC
+#  TAKIP MESAFESI: IKI SANIYE
 # ---------------------------------------------------------------------------
-# Kaynaklar ikincil: NHTSA ve IIHS verisini ozetleyen guvenlik/hukuk siteleri,
-# Hurt Report (1981) ve MAIDS (1999-2000) ozetleri, "looked but failed to see"
-# yazini (SMARTER/Science of Being Seen derlemeleri).
-# Hepsi ayni DESENDE birlesiyor: cok araclili motosiklet kazalarinin en
-# yaygin tipi, karsidan gelen aracin motosikletin onunden sola donmesidir ve
-# surucu sonra "gormedim" der. Ama ORAN kaynaktan kaynaga degisiyor (%36,
-# %42, %46, %53 - hepsi farkli paydayla). Birincil belgelere bu ortamdan
-# erisilemedi; bu yuzden derste RAKAM YOK, yalnizca davranis ogretiliyor.
-KAVSAK_DONGU = 11.0
-KAVSAK_R = 7.0              # arabanin donus yaricapi (m)
-KAVSAK_SERIT = -2.1         # karsi seridin ortasi
-KAVSAK_BAS = 82.0           # dongu basinda kavsagin uzakligi (m)
-KAVSAK_YAY0, KAVSAK_YAY1 = 6.4, 8.6    # donusun basi ve sonu (sn)
+# Iki ayri kural var ve ikisi de dogrulandi:
+#   1. Turkiye'de Karayollari Trafik Yonetmeligi takip mesafesini "kendi
+#      aracinin km/saat cinsinden hizinin en az yarisi kadar metre" diye
+#      tanimliyor (90 km/h -> 45 m). Kaynaklar surucu kursu ve sigorta
+#      siteleri; hepsi ayni metni veriyor, madde numarasi tek kaynakta
+#      geciyor, bu yuzden derste madde numarasi YAZILMIYOR.
+#   2. Resmi motosiklet el kitaplari (NY DMV, Indiana surucu el kitabi)
+#      en az IKI SANIYE diyor.
+# Ikisi ayni seyi soyluyor: (v/2) metre / (v/3.6) m/sn = 1.8 saniye - HIZDAN
+# BAGIMSIZ. Yani yonetmelik her hizda 1.8 sn'dir, iki saniye onu paylarla
+# karsilar. Bu aritmetik dersin belkemigi ve ekranda gosteriliyor.
+# "Islakta ikiye katla" egitim pratigi olarak yaygin ama resmi el
+# kitaplarinda rakamla gecmiyor; derste kural degil TAVSIYE diye veriliyor.
+TAKIP_DONGU = 12.0
+TAKIP_V = 90.0 / 3.6            # m/sn - sahnedeki sabit hiz (90 km/h)
+TAKIP_YAKIN, TAKIP_GUVENLI = 16.0, 50.0
+TAKIP_YONETMELIK_SN = 1.8       # hizin yarisi kadar metre, her hizda bu eder
+TAKIP_HEDEF_SN = 2.0
+TAKIP_ISLAK_SN = 4.0
 
-KAVSAK_NOKTA = {
-    "yavasla": ("GAZI KES", "kavşağa girmeden"),
-    "onteker": ("ÖN TEKERE BAK", "ilk kıpırdayan o"),
-    "goz":     ("GÖZ TEMASI SÖZ DEĞİL", "bakmak görmek değil"),
-    "fren":    ("PARMAKLAR FRENDE", "basma, hazır bekle"),
-    "bosluk":  ("KAÇIŞ BOŞLUĞU", "önceden seç"),
-    "duz":     ("FREN DÜZ ÇİZGİDE", "yatıkken değil"),
+TAKIP_NOKTA = {
+    "yonetmelik": ("HIZIN YARISI KADAR METRE", "90 km/h → 45 m"),
+    "saniye":     ("HER HIZDA 1,8 SANİYE", "45 ÷ 25 = 1,8"),
+    "say":        ("SEN 2 SANİYE SAY", "metre tahmin edilmez"),
+    "isaret":     ("BİR İŞARET SEÇ", "bin bir, bin iki"),
+    "katla":      ("ISLAK · GECE · YOLCU", "ikiye katla"),
+    "gorus":      ("MESAFE = GÖRÜŞ", "sadece fren değil"),
 }
-KAVSAK_SIRA = list(KAVSAK_NOKTA)
-KAVSAK_FAZ = [(4.0, "yavasla")]
+TAKIP_SIRA = list(TAKIP_NOKTA)
+TAKIP_FAZ = [(4.0, "yonetmelik")]
 
 
-def kavsak_faz_ayarla(metin):
-    """sahne_fazlari: "4:yavasla, 11:onteker, ..." """
-    global KAVSAK_FAZ
+def takip_faz_ayarla(metin):
+    """sahne_fazlari: "4:yonetmelik, 11:saniye, ..." """
+    global TAKIP_FAZ
     if not metin:
         return
     f = []
     for parca in metin.split(","):
         t_str, _, ad = parca.strip().partition(":")
         ad = ad.strip()
-        if ad not in KAVSAK_NOKTA:
-            raise SystemExit(f"HATA: bilinmeyen kavsak noktasi '{ad}'")
+        if ad not in TAKIP_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen takip noktasi '{ad}'")
         f.append((float(t_str), ad))
-    KAVSAK_FAZ = sorted(f)
+    TAKIP_FAZ = sorted(f)
 
 
-def kavsak_evre(t):
-    ad, bas = KAVSAK_FAZ[0][1], KAVSAK_FAZ[0][0]
-    for z, a in KAVSAK_FAZ:
+def takip_evre(t):
+    ad, bas = TAKIP_FAZ[0][1], TAKIP_FAZ[0][0]
+    for z, a in TAKIP_FAZ:
         if t >= z:
             ad, bas = a, z
     return ad, yumusak((t - bas) / 0.5)
 
 
-def _kavsak_yol(u):
-    """(alinan_yol, hiz). Kavsaga yaklasirken yavasla, gectikten sonra ac."""
-    if u < 3.0:
-        return 12.0 * u, 12.0
-    if u < 5.5:
-        k = u - 3.0
-        return 36.0 + 12.0 * k - 1.0 * k * k, 12.0 - 2.0 * k
-    if u < 8.0:
-        k = u - 5.5
-        return 59.75 + 7.0 * k - 0.8 * k * k, 7.0 - 1.6 * k
-    k = u - 8.0
-    return 72.25 + 3.0 * k + (4.0 / 3.0) * k * k, 3.0 + (8.0 / 3.0) * k
+def _takip_mesafe(u):
+    """Dongu cok yakin baslar, surucu gazi birakir, mesafe guvenliye acilir."""
+    if u < 2.5:
+        return TAKIP_YAKIN
+    if u < 7.0:
+        return TAKIP_YAKIN + (TAKIP_GUVENLI - TAKIP_YAKIN) * yumusak(
+            (u - 2.5) / 4.5)
+    return TAKIP_GUVENLI
 
 
-def _kavsak_araba(u, kz):
-    """(x, z, sapma). Karsi seritte yaklasir, sonra onumuzden SOLA doner.
-
-    Bizim yonumuz +z ve sag seritte gidiyoruz, yani +z'ye bakanin sagi +x.
-    Karsidan gelen arac -z'ye bakar; onun SOLU +x'tir - yani sola donusu
-    tam bizim seridimizin ustunden gecer. Dersin butun olayi bu."""
-    if u < KAVSAK_YAY0:
-        p = u / KAVSAK_YAY0
-        return KAVSAK_SERIT, kz + KAVSAK_R + 40.0 * (1.0 - p) ** 1.6, math.pi
-    if u < KAVSAK_YAY1:
-        p = yumusak((u - KAVSAK_YAY0) / (KAVSAK_YAY1 - KAVSAK_YAY0))
-        th = math.pi + 0.5 * math.pi * p
-        cx, cz = KAVSAK_SERIT + KAVSAK_R, kz + KAVSAK_R
-        return cx + KAVSAK_R * math.cos(th), cz + KAVSAK_R * math.sin(th), -th
-    return (KAVSAK_SERIT + KAVSAK_R + 9.0 * (u - KAVSAK_YAY1), kz,
-            -1.5 * math.pi)
+def _delinator(s, x, z, isaretli=False):
+    """Yol kenari dikmesi: sayarken gozun takildigi sabit nokta."""
+    s.kutu([x, 0.42, z], [0.10, 0.84, 0.10], (238, 238, 232))
+    s.kutu([x, 0.66, z], [0.11, 0.14, 0.11],
+           TURUNCU if isaretli else (196, 56, 46))
+    if isaretli:
+        # Sayimin basladigi dikme uzaktan da secilmeli: kucuk bayrak
+        # kadrajda kayboluyordu.
+        s.kutu([x, 0.95, z], [0.11, 0.46, 0.11], TURUNCU)
+        s.kutu([x - 0.22, 1.28, z], [0.46, 0.34, 0.04], TURUNCU)
 
 
-def _halka(d, kamera, nokta, renk, kalinlik=7):
-    """3B noktanin ustune ekranda halka. Yaricap uzakliga gore kuculur."""
-    kn = kamera.kameraya(np.array([nokta], dtype=float))
-    if kn[0, 2] <= 0.4:
-        return None
-    r = max(20.0, min(95.0, 760.0 / kn[0, 2]))
-    x, y = kamera.ekrana(kn)[0]
-    d.ellipse([x - r, y - r, x + r, y + r], outline=(*renk, 235), width=kalinlik)
-    return x, y, r
+def _mesafe_seridi(s, x, z0, z1, renk):
+    """Serit ortasinda kesikli olcu bandi: biz ile onumuzdeki arasi."""
+    z = z0
+    while z < z1:
+        z2 = min(z + 1.7, z1)
+        s.yuzey([[x - 0.17, 0.03, z], [x + 0.17, 0.03, z],
+                 [x + 0.17, 0.03, z2], [x - 0.17, 0.03, z2]], renk, katman=2)
+        z += 3.4
 
 
-def _yol_kutusu(s, x0, x1, z0, z1, renk, kalin=0.16):
-    """Asfaltin ustune cizilen dikdortgen cerceve (kacis boslugu)."""
-    for a, b, c, e in ((x0, x1, z0, z0 + kalin), (x0, x1, z1 - kalin, z1),
-                       (x0, x0 + kalin, z0, z1), (x1 - kalin, x1, z0, z1)):
-        s.yuzey([[a, 0.03, c], [b, 0.03, c], [b, 0.03, e], [a, 0.03, e]],
-                renk, katman=2)
+def kare_takip3b(t):
+    """Alcak takip gorusu: onumuzdeki araca mesafe saniyeye cevrilir."""
+    anahtar, _ = takip_evre(t)
+    etiket, aciklama = TAKIP_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    u = t % TAKIP_DONGU
+    mesafe = _takip_mesafe(u)
+    saniye = mesafe / TAKIP_V
+    guvenli = saniye >= TAKIP_HEDEF_SN
+    renk = YESIL if guvenli else KIRMIZI
+
+    global _tak_s, _tak_tek
+    _tak_s = (globals().get("_tak_s", 0.0) + TAKIP_V / FPS) % 8.0
+    _tak_d = (globals().get("_tak_s", 0.0)) % 25.0
+    _tak_tek = (globals().get("_tak_tek", 0.0)
+                + TAKIP_V / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -16.0
+    while z < 220:
+        z2 = z + (6.0 if z < 100 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -16.0
+        while zz < 110:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-2, 16):
+        zc = i * 8.0 - _tak_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # Yol kenari dikmeleri 25 m'de bir. Bizimle onumuzdeki aracin ARASINDA
+    # kalan ilki isaretli: sayim o dikmeden baslar.
+    sayim_z = None
+    for i in range(0, 9):
+        zc = i * 25.0 - _tak_d
+        if zc < -6.0:
+            continue
+        arada = 1.0 < zc < mesafe
+        if arada and sayim_z is None:
+            sayim_z = zc
+        _delinator(s, 4.7, zc, isaretli=arada and sayim_z == zc)
+
+    _mesafe_seridi(s, FREN_SERIT, 2.4, max(3.0, mesafe - 2.6), renk)
+
+    a = Sahne()
+    _araba(a, 0.0, 0.0, (52, 86, 142))
+    s.ekle(a, t=[FREN_SERIT, 0.0, mesafe])
+
+    model, _, _ = motosiklet(0.0, _tak_tek, 0.0)
+    s.ekle(model, t=[FREN_SERIT, 0.0, 0.0])
+
+    kamera = Kamera([FREN_SERIT + 0.6, 5.4, -16.0], [FREN_SERIT - 0.7, 0.6, 13.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = YESIL if anahtar in ("say", "gorus") else TURUNCU
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    d.rounded_rectangle([G - 320, 470, G - 72, 612], 18, fill=(0, 0, 0, 170),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 196, 482), f"{int(round(TAKIP_V * 3.6))}", 82, KREM,
+            ortala=True)
+    s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
+
+    # Panel: degerler SAGA dayali. Ilk surumde sabit x ile yazilmislardi ve
+    # "1,4 sn" ile "36 m", "ISLAK..." ile "4,0 sn" ust uste biniyordu.
+    px, py, pw = 62, 470, 468
+    d.rounded_rectangle([px, py, px + pw, py + 338], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    sag = px + pw - 24
+
+    def _sagda(metin, punto, y, c):
+        g = d.textlength(metin, font=s2.font(punto))
+        s2.yazi(d, (sag - g, y), metin, punto, c)
+
+    s2.yazi(d, (px + 24, py + 14), "TAKİP", 26, (150, 155, 162))
+    s2.yazi(d, (px + 24, py + 46), f"{saniye:.1f}".replace(".", ",") + " sn",
+            72, renk)
+    _sagda(f"{mesafe:.0f} m", 44, py + 70, KREM)
+    s2.yazi(d, (px + 24, py + 128), "ÇOK YAKIN" if not guvenli else "TAMAM",
+            32, renk)
+
+    bx, by, bw, bh = px + 24, py + 180, pw - 48, 30
+    d.rounded_rectangle([bx, by, bx + bw, by + bh], 8, fill=(30, 34, 40, 230),
+                        outline=(78, 86, 96), width=3)
+    d.rounded_rectangle([bx + 3, by + 3,
+                         bx + 3 + (bw - 6) * min(1.0, saniye / TAKIP_ISLAK_SN),
+                         by + bh - 3], 6, fill=renk)
+    for deger, c in ((TAKIP_YONETMELIK_SN, (184, 190, 198)),
+                     (TAKIP_HEDEF_SN, YESIL), (TAKIP_ISLAK_SN, MAVI)):
+        xx = bx + bw * deger / TAKIP_ISLAK_SN
+        d.line([(xx, by - 9), (xx, by + bh + 9)], fill=(*c, 240), width=4)
+    for i, (ad, deger, c) in enumerate(
+            (("YÖNETMELİK", "1,8 sn", (184, 190, 198)),
+             ("HEDEF", "2,0 sn", YESIL),
+             ("ISLAKTA", "4,0 sn", MAVI))):
+        yy = by + 52 + i * 32
+        d.rounded_rectangle([bx, yy + 3, bx + 9, yy + 25], 4, fill=c)
+        s2.yazi(d, (bx + 24, yy), ad, 26, (190, 196, 204))
+        _sagda(deger, 26, yy, c)
+    return im
 
 
 def kare_kavsak3b(t):
@@ -2381,7 +2489,7 @@ def main():
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
-                             "kacinma", "yolcu", "kavsak"),
+                             "kacinma", "yolcu", "kavsak", "takip"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -2419,6 +2527,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "takip":
+        takip_faz_ayarla(args.fazlar)
+        cizer = kare_takip3b
     elif args.sahne == "kavsak":
         kavsak_faz_ayarla(args.fazlar)
         cizer = kare_kavsak3b

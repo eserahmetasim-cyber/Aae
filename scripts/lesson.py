@@ -138,12 +138,13 @@ def yukle(yol: str) -> dict:
     sahne = str(ham.get("sahne") or "").strip()
     if sahne and sahne not in ("fren", "viraj", "kontra", "gaz", "islak",
                                "kornokta", "manevra", "gece", "kontrol",
-                               "kacinma", "yolcu", "kavsak"):
+                               "kacinma", "yolcu", "kavsak", "takip"):
         raise DersHatasi(
             f"{yol}: 'sahne' fren|viraj|kontra|gaz|islak|kornokta|manevra|"
-            "gece|kontrol|kacinma|yolcu|kavsak olmali (ya da bos).")
+            "gece|kontrol|kacinma|yolcu|kavsak|takip olmali (ya da bos).")
     if sahne in ("kontra", "gaz", "islak", "kornokta", "manevra",
-                 "gece", "kontrol", "kacinma", "yolcu", "kavsak") and boyut != 3:
+                 "gece", "kontrol", "kacinma", "yolcu", "kavsak",
+                 "takip") and boyut != 3:
         raise DersHatasi(f"{yol}: '{sahne}' sahnesi yalnizca 3 boyutlu uretilir.")
     kaynak = _kaynak_bul(str(ham.get("kaynak") or "").strip())
     baslangic = float(ham.get("baslangic", 0))
