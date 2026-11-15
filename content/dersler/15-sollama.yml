@@ -1,0 +1,174 @@
+# Ders 15 · Sollama
+# Kaynaklar (teknik doğrulama):
+#   https://www.in.gov/dot/div/contracts/standards/dm-Archived/09Metric/Part5/Ch42/DCh42.pdf
+#   https://idot.illinois.gov/content/dam/soi/en/web/idot/documents/doing-business/manuals-split/local-roads-and-streets/chapter-28.pdf
+#   https://wsdot.wa.gov/publications/manuals/fulltext/m22-01/1260.pdf
+#   https://mdotjboss.state.mi.us/TSSD/getTSDocument.htm?docGuid=7608e140-5def-4ad2-90c9-40e4abb822a5&fileName=mdot_sight_distance_guidelines.pdf
+#
+# STANDART
+# Indiana DOT metrik geometrik tasarım bölümü (AASHTO Green Book tablosundan):
+# geçiş görüş mesafesi 90 km/h tasarım hızı için 615 m, 100 km/h için 670 m.
+# Aynı tablo geçilen aracı 73, geçen aracı 88 km/h alır.
+# NOT: MUTCD'nin "sollama yasak" şeridi çizme eşiği (90 km/h için 280 m)
+# tasarım değeriyle AYNI ŞEY DEĞİLDİR; karıştırılmıyor.
+#
+# SAHNEDEKİ HESAP (varsayımlar ekranda yazılı)
+#   geçilecek bağıl yol = 20 m geri boşluk + 16 m TIR + 20 m ön boşluk = 56 m
+#   süre = 56 / hız farkı
+#   gereken boş yol = (bizim hız + karşı hız) × süre
+#     90 ile 70'i geçerken, karşıdan 90 → fark 20 → 10,1 sn → 504 m
+#     90 ile 80'i geçerken, karşıdan 90 → fark 10 → 20,2 sn → 1008 m
+# Kendi hesabımız 504 m, standart 615 m. Aynı mertebe; bizimki daha cimri
+# varsayımlarla çıkıyor. Derste ikisi BİRLİKTE veriliyor, biri ötekinin
+# yerine geçmiyor.
+
+ders_no: 15
+slug: sollama
+baslik: "Sollama"
+alt_baslik: "Yarım kilometre boş yol ister"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: sollama
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:geri, 11:hesap, 19:az, 27:standart, 35:kor, 43:donus"
+
+kapanis: "Başlayamayacağın sollama, bitiremeyeceğin sollamadır"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Önce geri çekil — hem görürsün hem hız alırsın" }
+  - { t: 11, sure: 7, metin: "2 · 90 ile 70'i geçmek: 10 sn, 504 m boş yol" }
+  - { t: 19, sure: 7, metin: "3 · Hız farkı 10 ise: 20 sn, 1 kilometre" }
+  - { t: 27, sure: 7, metin: "4 · Yol standardı 90 km/h için 615 m ister" }
+  - { t: 35, sure: 7, metin: "5 · Düz çizgi varsa sollama yok" }
+  - { t: 43, sure: 7, metin: "6 · İki farını aynada gör, sonra şeride gir" }
+
+youtube:
+  baslik: "Sollama: Yarım Kilometre Boş Yol İster | Yol Okulu #15"
+  aciklama: |
+    Sollama, trafikte yaptığın en uzun süreli savunmasız an. Karşı şeritte
+    geçirdiğin her saniye, karşıdan gelenle aranı iki katı hızla kapatıyor.
+    Ve çoğu sürücü bunun gerçekte kaç metre istediğini hiç hesaplamadı.
+
+    0:04 Önce geri çekil
+    0:11 90 ile 70'i geçmek: 10 saniye, 504 metre
+    0:19 Hız farkı 10 ise: 20 saniye, 1 kilometre
+    0:27 Yol standardı 615 metre ister
+    0:35 Düz çizgi varsa sollama yok
+    0:43 İki farını aynada gör, sonra gir
+
+    HESABI YAPALIM
+    Varsayımlar: TIR'ın arkasında 20 metre boşluk, TIR 16 metre, geçtikten
+    sonra önüne 20 metre boşluk. Toplam 56 metrelik bağıl yol kat etmen
+    gerekiyor.
+
+    Sen 90, TIR 70 km/h. Aradaki fark 20 km/h = 5,6 m/sn.
+      56 ÷ 5,6 = 10,1 saniye
+      O 10,1 saniyede sen 252 metre gidiyorsun.
+      Karşıdan 90 ile gelen de 252 metre geliyor.
+      Gereken boş yol: 504 metre.
+
+    ŞİMDİ KÖTÜ HABER
+    Aynı hesabı TIR 80 km/h giderken yap. Fark 10 km/h:
+      56 ÷ 2,8 = 20,2 saniye
+      Gereken boş yol: 1008 metre. Bir kilometre.
+
+    Hız farkını yarıya indirdin, gereken yol ikiye katlandı. Sollamanın
+    tehlikesi hızda değil, SÜREDE. Yavaş sollama, uzun sollama demek.
+
+    STANDART NE DİYOR
+    Yol mühendisliği bunu zaten hesaplamış. AASHTO tablosundan alınan
+    Indiana DOT metrik değerlerine göre 90 km/h tasarım hızında geçiş
+    görüş mesafesi 615 metre, 100 km/h'de 670 metre. Bizim 504 metremiz
+    daha cimri varsayımlarla çıkıyor — yani iyimser taraf.
+
+    (Not: yola "sollama yasak" çizgisi çizilme eşiği bundan düşüktür,
+    90 km/h için 280 metre. O ayrı bir ölçüttür, güvenli sollama mesafesi
+    değildir.)
+
+    ÖNCE GERİ ÇEKİL
+    TIR'ın arkasına yapışmak iki şeyi birden bozar: önünü göremezsin ve
+    çıkarken hızlanacak yerin kalmaz. Geri çekil, yolu gör, sonra hız
+    alarak çık. Ders 13 ve 14'teki iki kuralın birleştiği yer burası.
+
+    DÜZ ÇİZGİ
+    Yoldaki kesiksiz çizgi bir tavsiye değil. Orada görüş mesafesi
+    sollamaya yetmiyor demektir — viraj, tepe ya da kavşak var. Göremediğin
+    yere sollama yapılmaz; "bir bakayım" diye karşı şeride burun uzatmak
+    da sollamadır.
+
+    DÖNERKEN
+    Geçtikten sonra hemen sağa kırma. Aynanda TIR'ın İKİ FARINI birden
+    görene kadar bekle — o zaman önünde yeterli boşluk var demektir.
+    Erken dönmek TIR'ı frene bastırır; bir TIR'ın durma mesafesi seninkinin
+    çok üstündedir.
+
+    VE YANINDA OYALANMA
+    Geçerken aracın yanında gereğinden uzun kalma. Orası kör nokta
+    (Ders 6). Geçiyorsan geç, kararsız kalma.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "sollama"
+    - "geçiş görüş mesafesi"
+    - "trafik"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Sollamanın gerçekte kaç metre istediğini hesapladın mı hiç?
+
+    Varsayım: TIR'ın arkasında 20 m, TIR 16 m, geçince önüne 20 m. Toplam
+    56 metrelik bağıl yol.
+
+    SEN 90, TIR 70:
+    → fark 20 km/h = 5,6 m/sn
+    → 56 ÷ 5,6 = 10,1 saniye
+    → sen 252 m gidiyorsun, karşıdan gelen 252 m geliyor
+    → GEREKEN BOŞ YOL: 504 metre
+
+    ŞİMDİ TIR 80 OLSUN:
+    → fark 10 km/h
+    → 20,2 saniye
+    → GEREKEN BOŞ YOL: 1008 metre. Bir kilometre.
+
+    Hız farkını yarıya indirdin, gereken yol İKİYE KATLANDI. Sollamanın
+    tehlikesi hızda değil, SÜREDE.
+
+    Yol mühendisliği bunu zaten biliyor: AASHTO tablosundan 90 km/h için
+    geçiş görüş mesafesi 615 metre. Bizim 504'ümüz daha iyimser varsayımla
+    çıkıyor.
+
+    ÖNCE GERİ ÇEKİL. TIR'a yapışırsan ne önünü görürsün ne hızlanacak yerin
+    kalır.
+
+    DÜZ ÇİZGİ bir tavsiye değil — orada görüş sollamaya yetmiyor demek.
+    Viraj, tepe, kavşak. "Bir bakayım" diye burun uzatmak da sollamadır.
+
+    DÖNERKEN aynanda TIR'ın İKİ FARINI birden görene kadar bekle. Erken
+    dönersen onu frene bastırırsın; bir TIR'ın durma mesafesi seninkinin
+    çok üstünde.
+
+    Ve yanında oyalanma — orası kör nokta.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #sollama #trafik #motosikleteğitimi #yolokulu #güvenlisürüş #tır
+  feed_de_paylas: true
+  kapak_url: ""

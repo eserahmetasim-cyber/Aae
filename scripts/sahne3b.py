@@ -1592,6 +1592,244 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  SOLLAMA
+# ---------------------------------------------------------------------------
+# Kaynak: Indiana DOT metrik geometrik tasarim boluму (AASHTO Green Book
+# tablosundan): 90 km/h tasarim hizi icin GECIS GORUS MESAFESI 615 m,
+# 100 km/h icin 670 m. Ayni belge gecilen araci 73, gecen araci 88 km/h
+# alir. MUTCD'nin "sollama yasak" seridi cizme esigi daha dusuktur
+# (90 km/h icin 280 m) ve tasarim degeriyle ayni sey DEGILDIR.
+#
+# SAHNEDEKI HESAP (varsayimlar ekranda yazili):
+#   gecilecek bagil yol = 20 m geri bosluk + 16 m TIR + 20 m on bosluk = 56 m
+#   sure = 56 / (hiz farki)
+#   gereken bos yol = (bizim hiz + karsi hiz) * sure
+#     90 ile 70'i gecerken, karsidan 90: dv=20 -> 10.1 sn -> 504 m
+#     90 ile 80'i gecerken, karsidan 90: dv=10 -> 20.2 sn -> 1008 m
+# Kendi hesabimiz 504 m, standart 615 m: ayni mertebe, bizimki daha cimri
+# varsayimlarla. Derste ikisi birlikte veriliyor, biri otekinin yerine
+# gecmiyor.
+SOLLAMA_DONGU = 14.0
+SOLLAMA_GERI, SOLLAMA_TIR, SOLLAMA_ON = 20.0, 16.0, 20.0
+SOLLAMA_STANDART = 615.0        # 90 km/h icin yol tasarim degeri (m)
+
+SOLLAMA_NOKTA = {
+    "geri":     ("ÖNCE GERİ ÇEKİL", "hem görürsün hem hız alırsın", (90, 70, 90)),
+    "hesap":    ("90 İLE 70'İ GEÇMEK", "10 saniye · 504 metre", (90, 70, 90)),
+    "az":       ("HIZ FARKI 10 İSE", "20 saniye · 1 kilometre", (90, 80, 90)),
+    "standart": ("YOL STANDARDI 615 m", "90 km/h için gereken görüş", (90, 70, 90)),
+    "kor":      ("DÜZ ÇİZGİ VARSA YOK", "viraj · tepe · kavşak", (90, 70, 90)),
+    "donus":    ("İKİ FARINI AYNADA GÖR", "sonra şeride gir", (90, 70, 90)),
+}
+SOLLAMA_SIRA = list(SOLLAMA_NOKTA)
+SOLLAMA_FAZ = [(4.0, "geri")]
+
+
+def sollama_faz_ayarla(metin):
+    """sahne_fazlari: "4:geri, 11:hesap, ..." """
+    global SOLLAMA_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in SOLLAMA_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen sollama noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    SOLLAMA_FAZ = sorted(f)
+
+
+def sollama_evre(t):
+    ad, bas = SOLLAMA_FAZ[0][1], SOLLAMA_FAZ[0][0]
+    for z, a in SOLLAMA_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _sollama_hesap(bizim, onun, karsi):
+    """(hiz_farki, sure, bizim_yol, karsi_yol, gereken). Varsayimlar yukarida."""
+    dv = (bizim - onun) / 3.6
+    yol = SOLLAMA_GERI + SOLLAMA_TIR + SOLLAMA_ON
+    sure = yol / dv
+    biz = bizim / 3.6 * sure
+    kars = karsi / 3.6 * sure
+    return (bizim - onun), sure, biz, kars, biz + kars
+
+
+def _sollama_hareket(u):
+    """(tirin bagil z'si, bizim yanal konum). Biz z=0'da duruyoruz, TIR akiyor."""
+    def ara(a, b, p):
+        return a + (b - a) * yumusak(min(1.0, max(0.0, p)))
+
+    if u < 2.5:
+        tz = 12.0
+    elif u < 4.5:
+        tz = ara(12.0, 28.0, (u - 2.5) / 2.0)
+    elif u < 6.0:
+        tz = 28.0
+    elif u < 10.0:
+        tz = ara(28.0, -22.0, (u - 6.0) / 4.0)
+    elif u < 12.0:
+        tz = ara(-22.0, -44.0, (u - 10.0) / 2.0)
+    else:
+        tz = ara(-44.0, -72.0, (u - 12.0) / 2.0)
+
+    if u < 4.6:
+        x = FREN_SERIT
+    elif u < 6.0:
+        x = ara(FREN_SERIT, -FREN_SERIT, (u - 4.6) / 1.4)
+    elif u < 10.6:
+        x = -FREN_SERIT
+    elif u < 12.0:
+        x = ara(-FREN_SERIT, FREN_SERIT, (u - 10.6) / 1.4)
+    else:
+        x = FREN_SERIT
+    return tz, x
+
+
+def _tir(s, x, z, renk=(206, 207, 210)):
+    """16 m'lik cekici + dorse. Sollama hesabinin '16 m'si bu."""
+    s.kutu([x, 1.65, z + 6.2], [2.45, 2.30, 3.40], renk)            # cekici
+    s.kutu([x, 2.70, z + 6.9], [2.30, 0.60, 1.90], (40, 44, 50))    # ust spoyler
+    s.kutu([x, 1.40, z + 7.9], [2.36, 0.90, 0.10], (36, 46, 60))    # on cam
+    s.kutu([x, 2.30, z - 2.2], [2.50, 2.90, 13.0], (232, 232, 228))  # dorse
+    s.kutu([x, 0.72, z - 2.2], [2.30, 0.46, 12.6], (52, 54, 58))
+    # Arka kapak: en cok gorulen yuz bu, duz beyaz levha gibi kaliyordu
+    s.kutu([x, 2.30, z - 8.72], [0.06, 2.70, 0.06], (176, 178, 180))
+    for yan in (-1, 1):
+        s.kutu([x + yan * 1.14, 2.30, z - 8.72], [0.06, 2.70, 0.06],
+               (176, 178, 180))
+    s.kutu([x, 3.55, z - 8.72], [2.44, 0.08, 0.06], (176, 178, 180))
+    s.kutu([x, 0.78, z - 8.6], [2.40, 0.40, 0.12], (198, 52, 44))   # arka stop
+    # Tekerlekler once x +-1.10'daydi; dorse 2.50 genis oldugu icin yandan
+    # bakista govdenin arkasinda kaliyor ve TIR tekerleksiz gorunuyordu.
+    for yan in (-1, 1):
+        for dz in (6.6, -0.6, -2.4, -7.4):
+            s.kutu([x + yan * 1.24, 0.54, z + dz], [0.34, 1.08, 1.08],
+                   (26, 26, 28))
+            s.kutu([x + yan * 1.26, 0.54, z + dz], [0.04, 0.52, 0.52],
+                   (148, 150, 154))                      # jant
+
+
+def kare_sollama3b(t):
+    """Alcak takip gorusu: TIR'i sollama ve bunun gercekten istedigi bos yol."""
+    anahtar, faz_bas = sollama_evre(t)
+    etiket, aciklama, hizlar = SOLLAMA_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    kor = anahtar == "kor"
+    u = t % SOLLAMA_DONGU
+    tir_z, x0 = _sollama_hareket(u)
+    if kor:                       # duz cizgi varken sollama YOK: seritte kal
+        tir_z, x0 = 26.0, FREN_SERIT
+
+    dv, sure, biz_yol, kars_yol, gereken = _sollama_hesap(*hizlar)
+
+    global _sol_s, _sol_tek
+    _sol_s = (globals().get("_sol_s", 0.0) + 25.0 / FPS) % 8.0
+    _sol_tek = (globals().get("_sol_tek", 0.0)
+                + 25.0 / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -24.0
+    while z < 220:
+        z2 = z + (6.0 if z < 100 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -24.0
+        while zz < 120:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+
+    # Orta cizgi: normalde kesik, "kor" adiminda DUZ - gercek dunyadaki isaret
+    if kor:
+        zz = -24.0
+        while zz < 130:
+            z2 = zz + 6.0
+            s.yuzey([[-0.13, 0.02, zz], [0.13, 0.02, zz], [0.13, 0.02, z2],
+                     [-0.13, 0.02, z2]], (236, 232, 206), katman=2)
+            zz = z2
+    else:
+        for i in range(-3, 18):
+            zc = i * 8.0 - _sol_s
+            s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc],
+                     [0.11, 0.02, zc + 3.6], [-0.11, 0.02, zc + 3.6]],
+                    (210, 210, 205), katman=2)
+
+    if -30.0 < tir_z < 120.0:
+        _tir(s, FREN_SERIT, tir_z)
+
+    model, _, _ = motosiklet(0.0, _sol_tek, 0.0)
+    s.ekle(model, t=[x0, 0.0, 0.0])
+
+    kamera = Kamera([0.9 + 0.5 * x0, 5.4, -16.0], [x0 * 0.35, 0.8, 15.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if anahtar in ("az", "kor") else TURUNCU
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    px, py, pw = 62, 470, 560
+    d.rounded_rectangle([px, py, px + pw, py + 346], 16, fill=(16, 20, 26, 212),
+                        outline=(92, 102, 112), width=4)
+    sag = px + pw - 24
+
+    def _sagda(metin, punto, y, c):
+        g = d.textlength(metin, font=s2.font(punto))
+        s2.yazi(d, (sag - g, y), metin, punto, c)
+
+    # Hiz cifti once buyuk rakamin saginda duruyordu; "1008 m" genisleyince
+    # ust uste biniyordu. Artik kendi satirinda.
+    s2.yazi(d, (px + 24, py + 14), "GEREKEN BOŞ YOL", 26, (150, 155, 162))
+    s2.yazi(d, (px + 24, py + 44), f"{gereken:.0f} m", 76,
+            KIRMIZI if gereken > 700 else TURUNCU)
+    s2.yazi(d, (px + 24, py + 124),
+            f"{hizlar[0]} ile {hizlar[1]} · fark {dv:.0f} km/h · "
+            f"{sure:.1f} sn".replace(".", ","), 27, KREM)
+
+    # Semayla: gereken yolun ne kadari bizim, ne kadari karsidan gelenin
+    bx, by, bw, bh = px + 24, py + 166, pw - 48, 38
+    olcek = max(gereken, SOLLAMA_STANDART)
+    w1 = bw * biz_yol / olcek
+    w2 = bw * kars_yol / olcek
+    d.rounded_rectangle([bx, by, bx + bw, by + bh], 8, fill=(30, 34, 40, 230),
+                        outline=(78, 86, 96), width=3)
+    d.rectangle([bx + 3, by + 3, bx + w1, by + bh - 3], fill=TURUNCU)
+    d.rectangle([bx + w1, by + 3, bx + w1 + w2 - 3, by + bh - 3], fill=MAVI)
+    s2.yazi(d, (bx, by + 46), f"BİZ {biz_yol:.0f} m", 26, TURUNCU)
+    _sagda(f"KARŞI {kars_yol:.0f} m", 26, by + 46, MAVI)
+
+    sy = by + 92
+    d.line([(bx + bw * SOLLAMA_STANDART / olcek, by - 10),
+            (bx + bw * SOLLAMA_STANDART / olcek, by + bh + 10)],
+           fill=(236, 232, 206, 240), width=4)
+    s2.yazi(d, (bx, sy), "yol standardı 90 km/h", 26, (190, 196, 204))
+    _sagda(f"{SOLLAMA_STANDART:.0f} m", 26, sy, (236, 232, 206))
+    s2.yazi(d, (bx, sy + 34),
+            "20 m geri + 16 m TIR + 20 m ön", 23, (124, 132, 142))
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  SERIT ICI KONUM
 # ---------------------------------------------------------------------------
 # Kaynaklar: MSF surucu el kitabi (seridi uc esit parcaya bol), Florida ve
@@ -2735,7 +2973,8 @@ def main():
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
-                             "kacinma", "yolcu", "kavsak", "takip", "konum"),
+                             "kacinma", "yolcu", "kavsak", "takip", "konum",
+                             "sollama"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -2773,6 +3012,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "sollama":
+        sollama_faz_ayarla(args.fazlar)
+        cizer = kare_sollama3b
     elif args.sahne == "konum":
         konum_faz_ayarla(args.fazlar)
         cizer = kare_konum3b
