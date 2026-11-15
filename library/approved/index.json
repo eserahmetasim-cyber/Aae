@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-15T18:12:00+00:00",
+  "guncelleme": "2026-11-15T18:32:13+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -125,6 +125,15 @@
       "video": "library/approved/14-serit-ici-konum/14-serit-ici-konum.mp4",
       "meta": "library/approved/14-serit-ici-konum/meta.json",
       "onay_tarihi": "2026-11-15T18:12:00+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "15-sollama",
+      "ders_no": 15,
+      "baslik": "Sollama",
+      "video": "library/approved/15-sollama/15-sollama.mp4",
+      "meta": "library/approved/15-sollama/meta.json",
+      "onay_tarihi": "2026-11-15T18:32:13+00:00",
       "durum": "onaylandi"
     }
   ]
