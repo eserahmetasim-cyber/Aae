@@ -414,35 +414,46 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     """fren 0-1: catal cokmesi + surucunun one yuklenmesi."""
     s = Sahne()
     cokme = 0.085 * fren
-    arka_z, on_z = -0.70, 0.70
+    # ADVENTURE olculer: aks arasi uzun, ON TEKER BUYUK (19-21 inc), uzun
+    # suspansiyon yuzunden yuksek durus. Onceki olculer naked motosiklete
+    # aitti ve AAE'nin adventure motoruna benzemiyordu.
+    arka_z, on_z = -0.76, 0.80
+    ON_R, ARKA_R = 0.385, 0.330
 
     # --- sasi / motor -----------------------------------------------------
-    s.kutu([0.095, 0.45, arka_z + 0.33], [0.05, 0.10, 0.80], (62, 72, 84))      # salincak
-    s.kutu([-0.095, 0.45, arka_z + 0.33], [0.05, 0.10, 0.80], (62, 72, 84))
-    s.silindir([0.0, 0.52, -0.52], [0.0, 0.86, -0.30], 0.045, (190, 70, 60))     # amortisor
-    s.silindir([0.11, 0.31, arka_z], [0.11, 0.31, arka_z], 0.12, (60, 60, 64))   # disli
+    s.kutu([0.095, 0.44, arka_z + 0.36], [0.05, 0.10, 0.86], (62, 72, 84))      # salincak
+    s.kutu([-0.095, 0.44, arka_z + 0.36], [0.05, 0.10, 0.86], (62, 72, 84))
+    s.silindir([0.0, 0.48, -0.56], [0.0, 0.98, -0.26], 0.045, (190, 70, 60))     # amortisor
+    s.silindir([0.11, 0.33, arka_z], [0.11, 0.33, arka_z], 0.12, (60, 60, 64))   # disli
     for yan in (0.105, -0.105):                                                  # zincir
-        s.kutu([yan, 0.40, arka_z + 0.34], [0.02, 0.025, 0.72], (96, 100, 104))
+        s.kutu([yan, 0.40, arka_z + 0.36], [0.02, 0.025, 0.78], (96, 100, 104))
     # Govde parcalari pahli: duz kutularin dik koseleri motosikleti oyuncak
     # gibi gosteriyordu. Depo one dogru incelir, kuyruk arkaya dogru daralir.
     # Blok daha dar ve kisa: eskisi govdenin ortasinda kalin bir levha
     # gibi duruyordu, sasi hic gorunmuyordu.
-    _pahli(s, [0, 0.57, -0.02], [0.27, 0.38, 0.50], (72, 82, 94),
+    _pahli(s, [0, 0.66, -0.02], [0.27, 0.40, 0.50], (72, 82, 94),
            on_olcek=0.86, arka_olcek=0.92)                                       # motor
-    _pahli(s, [0, 0.62, 0.26], [0.30, 0.34, 0.10], (108, 116, 124), pah=0.20)    # radyator
-    _pahli(s, [0, 0.33, 0.02], [0.30, 0.14, 0.46], (58, 64, 72),
+    _pahli(s, [0, 0.72, 0.26], [0.30, 0.34, 0.10], (108, 116, 124), pah=0.20)    # radyator
+    _pahli(s, [0, 0.42, 0.02], [0.30, 0.14, 0.46], (58, 64, 72),
            on_olcek=0.82, arka_olcek=0.88)                                       # karter
+    for yan in (-1, 1):                                                          # koruma demiri
+        s.silindir([yan * 0.17, 0.80, 0.30], [yan * 0.26, 0.52, 0.12], 0.022, (190, 70, 60))
+        s.silindir([yan * 0.26, 0.52, 0.12], [yan * 0.22, 0.38, -0.20], 0.022, (190, 70, 60))
     # Depo iki parcali: ust kabuk genis, alt etek dizlerin degdigi yerde dar.
-    _pahli(s, [0, 0.88, 0.10], [0.30, 0.19, 0.66], TURUNCU,
-           pah=0.34, on_olcek=0.80)                                              # depo
-    _pahli(s, [0, 0.74, 0.14], [0.21, 0.13, 0.52], (228, 112, 68),
+    _pahli(s, [0, 0.99, 0.12], [0.31, 0.21, 0.70], TURUNCU,
+           pah=0.34, on_olcek=0.78)                                              # depo
+    _pahli(s, [0, 0.84, 0.16], [0.22, 0.14, 0.54], (228, 112, 68),
            pah=0.30, on_olcek=0.84)                                              # depo etegi
-    _pahli(s, [0, 0.96, 0.08], [0.21, 0.05, 0.50], (255, 142, 96),
+    _pahli(s, [0, 1.08, 0.10], [0.21, 0.05, 0.52], (255, 142, 96),
            pah=0.40, on_olcek=0.76)                                              # depo ustu
-    _pahli(s, [0, 0.83, -0.44], [0.24, 0.08, 0.52], (28, 28, 30),
+    _pahli(s, [0, 0.95, -0.46], [0.25, 0.09, 0.56], (28, 28, 30),
            pah=0.36, on_olcek=0.84, arka_olcek=0.92)                             # sele
-    _pahli(s, [0, 0.88, -0.76], [0.21, 0.13, 0.30], (28, 28, 30),
+    _pahli(s, [0, 1.00, -0.80], [0.22, 0.13, 0.32], (28, 28, 30),
            pah=0.32, arka_olcek=0.68)                                            # kuyruk
+    # Bagaj tasiyici: adventure motorun ikinci isareti.
+    for yan in (-1, 1):
+        s.silindir([yan * 0.17, 1.06, -0.62], [yan * 0.17, 1.06, -0.96], 0.016, KROM)
+    s.silindir([-0.17, 1.06, -0.96], [0.17, 1.06, -0.96], 0.016, KROM)
     s.kutu([0, 0.89, -0.91], [0.15, 0.07, 0.05], KIRMIZI)                        # stop
     s.kutu([0, 0.74, -0.95], [0.16, 0.11, 0.02], (222, 222, 216))                # plaka
     # Egzoz arka tekerlegin YANINDAN gecer. Onceki guzergah tekerlek duzlemine
@@ -458,12 +469,12 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     # Kontra dersi icin on takim AYRI bir sahnede kurulur: catal, teker,
     # camurluk, far, cam, gosterge, gidon ve aynalar birlikte donmeli.
     onk = Sahne()
-    ucgen_y = 0.98 - cokme
+    ucgen_y = 1.09 - cokme
     # Catal tek silindirdi, duz bir cubuk gibi duruyordu. Gercek catal iki
     # kademeli: ustte ince ic boru, altta kalin ayak, arasinda toz kecesi.
     for yan in (-1, 1):
         ust = np.array([yan * 0.095, ucgen_y, on_z - 0.11])
-        alt = np.array([yan * 0.105, 0.31, on_z])
+        alt = np.array([yan * 0.105, ON_R, on_z])
         orta = alt + (ust - alt) * 0.46
         onk.silindir(list(orta), list(ust), 0.030, KROM)               # ic boru
         onk.silindir(list(alt), list(orta + (ust - alt) * 0.04), 0.042,
@@ -477,18 +488,26 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
            R=donus([1, 0, 0], 0.5))                                              # gosterge govdesi
     onk.kutu([0, ucgen_y + 0.133, on_z - 0.195], [0.14, 0.06, 0.015], (30, 150, 180),
            R=donus([1, 0, 0], 0.5))                                              # ekran
-    _camurluk(onk, on_z)                                                         # camurluk
+    _camurluk(onk, on_z, yaricap=ON_R)                                           # camurluk
+    # GAGA: adventure motorun en belirgin isareti, one uzanan burun. Once
+    # elle yay kurulmaya calisildi ve ters yone bakan bozuk bir kanat cikti;
+    # one dogru daralan pahli bir takoz hem dogru hem temiz duruyor.
+    _pahli(onk, [0, 0.80 - cokme, on_z + 0.32], [0.27, 0.10, 0.52], TURUNCU,
+           pah=0.42, on_olcek=0.52, arka_olcek=1.0,
+           R=donus([1, 0, 0], -0.22))
     onk.kutu([0, 0.98 - cokme, on_z + 0.12], [0.26, 0.24, 0.14], (46, 50, 56))    # far govdesi
     onk.kutu([0, 0.98 - cokme, on_z + 0.195], [0.22, 0.19, 0.02], KREM)           # far cami
     onk.kutu([0, 1.09 - cokme, on_z + 0.02], [0.19, 0.10, 0.03], (146, 176, 196),
            R=donus([1, 0, 0], 0.45))                                             # on cam
     # Gidon: daha UZUN ve disa dogru — kask kamerasindan gorulebilsin
-    gid_y, gid_z = 1.07 - cokme, on_z - 0.16
+    gid_y, gid_z = 1.22 - cokme, on_z - 0.20
     onk.silindir([-0.42, gid_y, gid_z], [0.42, gid_y, gid_z], 0.022, KROM)
     for yan in (-1, 1):
         onk.silindir([yan * 0.26, gid_y, gid_z], [yan * 0.42, gid_y, gid_z + 0.03],
                    0.032, (32, 32, 34))                                          # tutamak
         onk.kutu([yan * 0.455, gid_y, gid_z + 0.03], [0.05, 0.05, 0.05], KROM)     # agirlik
+        onk.kutu([yan * 0.385, gid_y + 0.05, gid_z + 0.13], [0.04, 0.20, 0.27],
+                 TURUNCU, R=donus([0, 0, 1], yan * 0.26))                          # el korumasi
         onk.silindir([yan * 0.30, gid_y, gid_z + 0.02],
                    [yan * 0.40, gid_y - 0.01, gid_z + 0.14], 0.012, (190, 190, 190))
         onk.silindir([yan * 0.34, gid_y + 0.02, gid_z],                             # ayna kolu
@@ -501,9 +520,12 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
     kask_n = np.array([0.0, 1.0, 0.0])
     if surucu:
         # --- surucu -----------------------------------------------------------
+        # Sasi adventure olculerine yukselince surucu eski yukseklikte kaldi
+        # ve selenin icinde duruyordu: kalca, omuz ve bacaklar sele/basamak
+        # hizasina tasindi. Kollar zaten gidonun degiskenine bagli.
         one = 0.12 * fren
-        omuz_y, omuz_z = 1.50 - 0.10 * fren, -0.12 + one
-        kalca_n = np.array([0.0, 1.02, -0.40])
+        omuz_y, omuz_z = 1.63 - 0.10 * fren, -0.14 + one
+        kalca_n = np.array([0.0, 1.15, -0.44])
         omuz_n = np.array([0.0, omuz_y, omuz_z])
         s.kure(kalca_n, 0.19, MONT, dilim=12, halka=7)
         s.silindir(kalca_n, omuz_n, 0.185, MONT, segment=14)
@@ -512,16 +534,17 @@ def motosiklet(fren, tekerlek_aci=0.0, direksiyon=0.0, surucu=True):
             s.silindir([yan * 0.19, omuz_y, omuz_z], [yan * 0.30, gid_y + 0.03, gid_z],
                        0.055, MONT)                                                  # kol
             s.kure([yan * 0.32, gid_y + 0.02, gid_z + 0.01], 0.055, (34, 34, 36))    # eldiven
-            s.silindir([yan * 0.17, 0.98, -0.34], [yan * 0.25, 0.64, 0.10], 0.075, MONT)
-            s.silindir([yan * 0.25, 0.64, 0.10], [yan * 0.23, 0.36, -0.02], 0.065, MONT)
-            s.kutu([yan * 0.23, 0.30, 0.02], [0.10, 0.09, 0.26], (26, 26, 28))       # bot
+            s.silindir([yan * 0.17, 1.11, -0.38], [yan * 0.26, 0.76, 0.08], 0.075, MONT)
+            s.silindir([yan * 0.26, 0.76, 0.08], [yan * 0.24, 0.50, -0.04], 0.065, MONT)
+            s.kutu([yan * 0.24, 0.44, 0.00], [0.10, 0.09, 0.26], (26, 26, 28))       # bot
+            s.kutu([yan * 0.215, 0.39, 0.00], [0.09, 0.03, 0.14], KROM)              # basamak
         boyun = omuz_n + np.array([0.0, 0.13, 0.05])
         s.silindir(omuz_n, boyun, 0.085, (70, 80, 92), segment=10)
         kask_n = np.array([0.0, omuz_y + 0.27, omuz_z + 0.07])
         _kask(s, kask_n)
 
-    _tekerlek(s, arka_z, tekerlek_aci, on=False)
-    _tekerlek(onk, on_z, tekerlek_aci, on=True)
+    _tekerlek(s, arka_z, tekerlek_aci, yaricap=ARKA_R, on=False)
+    _tekerlek(onk, on_z, tekerlek_aci, yaricap=ON_R, on=True)
 
     # Direksiyon ekseni ucgen klempten gecer; kucuk acilarda Y ekseni etrafinda
     # dondurmek yeterli dogrulukta.
@@ -1465,23 +1488,25 @@ def yolcu_evre(t):
 
 def _yolcu(s, mont=(96, 110, 128)):
     """Sele arkasinda oturan yolcu: kalca, govde, kask, kollar ve bacaklar."""
-    kalca = np.array([0.0, 1.00, -0.76])
-    omuz = np.array([0.0, 1.40, -0.64])
+    # Surucu gibi yolcu da adventure sasiye gore yukseldi; eskisinde selenin
+    # icine gomulu kaliyordu.
+    kalca = np.array([0.0, 1.17, -0.84])
+    omuz = np.array([0.0, 1.56, -0.72])
     s.kure(kalca, 0.18, mont, dilim=12, halka=7)
     s.silindir(kalca, omuz, 0.175, mont, segment=14)
     s.kure(omuz, 0.18, mont, dilim=12, halka=7)
     _kask(s, omuz + np.array([0.0, 0.27, 0.06]), kabuk=(216, 220, 226),
           aksan=(58, 150, 196))
     for yan in (-1, 1):
-        s.silindir([yan * 0.17, 1.38, -0.62], [yan * 0.19, 1.14, -0.40],
+        s.silindir([yan * 0.17, 1.54, -0.70], [yan * 0.19, 1.28, -0.46],
                    0.052, mont)                                   # kol
-        s.kure([yan * 0.19, 1.13, -0.38], 0.052, (34, 34, 36))    # eldiven
-        s.silindir([yan * 0.16, 0.96, -0.72], [yan * 0.235, 0.66, -0.58],
+        s.kure([yan * 0.19, 1.27, -0.44], 0.052, (34, 34, 36))    # eldiven
+        s.silindir([yan * 0.16, 1.13, -0.80], [yan * 0.24, 0.80, -0.64],
                    0.072, mont)                                   # ust bacak
-        s.silindir([yan * 0.235, 0.66, -0.58], [yan * 0.235, 0.40, -0.54],
+        s.silindir([yan * 0.24, 0.80, -0.64], [yan * 0.24, 0.54, -0.60],
                    0.060, mont)                                   # alt bacak
-        s.kutu([yan * 0.235, 0.34, -0.52], [0.10, 0.09, 0.24], (26, 26, 28))
-        s.kutu([yan * 0.205, 0.50, -0.52], [0.09, 0.03, 0.12], KROM)  # basamak
+        s.kutu([yan * 0.24, 0.48, -0.58], [0.10, 0.09, 0.24], (26, 26, 28))
+        s.kutu([yan * 0.215, 0.43, -0.58], [0.09, 0.03, 0.12], KROM)  # basamak
 
 
 def kare_yolcu3b(t):
