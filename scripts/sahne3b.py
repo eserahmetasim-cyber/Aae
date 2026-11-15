@@ -1592,6 +1592,229 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  KAVSAK: KARSIDAN GELIP SOLA DONEN ARAC
+# ---------------------------------------------------------------------------
+# Kaynaklar ikincil: NHTSA ve IIHS verisini ozetleyen guvenlik/hukuk siteleri,
+# Hurt Report (1981) ve MAIDS (1999-2000) ozetleri, "looked but failed to see"
+# yazini (SMARTER/Science of Being Seen derlemeleri).
+# Hepsi ayni DESENDE birlesiyor: cok araclili motosiklet kazalarinin en
+# yaygin tipi, karsidan gelen aracin motosikletin onunden sola donmesidir ve
+# surucu sonra "gormedim" der. Ama ORAN kaynaktan kaynaga degisiyor (%36,
+# %42, %46, %53 - hepsi farkli paydayla). Birincil belgelere bu ortamdan
+# erisilemedi; bu yuzden derste RAKAM YOK, yalnizca davranis ogretiliyor.
+KAVSAK_DONGU = 11.0
+KAVSAK_R = 7.0              # arabanin donus yaricapi (m)
+KAVSAK_SERIT = -2.1         # karsi seridin ortasi
+KAVSAK_BAS = 82.0           # dongu basinda kavsagin uzakligi (m)
+KAVSAK_YAY0, KAVSAK_YAY1 = 6.4, 8.6    # donusun basi ve sonu (sn)
+
+KAVSAK_NOKTA = {
+    "yavasla": ("GAZI KES", "kavşağa girmeden"),
+    "onteker": ("ÖN TEKERE BAK", "ilk kıpırdayan o"),
+    "goz":     ("GÖZ TEMASI SÖZ DEĞİL", "bakmak görmek değil"),
+    "fren":    ("PARMAKLAR FRENDE", "basma, hazır bekle"),
+    "bosluk":  ("KAÇIŞ BOŞLUĞU", "önceden seç"),
+    "duz":     ("FREN DÜZ ÇİZGİDE", "yatıkken değil"),
+}
+KAVSAK_SIRA = list(KAVSAK_NOKTA)
+KAVSAK_FAZ = [(4.0, "yavasla")]
+
+
+def kavsak_faz_ayarla(metin):
+    """sahne_fazlari: "4:yavasla, 11:onteker, ..." """
+    global KAVSAK_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in KAVSAK_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen kavsak noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    KAVSAK_FAZ = sorted(f)
+
+
+def kavsak_evre(t):
+    ad, bas = KAVSAK_FAZ[0][1], KAVSAK_FAZ[0][0]
+    for z, a in KAVSAK_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, yumusak((t - bas) / 0.5)
+
+
+def _kavsak_yol(u):
+    """(alinan_yol, hiz). Kavsaga yaklasirken yavasla, gectikten sonra ac."""
+    if u < 3.0:
+        return 12.0 * u, 12.0
+    if u < 5.5:
+        k = u - 3.0
+        return 36.0 + 12.0 * k - 1.0 * k * k, 12.0 - 2.0 * k
+    if u < 8.0:
+        k = u - 5.5
+        return 59.75 + 7.0 * k - 0.8 * k * k, 7.0 - 1.6 * k
+    k = u - 8.0
+    return 72.25 + 3.0 * k + (4.0 / 3.0) * k * k, 3.0 + (8.0 / 3.0) * k
+
+
+def _kavsak_araba(u, kz):
+    """(x, z, sapma). Karsi seritte yaklasir, sonra onumuzden SOLA doner.
+
+    Bizim yonumuz +z ve sag seritte gidiyoruz, yani +z'ye bakanin sagi +x.
+    Karsidan gelen arac -z'ye bakar; onun SOLU +x'tir - yani sola donusu
+    tam bizim seridimizin ustunden gecer. Dersin butun olayi bu."""
+    if u < KAVSAK_YAY0:
+        p = u / KAVSAK_YAY0
+        return KAVSAK_SERIT, kz + KAVSAK_R + 40.0 * (1.0 - p) ** 1.6, math.pi
+    if u < KAVSAK_YAY1:
+        p = yumusak((u - KAVSAK_YAY0) / (KAVSAK_YAY1 - KAVSAK_YAY0))
+        th = math.pi + 0.5 * math.pi * p
+        cx, cz = KAVSAK_SERIT + KAVSAK_R, kz + KAVSAK_R
+        return cx + KAVSAK_R * math.cos(th), cz + KAVSAK_R * math.sin(th), -th
+    return (KAVSAK_SERIT + KAVSAK_R + 9.0 * (u - KAVSAK_YAY1), kz,
+            -1.5 * math.pi)
+
+
+def _halka(d, kamera, nokta, renk, kalinlik=7):
+    """3B noktanin ustune ekranda halka. Yaricap uzakliga gore kuculur."""
+    kn = kamera.kameraya(np.array([nokta], dtype=float))
+    if kn[0, 2] <= 0.4:
+        return None
+    r = max(20.0, min(95.0, 760.0 / kn[0, 2]))
+    x, y = kamera.ekrana(kn)[0]
+    d.ellipse([x - r, y - r, x + r, y + r], outline=(*renk, 235), width=kalinlik)
+    return x, y, r
+
+
+def _yol_kutusu(s, x0, x1, z0, z1, renk, kalin=0.16):
+    """Asfaltin ustune cizilen dikdortgen cerceve (kacis boslugu)."""
+    for a, b, c, e in ((x0, x1, z0, z0 + kalin), (x0, x1, z1 - kalin, z1),
+                       (x0, x0 + kalin, z0, z1), (x1 - kalin, x1, z0, z1)):
+        s.yuzey([[a, 0.03, c], [b, 0.03, c], [b, 0.03, e], [a, 0.03, e]],
+                renk, katman=2)
+
+
+def kare_kavsak3b(t):
+    """Yuksek 3/4 gorus: karsidan gelen arac kavsakta onumuze doner."""
+    anahtar, _ = kavsak_evre(t)
+    etiket, aciklama = KAVSAK_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    u = t % KAVSAK_DONGU
+    yol, hiz = _kavsak_yol(u)
+    kz = KAVSAK_BAS - yol
+
+    global _kav_s, _kav_tek
+    _kav_s = (globals().get("_kav_s", 0.0) + hiz / FPS) % 8.0
+    _kav_tek = (globals().get("_kav_tek", 0.0)
+                + hiz / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    # --- zemin ve ana yol ---------------------------------------------------
+    # Zemin 100 m'de bitince alcak kamerada ufukta sert bir kenar kaliyordu;
+    # 100 m'den sonra kaba dilimlerle 220 m'ye kadar uzatiliyor.
+    z = -16.0
+    while z < 220:
+        z2 = z + (6.0 if z < 100 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+
+    # --- yan yol: kavsak SAGDA, arac bizim onumuzden ona doner --------------
+    if -12.0 < kz < 100.0:
+        # 16 m yeter: ilk denemede 32 m uzuyordu ve uzaktan bir meydan
+        # gibi okunuyordu, sokak gibi degil.
+        s.yuzey([[4.2, 0.012, kz - 4.2], [20.5, 0.012, kz - 4.2],
+                 [20.5, 0.012, kz + 4.2], [4.2, 0.012, kz + 4.2]], asfalt,
+                katman=1)
+
+    # kenar cizgileri; sag kenar kavsak agzinda kesilir
+    for yan in (-1, 1):
+        zz = -16.0
+        while zz < 100:
+            z2 = zz + 4.0
+            if not (yan > 0 and zz < kz + 4.2 and z2 > kz - 4.2):
+                s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                         [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                        (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-2, 15):
+        zc = i * 8.0 - _kav_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # --- kacis boslugu ------------------------------------------------------
+    if anahtar == "bosluk":
+        _yol_kutusu(s, FREN_SERIT - 1.4, FREN_SERIT + 1.7, 3.0, 10.5, YESIL)
+
+    # --- arac ---------------------------------------------------------------
+    ax, az, asap = _kavsak_araba(u, kz)
+    R_a = donus([0, 1, 0], asap)
+    if -14.0 < az < 115.0 and ax < 42.0:
+        a = Sahne()
+        _araba(a, 0.0, 0.0, (152, 58, 50))
+        s.ekle(a, R=R_a, t=[ax, 0.0, az])
+
+    # --- motosiklet: kavsaga yaklasirken yavaslar, catal coker --------------
+    fren = 0.55 if 3.0 <= u < 5.5 else (0.42 if 5.5 <= u < 8.0 else 0.0)
+    model, _, _ = motosiklet(fren, _kav_tek, 0.0)
+    s.ekle(model, t=[FREN_SERIT, 0.0, 0.0])
+
+    # Kamera alcak ve yakin: yuksekten bakinca motosiklet kadrajin dibinde
+    # kuculuyor ve kare bos asfaltla doluyordu.
+    kamera = Kamera([FREN_SERIT + 0.6, 5.4, -16.0], [FREN_SERIT - 0.7, 0.6, 13.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 3B ustune isaretler ------------------------------------------------
+    if anahtar == "onteker":
+        _halka(d, kamera, np.array([ax, 0.0, az]) + R_a @ np.array([0, 0.40, 1.35]),
+               TURUNCU)
+    elif anahtar == "goz":
+        g = _halka(d, kamera,
+                   np.array([ax, 0.0, az]) + R_a @ np.array([0, 1.30, 1.00]),
+                   KIRMIZI)
+        if g:                                      # uzeri cizili goz
+            gx, gy, gr = g
+            d.line([(gx - gr * 0.78, gy + gr * 0.78),
+                    (gx + gr * 0.78, gy - gr * 0.78)], fill=(*KIRMIZI, 235),
+                   width=9)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    renk = KIRMIZI if anahtar in ("goz", "duz") else TURUNCU
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    d.rounded_rectangle([G - 320, 470, G - 72, 612], 18, fill=(0, 0, 0, 170),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 196, 482), f"{int(round(hiz * 3.6))}", 82, KREM, ortala=True)
+    s2.yazi(d, (G - 196, 572), "km/h", 28, (150, 155, 160), ortala=True)
+
+    px, py, pw = 62, 690, 452
+    d.rounded_rectangle([px, py, px + pw, py + 368], 16, fill=(16, 20, 26, 205),
+                        outline=(92, 102, 112), width=4)
+    for i, ad in enumerate(KAVSAK_SIRA):
+        acik = ad == anahtar
+        yy = py + 22 + i * 56
+        c = KIRMIZI if (acik and ad in ("goz", "duz")) else TURUNCU
+        d.rounded_rectangle([px + 20, yy + 4, px + 32, yy + 40], 5,
+                            fill=c if acik else (60, 66, 74))
+        s2.yazi(d, (px + 48, yy), KAVSAK_NOKTA[ad][0], 30,
+                KREM if acik else (112, 120, 130))
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  KONTRA (counter-steering) - onden gorunum
 # ---------------------------------------------------------------------------
 KONTRA_HIZ = 70.0 / 3.6     # m/s - yatistan donus yaricapi bundan cikar
@@ -2158,7 +2381,7 @@ def main():
     ap.add_argument("--sahne",
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
-                             "kacinma", "yolcu"),
+                             "kacinma", "yolcu", "kavsak"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -2196,6 +2419,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "kavsak":
+        kavsak_faz_ayarla(args.fazlar)
+        cizer = kare_kavsak3b
     elif args.sahne == "kontra":
         cizer = kare_kontra3b
     elif args.sahne == "gaz":

@@ -40,7 +40,7 @@ Doldurulacak alanlar:
 | `ders_no`, `slug`, `baslik` | Zorunlu. Açılış kartı, üst bant ve dosya adı. (`no` YAML'da boolean olduğu için `ders_no`) |
 | `alt_baslik` | Açılış kartında tek cümlelik özet |
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
-| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` · `viraj` · `kontra` · `gaz` |
+| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` · `viraj` · `kontra` · `gaz` · `islak` · `kornokta` · `manevra` · `gece` · `kontrol` · `kacinma` · `yolcu` · `kavsak` |
 | `boyut` | `3` = 3 boyutlu sahne (varsayılan), `2` = düz çizim |
 | `kamera` | `yan` · `kask` · `takip` · `onden` · `tepeden` · `degisken` (dönüşümlü) |
 | `gunduz` | `true` = gündüz ışığı, uzak daha net; `false` = gece |
@@ -162,6 +162,7 @@ render sırasında üretilir. Her şey çizimle oluşur, telif sorunu yoktur.
 | `fren` | Motosikletin 3/4 görünümü. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
 | `viraj` | Viraja giren motosikletin arkadan görünümü. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
 | `kontra` | Önden görünüm. Gidona verilen itiş, ön tekerin ters yöne dönmesi ve motosikletin yatması aynı karede: paneller "SOL GİDON İTİLİYOR · ÖN TEKER SAĞA · MOTOSİKLET SOLA 22°" olarak okunur. Yalnızca 3 boyutlu üretilir. |
+| `kavsak` | Alçak takip görüşü. Karşıdan gelen araç kavşakta **senin önünden sola döner**; motosiklet önceden yavaşlar, çatal çöker. Adıma göre aracın ön tekerine halka, ön camına üzeri çizili göz ya da şeride kaçış boşluğu düşer. Fazlar: `yavasla` · `onteker` · `goz` · `fren` · `bosluk` · `duz`. Yalnızca 3 boyutlu. |
 | `gaz` | Havadan takip. Motosiklet sabit yarıçaplı bir virajı dönerken gaz çubuğu, hız ve faz etiketi görünür; gaz kesilince motosiklet doğrulup şerit çizgisinin dışına taşar ("ŞERİDİN DIŞINDA"). Fazlar `sahne_fazlari` ile adımlara bağlanır: `fren` · `yatis` · `sabit` · `kesik` · `duzelt` · `cikis`. Yalnızca 3 boyutlu. |
 
 **Kamera açıları.** `kamera: kask` sürücünün kaskından bakar — gidon, aynalar,
@@ -301,7 +302,8 @@ scripts/
   muzik_uret.py             → telifsiz fon müziği besteler (numpy gerekir)
   yayin_sirasi.py           → günlük yayın sırası (hangi ders yayınlandı)
   sahne_uret.py             → düz (2B) sahne + motor sesi (numpy, pillow)
-  sahne3b.py                → 3 boyutlu sahne (fren / viraj)
+  sahne3b.py                → 3 boyutlu sahneler (fren / viraj / kavşak / ...)
+  adv_motor.py              → AAE'nin onaylı adventure motoru (assets/adv_motor)
   uc_boyut.py               → yazılımsal 3B motor: kamera, ışık, derinlik
 .github/workflows/egitim-videosu.yml
 .github/workflows/gunluk-yayin.yml   → her sabah 10:00 otomatik yayin
