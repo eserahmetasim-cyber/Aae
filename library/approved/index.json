@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-15T18:32:13+00:00",
+  "guncelleme": "2026-11-16T04:31:05+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -76,10 +76,10 @@
     {
       "klasor": "09-on-kontrol",
       "ders_no": 9,
-      "baslik": "Lastik Basıncı ve Ön Kontrol",
+      "baslik": "Binmeden Önce: T-CLOCS",
       "video": "library/approved/09-on-kontrol/09-on-kontrol.mp4",
       "meta": "library/approved/09-on-kontrol/meta.json",
-      "onay_tarihi": "2026-11-14T08:18:29+00:00",
+      "onay_tarihi": "2026-11-16T04:31:05+00:00",
       "durum": "onaylandi"
     },
     {
