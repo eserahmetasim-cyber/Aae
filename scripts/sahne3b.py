@@ -1570,6 +1570,216 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  NE KADAR ILERI BAKIYORSUN
+# ---------------------------------------------------------------------------
+# Dis kaynak rakami YOK. Varsayimlar ekranda ve ders 08/18 ile ayni:
+# 1 sn tepki, 7 m/s^2 fren (kuru asfalt).
+#
+# BAKIS MESAFESI (n saniye ileri bakmak)  = n * v
+# DURMA MESAFESI (ders 18)                = v*t_tepki + v^2/(2a)
+# Bakis hizla DOGRUSAL buyur, durma hizin KARESIYLE. Yani sabit bir
+# "x saniye ileri bak" aliskanligi hiz arttikca yetersizlesir.
+#
+# Esik noktasi kapali formulle cikiyor:
+#   n*v = v*t_tepki + v^2/(2a)  ->  v = 2a*(n - t_tepki) = 14*(n-1)
+#     2 saniye -> 14,0 m/s =  50,4 km/h'ye kadar yeter
+#     3 saniye -> 28,0 m/s = 100,8 km/h'ye kadar
+#     4 saniye -> 42,0 m/s = 151,2 km/h'ye kadar
+#   Tersi: gereken saniye = 1 + v/14
+#
+# 90 km/h'de durma 69,6 m. Iki saniyelik bakis 50 m: 19,6 m EKSIK, yani
+# gordugun yere duramiyorsun. Uc saniye 75 m, payin yalnizca 5,4 m.
+#
+# Sahne: yola iki sey ciziliyor - kirmizi kesikli bant DURMA mesafesi,
+# parlak kapi ise NEREYE BAKTIGIN. Kapi bandin icinde kaliyorsa
+# gordugun yere duramiyorsun demektir.
+BAKIS_TEPKI = 1.0
+BAKIS_IVME = 7.0
+BAKIS_ESIK = ((2, 50.4), (3, 100.8), (4, 151.2))
+
+BAKIS_NOKTA = {
+    "metre":  ("SANİYEDE 25 METRE", "90 km/h böyle bir şey", 90.0, 2.0),
+    "durma":  ("DURMAN 69,6 METRE", "1 sn tepki + 7 m/s² fren", 90.0, 2.0),
+    "eksik":  ("2 SANİYE YETMİYOR", "50 m bakış, 69,6 m durma", 90.0, 2.0),
+    "elli":   ("2 SANİYE 50 km/h'YE KADAR", "tam tamına yeter", 50.0, 2.0),
+    "uc":     ("3 SANİYE 100'E KADAR", "90'da payın 5,4 m", 90.0, 3.0),
+    "tara":   ("4 SANİYE VE TARAMA", "uzak → yakın → ayna → uzak", 90.0, 4.0),
+}
+BAKIS_SIRA = list(BAKIS_NOKTA)
+BAKIS_FAZ = [(4.0, "metre")]
+
+
+def bakis_faz_ayarla(metin):
+    """sahne_fazlari: "4:metre, 11:durma, ..." """
+    global BAKIS_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in BAKIS_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen bakis noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    BAKIS_FAZ = sorted(f)
+
+
+def bakis_evre(t):
+    ad, bas = BAKIS_FAZ[0][1], BAKIS_FAZ[0][0]
+    for z, a in BAKIS_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def bakis_durma(kmh):
+    v = kmh / 3.6
+    return v * BAKIS_TEPKI + v * v / (2 * BAKIS_IVME)
+
+
+def _bakis_kapi(s, x, z, renk):
+    """Yolun uzerine kurulan parlak kapi: suan NEREYE baktigin.
+
+    Ilk surum ince ve alcakti; 50-100 m'de ufka karisip hic okunmuyordu.
+    Direkler kalinlasti, yukseldi ve yola enine parlak bir bant eklendi -
+    uzakta kapiyi degil banti goruyorsun."""
+    for yan in (-1, 1):
+        s.kutu([x + yan * 1.90, 1.30, z], [0.26, 2.60, 0.26], renk)
+    s.kutu([x, 2.52, z], [4.06, 0.26, 0.22], renk)
+    s.yuzey([[x - 1.95, 0.032, z - 0.35], [x + 1.95, 0.032, z - 0.35],
+             [x + 1.95, 0.032, z + 0.35], [x - 1.95, 0.032, z + 0.35]],
+            renk, katman=2)
+
+
+def kare_bakis3b(t):
+    """Yolda iki olcu: kirmizi bant DURMA mesafesi, parlak kapi BAKIS mesafesi."""
+    anahtar, _ = bakis_evre(t)
+    etiket, aciklama, kmh, saniye = BAKIS_NOKTA[anahtar]
+    v = kmh / 3.6
+    durma = bakis_durma(kmh)
+    bakis = v * saniye
+    pay = bakis - durma
+    yeterli = pay >= 0.0
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _bak_s, _bak_tek
+    _bak_s = (globals().get("_bak_s", 0.0) + v / FPS) % 8.0
+    _bak_tek = (globals().get("_bak_tek", 0.0)
+                + v / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -20.0
+    while z < 400:
+        z2 = z + (6.0 if z < 90 else 30.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -20.0
+        while zz < 160:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-3, 26):
+        zc = i * 8.0 - _bak_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # DURMA mesafesi: serit ortasinda kirmizi kesikli bant.
+    # Duz boyarsak yolu yeniden boyamis gibi oluyor; kesikli olunca olcu
+    # oldugu okunuyor.
+    zz = 1.5
+    while zz < durma:
+        z2 = min(zz + 1.3, durma)
+        s.yuzey([[FREN_SERIT - 0.95, 0.03, zz], [FREN_SERIT + 0.95, 0.03, zz],
+                 [FREN_SERIT + 0.95, 0.03, z2], [FREN_SERIT - 0.95, 0.03, z2]],
+                (178, 54, 46), katman=2)
+        zz += 2.6
+    # Bandin bittigi yer: enine cizgi
+    s.yuzey([[FREN_SERIT - 1.9, 0.031, durma],
+             [FREN_SERIT + 1.9, 0.031, durma],
+             [FREN_SERIT + 1.9, 0.031, durma + 0.40],
+             [FREN_SERIT - 1.9, 0.031, durma + 0.40]], (226, 86, 74), katman=2)
+
+    if bakis < 320.0:
+        _bakis_kapi(s, FREN_SERIT, bakis, YESIL if yeterli else KIRMIZI)
+
+    model, _, _ = motosiklet(0.0, _bak_tek, 0.0)
+    s.ekle(model, t=[FREN_SERIT, 0.0, 0.0])
+
+    # Kamera yuksek: bu dersin butun olayi 50-100 m'deki kapinin kirmizi
+    # bandin icinde mi disinda mi oldugunu GORMEK. Alcak kamerada o mesafe
+    # ufka sikisip okunmuyordu.
+    # 12,5 m'ye cikarilinca kapi okundu ama motosiklet alt yazi bandinin
+    # altina dustu. Kapi zaten buyutuldugu icin o kadar yuksege gerek yok:
+    # 6,4 m hem motosikleti bandin ustunde tutuyor hem 100 m'yi gosteriyor.
+    kamera = Kamera([FREN_SERIT + 0.7, 6.4, -18.5], [FREN_SERIT - 0.4, 0.7, 36.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if not yeterli else (
+        TURUNCU if pay < 10.0 else YESIL)
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    d.rounded_rectangle([G - 330, 470, G - 72, 612], 18, fill=(0, 0, 0, 178),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 201, 482), f"{kmh:.0f}", 76, KREM, ortala=True)
+    s2.yazi(d, (G - 201, 572), "km/h", 26, (150, 155, 160), ortala=True)
+
+    px, py, pw = 62, 470, 480
+    d.rounded_rectangle([px, py, px + pw, py + 352], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 12), "BAKIŞ ↔ DURMA", 26, (150, 155, 162))
+    s2.yazi(d, (px + 22, py + 42), "1 sn tepki · 7 m/s² fren varsayıldı", 22,
+            (124, 132, 142))
+
+    bx, bw = px + 22, pw - 44
+    olcek = max(durma, bakis) * 1.12
+    for i, (ad, deger, c) in enumerate(
+            ((f"DURMA", durma, (200, 70, 60)),
+             (f"BAKIŞ  {saniye:.0f} sn", bakis, YESIL if yeterli else KIRMIZI))):
+        yy = py + 84 + i * 72
+        s2.yazi(d, (bx, yy), ad, 26, (190, 196, 204))
+        g = d.textlength(f"{deger:.1f} m".replace(".", ","), font=s2.font(26))
+        s2.yazi(d, (bx + bw - g, yy), f"{deger:.1f} m".replace(".", ","), 26, c)
+        d.rounded_rectangle([bx, yy + 32, bx + bw * deger / olcek, yy + 56], 5,
+                            fill=c)
+
+    etik = (f"PAY +{pay:.1f} m" if yeterli else f"EKSİK {-pay:.1f} m")
+    s2.yazi(d, (bx, py + 234), etik.replace(".", ","), 36,
+            YESIL if yeterli else KIRMIZI)
+    if not yeterli:
+        uyari = "GÖRDÜĞÜNE DURAMAZSIN"
+        ux = bx + d.textlength(etik.replace(".", ","), font=s2.font(36)) + 22
+        ug = d.textlength(uyari, font=s2.font(24))
+        d.rounded_rectangle([ux, py + 238, ux + ug + 22, py + 274], 8,
+                            fill=(120, 26, 22, 235), outline=KIRMIZI, width=3)
+        s2.yazi(d, (ux + 11, py + 243), uyari, 24, (255, 214, 210))
+
+    s2.yazi(d, (bx, py + 288), "kaç saniye, hangi hıza kadar yeter:", 23,
+            (140, 148, 158))
+    pars = []
+    for sn, lim in BAKIS_ESIK:
+        pars.append(f"{sn} sn → {lim:.0f}".replace(".", ","))
+    s2.yazi(d, (bx, py + 314), "   ·   ".join(pars) + " km/h", 24, KREM)
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  DURMA MESAFESI: HIZ IKIYE KATLANINCA
 # ---------------------------------------------------------------------------
 # Varsayimlar EKRANDA yazili ve ders 08 ile ayni: 1 sn tepki suresi,
@@ -3618,7 +3828,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin", "hizli", "durma"),
+                             "sollama", "zemin", "hizli", "durma", "bakis"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -3656,6 +3866,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "bakis":
+        bakis_faz_ayarla(args.fazlar)
+        cizer = kare_bakis3b
     elif args.sahne == "durma":
         durma_faz_ayarla(args.fazlar)
         cizer = kare_durma3b

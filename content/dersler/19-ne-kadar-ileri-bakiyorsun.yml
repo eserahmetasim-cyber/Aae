@@ -1,0 +1,184 @@
+# Ders 19 · Ne kadar ileri bakıyorsun
+# Dış kaynak rakamı KULLANILMIYOR. Varsayımlar ekranda ve Ders 08/18 ile
+# aynı: 1 sn tepki süresi, 7 m/s² fren ivmesi (kuru asfalt).
+#
+# BAKIŞ MESAFESİ (n saniye ileri bakmak) = n · v        → hızla DOĞRUSAL
+# DURMA MESAFESİ (Ders 18)               = v·t + v²/(2a) → hızın KARESİYLE
+#
+# İkisi aynı hızda büyümediği için sabit bir "x saniye ileri bak"
+# alışkanlığı hız arttıkça yetersizleşir. Eşik kapalı formülle çıkıyor:
+#
+#   n·v = v·t_tepki + v²/(2a)   →   v = 2a·(n − t_tepki) = 14·(n−1)
+#
+#     2 saniye → 14,0 m/s =  50,4 km/h'ye kadar yeter
+#     3 saniye → 28,0 m/s = 100,8 km/h'ye kadar
+#     4 saniye → 42,0 m/s = 151,2 km/h'ye kadar
+#   Tersi: gereken saniye = 1 + v/14
+#
+# 90 km/h'de durma 69,6 m. İki saniyelik bakış 50 m → 19,6 m EKSİK, yani
+# gördüğün yere duramıyorsun. Üç saniye 75 m, payın yalnızca 5,4 m.
+# 50 km/h'de iki saniye 27,8 m, durma 27,7 m — tam tamına yetiyor.
+#
+# NOT: bu eşikler PAY SIFIR noktalarıdır, tavsiye değildir. Gerçek sürüşte
+# bunun üstüne marj konur; ders de 4 saniye + tarama diye bitiyor.
+#
+# SAHNE: yola iki ölçü çiziliyor — kırmızı kesikli bant DURMA mesafesi,
+# parlak kapı NEREYE BAKTIĞIN. Kapı bandın içinde kalıyorsa gördüğün yere
+# duramıyorsun demektir.
+
+ders_no: 19
+slug: ne-kadar-ileri-bakiyorsun
+baslik: "Ne Kadar İleri Bakıyorsun?"
+alt_baslik: "2 saniye yalnızca 50 km/h'ye kadar yeter"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: bakis
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:metre, 11:durma, 19:eksik, 27:elli, 35:uc, 43:tara"
+
+kapanis: "Gördüğün yere duramıyorsan, çok hızlısın"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · 90 km/h'de saniyede 25 metre gidiyorsun" }
+  - { t: 11, sure: 7, metin: "2 · Durman 69,6 m — 2 saniyelik bakış 50 m" }
+  - { t: 19, sure: 7, metin: "3 · Gördüğün yere duramıyorsan çok hızlısın" }
+  - { t: 27, sure: 7, metin: "4 · 2 saniye tam 50 km/h'ye kadar yeter" }
+  - { t: 35, sure: 7, metin: "5 · 3 saniye 100'e, 4 saniye 150'ye kadar" }
+  - { t: 43, sure: 7, metin: "6 · Göz sabit durmaz: uzak → yakın → ayna → uzak" }
+
+youtube:
+  baslik: "Ne Kadar İleri Bakıyorsun? 2 Saniye Yalnızca 50'ye Kadar Yeter | Yol Okulu #19"
+  aciklama: |
+    Ders 18'de durma mesafesini hesapladık. Şimdi öbür yarısı: o mesafeyi
+    görebiliyor musun? Çünkü duramayacağın kadar yakına bakıyorsan, hızın
+    gözünden büyüktür.
+
+    0:04 Saniyede 25 metre
+    0:11 Durman 69,6 m, bakışın 50 m
+    0:19 Gördüğün yere duramıyorsan
+    0:27 2 saniye 50 km/h'ye kadar
+    0:35 3 saniye 100'e, 4 saniye 150'ye
+    0:43 Göz sabit durmaz
+
+    İKİ ÖLÇÜ, İKİ FARKLI BÜYÜME
+    Bakış mesafesi basit: n saniye ileri bakıyorsan, n × hız kadar ötesi.
+    Hızla DOĞRUSAL büyür.
+
+    Durma mesafesi ise (Ders 18) v·t + v²/(2a). Hızın KARESİYLE büyür.
+
+    İkisi aynı hızda büyümüyor. İşte bütün mesele bu: sabit bir "iki saniye
+    ileri bak" alışkanlığı, hız arttıkça sessizce yetersizleşiyor.
+
+    EŞİK TAM OLARAK NEREDE
+    İki mesafeyi eşitleyelim:
+
+      n·v = v·t_tepki + v²/(2a)
+      n − t_tepki = v/(2a)
+      v = 2a · (n − t_tepki) = 14 · (n − 1)
+
+    (1 sn tepki, 7 m/s² fren ile.) Yani:
+
+      2 saniye →  50,4 km/h'ye kadar yeter
+      3 saniye → 100,8 km/h'ye kadar
+      4 saniye → 151,2 km/h'ye kadar
+
+    Tersten: gereken saniye = 1 + hız(m/s)/14.
+
+    RAKAMLAR
+    90 km/h'de saniyede 25 metre gidiyorsun ve durma mesafen 69,6 metre.
+
+      2 saniye ileri bakmak = 50,0 m → 19,6 m EKSİK. Duramazsın.
+      3 saniye              = 75,0 m → payın sadece 5,4 m.
+      4 saniye              = 100,0 m → payın 30,4 m.
+
+    50 km/h'de ise iki saniye 27,8 m, durman 27,7 m — tam tamına yetiyor.
+    "İki saniye" kuralının nereden geldiği bu: şehir içi hızlarda doğru,
+    şehir dışında değil.
+
+    BUNLAR TAVSİYE DEĞİL, SIFIR NOKTASI
+    Yukarıdaki eşikler payın tam sıfır olduğu yerler. Gerçek sürüşte
+    bunun üstüne marj koyulur — çünkü tepkin her zaman 1 saniye olmaz,
+    zemin her zaman kuru olmaz, ve gördüğün şey her zaman duran bir engel
+    olmaz; bazen sana doğru geliyordur.
+
+    GÖZ SABİT DURMAZ
+    En uzağa bakmak tek başına yetmez. Göz sürekli dolaşır:
+
+      uzak (yolun gittiği yer, virajın çıkışı)
+      → yakın (önündeki asfalt, çukur, yama)
+      → ayna
+      → tekrar uzak
+
+    Uzağa bakmak yolu okumanı, yakına bakmak tuzakları görmeni, aynaya
+    bakmak arkanı bilmeni sağlar. Üçü de lazım, ve hiçbirinde takılı
+    kalınmaz.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "bakış"
+    - "görüş mesafesi"
+    - "durma mesafesi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Ders 18'de durma mesafesini hesapladık. Şimdi öbür yarısı: o mesafeyi
+    GÖREBİLİYOR musun?
+
+    İki ölçü var ve aynı hızda büyümüyorlar:
+
+    → BAKIŞ mesafesi = n × hız → hızla DOĞRUSAL
+    → DURMA mesafesi = v·t + v²/(2a) → hızın KARESİYLE
+
+    İşte bütün mesele bu. Sabit bir "iki saniye ileri bak" alışkanlığı, hız
+    arttıkça sessizce yetersizleşiyor.
+
+    EŞİK TAM NEREDE? İkisini eşitle:
+    n·v = v·t + v²/(2a) → v = 2a·(n−1) = 14·(n−1)
+
+    2 saniye → 50,4 km/h'ye kadar yeter
+    3 saniye → 100,8 km/h'ye kadar
+    4 saniye → 151,2 km/h'ye kadar
+
+    90 km/h'DE NE OLUYOR:
+    Saniyede 25 m gidiyorsun, durman 69,6 m.
+    → 2 saniye = 50,0 m → 19,6 m EKSİK. GÖRDÜĞÜNE DURAMAZSIN.
+    → 3 saniye = 75,0 m → payın sadece 5,4 m
+    → 4 saniye = 100,0 m → payın 30,4 m
+
+    50 km/h'de ise 2 saniye 27,8 m, durman 27,7 m — tam tamına yetiyor.
+    "İki saniye" kuralı buradan geliyor: şehir içinde doğru, şehir dışında
+    değil.
+
+    (Bunlar tavsiye değil, payın SIFIR olduğu nokta. Üstüne marj koy:
+    tepkin hep 1 sn olmaz, zemin hep kuru olmaz, gördüğün şey bazen sana
+    doğru geliyordur.)
+
+    VE GÖZ SABİT DURMAZ:
+    uzak → yakın → ayna → tekrar uzak
+
+    Uzak yolu okutur, yakın tuzağı gösterir, ayna arkanı bildirir. Üçü de
+    lazım, hiçbirinde takılı kalınmaz.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #bakış #görüşmesafesi #durmamesafesi #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""
