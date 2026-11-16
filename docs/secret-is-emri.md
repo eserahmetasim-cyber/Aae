@@ -1,0 +1,109 @@
+# Bilgisayardaki Claude'a yapıştırılacak iş emri — SECRET KURULUMU
+
+> Yazılma tarihi: **16.11.2026**
+>
+> **AAE, senin yapacağın tek şey:** bilgisayarındaki **Claude uygulamasını aç** →
+> **yeni bir sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi
+> yapıştır. Claude ekran/tarayıcı izni isterse **İzin Ver**'e bas. Google ve
+> Facebook girişinde **şifreni sen gir** — onu hiçbir Claude giremez. Gerisini
+> oradaki Claude yapacak.
+>
+> Neden bulut oturumundan yapılamıyor: o oturumda ekran/fare aracı yok ve
+> depo ayarı yazmaları engelli (403). Gereken iş Google Cloud Console ile Meta
+> panelinde, senin kendi hesaplarında tarayıcı tıklamaları.
+
+---
+
+## ⬇ YAPIŞTIRILACAK METİN ⬇
+
+---
+
+Merhaba. Bir kurulum işi var, ekranı ve tarayıcıyı kullanarak sen yapacaksın. AAE teknik değil — ona adım sorma, mümkün olan her şeyi kendin yap. Yalnızca şifre girilecek yerlerde ve "İzin Ver" kutularında ona dokundur. Yapamadığın madde olursa sebebini yaz, uydurma.
+
+**Hedef:** `eserahmetasim-cyber/Aae` deposuna beş GitHub secret'ı girmek. Bunlar girilmeden her sabah 09:00'da çalışan `Gunluk Yayin` iş akışı videoyu üretiyor ama hiçbir yere yüklemiyor.
+
+- YouTube: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`
+- Instagram: `IG_USER_ID`, `IG_ACCESS_TOKEN`
+
+**Depo klasörü:** AAE'nin bilgisayarındaki `Aae` deposunun yerel kopyası. Yoksa `git clone https://github.com/eserahmetasim-cyber/Aae` ile al.
+
+**Ayrıntılı referans:** depoda `docs/secret-kurulumu.md` — tıklanacak yerler isimleriyle orada yazılı. Çelişki olursa bu metin geçerli.
+
+### ⛔ Değişmez kurallar
+
+1. **Jetonları hiçbir yere yazma:** sohbete yazdırma, dosyaya kaydetme, commit etme. Ekrandan okuyup doğrudan secret kutusuna/komutuna ver.
+2. `client_secret.json` depo kökünde kalacak ve **commit edilmeyecek** (`.gitignore`'da, öyle kalsın).
+3. **Şifreyi AAE girer.** Google/Facebook giriş ekranı çıkarsa dur, ona söyle, o girsin.
+4. Bitirince gerçek yayın yapma — önce **kuru test** (aşağıda).
+
+---
+
+### 1) YouTube — üç değer
+
+1. Tarayıcıda `https://console.cloud.google.com/` → yeni proje oluştur (ad: "SAE Yayin").
+2. **APIs & Services → Library** → `YouTube Data API v3` → **Enable**.
+3. **APIs & Services → OAuth consent screen** → **External** → zorunlu alanları doldur (uygulama adı "SAE Yayin", destek ve iletişim e-postası AAE'nin adresi).
+4. ⚠ **BU ADIMI ATLAMA.** Aynı sayfada **"Publishing status"** değerine bak. **"Testing"** ise **PUBLISH APP** düğmesine bas, onayla, **"In production"** olsun.
+   - Sebep: uygulama "Testing" kalırsa Google'ın verdiği refresh token **7 gün sonra geçersiz oluyor** ve günlük yayın bir hafta sonra sessizce duruyor. Bunu kaçırırsak iş bir hafta sonra bozulur.
+   - Doğrulama (verification) istemeyecek; uygulamayı yalnızca AAE kullanıyor.
+5. **APIs & Services → Credentials → Create Credentials → OAuth client ID** → *Application type*: **Desktop app** → **Create** → **DOWNLOAD JSON**.
+6. İnen dosyayı **`client_secret.json`** adıyla depo klasörünün köküne taşı.
+7. Depo klasöründe terminal aç ve sırayla çalıştır:
+   ```
+   pip install -r requirements-publish.txt
+   python scripts/get_youtube_token.py
+   ```
+8. Tarayıcı açılır. **AAE'nin, kanalın sahibi olan Google hesabıyla** giriş yapması gerekiyor — şifreyi o girsin. "Google bu uygulamayı doğrulamadı" uyarısı çıkarsa **Advanced → Go to … (unsafe)** ile devam et; uygulama AAE'nin kendisinin.
+9. Betik üç değeri ekrana basar (diske yazmaz). Bunları secret olarak gir:
+   ```
+   gh secret set YT_CLIENT_ID     --repo eserahmetasim-cyber/Aae
+   gh secret set YT_CLIENT_SECRET --repo eserahmetasim-cyber/Aae
+   gh secret set YT_REFRESH_TOKEN --repo eserahmetasim-cyber/Aae
+   ```
+   Her komut değeri gizli olarak soracak; ekrandan okuduğunu yapıştır.
+   `gh` yoksa ya da girişli değilse: `gh auth login` ile AAE'yi giriş yaptır. O da olmazsa tarayıcıdan: depo → **Settings → Secrets and variables → Actions → New repository secret**.
+10. Teyit: `gh secret list --repo eserahmetasim-cyber/Aae` → üç ad görünmeli (değerler görünmez, normal).
+
+### 2) Instagram — iki değer
+
+⚠ **Önce ön koşulu doğrula, yoksa gerisi boşa gider.** Instagram hesabı **Business ya da Creator** olmalı **ve bir Facebook Sayfasına bağlı** olmalı. Kişisel hesaptan API ile paylaşım yapılamıyor. Kontrol: Instagram → Ayarlar → Hesap türü ve araçlar. Değilse AAE'ye sor: hesabı Business/Creator'a çevirmek ve bir Facebook Sayfasına bağlamak ister mi? **Onayı olmadan hesap türünü değiştirme.** İstemiyorsa Instagram adımını atla, YouTube tek başına çalışır — AAE'ye bunu söyle ve 3. maddeye geç.
+
+1. `https://developers.facebook.com/` → **My Apps → Create App** → tip "Other"/işletme → ad "SAE Yayin" → oluştur.
+2. Uygulama panelinde **Instagram** ürününü ekle.
+3. **Settings → Basic**: **App ID** ve **App Secret** (*Show*, Facebook şifresi isterse AAE girsin) değerlerini al — bunlar `FB_APP_ID` ve `FB_APP_SECRET`.
+4. `https://developers.facebook.com/tools/explorer` → sağ üstten bu uygulamayı seç → **Permissions**'a şu dördünü ekle:
+   `instagram_basic`, `instagram_content_publish`, `pages_show_list`, `pages_read_engagement`
+   → **Generate Access Token** → Facebook onayında Sayfayı ve Instagram hesabını **seçili bırak**. Çıkan metin `FB_SHORT_TOKEN` (kısa ömürlü, hemen devam et).
+5. Depo klasöründe (Windows PowerShell):
+   ```
+   $env:FB_APP_ID="..."; $env:FB_APP_SECRET="..."; $env:FB_SHORT_TOKEN="..."
+   python scripts/get_instagram_ids.py
+   ```
+   Mac/Linux ise: `FB_APP_ID=... FB_APP_SECRET=... FB_SHORT_TOKEN=... python3 scripts/get_instagram_ids.py`
+6. Betik `IG_USER_ID` ve `IG_ACCESS_TOKEN` basar. Gir:
+   ```
+   gh secret set IG_USER_ID      --repo eserahmetasim-cyber/Aae
+   gh secret set IG_ACCESS_TOKEN --repo eserahmetasim-cyber/Aae
+   ```
+7. Komut penceresini kapat ki jetonlar geçmişte kalmasın.
+
+### 3) Kuru test — gerçek yayın YAPMA
+
+1. Depo → **Actions** → sol menüde **Gunluk Yayin** → **Run workflow**.
+2. **`kuru` seçeneğini `evet` yap.** Böylece hiçbir şey yayınlanmaz, yalnızca hat denenir.
+3. Çalışmayı izle. Beklenen: "YouTube secret'lari yok" / "Instagram secret'lari yok" uyarıları **artık çıkmamalı**. Çıkıyorsa o platformun secret'ı eksik ya da adı yanlış yazılmış.
+4. Hata varsa logdan sebebini oku ve düzelt. Düzeltemiyorsan hatanın tam metnini AAE'ye yaz.
+
+⚠ **Gerçek yayını sen başlatma.** `kuru=evet` testi temiz geçtiyse AAE'ye haber ver: bundan sonrası ertesi sabah 09:00'da kendiliğinden yayınlanacak. Instagram Reel yayınlandığı an herkese açık olur ve geri alınamaz — bu yüzden ilk gerçek yayın kararı onun.
+
+### 4) Bitince
+
+AAE'ye tek satır bildir: hangi secret'lar girildi, kuru test ne dedi, atlanan bir şey var mı.
+
+---
+
+### Takılırsan
+
+- `gh` komutu yoksa: `https://cli.github.com/` adresinden kur, sonra `gh auth login`.
+- `pip`/`python` tanınmıyorsa: Python 3.11+ kur (`https://www.python.org/downloads/`), kurulumda **"Add Python to PATH"** işaretli olsun.
+- Google Cloud'da "quota" uyarısı görürsen: YouTube Data API'nin günlük yükleme kotası var, yeni projelerde düşük. Günde bir video sorun değil.

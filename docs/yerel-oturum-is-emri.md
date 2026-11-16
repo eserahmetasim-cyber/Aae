@@ -57,6 +57,13 @@ Ayrıca aynı hesapta teyit et:
 - Siteler listesinde `saemuhendislik.com` **"Hazır"** mı, `ads.txt` satırı **"Yetkili"** mi?
 - ℹ Eski hesap (`pub-8433209614215281`, `ahmetasimeser008@gmail.com`) **kapatılmış** — AAE 14.11'de teyit etti. Mükerrer hesap sorunu yok, bu konuda yapılacak iş kalmadı.
 
+**4b) ⚠ Günlük yayın secret'ları — AYRI İŞ EMRİ VAR, onu kullan.**
+Her sabah 09:00'da çalışan `Gunluk Yayin` iş akışı videoyu üretiyor ama beş secret olmadığı için hiçbir yere yüklemiyor: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`, `IG_USER_ID`, `IG_ACCESS_TOKEN`.
+Bu iş ekran + tarayıcı gerektiriyor (Google Cloud Console ve Meta paneli). **Birebir yapıştırılacak iş emri: `docs/secret-is-emri.md`** — adım adım orada, referansı da `docs/secret-kurulumu.md`.
+- ⚠ Google OAuth izin ekranını **"In production"** yapmayı atlama; "Testing" kalırsa token 7 günde ölür ve yayın sessizce durur.
+- Instagram için hesap **Business/Creator + Facebook Sayfasına bağlı** olmalı. Değilse AAE'ye sor, onayı olmadan hesap türünü değiştirme. İstemezse YouTube tek başına çalışır.
+- Jetonları sohbete/dosyaya/commit'e yazma.
+
 **5) Search Console — üç sorunun örnek URL listesi.**
 Açık: "Yönlendirmeli sayfa", "Kopya, Google farklı standart sayfa seçti" (WNC-10031170), "Bulunamadı (404)" (WNC-20237597).
 Ölçtüklerim: sitemap'teki 87 adresin hepsi 200, yani 404'ler **eski/dış bağlantılardan** geliyor. `.html` adresleri 308 ile temiz URL'ye gidiyor — "Yönlendirmeli sayfa" bundan.
