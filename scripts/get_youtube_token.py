@@ -8,7 +8,7 @@ Bunu KENDI BILGISAYARINIZDA calistirin (GitHub Actions'ta degil).
 Adimlar:
   1) Google Cloud Console'dan "OAuth Client ID -> Desktop app" olusturun
      ve inen dosyayi 'client_secret.json' adiyla bu klasore koyun.
-  2) pip install -r requirements-youtube.txt
+  2) pip install -r requirements-publish.txt
   3) python scripts/get_youtube_token.py
   4) Acilan tarayicida Google hesabinizla izin verin.
   5) Ekrana basilan REFRESH TOKEN'i (+ client id/secret) GitHub secret olarak girin:
@@ -28,7 +28,7 @@ def main() -> None:
     try:
         from google_auth_oauthlib.flow import InstalledAppFlow
     except ImportError:
-        print("HATA: Paketler yok. Kurun: pip install -r requirements-youtube.txt",
+        print("HATA: Paketler yok. Kurun: pip install -r requirements-publish.txt",
               file=sys.stderr)
         sys.exit(1)
 

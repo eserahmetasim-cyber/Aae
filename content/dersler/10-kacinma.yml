@@ -1,0 +1,137 @@
+# Ders 10 · Kaçınma manevrası (swerve)
+# Kaynaklar (teknik doğrulama):
+#   https://motorcycletraining.com/team-arizona-riding-tip-april-2013-stop-swerving-might-be-the-answer/
+#   https://womenridersnow.com/?p=2981
+#   https://open-exam-prep.com/study-guides/bc-motorcycle-class-6/emergency-strategies/collision-avoidance-braking-swerving
+#   https://www.oregon.gov/odot/dmv/pages/online_motorcycle_moped_manual/section_6.aspx
+#   https://seriousaccidents.com/?p=20106
+#
+# Kaynakların üzerinde birleştiği üç şey:
+#   1. Kaçınma İKİ ayrı gidon itişidir — biri yatırır, öteki doğrultur.
+#   2. Kaçınırken fren yapılmaz; önce biri, sonra öteki.
+#   3. Bakış engele değil, kaçış boşluğuna.
+#
+# NOT: Kaynaklarda geçen "şu hızın üstünde kaçınma frenden kısa sürer" türü
+# rakamlar (18 mph eşiği, "yarı mesafe") yalnızca ikincil kaynaklara
+# dayanıyor; MSF'in kendi belgesi bulunamadı. Bu yüzden rakam kullanılmıyor.
+
+ders_no: 10
+slug: kacinma
+baslik: "Kaçınma Manevrası"
+alt_baslik: "İki itiş, tek karar"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: kacinma
+boyut: 3
+kamera: tepeden         # kuşbakışı: iki itişin çizgisi ancak yukarıdan okunur
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "Ya fren ya kaçınma — ikisi birden değil"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Karar ver: ya fren ya kaçınma" }
+  - { t: 11, sure: 7, metin: "2 · Kaçınma İKİ itiştir — biri yatırır" }
+  - { t: 19, sure: 7, metin: "3 · İkinci itiş doğrultur, yoksa dönmeye devam" }
+  - { t: 27, sure: 7, metin: "4 · Kaçınırken FREN YOK — çizgini bozar" }
+  - { t: 35, sure: 6, metin: "5 · Engele değil, boşluğa bak" }
+  - { t: 42, sure: 7, metin: "6 · Geçtikten sonra düz çizgide fren" }
+
+youtube:
+  baslik: "Kaçınma Manevrası: İki İtiş, Tek Karar | Yol Okulu #10"
+  aciklama: |
+    Önüne bir şey çıktı. İki seçeneğin var: frene basmak ya da yana kaçmak.
+    Hangisini seçersen seç, kuralı aynı — ikisini AYNI ANDA yapma.
+
+    0:04 Karar ver: ya fren ya kaçınma
+    0:11 Kaçınma iki itiştir
+    0:19 İkinci itiş doğrultur
+    0:27 Kaçınırken fren yok
+    0:35 Engele değil, boşluğa bak
+    0:42 Geçtikten sonra düz çizgide fren
+
+    KAÇINMA NEDİR
+    Kaçınma, arka arkaya iki kontra itişidir. Ders 3'te öğrendiğimiz şeyin
+    hızlandırılmış hâli: ilk itiş motosikleti engelden uzağa yatırır, ikinci
+    itiş onu yeni çizgide doğrultur.
+
+    İKİNCİ İTİŞ UNUTULMAZ
+    En sık yapılan hata ilk itişi yapıp bırakmaktır. O zaman motosiklet
+    dönmeye devam eder ve engelden kaçarken karşı şeride ya da yoldan dışarı
+    çıkarsın. İki itiş bir bütündür: yatır, doğrult.
+
+    KAÇINIRKEN FREN YOK
+    Lastiğin tutuşu sınırlıdır. Kaçınma o tutuşun tamamını yön değiştirmek
+    için ister. Araya fren girerse hem fren hem viraj için yeterli tutuş
+    kalmaz ve ön tekerlek kaçar.
+
+    Sıralama ikisinden biri olmalı:
+    • Fren yap, BIRAK, sonra kaç.
+    • Ya da kaç, engeli geç, sonra DÜZ çizgide fren yap.
+
+    Aynı anda ikisi, en kötü seçenektir.
+
+    BAKIŞ
+    Ders 2'deki kuralın aynısı burada da geçerli: motosiklet baktığın yere
+    gider. Engele kilitlenirsen ona çarparsın. Gözünü engelin yanındaki
+    boşluğa, yani gitmek istediğin yere tak.
+
+    GÖVDE
+    Dizlerini depoya sık, gövdeni dik tut, motosikletin altında hareket
+    etmesine izin ver. Vücudunu motosikletle birlikte yatırmaya çalışırsan
+    manevra yavaşlar.
+
+    ÇALIŞMA
+    Boş bir alanda, yere bir işaret koyup düşük hızdan başla. Önce iki itişi
+    ayrı ayrı hisset, sonra birleştir. Hız arttıkça itiş daha kısa ve daha
+    net olur.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "kaçınma"
+    - "acil manevra"
+    - "kontra"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Önüne bir şey çıktı. Ya fren yaparsın ya kaçarsın — ama ASLA ikisini
+    aynı anda.
+
+    Kaçınma iki kontra itişidir: ilki motosikleti engelden uzağa yatırır,
+    ikincisi yeni çizgide doğrultur.
+
+    En sık yapılan hata: ilk itişi yapıp bırakmak. O zaman motosiklet dönmeye
+    devam eder, engelden kaçarken karşı şeride çıkarsın. İki itiş bir
+    bütündür.
+
+    Neden fren yok? Lastiğin tutuşu sınırlı. Kaçınma o tutuşun tamamını yön
+    değiştirmek için ister; araya fren girerse ikisine de yetmez.
+
+    Sıralama şu ikisinden biri:
+    → Fren yap, BIRAK, sonra kaç.
+    → Ya da kaç, geç, sonra DÜZ çizgide fren yap.
+
+    Ve bakışın engelde değil, yanındaki boşlukta olsun. Motosiklet baktığın
+    yere gider.
+
+    Kaydet — umarım hiç gerekmez.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #kaçınma #acilmanevra #kontra #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

@@ -77,6 +77,8 @@ def main() -> None:
     ap.add_argument("--gizlilik", choices=("private", "unlisted", "public"),
                     help="ders dosyasindaki gizliligi gecersiz kilar")
     ap.add_argument("--kuru", action="store_true", help="istek gondermeden ne yapilacagini goster")
+    ap.add_argument("--id-dosyasi", default="",
+                    help="basarili yuklemede video id'sini bu dosyaya yaz")
     args = ap.parse_args()
 
     try:
@@ -133,6 +135,9 @@ def main() -> None:
         die(f"YouTube API hatasi: {exc}")
 
     vid = yanit.get("id")
+    if args.id_dosyasi:            # gunluk yayin is akisi id'yi buradan okur
+        with open(args.id_dosyasi, "w", encoding="utf-8") as f:
+            f.write(vid or "")
     print(f"\nTAMAM ✓  https://youtu.be/{vid}")
     print(f"         Studio: https://studio.youtube.com/video/{vid}/edit")
     if gizlilik == "private":

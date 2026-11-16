@@ -1,0 +1,150 @@
+# Ders 12 · Kavşakta karşıdan gelip sola dönen araç
+# Kaynaklar (teknik doğrulama):
+#   https://en.wikipedia.org/wiki/List_of_findings_in_the_Hurt_Report
+#   https://en.wikipedia.org/wiki/Hurt_Report
+#   https://smarter-usa.org/wp-content/uploads/2021/01/The-Science-of-Being-Seen-Key-Points.pdf
+#   https://smarter-usa.org/wp-content/uploads/2019/01/5-Why-Do-Car-Drivers-Fail-to-Give-Way-to-Motorcycles-at-T-Junctions.pdf
+#   https://scienceofbeingseen.org/2-smidsy-looked-but-could-not-see/
+#   https://www.iihs.org/topics/motorcycles
+#
+# Kaynakların üzerinde birleştiği şey:
+#   1. Çok araçlı motosiklet kazalarının en yaygın tipi, karşıdan gelen
+#      aracın motosikletin önünden sola dönmesidir.
+#   2. Sürücü çoğu zaman hiçbir kaçınma hareketi yapmaz — yani motosikleti
+#      hiç görmemiştir ("looked but failed to see").
+#   3. Göz teması güvence değildir; sürücü bakıp da kaydetmeyebilir.
+#
+# NOT: RAKAM KULLANILMIYOR. Bu desenin payı kaynaktan kaynağa değişiyor
+# (%36, %42, %46, %53 — hepsi farklı paydayla, hepsi ikincil derleme).
+# Birincil NHTSA/IIHS belgelerine bu ortamdan erişilemedi. KURALLAR.md:
+# kaynakların desteklemediği rakam ekranda yazılmaz.
+
+ders_no: 12
+slug: kavsak
+baslik: "Kavşakta Sola Dönen Araç"
+alt_baslik: "Göz teması söz değildir"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: kavsak
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:yavasla, 11:onteker, 19:goz, 27:fren, 35:bosluk, 43:duz"
+
+kapanis: "Önceliğin olması, görüldüğün anlamına gelmez"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Kavşağa girmeden gazı kes" }
+  - { t: 11, sure: 7, metin: "2 · Aracın ÖN TEKERİNE bak — ilk o kıpırdar" }
+  - { t: 19, sure: 7, metin: "3 · Göz teması söz değildir" }
+  - { t: 27, sure: 7, metin: "4 · Parmakların frende: basma, hazır bekle" }
+  - { t: 35, sure: 7, metin: "5 · Kaçacak boşluğu önceden seç" }
+  - { t: 43, sure: 7, metin: "6 · Dönerse: fren DÜZ çizgide" }
+
+youtube:
+  baslik: "Kavşakta Sola Dönen Araç: Göz Teması Söz Değildir | Yol Okulu #12"
+  aciklama: |
+    Motosikletliyi en çok şu vuruyor: karşıdan gelen bir araç, tam senin
+    önünden sola dönüyor. Sürücü sonra hep aynı cümleyi kuruyor —
+    "görmedim".
+
+    0:04 Kavşağa girmeden gazı kes
+    0:11 Aracın ön tekerine bak
+    0:19 Göz teması söz değildir
+    0:27 Parmakların frende
+    0:35 Kaçacak boşluğu önceden seç
+    0:43 Dönerse: fren düz çizgide
+
+    NEDEN GÖRMÜYORLAR
+    Sürücü yalan söylemiyor. Gerçekten bakıyor ama görmüyor. Bunun adı
+    literatürde "baktı ama göremedi". Araba beklerken gözü araba
+    büyüklüğünde bir şey arar; motosiklet dar bir siluettir ve o aramanın
+    içine girmez. Girse bile beyin mesafeni ve hızını yanlış hesaplar:
+    dar nesneler olduğundan daha uzakta ve daha yavaş görünür.
+
+    ÖN TEKERE BAK
+    Bir aracın niyetini en erken ön tekeri ele verir. Sinyal yanmayabilir,
+    gövde daha kıpırdamamış olabilir, ama ön tekerlek dönmeye başladıysa o
+    araç gidiyor demektir. Sürücünün yüzüne değil, tekerine bak.
+
+    GÖZ TEMASI SÖZ DEĞİLDİR
+    En tehlikeli rahatlama anı: "bana baktı, beni gördü." Bakmak görmek
+    değildir. Sürücü senin içinden geçip arkandaki boşluğa bakıyor olabilir.
+    Göz teması kurduğunu düşünsen bile davranışını değiştirme.
+
+    PARMAKLAR FRENDE
+    Frene basma — parmaklarını kolun üstüne koy. Tepki süresinin büyük
+    kısmı eli frene GÖTÜRMEKLE geçer. O kısmı önceden harcarsan, bir şey
+    olduğunda kazandığın zaman doğrudan mesafeye dönüşür.
+
+    BOŞLUĞU ÖNCEDEN SEÇ
+    Kavşağa girerken gözün sadece araçta olmasın. "Dönerse ben nereye
+    giderim?" sorusunun cevabı, o soru sorulmadan hazır olmalı. Şeridin
+    içinde, kenarında, yolun omzunda — nereye gideceğini bil.
+
+    DÖNERSE
+    Döndüyse artık refleks değil teknik gerekir: Ders 10'daki kural burada
+    da geçerli. Fren DÜZ çizgide yapılır. Hem yatıp hem frene yüklenirsen
+    lastiğin tutuşu ikisine birden yetmez.
+
+    BİR ŞEY DAHA
+    Önceliğin sende olması seni korumaz. Haklı olmakla ayakta kalmak farklı
+    şeyler. Kavşak, haklılığın en işe yaramadığı yerdir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "kavşak"
+    - "göz teması"
+    - "sola dönen araç"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Motosikletliyi en çok vuran senaryo: karşıdan gelen araç, tam senin
+    önünden sola dönüyor. Sürücü sonra hep aynı cümleyi kuruyor —
+    "görmedim".
+
+    Ve yalan söylemiyor. Gerçekten bakıyor ama görmüyor. Araba beklerken göz
+    araba büyüklüğünde bir şey arar; motosiklet dar bir siluettir, o aramanın
+    içine girmez. Girse bile beyin mesafeni yanlış hesaplar: dar nesneler
+    olduğundan daha uzak ve daha yavaş görünür.
+
+    O yüzden:
+
+    → Kavşağa girmeden gazı kes. Hız, kararın için kalan süredir.
+    → Sürücünün yüzüne değil, aracın ÖN TEKERİNE bak. Sinyal yanmayabilir,
+    gövde kıpırdamamış olabilir — ama ön tekerlek dönüyorsa o araç gidiyor.
+    → Göz teması söz değildir. "Bana baktı" diye rahatlama; senin içinden
+    geçip arkana bakıyor olabilir.
+    → Parmakların frende olsun. Basma, hazır bekle. Tepki süresinin büyük
+    kısmı eli frene götürmekle geçer; o kısmı önceden harca.
+    → "Dönerse ben nereye giderim?" sorusunun cevabı, soru sorulmadan hazır
+    olsun.
+    → Dönerse: fren DÜZ çizgide. Hem yatıp hem fren, lastiğin tutuşunu
+    ikisine birden bölmektir.
+
+    Önceliğin sende olması seni korumaz. Kavşak, haklı olmanın en işe
+    yaramadığı yerdir.
+
+    Kaydet.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #kavşak #gözteması #motosikleteğitimi #yolokulu #güvenlisürüş #trafik
+  feed_de_paylas: true
+  kapak_url: ""

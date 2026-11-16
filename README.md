@@ -40,7 +40,7 @@ Doldurulacak alanlar:
 | `ders_no`, `slug`, `baslik` | Zorunlu. Açılış kartı, üst bant ve dosya adı. (`no` YAML'da boolean olduğu için `ders_no`) |
 | `alt_baslik` | Açılış kartında tek cümlelik özet |
 | `kaynak` | Ham çekim yolu — boş bırakılırsa `videos/` içindeki ilk video |
-| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` · `viraj` · `kontra` · `gaz` |
+| `sahne` | Çekim yoksa arka planı çizimle üret: `fren` · `viraj` · `kontra` · `gaz` · `islak` · `kornokta` · `manevra` · `gece` · `kontrol` · `kacinma` · `yolcu` · `kavsak` · `takip` · `konum` · `sollama` · `zemin` · `hizli` · `durma` |
 | `boyut` | `3` = 3 boyutlu sahne (varsayılan), `2` = düz çizim |
 | `kamera` | `yan` · `kask` · `takip` · `onden` · `tepeden` · `degisken` (dönüşümlü) |
 | `gunduz` | `true` = gündüz ışığı, uzak daha net; `false` = gece |
@@ -118,6 +118,30 @@ python3 scripts/publish_youtube.py   --ders content/dersler/01-acil-fren.yml --k
 python3 scripts/publish_instagram.py --ders content/dersler/01-acil-fren.yml --kuru
 ```
 
+### Günlük otomatik yayın
+
+`gunluk-yayin` iş akışı **her sabah 09:00'da (Istanbul)** sıradaki dersi render
+edip YouTube'a `public`, Instagram'a Reel olarak yayınlar.
+
+Sıra `content/yayin_kaydi.json` içinde tutulur: her yayından sonra ders
+işaretlenir ve kayıt depoya geri yazılır, böylece ertesi gün bir sonraki ders
+çıkar. Dersler bitince iş akışı "sırada ders yok" deyip yeşil biter — devam
+etmesi için yeni ders eklemen yeter.
+
+```bash
+python3 scripts/yayin_sirasi.py --durum      # hangi ders yayında, hangisi bekliyor
+python3 scripts/yayin_sirasi.py --sonraki    # sırada bekleyen dersin yolu
+```
+
+> **Açma anahtarı Secret'lardır.** Secret girilmeden hiçbir şey yayınlanmaz:
+> o platform atlanır, ders sırada kalır, iş akışı yeşil biter. YouTube için
+> `YT_CLIENT_ID` + `YT_CLIENT_SECRET` + `YT_REFRESH_TOKEN`, Instagram için
+> `IG_USER_ID` + `IG_ACCESS_TOKEN`. Kurulum aşağıdaki bölümlerde.
+>
+> Instagram Reel yayınlandığı anda herkese açık olur ve API'den geri alınamaz.
+> Günlük yayını durdurmak için **Actions → Gunluk Yayin → ⋯ → Disable workflow**
+> ya da ilgili Secret'ı sil.
+
 `--kuru` hiçbir istek göndermeden ne yapılacağını gösterir.
 `publish_instagram.py --sadece-hazirla` videoyu yükleyip işletir ama **yayınlamaz**.
 
@@ -138,6 +162,13 @@ render sırasında üretilir. Her şey çizimle oluşur, telif sorunu yoktur.
 | `fren` | Motosikletin 3/4 görünümü. Frene basınca çatal çöker, motosiklet öne yüklenir, ön lastiğin temas alanı büyür; soldaki çubuklar ön/arka yük dağılımını %50/%50'den %82/%17'ye canlı taşır, sağda hız düşer. |
 | `viraj` | Viraja giren motosikletin arkadan görünümü. Yolun iki kenarının birleştiği **kayboluş noktası** uzaklaşır (viraj açılıyor), yaklaşır (kapanıyor) ya da sabit kalır; hedef sabitlemesi anında engel ve kaçış boşluğu belirir. |
 | `kontra` | Önden görünüm. Gidona verilen itiş, ön tekerin ters yöne dönmesi ve motosikletin yatması aynı karede: paneller "SOL GİDON İTİLİYOR · ÖN TEKER SAĞA · MOTOSİKLET SOLA 22°" olarak okunur. Yalnızca 3 boyutlu üretilir. |
+| `durma` | Engel tam **27,7 m**'de (50 km/h'nin durma mesafesi). Adıma göre motosiklet 50 ya da 70 ile yaklaşır; 1 sn tepki boyunca hız düşmez, sonra 7 m/s² ile frenler. 50 burnunu değdirmeden durur, 70 aynı noktaya **58 km/h** ile varır. Panelde iki çubuk (tepki mavi + fren turuncu) ve 50'nin durma noktasından geçen dikey çizgi. Fazlar: `iki` · `kare` · `elli` · `yetmis` · `carpma` · `secim`. Yalnızca 3 boyutlu. |
+| `hizli` | Sağa dönen viraj (30° yatışa göre kurulmuş, R=49 m). Adıma göre motosiklet ya doğrulur (panik: yarıçap 161 m'ye çıkar, **karşı şeride taşar**) ya da daha çok yatar (40°: yarıçap 34 m'ye iner). Yoldaki yeşil kesikli çizgi tasarım çizgisidir; panel sapmayı metreyle ve yatış→yarıçap tablosuyla verir. Sapma `a = g·(tanλ₀−tanλ)` iki kez sayısal integre edilerek bulunur. Fazlar: `panik` · `uc` · `daralt` · `bakis` · `fren` · `giris`. Yalnızca 3 boyutlu. |
+| `zemin` | Şeride düşen kaygan yamalar: rögar kapağı, yol çizgisi, mazot, çakıl, demir plaka. Noktasal olanlardan şerit içinde kayarak kaçınılır, şerit boyu uzananlardan dik geçilir. Sağdaki çubuk grafiği **gereken tutuş μ = tan(yatış)** ilişkisini verir. Motosiklet düz yolda dik gider (KURALLAR.md: yatan motosikletin yolu da bükülür). Fazlar: `gor` · `cizgi` · `ister` · `dik` · `bedel` · `sabit`. Yalnızca 3 boyutlu. |
+| `sollama` | İki yönlü yolda 16 m'lik bir TIR'ı sollama: geri çekilme, sola çıkış, geçiş, dönüş. Panel sollamanın **gerçekte istediği boş yolu** hesaplar (hız farkı → süre → bizim yol + karşıdan gelenin yolu) ve yol tasarım değeriyle (90 km/h → 615 m) karşılaştırır. `kor` adımında orta çizgi KESİKSİZ olur ve motosiklet şeritte kalır. Fazlar: `geri` · `hesap` · `az` · `standart` · `kor` · `donus`. Yalnızca 3 boyutlu. |
+| `konum` | Sağa dönen viraj (R=140 m), iç tarafta görüşü kapatan yamaç. Şerit üçe bölünmüş; motosiklet adıma göre sol/orta/sağ üçte bire kayar ve bakış çizgisi iç kenara **teğet** olduğu yerde biter — panel o uzaklığı metreyle verir (sağda 17 m, solda 30 m). Fazlar: `ucte` · `disa` · `olcu` · `bedel` · `arka` · `orta`. Yalnızca 3 boyutlu. |
+| `takip` | Alçak takip görüşü. Önde bir araç, şeridin ortasında kesikli ölçü bandı, yol kenarında sayım dikmeleri. Panel mesafeyi hem metre hem **saniye** olarak verir; çubukta yönetmelik (1,8 sn), hedef (2,0 sn) ve ıslak (4,0 sn) çentikleri durur. Döngü çok yakın başlar, sürücü gazı bırakır, bant kırmızıdan yeşile döner. Fazlar: `yonetmelik` · `saniye` · `say` · `isaret` · `katla` · `gorus`. Yalnızca 3 boyutlu. |
+| `kavsak` | Alçak takip görüşü. Karşıdan gelen araç kavşakta **senin önünden sola döner**; motosiklet önceden yavaşlar, çatal çöker. Adıma göre aracın ön tekerine halka, ön camına üzeri çizili göz ya da şeride kaçış boşluğu düşer. Fazlar: `yavasla` · `onteker` · `goz` · `fren` · `bosluk` · `duz`. Yalnızca 3 boyutlu. |
 | `gaz` | Havadan takip. Motosiklet sabit yarıçaplı bir virajı dönerken gaz çubuğu, hız ve faz etiketi görünür; gaz kesilince motosiklet doğrulup şerit çizgisinin dışına taşar ("ŞERİDİN DIŞINDA"). Fazlar `sahne_fazlari` ile adımlara bağlanır: `fren` · `yatis` · `sabit` · `kesik` · `duzelt` · `cikis`. Yalnızca 3 boyutlu. |
 
 **Kamera açıları.** `kamera: kask` sürücünün kaskından bakar — gidon, aynalar,
@@ -179,7 +210,8 @@ Parçaların **hepsi `scripts/muzik_uret.py` ile sentezlendi** — hiçbir yerde
 
 | Dosya | Karakter |
 |---|---|
-| `aae_piyano.mp3` | **Varsayılan.** 64 BPM; sakin piyano ezgisi (kısmi sesleri hafif akortsuz, başta çekiç gürültüsü) + çok kısık yaylı + oda yankısı. Ritim yok. |
+| `aae_keman.mp3` | **Varsayılan.** 88 BPM; keman ezgisi (16 harmonik + vibrato + yay gürültüsü, ~300 ve ~700 Hz formant tepeleri) üzerine boom-bap davul, 808 bas ve pizzicato arpej. |
+| `aae_piyano.mp3` | 64 BPM; sakin piyano ezgisi (kısmi sesleri hafif akortsuz, başta çekiç gürültüsü) + çok kısık yaylı + oda yankısı. Ritim yok. |
 | `aae_sade.mp3` | 70 BPM; Karplus-Strong telli çalgı + bas hattı + fırça vuruşu. Boş başlar, açılır, sonda incelir. |
 | `aae_yol_okulu.mp3` | 82 BPM; koyu phonk/trap yatağı (808 bas + cowbell). |
 | `aae_lofi.mp3` ✻ | 76 BPM; Rhodes benzeri akorlar + yumuşak beat + plak çatırtısı. |
@@ -194,7 +226,7 @@ python3 scripts/muzik_uret.py --stil piyano --bpm 60 --tohum 9 \
         --cikti assets/muzik/aae_yavas.mp3
 ```
 
-`--stil` (piyano / sade / lofi / atmosfer / phonk) karakteri, `--tohum`
+`--stil` (keman / piyano / sade / lofi / atmosfer / phonk) karakteri, `--tohum`
 varyasyonu, `--bpm` tempoyu değiştirir. Ürettiğin dosyayı ders dosyasındaki
 `muzik:` alanına yaz. Her parça -16 LUFS'a oturtulur, böylece stiller arasında
 seviye farkı olmaz.
@@ -265,7 +297,7 @@ Reels: MP4/MOV, H.264/HEVC + AAC, 23–60 fps, **≤ 300 MB**, 9:16 önerilir, `
 content/dersler/        → ders dosyaları (_sablon.yml kopyala)
 videos/                 → ham çekimler (Git LFS)
 output/                 → render edilmiş videolar
-assets/muzik/           → fon müziği (aae_piyano.mp3 varsayılan)
+assets/muzik/           → fon müziği (aae_keman.mp3 varsayılan)
 scripts/
   lesson.py                 → ders dosyasını okur/doğrular, drawtext metinlerini üretir
   make_training_video.sh    → ffmpeg render
@@ -274,9 +306,13 @@ scripts/
   get_youtube_token.py      → YT refresh token (tek seferlik, yerelde)
   get_instagram_ids.py      → IG user id + uzun ömürlü jeton (tek seferlik, yerelde)
   muzik_uret.py             → telifsiz fon müziği besteler (numpy gerekir)
+  yayin_sirasi.py           → günlük yayın sırası (hangi ders yayınlandı)
   sahne_uret.py             → düz (2B) sahne + motor sesi (numpy, pillow)
-  sahne3b.py                → 3 boyutlu sahne (fren / viraj)
+  sahne3b.py                → 3 boyutlu sahneler (fren / viraj / kavşak / ...)
+  adv_motor.py              → AAE'nin onaylı adventure motoru (assets/adv_motor)
   uc_boyut.py               → yazılımsal 3B motor: kamera, ışık, derinlik
 .github/workflows/egitim-videosu.yml
+.github/workflows/gunluk-yayin.yml   → her sabah 09:00 otomatik yayin
+content/yayin_kaydi.json             → hangi ders yayinlandi
 KURALLAR.md             → format, marka, yayın ve sır kuralları
 ```
