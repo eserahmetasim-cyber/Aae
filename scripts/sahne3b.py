@@ -1200,7 +1200,7 @@ def kare_gece3b(t):
 # etiketindedir; basinc SOGUKKEN olculur.
 # Isaret noktalari. Anahtar ders dosyasindaki sahne_fazlari ile eslesir.
 KONTROL_NOKTA = {
-    "lastik":  ("LASTİK ve JANT", (0.0, 0.33, 0.70), "basıncı SOĞUKKEN ölç"),
+    "lastik":  ("LASTİK ve JANT", (0.0, 0.33, 0.70), "diş, çatlak, cisim"),
     "kumanda": ("KUMANDALAR", (0.30, 1.07, 0.54), "kol, pedal, kablo, gaz"),
     "isik":    ("IŞIKLAR", (0.0, 0.98, 0.82), "far, stop, sinyal, korna"),
     "yag":     ("YAĞ ve SIVILAR", (0.0, 0.40, 0.02), "seviye ve kaçak"),
@@ -1210,8 +1210,8 @@ KONTROL_NOKTA = {
 KONTROL_SIRA = list(KONTROL_NOKTA)
 # Isaretin hangi saniyede hangi noktaya gectigi. Sabit dongu kullanilinca
 # sahne ile ekrandaki adim kayiyordu: 6. saniyede yazi "basinci olc" derken
-# halka IŞIKLAR'daydi. Adimlarin ilk dordu lastikle ilgili oldugu icin
-# eslesme 1:1 degil; zamanlar ders dosyasindan geliyor.
+# halka IŞIKLAR'daydi. Zamanlar ders dosyasindan geliyor. Ders 09 v2'de
+# adimlar T-CLOCS'un alti harfi oldugu icin eslesme artik 1:1.
 KONTROL_FAZ = [(4.0, "lastik")]
 
 

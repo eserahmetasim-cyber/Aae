@@ -45,12 +45,20 @@ def dis_yayinlar(yol: str = DIS_YOL) -> dict:
         return yaml.safe_load(f) or {"yayinlar": []}
 
 
-def _ders_metni(d: dict) -> str:
-    parcalar = [d["baslik"], d.get("alt_baslik", "")]
-    parcalar += [a["metin"] for a in d.get("adimlar", [])]
+def _ders_metinleri(d: dict) -> tuple:
+    """(baslik metni, govde metni).
+
+    Anahtarin NEREDE gectigi onemli. Baslikta/alt baslikta gecen anahtar
+    videonun KONUSUDUR; tek bir adim metninde gecen sadece DEGINMEDIR.
+    Ders 09 bunu ortaya cikardi: T-CLOCS turunda lastik alti maddeden
+    biridir, videonun konusu degildir - eski surum ikisini ayirt
+    edemedigi icin dersi "Lastik Basinci" ile cakisiyor sayiyordu."""
+    bas = [d["baslik"], d.get("alt_baslik", "")]
     yt = d.get("youtube") or {}
-    parcalar.append(yt.get("baslik", ""))
-    return _sade(" ".join(p for p in parcalar if p))
+    bas.append(yt.get("baslik", ""))
+    govde = [a["metin"] for a in d.get("adimlar", [])]
+    return (_sade(" ".join(p for p in bas if p)),
+            _sade(" ".join(p for p in govde if p)))
 
 
 def _gecer(anahtar: str, metin: str, kelimeler: set) -> bool:
@@ -61,14 +69,22 @@ def _gecer(anahtar: str, metin: str, kelimeler: set) -> bool:
     return (a in metin) if " " in a else (a in kelimeler)
 
 
-def tara(metin_sade: str, veri: dict) -> list:
-    kelimeler = {k.strip(".,:;!?·—-()") for k in metin_sade.split()}
+def tara(bas_metin: str, govde_metin: str, veri: dict) -> list:
+    """[(yayin, baslikta_eslesenler, sadece_govdede_eslesenler)]"""
+    def kel(m):
+        return {k.strip(".,:;!?·—-()") for k in m.split()}
+
+    bas_kel, govde_kel = kel(bas_metin), kel(govde_metin)
     bulunan = []
     for y in veri.get("yayinlar", []):
-        eslesen = [a for a in y.get("anahtarlar", [])
-                   if _gecer(a, metin_sade, kelimeler)]
-        if eslesen:
-            bulunan.append((y, eslesen))
+        konu, deginme = [], []
+        for a in y.get("anahtarlar", []):
+            if _gecer(a, bas_metin, bas_kel):
+                konu.append(a)
+            elif _gecer(a, govde_metin, govde_kel):
+                deginme.append(a)
+        if konu or deginme:
+            bulunan.append((y, konu, deginme))
     return bulunan
 
 
@@ -83,12 +99,12 @@ def main() -> None:
               f"(kaynak: {veri.get('kaynak', 'bilinmiyor')}).\n")
 
     if args.metin:
-        for y, es in tara(_sade(args.metin), veri):
+        bulunan = tara(_sade(args.metin), "", veri)
+        for y, konu, _ in bulunan:
             print(f"  ! '{y['baslik']}' ({y['tarih']}, {y['durum']}) "
-                  f"— ortak: {', '.join(es)}")
-        else:
-            if not tara(_sade(args.metin), veri):
-                print("  temiz: dis yayinlarla ortak anahtar yok.")
+                  f"— ortak: {', '.join(konu)}")
+        if not bulunan:
+            print("  temiz: dis yayinlarla ortak anahtar yok.")
         return
 
     dersler = []
@@ -100,16 +116,23 @@ def main() -> None:
 
     sorun = 0
     print("DIS YAYINLARLA KARSILASTIRMA")
+    print("  !  baslikta ortak anahtar  -> konu cakismasi")
+    print("  ~  yalnizca bir adimda     -> deginme, cakisma degil")
     for d in dersler:
-        bulunan = tara(_ders_metni(d), veri)
-        if bulunan:
+        bulunan = tara(*_ders_metinleri(d), veri)
+        if not bulunan:
+            continue
+        konulu = [b for b in bulunan if b[1]]
+        if konulu:
             sorun += 1
-            print(f"\n  Ders {d['no']:02d} · {d['baslik']}")
-            for y, es in bulunan:
-                print(f"    ! '{y['baslik']}' ({y['tarih']}, {y['durum']}) "
-                      f"— ortak: {', '.join(es)}")
+        print(f"\n  Ders {d['no']:02d} · {d['baslik']}")
+        for y, konu, deginme in bulunan:
+            isaret = "!" if konu else "~"
+            ortak = ", ".join(konu or deginme)
+            print(f"    {isaret} '{y['baslik']}' ({y['tarih']}, {y['durum']}) "
+                  f"— ortak: {ortak}")
     if not sorun:
-        print("  temiz.")
+        print("\n  KONU CAKISMASI YOK.")
 
     print("\nDERSLER ARASI TEKRAR")
     ikili = 0

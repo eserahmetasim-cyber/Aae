@@ -1,105 +1,108 @@
-# Ders 09 · Lastik basıncı ve ön kontrol (T-CLOCS)
+# Ders 09 · Binmeden önce T-CLOCS turu
 # Kaynaklar (teknik doğrulama):
+#   https://dld.utah.gov/?p=8943          (MSF T-CLOCS kontrol listesi)
+#   https://www.harley-davidson.com/us/en/content/expert-advice/pre-inspection-checklist-tclocs.html
+#   https://us.haynes.com/blogs/tips-tutorials/essential-motorcycle-pre-ride-checklist-get-there-and-back-safely
 #   https://www.mic.org/Downloads/Tire_Guide.pdf
 #   https://www.ustires.org/motorcycle-tire-guide
-#   https://www.harley-davidson.com/us/en/content/expert-advice/pre-inspection-checklist-tclocs.html
-#   https://dld.utah.gov/?p=8943          (MSF T-CLOCS kontrol listesi)
-#   https://us.haynes.com/blogs/tips-tutorials/essential-motorcycle-pre-ride-checklist-get-there-and-back-safely
 #
 # T-CLOCS: Tires, Controls, Lights, Oil, Chassis, Stands.
-# Kritik nokta: yan duvardaki sayı lastiğin AZAMİ basıncıdır, motosikletin
-# önerilen basıncı değil. Önerilen değer el kitabında ve şasi/salıncak/zincir
-# muhafazası etiketindedir. Basınç SOĞUKKEN ölçülür.
-# NOT: Videoda psi/bar rakamı verilmiyor — doğru değer motosikletten
-# motosiklete, hatta tek/çift kişilik yüke göre değişir.
+# Altı harf, altı adım — sahnedeki altı işaret noktasıyla 1:1 eşleşiyor.
+#
+# SÜRÜM 2 — AÇI DEĞİŞTİ
+# v1'in başlığı "Lastik Basıncı ve Ön Kontrol"dü ve ilk DÖRT adımı lastik
+# basıncındaydı. Diğer fabrika 7 Ekim'de "Lastik Basıncı" yayınlayınca ders
+# bekletmeye alınmıştı. v2'de video artık basınç videosu değil: lastik,
+# altı maddeden biri. Basınçla ilgili ayrıntı (yan duvardaki sayı AZAMİ
+# basınçtır, önerilen değer el kitabında ve şasi etiketindedir, ölçüm
+# SOĞUKKEN yapılır) açıklamada duruyor — videonun omurgası değil.
+# cakisma.py da buna göre düzeltildi: anahtarın başlıkta geçmesi konu
+# çakışmasıdır, bir adımda geçmesi yalnızca değinmedir.
+#
+# NOT: psi/bar rakamı verilmiyor — doğru değer motosikletten motosiklete,
+# hatta tek/çift kişilik yüke göre değişir.
 
 ders_no: 9
 slug: on-kontrol
-baslik: "Lastik Basıncı ve Ön Kontrol"
-alt_baslik: "Binmeden önce iki dakika"
+baslik: "Binmeden Önce: T-CLOCS"
+alt_baslik: "Altı harf, iki dakika"
 seri: "MOTOSİKLET YOL OKULU"
-surum: 1
-
-# BEKLETILIYOR: diger fabrika 7 Ekim'de "Lastik Basıncı" yayınladı; bu ders
-# onunla aynı konu (scripts/cakisma.py bunu lastik ve diş anahtarlarından
-# yakalıyor). Aynı kanalda aynı konuyu iki kez yayınlamamak için sırada
-# bekletiliyor. Yayınlanacaksa açısı değişmeli: başlık ve ilk adımlar lastik
-# basıncından T-CLOCS turuna kaydırılmalı.
-yayin_beklet: true
-yayin_beklet_notu: "diğer fabrika 7 Ekim'de 'Lastik Basıncı' yayınladı"
+surum: 2
 
 kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
 sahne: kontrol
 boyut: 3
 kamera: yan
 gunduz: true
-sahne_fazlari: "4:lastik, 35:kumanda, 37.5:isik, 40:yag, 44:zincir, 47:sehpa"
+sahne_fazlari: "4:lastik, 12:kumanda, 20:isik, 28:yag, 36:zincir, 44:sehpa"
 baslangic: 0
 sure: 55
 kaynak_ses: 0.035
 muzik: "assets/muzik/aae_okul.mp3"
 muzik_ses: 0.36
 
-kapanis: "İki dakikalık kontrol, bir günlük yol"
+kapanis: "İki dakikalık tur, bir günlük yol"
 
 adimlar:
-  - { t: 4,  sure: 6, metin: "1 · Basıncı SOĞUKKEN ölç — sürdükten sonra şişer" }
-  - { t: 11, sure: 7, metin: "2 · Yan duvardaki sayı AZAMİ, önerilen değil" }
-  - { t: 19, sure: 7, metin: "3 · Doğru değer el kitabında ve şasi etiketinde" }
-  - { t: 27, sure: 7, metin: "4 · Diş derinliği, çatlak, saplanmış cisim" }
-  - { t: 35, sure: 6, metin: "5 · Kumanda, ışık, yağ, zincir, sehpa" }
-  - { t: 42, sure: 7, metin: "6 · Her bindiğinde — iki dakika sürer" }
+  - { t: 4,  sure: 7, metin: "1 · T — Lastik ve jant: diş, çatlak, saplanmış cisim" }
+  - { t: 12, sure: 7, metin: "2 · C — Kumandalar: gaz kendiliğinden kapansın" }
+  - { t: 20, sure: 7, metin: "3 · L — Işıklar: far, stop, sinyal, korna" }
+  - { t: 28, sure: 7, metin: "4 · O — Yağ ve sıvılar: seviye ve altında damla" }
+  - { t: 36, sure: 7, metin: "5 · C — Şasi ve zincir: gerginlik, yağ, çatal" }
+  - { t: 44, sure: 7, metin: "6 · S — Sehpa: yay geri çeksin, kesme çalışsın" }
 
 youtube:
-  baslik: "Lastik Basıncı ve Ön Kontrol: Binmeden Önce İki Dakika | Yol Okulu #9"
+  baslik: "Binmeden Önce T-CLOCS: Altı Harf, İki Dakika | Yol Okulu #9"
   aciklama: |
-    Motosikletin seni yola bağlayan tek şey iki avuç içi kadar lastik. Ön
-    kontrol o yüzden lüks değil, alışkanlık olmalı. İki dakika sürüyor.
+    Motosiklette arıza yolda fark edilmez — yolda sonuç verir. T-CLOCS,
+    MSF'in öğrettiği altı harflik ön kontrol turu. Tamamı iki dakika sürer
+    ve hiçbir alet gerektirmez.
 
-    0:04 Basıncı soğukken ölç
-    0:11 Yan duvardaki sayı azami basınçtır
-    0:19 Doğru değer el kitabında ve şasi etiketinde
-    0:27 Diş derinliği, çatlak, saplanmış cisim
-    0:35 Kumanda, ışık, yağ, zincir, sehpa
-    0:42 Her bindiğinde
+    0:04 T — Lastik ve jant
+    0:12 C — Kumandalar
+    0:20 L — Işıklar
+    0:28 O — Yağ ve sıvılar
+    0:36 C — Şasi ve zincir
+    0:44 S — Sehpa
 
-    BASINÇ: SOĞUKKEN
-    Lastik sürdükçe ısınır ve içindeki hava genleşir, basınç yükselir. Sıcak
-    lastikte ölçüp "tamam" dersen aslında eksik basınçla gidiyorsundur. Ölçümü
-    motosiklet en az birkaç saat durduktan sonra yap.
+    T · TIRES — LASTİK ve JANT
+    Diş derinliği, yanak çatlağı, saplanmış cisim, jantta ezik ya da
+    çatlak. Tekerleği çevir, salgı var mı bak. Lastiğin yanağındaki sayı
+    AZAMİ basınçtır; motosikletin ÖNERİLEN basıncı değildir. Önerilen
+    değer el kitabında ve şasi / salıncak / zincir muhafazası etiketinde
+    yazar. Basınç SOĞUKKEN ölçülür — sürdükten sonra ısınıp şişer ve
+    yanıltır.
 
-    EN SIK YAPILAN HATA
-    Lastiğin yan duvarında yazan basınç, o lastiğin dayanabileceği AZAMİ
-    değerdir — motosikletin için önerilen değer değildir. Önerilen basınç
-    üreticinin el kitabında ve genelde şasi, salıncak ya da zincir muhafazası
-    üzerindeki etikette yazar. Bazı motosikletlerde tek kişilik ve çift
-    kişilik için iki ayrı değer bulunur; yüke göre olanı kullan.
+    C · CONTROLS — KUMANDALAR
+    Gaz kolunu sonuna kadar çevir ve BIRAK: kendiliğinden kapanmalı.
+    Takılıyorsa kablo ya da gidon problemi var. Debriyaj ve fren kolunun
+    boşluğu, pedalların serbestliği, kabloların gidonla birlikte dönerken
+    gerilmemesi. Fren hortumlarında çatlak var mı.
 
-    Bu videoda bilerek psi ya da bar rakamı vermiyoruz: doğru değer her
-    motosiklette farklıdır. Kendi etiketine bak.
+    L · LIGHTS — IŞIKLAR
+    Kısa far, uzun far, stop lambası (hem ön hem arka fren kolundan ayrı
+    ayrı), dört sinyal, plaka lambası, korna. Aynaları da burada ayarla —
+    kendi omzunu değil, arkandaki şeridi görecek şekilde.
 
-    DÜŞÜK BASINCIN BEDELİ
-    Eksik basınç lastiği fazla ezer, ısıtır, direksiyonu belirsizleştirir,
-    aşınmayı hızlandırır. Yüksek basınç ise temas alanını küçültür ve tutuşu
-    düşürür. Azami değeri de asla aşma — ne lastiğin azami basıncını ne de
-    motosikletin yük sınırını (sürücü + yolcu + yük + aksesuar).
+    O · OIL — YAĞ ve SIVILAR
+    Motor yağı seviyesi (gözetleme camı ya da çubuk), fren hidroliği,
+    varsa soğutma suyu. Sonra motosikletin ALTINA bak: yerde damla var mı.
+    Gece park ettiğin yerde sabah bir leke varsa o leke bir şey anlatıyor.
 
-    LASTİĞİN GERİ KALANI
-    Diş derinliğine bak: diş suyu temas alanından tahliye eder, azaldıkça
-    ıslakta tutuş düşer. Yan duvarda çatlak, şişkinlik, sırtta saplanmış çivi
-    ya da taş var mı kontrol et.
+    C · CHASSIS — ŞASİ ve ZİNCİR
+    Zincir gerginliği ve yağı, dişlilerde aşınma. Ön çatal: sıkıştır,
+    yumuşak ve eşit insin, keçeden yağ sızmasın. Arka amortisör, salıncak
+    boşluğu, cıvata ve somunlar.
 
-    GERİ KALAN KONTROLLER
-    MSF'in T-CLOCS listesi altı başlık veriyor:
-    • Lastik ve jant — basınç, diş, hasar
-    • Kumandalar — kol, pedal, kablo, gaz dönüşü
-    • Işıklar — far, stop, sinyal, korna, aynalar
-    • Yağ ve sıvılar — seviye, kaçak
-    • Şasi ve zincir — gerginlik, yağlama, süspansiyon
-    • Sehpa — yay ve kilit sağlam mı
+    S · STANDS — SEHPA
+    Yan sehpa yayı kopmuş ya da gevşemişse sehpa yolda düşer ve ilk sola
+    yatışta yere değer. Kesme anahtarını da dene: sehpa açıkken vites
+    takılınca motor susmalı.
 
-    MSF her bindiğin gün bu kontrolü öneriyor. Alıştıktan sonra gerçekten
-    iki dakika sürüyor.
+    NE ZAMAN
+    Tamamı her binişte gerekmez. Günlük binişte lastik, ışık ve zincire
+    bakmak yeterli. Uzun yola çıkmadan, uzun süre duran motosiklete
+    binmeden ve bakım sonrası ilk sürüşte altısını birden yap.
 
     Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
 
@@ -107,10 +110,10 @@ youtube:
   etiketler:
     - "motosiklet"
     - "sürüş eğitimi"
-    - "lastik basıncı"
-    - "ön kontrol"
     - "t-clocs"
-    - "motosiklet bakımı"
+    - "ön kontrol"
+    - "bakım"
+    - "motosiklet eğitimi"
     - "yol okulu"
     - "güvenli sürüş"
   kategori: "2"
@@ -118,26 +121,43 @@ youtube:
 
 instagram:
   caption: |
-    Seni yola bağlayan tek şey iki avuç içi kadar lastik. Ön kontrol iki
-    dakika sürüyor.
+    Motosiklette arıza yolda fark edilmez — yolda sonuç verir.
 
-    BASINCI SOĞUKKEN ÖLÇ. Lastik sürdükçe ısınır, hava genleşir, basınç
-    yükselir. Sıcakken ölçersen eksik basınçla gidiyorsundur.
+    T-CLOCS, MSF'in öğrettiği altı harflik ön kontrol turu. İki dakika
+    sürer, alet istemez.
 
-    EN SIK YAPILAN HATA: yan duvardaki sayı lastiğin AZAMİ basıncıdır,
-    motosikletin önerilen basıncı değil. Doğru değer el kitabında ve şasi
-    (ya da salıncak/zincir muhafazası) etiketinde yazar. Bazı motorlarda
-    tek ve çift kişilik için iki ayrı değer var.
+    T · LASTİK ve JANT
+    Diş, yanak çatlağı, saplanmış cisim, jantta ezik. Tekerleği çevir,
+    salgı var mı bak. (Lastiğin yanağındaki sayı AZAMİ basınçtır, önerilen
+    değil — önerilen el kitabında ve şasi etiketinde yazar, ölçüm de
+    SOĞUKKEN yapılır.)
 
-    Bilerek rakam vermiyorum — doğru değer her motosiklette farklı. Kendi
-    etiketine bak.
+    C · KUMANDALAR
+    Gazı sonuna kadar çevir ve BIRAK — kendiliğinden kapanmalı. Takılıyorsa
+    kablo problemi var. Kol boşlukları, pedallar, hortumlarda çatlak.
 
-    Sonra: diş derinliği, çatlak, saplanmış cisim. Ardından kumandalar,
-    ışıklar, yağ, zincir, sehpa.
+    L · IŞIKLAR
+    Kısa far, uzun far, stop (ön ve arka frenden ayrı ayrı), dört sinyal,
+    plaka lambası, korna. Aynaları da burada ayarla — omzunu değil,
+    arkandaki şeridi göreceksin.
 
-    Kaydet, yarın sabah dene.
+    O · YAĞ ve SIVILAR
+    Yağ seviyesi, fren hidroliği, soğutma suyu. Sonra ALTINA bak: yerde
+    damla var mı. Sabah park yerindeki leke bir şey anlatıyordur.
+
+    C · ŞASİ ve ZİNCİR
+    Zincir gerginliği ve yağı, dişli aşınması. Çatalı sıkıştır: yumuşak ve
+    eşit insin, keçeden sızmasın. Cıvatalar.
+
+    S · SEHPA
+    Yayı gevşemiş yan sehpa yolda düşer ve ilk sola yatışta yere değer.
+    Kesme anahtarını dene: sehpa açıkken vites takılınca motor susmalı.
+
+    Hepsi her binişte gerekmez. Günlükte lastik + ışık + zincir yeter.
+    Uzun yol öncesi, uzun süre durmuşsa ve bakım sonrası ilk sürüşte
+    altısını birden yap.
 
     @aae_motorcycle
-    #motosiklet #sürüşeğitimi #lastikbasıncı #önkontrol #tclocs #motosikletbakımı #yolokulu #güvenlisürüş
+    #motosiklet #sürüşeğitimi #tclocs #önkontrol #bakım #motosikleteğitimi #yolokulu #güvenlisürüş
   feed_de_paylas: true
   kapak_url: ""
