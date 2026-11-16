@@ -1702,7 +1702,9 @@ def kare_durma3b(t):
                      [yan * 1.6, 0.03, isaret_z + 0.45]], (96, 170, 110),
                     katman=2)
 
-    arac_z = kalan + 4.4                       # engelin arkasi burnumuzdan
+    # 4.4'te duran motosiklet, kamera acisindan aracin icine girmis gibi
+    # goruluyordu ve "burnunu degdirmeden durur" mesajini zayiflatiyordu.
+    arac_z = kalan + 5.6                       # engelin arkasi burnumuzdan
     if arac_z < 95.0:
         a = Sahne()
         _araba(a, 0.0, 0.0, (150, 56, 48))
