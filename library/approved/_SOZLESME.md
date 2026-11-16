@@ -93,7 +93,12 @@ Yayını **`.github/workflows/gunluk-yayin.yml` yapar**, elle paylaşım değil:
 - Cron `0 6 * * *` UTC = **09:00 İstanbul** (Türkiye yıl boyu UTC+3).
 - `scripts/yayin_sirasi.py` sıradaki yayınlanmamış dersi seçer
   (`yayin_oncelik`, sonra `ders_no`; `yayin_beklet: true` olanlar atlanır).
-- Render eder, YouTube'a `public`, Instagram'a Reel olarak yükler.
+- Render eder ve **YouTube'a** `public` olarak yükler.
+- **Instagram'ı ZAMANLANMIŞ çalışmada YAYINLAMAZ.** AAE 16.11'de bildirdi:
+  Instagram'ı başka bir oturum her gün **Instagram Business Suite**
+  üzerinden elle planlıyor. İş akışı da atsaydı aynı ders kanalda iki kez
+  çıkardı — ve Reel geri alınamaz. Elle çalıştırmada (`workflow_dispatch`)
+  açılır kutudan seçilebilir.
 - Sonucu `content/yayin_kaydi.json` dosyasına geri yazar.
 
 ### Paylaşım tarafı ne yapmalı / ne YAPMAMALI

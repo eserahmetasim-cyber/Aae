@@ -1,7 +1,10 @@
 name: Gunluk Yayin
 
-# Her sabah 09:00'da (Istanbul) siradaki dersi render edip YouTube ve
-# Instagram'a yayinlar, sonra yayin kaydini depoya geri yazar.
+# Her sabah 09:00'da (Istanbul) siradaki dersi render edip YOUTUBE'a
+# yayinlar, sonra yayin kaydini depoya geri yazar.
+# Instagram'i bu is akisi ZAMANLANMIS calismada YAYINLAMAZ: onu baska bir
+# oturum Instagram Business Suite'ten elle planliyor (AAE, 16.11). Elle
+# calistirmada acilir kutudan secilebilir.
 #
 # ACMA ANAHTARI: secret'lar. Secret yoksa o platform atlanir, is akisi yesil
 # biter. Yani asagidaki secret'lari girene kadar hicbir sey yayinlanmaz:
@@ -54,7 +57,14 @@ jobs:
     env:
       YT_VAR: ${{ secrets.YT_REFRESH_TOKEN != '' }}
       IG_VAR: ${{ secrets.IG_ACCESS_TOKEN != '' }}
-      IG_ISTENDI: ${{ inputs.instagram != 'hayir' }}
+      # ZAMANLANMIS calismada Instagram KAPALI.
+      # AAE 16.11'de bildirdi: Instagram'i baska bir oturum her gun
+      # Instagram Business Suite uzerinden ELLE planliyor. Burasi da
+      # atsaydi ayni ders kanalda iki kez cikardi ve Reel geri alinamaz.
+      # Zamanlanmis calismada inputs bos oldugu icin eski ifade
+      # ('' != 'hayir') TRUE donuyordu - yani otomatik aciksti.
+      # Elle calistirmada (workflow_dispatch) acilir kutu hala gecerli.
+      IG_ISTENDI: ${{ github.event_name == 'workflow_dispatch' && inputs.instagram != 'hayir' }}
       KURU: ${{ inputs.kuru == 'evet' && '--kuru' || '' }}
     steps:
       - name: Depoyu indir

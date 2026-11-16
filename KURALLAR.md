@@ -111,9 +111,13 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
 - **Instagram:** yayınlanan Reel **anında herkese açıktır** — geri alınamaz.
   `egitim-videosu` iş akışında Instagram **hiçbir zaman kendiliğinden çalışmaz**;
   her seferinde elle seçilir (`yayin: instagram` veya `hepsi`).
-- **Günlük yayın bu kuralın bilinçli istisnasıdır.** `gunluk-yayin` iş akışı her
-  sabah 09:00'da (Istanbul) sıradaki dersi YouTube'a `public`, Instagram'a Reel
-  olarak yayınlar. Tek freni Secret'ların varlığıdır: Secret yoksa o platform
+- **Günlük yayın bu kuralın bilinçli istisnasıdır — ama yalnızca YouTube için.**
+  `gunluk-yayin` iş akışı her sabah 09:00'da (Istanbul) sıradaki dersi
+  YouTube'a `public` olarak yayınlar. **Instagram zamanlanmış çalışmada
+  KAPALIDIR**: AAE 16.11'de Instagram'ı başka bir oturumun her gün Instagram
+  Business Suite üzerinden elle planladığını bildirdi; iş akışı da atsaydı aynı
+  ders kanalda iki kez çıkardı ve Reel geri alınamaz. Elle çalıştırmada
+  (`workflow_dispatch`) Instagram açılır kutudan seçilebilir. Tek freni Secret'ların varlığıdır: Secret yoksa o platform
   atlanır ve ders sırada kalır. Durdurmak için iş akışını GitHub Actions'tan
   devre dışı bırak ya da ilgili Secret'ı sil.
 - Sıra `content/yayin_kaydi.json` içinde tutulur ve her yayından sonra depoya
