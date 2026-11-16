@@ -27,6 +27,16 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
 ## Ses
 - Son miks **-14 LUFS**'a normalize edilir (platformların normalize ettiği hedef),
   tepe -1.5 dBTP. Daha kısık bırakırsan platform sesi yükseltirken gürültüyü de yükseltir.
+- **Ses hedefi −18 LUFS, ve `muzik_ses` TEK BAŞINA İŞE YARAMAZ.**
+  Zincir `volume=${muzik_ses} … loudnorm=I=${HEDEF_LUFS}` şeklinde: loudnorm
+  miksi hedefe **geri çıkarır**. Ölçüldü — `muzik_ses` 0,36 / 0,18 / 0,05
+  üçü de −14,1 LUFS veriyor, yani 17 dB'lik bir kısma hiç duyulmuyor.
+  `muzik_ses` yalnızca **motor/müzik oranını** kurar; toplam seviye
+  `HEDEF_LUFS` ile ayarlanır. Platformlar sesi yukarı çıkarmaz, sadece
+  aşağı indirir — daha sessiz teslim edersen öyle çalar. AAE 16.11'de
+  "biraz daha kıs" dedi, hedef −14'ten −18'e çekildi.
+  Hazır videoyu yeniden render etmeye gerek yok: `-c:v copy -af volume=-4dB`
+  görüntüye dokunmadan sesi düşürür (doğrulandı: aynı codec, aynı kare sayısı).
 - **Motorun gerçek sesi çok geride kalır** (`kaynak_ses`, varsayılan 0.035), müzik
   üstte (`muzik_ses`, varsayılan 0.36). Oranı sen kurarsın, toplam seviyeyi render oturtur.
 - Kaynakta ses yoksa sessiz ses kanalı eklenir — platformlar ses kanalı bekler.

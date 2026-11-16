@@ -24,10 +24,16 @@ KREM="0xF5F0E8"
 ZEMIN="0x07090E"
 INTRO="${INTRO:-2.6}"
 OUTRO="${OUTRO:-3}"
-# Platformlar sesi ~-14 LUFS'a normalize eder. Miksi bu hedefe getirmezsek
-# platform sesi yukseltirken gurultuyu de yukseltir. Oran (motor/muzik)
-# kaynak_ses ve muzik_ses ile kurulur; bu sadece toplam seviyeyi oturtur.
-HEDEF_LUFS="${HEDEF_LUFS:--14}"
+# Platformlar sesi ~-14 LUFS'a normalize eder ve YUKARI CIKARMAZLAR: daha
+# sessiz teslim edersen oyle calar. Bu videolarda konusma yok, ses tamamen
+# muzik; AAE 16.11'de "biraz daha kis" dedi, hedef -18'e cekildi (4 dB).
+#
+# DIKKAT - muzik_ses TEK BASINA ISE YARAMAZ:
+# zincir [1:a]volume=${MUZIK_SES},...,loudnorm=I=${HEDEF_LUFS} seklinde.
+# Loudnorm miksi hedefe GERI CIKARIR. Olculdu: muzik_ses 0,36 / 0,18 / 0,05
+# ucu de -14,1 LUFS veriyor, yani 17 dB'lik kisma hic duyulmuyor.
+# muzik_ses yalnizca MOTOR/MUZIK ORANINI kurar; toplam seviye buradan.
+HEDEF_LUFS="${HEDEF_LUFS:--18}"
 LOUDNORM="loudnorm=I=${HEDEF_LUFS}:TP=-1.5:LRA=11"
 
 command -v ffmpeg >/dev/null 2>&1 || { echo "HATA: ffmpeg yok (sudo apt install ffmpeg)." >&2; exit 1; }
