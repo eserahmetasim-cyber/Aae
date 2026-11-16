@@ -1,0 +1,69 @@
+{
+  "klasor": "18-durma-mesafesi",
+  "ders_no": 18,
+  "slug": "durma-mesafesi",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Hız: İki Katı Değil, Dört Katı",
+  "alt_baslik": "50'nin durduğu yerde 70 hâlâ 58 yapıyor",
+  "handle": "@aae_motorcycle",
+  "video": "18-durma-mesafesi.mp4",
+  "kaynak_render": "output/2026-11-16_ders18_durma-mesafesi_v1.mp4",
+  "onay_tarihi": "2026-11-16T12:00:02+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Durma mesafesi iki parça: tepki + fren"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Tepki hızla orantılı, fren hızın KARESİYLE"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · 50 km/h → 27,7 m (13,9 tepki + 13,8 fren)"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · 70 km/h → 46,5 m (19,4 + 27,0)"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · 50'nin durduğu yerde 70 hâlâ 58 km/h"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · Hızı görüş mesafene göre seç"
+    }
+  ],
+  "youtube": {
+    "baslik": "Hız: İki Katı Değil, Dört Katı | Yol Okulu #18",
+    "aciklama": "\"Biraz daha hızlı gitsem ne olur ki?\" sorusunun cevabı sandığından\nçok daha sert. Çünkü durma mesafesi hızla değil, hızın KARESİYLE\nbüyüyor.\n\n0:04 Durma mesafesi iki parça\n0:11 Fren hızın karesiyle\n0:19 50 km/h → 27,7 metre\n0:27 70 km/h → 46,5 metre\n0:35 50'nin durduğu yerde 70 hâlâ 58 km/h\n0:43 Hızı görüşüne göre seç\n\nİKİ PARÇA\nDurma mesafesi iki ayrı şeyin toplamıdır:\n\n  d = v · t_tepki  +  v² / (2a)\n\nBirincisi TEPKİ yolu: tehlikeyi görmenle frene basman arasında\nmotosikletin aldığı yol. Bu süre boyunca hiç yavaşlamazsın.\nİkincisi FREN yolu: frenin fiilen çalıştığı mesafe.\n\nVideoda 1 saniye tepki ve 7 m/s² fren varsayıldı — kuru asfalt, yetkin\nsürücü. Ekranda da yazıyor.\n\nFARK BURADA\nTepki parçası hızla ORANTILI büyür: hız %40 artarsa tepki yolu da %40\nartar. Ama fren parçası hızın KARESİYLE büyür: hız %40 artarsa fren\nyolu %96 artar, yani neredeyse iki katına çıkar.\n\n  50 km/h → 13,9 (tepki) + 13,8 (fren) = 27,7 metre\n  70 km/h → 19,4 (tepki) + 27,0 (fren) = 46,5 metre\n  90 km/h → 25,0 (tepki) + 44,6 (fren) = 69,6 metre\n\nHızı 50'den 70'e çıkardın: %40 arttı. Durma mesafen 27,7'den 46,5'e\nçıktı: %68 arttı.\n\nASIL RAKAM\nŞimdi ikisini aynı yola koyalım. Önüne 27,7 metre ötede bir engel\nçıktı — yani 50 ile giden tam oraya kadar durabileceği mesafe.\n\n50 ile giden burnunu değdirmeden durur.\n70 ile giden aynı noktaya 58 km/h ile varır.\n\n  v = √(19,44² − 2·7·8,22) = 16,22 m/s = 58,4 km/h\n\nHızını %40 artırdın, ama o noktadaki hızın sıfırdan 58'e çıktı.\nÇarpışmanın şiddeti de hızın karesiyle ilgilidir. Aradaki fark\n\"biraz daha hızlı\" değil.\n\nISLAKTA\nFren ivmesi düşer, formülün paydası küçülür, kare terimi aynı kalır.\nYani ıslakta hem taban mesafe uzar hem de hız artışının cezası büyür.\n\nSONUÇ\nHız seçimi bir keyif meselesi değil, bir GÖRÜŞ meselesidir. Kuralı\nbasit: göremediğin mesafede duramayacağın hızla gitme. Viraj, tepe,\nkavşak, park etmiş araç sırası — görüşün ne kadarsa hızın da o kadar.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "durma mesafesi",
+      "fren mesafesi",
+      "hız",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "\"Biraz daha hızlı gitsem ne olur ki?\"\n\nDurma mesafesi iki parçadır:\nd = v·t_tepki + v²/(2a)\n\nTEPKİ yolu hızla ORANTILI büyür.\nFREN yolu hızın KARESİYLE büyür.\n\n(1 sn tepki, 7 m/s² fren varsayıldı — kuru asfalt. Ekranda da yazıyor.)\n\n50 km/h → 13,9 + 13,8 = 27,7 m\n70 km/h → 19,4 + 27,0 = 46,5 m\n90 km/h → 25,0 + 44,6 = 69,6 m\n\nHızı %40 artırdın, durma mesafen %68 arttı.\n\nŞİMDİ ASIL RAKAM 👇\n\nÖnüne 27,7 m ötede bir engel çıktı — yani 50 ile gidenin tam\ndurabileceği mesafe.\n\n→ 50 ile giden burnunu değdirmeden DURUR.\n→ 70 ile giden aynı noktaya 58 km/h İLE VARIR.\n\nv = √(19,44² − 2·7·8,22) = 16,22 m/s = 58,4 km/h\n\nHızını %40 artırdın ama o noktadaki hızın sıfırdan 58'e çıktı. Ve\nçarpışmanın şiddeti de hızın karesiyle ilgili.\n\nIslakta fren ivmesi düşer: hem taban mesafe uzar hem de hız artışının\ncezası büyür.\n\nKural basit: göremediğin mesafede duramayacağın hızla gitme.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #durmamesafesi #frenmesafesi #hız #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

@@ -1,0 +1,176 @@
+# Ders 13 · Takip mesafesi
+# Kaynaklar (teknik doğrulama):
+#   https://www.mapfre.com.tr/blog/yasa/arac-takip-mesafesi/
+#   https://www.axasigorta.com.tr/blog/takip-mesafesi-nedir
+#   https://www.trafiksozluk.com/karayollari-trafik-yonetmeligi-107-madde/
+#   https://www.motordersi.com/ehliyet-sinavi/trafik-ve-cevre-bilgisi/hiz-kurallari-takip-ve-durma-mesafesi/
+#   https://dmv.ny.gov/motorcycle-manual/motorcycle-manual-ride-within-your-abilities
+#   https://www.in.gov/rsi/files/motorcycle-operators-manual.pdf
+#   https://en.wikipedia.org/wiki/Two-second_rule
+#
+# İKİ KURAL, TEK SONUÇ
+#   1. Türkiye'de yönetmelik: takip mesafesi, kendi aracının km/saat
+#      cinsinden hızının en az yarısı kadar metre. (90 km/h → 45 m)
+#   2. Resmî motosiklet el kitapları (NY DMV, Indiana): en az İKİ SANİYE.
+#
+#   (v/2) metre ÷ (v/3,6) m/sn = 1,8 saniye — HIZDAN BAĞIMSIZ.
+#   Yani yönetmelik her hızda 1,8 saniyedir; iki saniye onu paylı karşılar.
+#   Aritmetik 30/50/70/90/120 km/h için tek tek doğrulandı.
+#
+# NOT 1: Madde numarası tek kaynakta geçtiği için ekranda ve metinde
+#        kullanılmıyor; kural metni birden çok kaynakta aynı.
+# NOT 2: "Islakta ikiye katla" (4 sn) resmî el kitaplarında rakamla
+#        geçmiyor, eğitim sitelerinde yaygın. Derste KURAL değil TAVSİYE
+#        olarak veriliyor.
+
+ders_no: 13
+slug: takip-mesafesi
+baslik: "Takip Mesafesi: İki Saniye"
+alt_baslik: "Metre tahmin etme, saniye say"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: takip
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:yonetmelik, 11:saniye, 19:say, 27:isaret, 35:katla, 43:gorus"
+
+kapanis: "Öndeki fren yaparsa, elinde kalan tek şey mesafedir"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Yönetmelik: hızının yarısı kadar metre" }
+  - { t: 11, sure: 7, metin: "2 · Bu her hızda 1,8 saniye eder" }
+  - { t: 19, sure: 7, metin: "3 · Sen 2 saniye say — metre tahmin edilmez" }
+  - { t: 27, sure: 7, metin: "4 · Bir işaret seç: 'bin bir, bin iki'" }
+  - { t: 35, sure: 7, metin: "5 · Islak, gece, yolcu: ikiye katla" }
+  - { t: 43, sure: 7, metin: "6 · Mesafe sadece fren değil, GÖRÜŞ verir" }
+
+youtube:
+  baslik: "Takip Mesafesi: Metre Değil Saniye Say | Yol Okulu #13"
+  aciklama: |
+    Takip mesafesini metreyle ölçmeye çalışmak işe yaramaz. 90'da giderken
+    "şu araba 45 metre mi 30 metre mi ötede" diye hesap yapamazsın. Ama
+    saniye sayabilirsin — ve aslında kuralın kendisi de zaten saniye.
+
+    0:04 Yönetmelik: hızının yarısı kadar metre
+    0:11 Bu her hızda 1,8 saniye eder
+    0:19 Sen 2 saniye say
+    0:27 Bir işaret seç: "bin bir, bin iki"
+    0:35 Islak, gece, yolcu: ikiye katla
+    0:43 Mesafe sadece fren değil, görüş verir
+
+    KURAL NE DİYOR
+    Karayolları Trafik Yönetmeliği'ne göre öndeki aracı, kendi hızının
+    km/saat cinsinden en az yarısı kadar metreden takip etmen gerekiyor.
+    90 km/h → 45 metre. 120 km/h → 60 metre.
+
+    ASIL GÜZEL KISIM
+    O kuralı saniyeye çevirince ortaya şaşırtıcı bir şey çıkıyor:
+
+    45 metre ÷ 25 metre/saniye = 1,8 saniye
+    60 metre ÷ 33,3 metre/saniye = 1,8 saniye
+    15 metre ÷ 8,3 metre/saniye = 1,8 saniye
+
+    Hangi hızı koyarsan koy sonuç aynı: 1,8 saniye. Çünkü mesafe de hızla
+    büyüyor, sen de hızla yaklaşıyorsun; ikisi sadeleşiyor. Yani yönetmelik
+    aslında bir ZAMAN kuralı, metre kuralı değil.
+
+    O YÜZDEN 2 SANİYE
+    Resmî motosiklet el kitapları en az iki saniye diyor. İki saniye,
+    1,8'in biraz üstü — yani yönetmeliği paylı karşılıyor. Ve en önemlisi:
+    saniye sayabilirsin, metre sayamazsın.
+
+    NASIL SAYILIR
+    Yol kenarında sabit bir şey seç: bir dikme, bir tabela, bir ağaç.
+    Öndeki araç oradan geçtiği an saymaya başla:
+
+    "bin bir... bin iki..."
+
+    Sen o noktaya varmadan "bin iki" bitmiş olmalı. Bitmeden varıyorsan
+    çok yakınsın. Gazı biraz bırak, tekrar say.
+
+    NE ZAMAN ARTIRILIR
+    İki saniye, kuru asfaltta ve iyi görüşte en az. Şartlar bozulduğunda
+    artırılır — ıslak zeminde, gece, yolcuyla, yüklüyken, önündeki araç
+    kamyon ya da otobüsse (önünü hiç göremezsin). Eğitimlerde yaygın
+    tavsiye ikiye katlamak. Bu bir yönetmelik maddesi değil, pratik bir
+    marj.
+
+    ARKANDAN YAPIŞAN VARSA
+    Arkandaki yapışıyorsa sen KENDİ önündeki mesafeni artır. Böylece ani
+    bir yavaşlamada sert frene basmak zorunda kalmaz, arkadakine de zaman
+    tanırsın. Fren yapıp onu cezalandırmaya çalışmak, seni iki aracın
+    arasına sıkıştırır.
+
+    VE ASIL MESELE
+    Motosiklette mesafe sadece durma payı değildir. Öndeki aracın
+    arkasına yapıştığında yolu GÖREMEZSİN: çukuru, yağ lekesini, duran
+    aracı, kapanan şeridi. Üstelik senden öndeki trafik de seni göremez.
+    İki saniye, fren kolundan önce gözüne lazım.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "takip mesafesi"
+    - "iki saniye kuralı"
+    - "trafik kuralları"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    "Kaç metre bırakmam lazım?" sorusunun cevabı aslında metre değil.
+
+    Yönetmelik şöyle diyor: öndeki aracı, hızının km/saat cinsinden en az
+    YARISI kadar metreden takip et. 90 km/h → 45 m.
+
+    Şimdi o kuralı saniyeye çevir:
+
+    45 m ÷ 25 m/sn = 1,8 sn
+    60 m ÷ 33,3 m/sn = 1,8 sn
+    15 m ÷ 8,3 m/sn = 1,8 sn
+
+    Hangi hızı koyarsan koy: 1,8 saniye. Çünkü hem mesafe hem yaklaşma hızın
+    aynı oranda büyüyor, ikisi sadeleşiyor. Yani kural aslında bir ZAMAN
+    kuralı.
+
+    Resmî motosiklet el kitapları da zaten "en az 2 saniye" diyor — yani
+    yönetmeliğin biraz üstü.
+
+    NASIL SAYARSIN
+    Yol kenarında sabit bir şey seç: dikme, tabela, ağaç. Öndeki araç oradan
+    geçtiği an başla:
+    → "bin bir... bin iki..."
+    Sen oraya varmadan bitmiş olmalı. Bitmeden varıyorsan çok yakınsın.
+
+    NE ZAMAN ARTIRIRSIN
+    Islakta, gecede, yolcuyla, yüklüyken, önünde kamyon varken. Eğitimlerde
+    yaygın tavsiye: ikiye katla. (Bu yönetmelik değil, pratik marj.)
+
+    Arkandan yapışan varsa → sen KENDİ önündeki mesafeni aç. Fren yapıp
+    onu terbiye etmeye kalkma, kendini iki aracın arasına sıkıştırırsın.
+
+    Ve asıl mesele şu: motosiklette mesafe sadece durma payı değil. Öndeki
+    aracın arkasına yapıştığında çukuru, yağ lekesini, kapanan şeridi
+    GÖREMEZSİN. Senden öndeki trafik de seni göremez.
+
+    İki saniye, fren kolundan önce gözüne lazım.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #takipmesafesi #ikisaniyekuralı #trafik #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

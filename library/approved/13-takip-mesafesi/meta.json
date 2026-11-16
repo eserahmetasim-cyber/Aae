@@ -1,0 +1,69 @@
+{
+  "klasor": "13-takip-mesafesi",
+  "ders_no": 13,
+  "slug": "takip-mesafesi",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Takip Mesafesi: İki Saniye",
+  "alt_baslik": "Metre tahmin etme, saniye say",
+  "handle": "@aae_motorcycle",
+  "video": "13-takip-mesafesi.mp4",
+  "kaynak_render": "output/2026-11-15_ders13_takip-mesafesi_v1.mp4",
+  "onay_tarihi": "2026-11-15T17:42:50+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Yönetmelik: hızının yarısı kadar metre"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Bu her hızda 1,8 saniye eder"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Sen 2 saniye say — metre tahmin edilmez"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Bir işaret seç: 'bin bir, bin iki'"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · Islak, gece, yolcu: ikiye katla"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · Mesafe sadece fren değil, GÖRÜŞ verir"
+    }
+  ],
+  "youtube": {
+    "baslik": "Takip Mesafesi: Metre Değil Saniye Say | Yol Okulu #13",
+    "aciklama": "Takip mesafesini metreyle ölçmeye çalışmak işe yaramaz. 90'da giderken\n\"şu araba 45 metre mi 30 metre mi ötede\" diye hesap yapamazsın. Ama\nsaniye sayabilirsin — ve aslında kuralın kendisi de zaten saniye.\n\n0:04 Yönetmelik: hızının yarısı kadar metre\n0:11 Bu her hızda 1,8 saniye eder\n0:19 Sen 2 saniye say\n0:27 Bir işaret seç: \"bin bir, bin iki\"\n0:35 Islak, gece, yolcu: ikiye katla\n0:43 Mesafe sadece fren değil, görüş verir\n\nKURAL NE DİYOR\nKarayolları Trafik Yönetmeliği'ne göre öndeki aracı, kendi hızının\nkm/saat cinsinden en az yarısı kadar metreden takip etmen gerekiyor.\n90 km/h → 45 metre. 120 km/h → 60 metre.\n\nASIL GÜZEL KISIM\nO kuralı saniyeye çevirince ortaya şaşırtıcı bir şey çıkıyor:\n\n45 metre ÷ 25 metre/saniye = 1,8 saniye\n60 metre ÷ 33,3 metre/saniye = 1,8 saniye\n15 metre ÷ 8,3 metre/saniye = 1,8 saniye\n\nHangi hızı koyarsan koy sonuç aynı: 1,8 saniye. Çünkü mesafe de hızla\nbüyüyor, sen de hızla yaklaşıyorsun; ikisi sadeleşiyor. Yani yönetmelik\naslında bir ZAMAN kuralı, metre kuralı değil.\n\nO YÜZDEN 2 SANİYE\nResmî motosiklet el kitapları en az iki saniye diyor. İki saniye,\n1,8'in biraz üstü — yani yönetmeliği paylı karşılıyor. Ve en önemlisi:\nsaniye sayabilirsin, metre sayamazsın.\n\nNASIL SAYILIR\nYol kenarında sabit bir şey seç: bir dikme, bir tabela, bir ağaç.\nÖndeki araç oradan geçtiği an saymaya başla:\n\n\"bin bir... bin iki...\"\n\nSen o noktaya varmadan \"bin iki\" bitmiş olmalı. Bitmeden varıyorsan\nçok yakınsın. Gazı biraz bırak, tekrar say.\n\nNE ZAMAN ARTIRILIR\nİki saniye, kuru asfaltta ve iyi görüşte en az. Şartlar bozulduğunda\nartırılır — ıslak zeminde, gece, yolcuyla, yüklüyken, önündeki araç\nkamyon ya da otobüsse (önünü hiç göremezsin). Eğitimlerde yaygın\ntavsiye ikiye katlamak. Bu bir yönetmelik maddesi değil, pratik bir\nmarj.\n\nARKANDAN YAPIŞAN VARSA\nArkandaki yapışıyorsa sen KENDİ önündeki mesafeni artır. Böylece ani\nbir yavaşlamada sert frene basmak zorunda kalmaz, arkadakine de zaman\ntanırsın. Fren yapıp onu cezalandırmaya çalışmak, seni iki aracın\narasına sıkıştırır.\n\nVE ASIL MESELE\nMotosiklette mesafe sadece durma payı değildir. Öndeki aracın\narkasına yapıştığında yolu GÖREMEZSİN: çukuru, yağ lekesini, duran\naracı, kapanan şeridi. Üstelik senden öndeki trafik de seni göremez.\nİki saniye, fren kolundan önce gözüne lazım.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "takip mesafesi",
+      "iki saniye kuralı",
+      "trafik kuralları",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "\"Kaç metre bırakmam lazım?\" sorusunun cevabı aslında metre değil.\n\nYönetmelik şöyle diyor: öndeki aracı, hızının km/saat cinsinden en az\nYARISI kadar metreden takip et. 90 km/h → 45 m.\n\nŞimdi o kuralı saniyeye çevir:\n\n45 m ÷ 25 m/sn = 1,8 sn\n60 m ÷ 33,3 m/sn = 1,8 sn\n15 m ÷ 8,3 m/sn = 1,8 sn\n\nHangi hızı koyarsan koy: 1,8 saniye. Çünkü hem mesafe hem yaklaşma hızın\naynı oranda büyüyor, ikisi sadeleşiyor. Yani kural aslında bir ZAMAN\nkuralı.\n\nResmî motosiklet el kitapları da zaten \"en az 2 saniye\" diyor — yani\nyönetmeliğin biraz üstü.\n\nNASIL SAYARSIN\nYol kenarında sabit bir şey seç: dikme, tabela, ağaç. Öndeki araç oradan\ngeçtiği an başla:\n→ \"bin bir... bin iki...\"\nSen oraya varmadan bitmiş olmalı. Bitmeden varıyorsan çok yakınsın.\n\nNE ZAMAN ARTIRIRSIN\nIslakta, gecede, yolcuyla, yüklüyken, önünde kamyon varken. Eğitimlerde\nyaygın tavsiye: ikiye katla. (Bu yönetmelik değil, pratik marj.)\n\nArkandan yapışan varsa → sen KENDİ önündeki mesafeni aç. Fren yapıp\nonu terbiye etmeye kalkma, kendini iki aracın arasına sıkıştırırsın.\n\nVe asıl mesele şu: motosiklette mesafe sadece durma payı değil. Öndeki\naracın arkasına yapıştığında çukuru, yağ lekesini, kapanan şeridi\nGÖREMEZSİN. Senden öndeki trafik de seni göremez.\n\nİki saniye, fren kolundan önce gözüne lazım.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #takipmesafesi #ikisaniyekuralı #trafik #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

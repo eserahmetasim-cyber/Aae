@@ -22,7 +22,7 @@ sahne_fazlari: "0:sabit, 19:acilir, 27:kapanir, 35:engel, 42:uzak"
 baslangic: 0            # uzun klipten parça seçmek için: kaçıncı saniyeden başlasın
 sure: 55
 kaynak_ses: 0.035       # motor sesi — zar zor duyulan bir uğultu
-muzik: "assets/muzik/aae_piyano.mp3"
+muzik: "assets/muzik/aae_okul.mp3"
 muzik_ses: 0.36
 
 kapanis: "Çeneni çevir · Nokta yaklaşıyorsa yavaşla"

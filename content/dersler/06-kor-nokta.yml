@@ -1,0 +1,132 @@
+# Ders 06 · Kör nokta ve görünürlük (SMIDSY)
+# Kaynaklar (teknik doğrulama):
+#   https://motorcyclesafetyca.com/?p=407
+#   https://www.bennetts.co.uk/bikesocial/news-and-views/advice/biking-tips/driver-behaviour
+#   https://blog.motorcycle.com/how-to/proper-motorcycle-lane-positioning
+#   https://rideapart.com/articles/7-places-motorcyclist-avoid-traffic
+#   https://www.webbikeworld.com/avoid-smidsy-collisions/
+#
+# NOT: Kaynaklar "tek doğru şerit konumu" olmadığında hemfikir — duruma göre
+# değişiyor. Ders bu yüzden sabit bir konum dayatmıyor; ölçüt veriyor:
+# sürücünün gözlerini aynasında göremiyorsan muhtemelen kör noktadasın.
+
+ders_no: 6
+slug: kor-nokta
+baslik: "Kör Nokta: Seni Neden Görmüyorlar"
+alt_baslik: "Gözlerini göremiyorsan o da seni göremiyor"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: kornokta
+boyut: 3
+kamera: tepeden         # kuşbakışı: kör nokta ancak yukarıdan anlaşılır
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "Görmedi say, kaçışını hazırla"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Kör nokta yanda ve biraz arkadadır" }
+  - { t: 11, sure: 7, metin: "2 · Aynada gözlerini göremiyorsan, görünmüyorsun" }
+  - { t: 19, sure: 7, metin: "3 · Aracın yanında oyalanma — geç ya da geride kal" }
+  - { t: 27, sure: 7, metin: "4 · Şeridin ortası en kötüsü: sağa ya da sola kay" }
+  - { t: 35, sure: 6, metin: "5 · Kamyon ve SUV'de kör nokta çok daha büyük" }
+  - { t: 42, sure: 7, metin: "6 · Görmedi say, kaçış yolunu hazırla" }
+
+youtube:
+  baslik: "Kör Nokta: Seni Neden Görmüyorlar | Yol Okulu #6"
+  aciklama: |
+    "Pardon, seni görmedim." Motosiklet kazalarının en bilinen cümlesi bu.
+    Sürücü çoğu zaman yalan söylemiyor — gerçekten bakıyor ama görmüyor.
+    Bu derste neden görmediğini ve nerede durmaman gerektiğini anlatıyoruz.
+
+    0:04 Kör nokta yanda ve biraz arkadadır
+    0:11 Aynada gözlerini göremiyorsan, görünmüyorsun
+    0:19 Aracın yanında oyalanma
+    0:27 Şeridin ortası en kötüsü
+    0:35 Kamyon ve SUV'de kör nokta çok daha büyük
+    0:42 Görmedi say, kaçış yolunu hazırla
+
+    NEDEN GÖRMÜYOR?
+    Motosiklet dar. Aynada kapladığı alan bir otomobilinkinin yanında çok
+    küçük, bu yüzden hızlı bir ayna kontrolü motosikleti tamamen atlayabilir.
+    Üstelik motosiklet çevresindeki trafikten daha hızlı hızlanabildiği için
+    sürücünün "az önce arkam boştu" hafızası çoktan eskimiş olur.
+
+    BASİT ÖLÇÜT
+    Sürücünün gözlerini aynasında göremiyorsan, o da seni göremiyor. Bu
+    en çok komşu şeritte ve aracın biraz gerisindeyken geçerlidir — kör
+    nokta tam orada oluşur. Kamyon ve SUV gibi yüksek araçlarda bu bölge
+    çok daha büyüktür.
+
+    NEREDE DURMAMALI
+    Bir aracın yanında seyretme. Ya geçip önüne al, ya da aynadan görünecek
+    kadar geride kal. Şerit değiştirirken de başka bir aracın kör noktasına
+    girmemeye dikkat et. Kavşaklar araç-motosiklet çarpışmalarının en yoğun
+    olduğu yer: oraya girerken hız düşür, bakışını sürücünün yüzüne tak.
+
+    ŞERİT İÇİNDE NEREDE?
+    Şerit üçe ayrılır: sol, orta, sağ. Orta iz genelde en kötüsüdür —
+    yağ ve kir orada birikir, görünürlük de düşer. Sol ya da sağ üçte bir,
+    önündeki aracın aynasına düşmeni sağlar.
+
+    Dürüst olmak gerekirse kaynaklar tek bir "doğru" şerit konumunda
+    birleşmiyor: doğru yer duruma göre değişiyor — yol, trafik, kavşak,
+    görüş. Ezberlenecek şey konum değil, ölçüt: aynada görünüyor muyum?
+
+    HAREKET ET
+    Aynı noktada sabit durmak seni fark edilmesi zor bir leke yapar. Şerit
+    içinde hafif yanal hareket sürücünün dikkatini çeker.
+
+    VE EN ÖNEMLİSİ
+    Görmedi say. Fren parmağını hazırla, kaçış yolunu önceden seç. Sürücü
+    destek sistemleri de motosikleti her zaman algılamıyor; teknolojiye de
+    güvenme.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "kör nokta"
+    - "görünürlük"
+    - "motosiklet eğitimi"
+    - "trafik"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    "Pardon, seni görmedim." Sürücü çoğu zaman yalan söylemiyor — bakıyor
+    ama görmüyor.
+
+    Motosiklet dar. Aynada kapladığı alan bir otomobilin yanında çok küçük,
+    hızlı bir ayna kontrolü seni tamamen atlayabiliyor.
+
+    Basit ölçüt: sürücünün gözlerini aynasında göremiyorsan, o da seni
+    göremiyor. Kör nokta aracın YANINDA ve biraz ARKASINDA oluşur. Kamyon
+    ve SUV'de çok daha büyüktür.
+
+    Bir aracın yanında oyalanma: ya geç, ya aynadan görünecek kadar geride
+    kal. Şeridin tam ortası en kötüsü — orta izde hem yağ birikir hem
+    görünürlük düşer.
+
+    Tek doğru şerit konumu yok, duruma göre değişir. Ezberlenecek olan
+    konum değil, soru: aynada görünüyor muyum?
+
+    Ve en önemlisi: görmedi say. Kaçış yolunu önceden seç.
+
+    Kaydet — her gün işine yarar.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #körnokta #görünürlük #motosikleteğitimi #trafik #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

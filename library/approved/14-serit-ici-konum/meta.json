@@ -1,0 +1,69 @@
+{
+  "klasor": "14-serit-ici-konum",
+  "ders_no": 14,
+  "slug": "serit-ici-konum",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Şerit İçi Konum",
+  "alt_baslik": "Nerede gittiğin, ne gördüğünü belirler",
+  "handle": "@aae_motorcycle",
+  "video": "14-serit-ici-konum.mp4",
+  "kaynak_render": "output/2026-11-15_ders14_serit-ici-konum_v1.mp4",
+  "onay_tarihi": "2026-11-15T18:12:00+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Şeridi üçe böl: sol · orta · sağ"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Virajın DIŞINA geç — görüşün uzar"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Aynı virajda: sağda 17 m, solda 30 m"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Bedeli var: karşı şeride fazla yanaşma"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · Öndekinin tam arkasına oturma"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · 'Orta kirlidir' kuralı yok — zemine bak"
+    }
+  ],
+  "youtube": {
+    "baslik": "Şerit İçi Konum: Nerede Gittiğin Ne Gördüğünü Belirler | Yol Okulu #14",
+    "aciklama": "Motosiklet şeritte bir çizgi üzerinde gitmez. Şerit senin için tek bir\nyer değil, üç ayrı seçenektir — ve hangisini seçtiğin, yolun ne\nkadarını görebildiğini doğrudan değiştirir.\n\n0:04 Şeridi üçe böl\n0:11 Virajın dışına geç\n0:19 Aynı virajda: sağda 17 m, solda 30 m\n0:27 Bedeli var\n0:35 Öndekinin tam arkasına oturma\n0:43 \"Orta kirlidir\" kuralı yok\n\nÜÇE BÖL\nMSF'in sürücü el kitabı şeridi üç eşit parçaya bölmeyi öğretir: sol\nüçte bir, orta, sağ üçte bir. Hiçbiri \"doğru\" konum değildir. Doğru\nkonum, o anki duruma göre değişir — ve değişmesi gerekir.\n\nGÖRÜŞ: ÖLÇÜLEBİLİR BİR FARK\nVideodaki viraj 140 metre yarıçapında, görüşü kapatan yamaç yol\nkenarında. Bakış çizginin iç kenara teğet olduğu yerde biter:\n\n  görüş = √(2 · (4,2 − konumun) · yarıçap)\n\n  sağ üçte birden (x=3,1 m) → 17,5 metre\n  ortadan        (x=2,0 m) → 24,8 metre\n  sol üçte birden (x=1,0 m) → 29,9 metre\n\nAynı viraj, aynı hız, aynı motosiklet. Tek değişen şeridin neresinde\nolduğun — ve gördüğün yol 1,7 katına çıkıyor. 90 km/h'de o fark bir\nsaniyeden fazla karar süresi demek.\n\nKURAL: VİRAJIN DIŞINA\nSağa dönen virajda şeridin SOLUNA, sola dönen virajda şeridin SAĞINA.\nİkisi de aynı şey: virajın dışına. Çünkü görüşünü kapatan şey virajın\niç tarafıdır; ondan uzaklaştıkça köşenin arkasını daha erken görürsün.\n\nAMA BEDELİ VAR\nSağa dönen virajda sola geçmek seni karşı şeride yaklaştırır. Orada\nkarşıdan gelen bir araç, kesik çizgiyi kesen bir kamyon ya da kör bir\ntepe varsa, kazandığın görüş kaybettiğin güvenlik payına değmez.\nKonumu görüş için seçersin, ama güvenlik payı her zaman önce gelir.\n\nÖNDEKİNİN ARKASINDA\nBir aracın tam arkasına oturduğunda iki şeyi birden kaybedersin:\nyolu göremezsin (çukur, yağ, duran araç, kapanan şerit) ve senden\nöndeki trafik de seni göremez. Videoda bu an açıkça görünüyor: görüş\n30 metreden 18 metreye düşüyor. Hafifçe yana kay — hem yol açılır hem\naynasında belirirsin.\n\n\"ORTA KİRLİDİR\" EFSANESİ\nÇok duyarsın: \"şeridin ortası yağlıdır, ortadan gitme.\" Idaho\nmotosiklet el kitabı bunun tersini yazıyor — şeridin hiçbir kısmından\nkaçınmak gerekmez, orta dahil. Kavşak ağzında, durak hizasında,\nuzun süre araç bekleyen yerlerde gerçekten birikinti olur; ama bu bir\nkural değil, o anki zeminin durumudur. Kurala değil, önündeki asfalta\nbak.\n\nÖZET\nKonum sabit değildir. Viraj, öndeki araç, kavşak, zemin, hava — hepsi\nonu değiştirir. Kendine sürekli tek bir soru sor: \"şu an ne\ngöremiyorum?\" Cevabı genelde şeridin başka bir yerinde durur.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "şerit içi konum",
+      "viraj",
+      "görüş",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Şerit senin için tek bir yer değil — üç ayrı seçenek. Ve hangisini\nseçtiğin, yolun ne kadarını gördüğünü doğrudan değiştiriyor.\n\nÖLÇELİM. Videodaki viraj 140 m yarıçapında, görüşü kapatan yamaç yol\nkenarında:\n\n→ sağ üçte birden: 17,5 m\n→ ortadan: 24,8 m\n→ sol üçte birden: 29,9 m\n\nAynı viraj, aynı hız, aynı motosiklet. Tek değişen şeridin neresinde\nolduğun — gördüğün yol 1,7 katına çıkıyor. 90 km/h'de bu, bir\nsaniyeden fazla karar süresi demek.\n\nKURAL BASİT: virajın DIŞINA geç. Sağa dönende şeridin soluna, sola\ndönende sağına. Çünkü görüşünü kapatan şey virajın iç tarafı.\n\nAMA BEDELİ VAR. Sağa dönende sola geçmek seni karşı şeride yaklaştırır.\nGörüş için konum seçersin, ama güvenlik payı her zaman önce gelir.\n\nÖNDEKİNİN TAM ARKASINA OTURMA. Orada iki şeyi birden kaybedersin:\nyolu göremezsin, senden öndeki trafik de seni göremez. Videoda görüş\n30 m'den 18 m'ye düşüyor. Hafifçe yana kay.\n\nVE BİR EFSANE: \"şeridin ortası yağlıdır.\" Idaho motosiklet el kitabı\ntersini yazıyor — şeridin hiçbir kısmından kaçınmak gerekmez, orta\ndahil. Kavşak ağzında, durak hizasında gerçekten birikinti olur ama bu\nbir kural değil, o anki zemin. Kurala değil, önündeki asfalta bak.\n\nKendine tek soru sor: \"şu an ne göremiyorum?\"\nCevap genelde şeridin başka bir yerinde durur.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #şeritiçikonum #viraj #görüş #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}
