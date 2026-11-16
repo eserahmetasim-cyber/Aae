@@ -1,6 +1,6 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri — SECRET KURULUMU
 
-> Yazılma tarihi: **16.11.2026**
+> Yazılma tarihi: **16.11.2026** (aynı gün güncellendi: Instagram çıkarıldı)
 >
 > **AAE, senin yapacağın tek şey:** bilgisayarındaki **Claude uygulamasını aç** →
 > **yeni bir sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi
@@ -20,10 +20,10 @@
 
 Merhaba. Bir kurulum işi var, ekranı ve tarayıcıyı kullanarak sen yapacaksın. AAE teknik değil — ona adım sorma, mümkün olan her şeyi kendin yap. Yalnızca şifre girilecek yerlerde ve "İzin Ver" kutularında ona dokundur. Yapamadığın madde olursa sebebini yaz, uydurma.
 
-**Hedef:** `eserahmetasim-cyber/Aae` deposuna beş GitHub secret'ı girmek. Bunlar girilmeden her sabah 09:00'da çalışan `Gunluk Yayin` iş akışı videoyu üretiyor ama hiçbir yere yüklemiyor.
+**Hedef:** `eserahmetasim-cyber/Aae` deposuna **YouTube'un üç** GitHub secret'ını girmek. Bunlar girilmeden her sabah 09:00'da çalışan `Gunluk Yayin` iş akışı videoyu üretiyor ama hiçbir yere yüklemiyor.
 
-- YouTube: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`
-- Instagram: `IG_USER_ID`, `IG_ACCESS_TOKEN`
+- YouTube (**yapılacak**): `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`
+- Instagram (**YAPILMAYACAK**): `IG_USER_ID`, `IG_ACCESS_TOKEN` — sebebi 2. maddede, okumadan geçme
 
 **Depo klasörü:** AAE'nin bilgisayarındaki `Aae` deposunun yerel kopyası. Yoksa `git clone https://github.com/eserahmetasim-cyber/Aae` ile al.
 
@@ -35,6 +35,7 @@ Merhaba. Bir kurulum işi var, ekranı ve tarayıcıyı kullanarak sen yapacaks�
 2. `client_secret.json` depo kökünde kalacak ve **commit edilmeyecek** (`.gitignore`'da, öyle kalsın).
 3. **Şifreyi AAE girer.** Google/Facebook giriş ekranı çıkarsa dur, ona söyle, o girsin.
 4. Bitirince gerçek yayın yapma — önce **kuru test** (aşağıda).
+5. **Instagram secret'ı girmeyeceksin.** Sebebi 2. maddede; çift yayın geri alınamaz.
 
 ---
 
@@ -64,41 +65,36 @@ Merhaba. Bir kurulum işi var, ekranı ve tarayıcıyı kullanarak sen yapacaks�
    `gh` yoksa ya da girişli değilse: `gh auth login` ile AAE'yi giriş yaptır. O da olmazsa tarayıcıdan: depo → **Settings → Secrets and variables → Actions → New repository secret**.
 10. Teyit: `gh secret list --repo eserahmetasim-cyber/Aae` → üç ad görünmeli (değerler görünmez, normal).
 
-### 2) Instagram — iki değer
+### 2) ⛔ Instagram — YAPMA, DOKUNMA
 
-⚠ **Önce ön koşulu doğrula, yoksa gerisi boşa gider.** Instagram hesabı **Business ya da Creator** olmalı **ve bir Facebook Sayfasına bağlı** olmalı. Kişisel hesaptan API ile paylaşım yapılamıyor. Kontrol: Instagram → Ayarlar → Hesap türü ve araçlar. Değilse AAE'ye sor: hesabı Business/Creator'a çevirmek ve bir Facebook Sayfasına bağlamak ister mi? **Onayı olmadan hesap türünü değiştirme.** İstemiyorsa Instagram adımını atla, YouTube tek başına çalışır — AAE'ye bunu söyle ve 3. maddeye geç.
+**`IG_USER_ID` ve `IG_ACCESS_TOKEN` secret'larını ASLA girme.**
 
-1. `https://developers.facebook.com/` → **My Apps → Create App** → tip "Other"/işletme → ad "SAE Yayin" → oluştur.
-2. Uygulama panelinde **Instagram** ürününü ekle.
-3. **Settings → Basic**: **App ID** ve **App Secret** (*Show*, Facebook şifresi isterse AAE girsin) değerlerini al — bunlar `FB_APP_ID` ve `FB_APP_SECRET`.
-4. `https://developers.facebook.com/tools/explorer` → sağ üstten bu uygulamayı seç → **Permissions**'a şu dördünü ekle:
-   `instagram_basic`, `instagram_content_publish`, `pages_show_list`, `pages_read_engagement`
-   → **Generate Access Token** → Facebook onayında Sayfayı ve Instagram hesabını **seçili bırak**. Çıkan metin `FB_SHORT_TOKEN` (kısa ömürlü, hemen devam et).
-5. Depo klasöründe (Windows PowerShell):
-   ```
-   $env:FB_APP_ID="..."; $env:FB_APP_SECRET="..."; $env:FB_SHORT_TOKEN="..."
-   python scripts/get_instagram_ids.py
-   ```
-   Mac/Linux ise: `FB_APP_ID=... FB_APP_SECRET=... FB_SHORT_TOKEN=... python3 scripts/get_instagram_ids.py`
-6. Betik `IG_USER_ID` ve `IG_ACCESS_TOKEN` basar. Gir:
-   ```
-   gh secret set IG_USER_ID      --repo eserahmetasim-cyber/Aae
-   gh secret set IG_ACCESS_TOKEN --repo eserahmetasim-cyber/Aae
-   ```
-7. Komut penceresini kapat ki jetonlar geçmişte kalmasın.
+Instagram yayını bu iş akışından değil, **Meta Business Suite**'ten yapılıyor
+(Brave'de açık, AAE'nin ayrı bir oturumu oradan planlayıp yüklüyor).
+
+O iki secret girilirse günlük iş akışı aynı dersi **ikinci kez** Reel olarak
+yayınlar: Business Suite'ten planlanan post + iş akışının postu = kanalda aynı
+video iki kez. **Instagram Reel yayınlandığı an herkese açık olur ve API'den
+geri alınamaz** — yani bu hata düzeltilemez.
+
+İş akışının şu anki hâli güvenli: Instagram adımı yalnızca o secret'lar varsa
+çalışıyor, yoksa atlıyor. Yani doğru davranış **hiçbir şey yapmamak**.
+
+Çalışma loglarında "Instagram secret'lari yok — yayinlanmadi" uyarısını
+görürsen bu **beklenen** durumdur, düzeltmeye çalışma.
 
 ### 3) Kuru test — gerçek yayın YAPMA
 
 1. Depo → **Actions** → sol menüde **Gunluk Yayin** → **Run workflow**.
 2. **`kuru` seçeneğini `evet` yap.** Böylece hiçbir şey yayınlanmaz, yalnızca hat denenir.
-3. Çalışmayı izle. Beklenen: "YouTube secret'lari yok" / "Instagram secret'lari yok" uyarıları **artık çıkmamalı**. Çıkıyorsa o platformun secret'ı eksik ya da adı yanlış yazılmış.
+3. Çalışmayı izle. Beklenen: **"YouTube secret'lari yok" uyarısı artık ÇIKMAMALI** (çıkıyorsa secret eksik ya da adı yanlış). **"Instagram secret'lari yok" uyarısı ise ÇIKMALI** — o doğru davranış, dokunma.
 4. Hata varsa logdan sebebini oku ve düzelt. Düzeltemiyorsan hatanın tam metnini AAE'ye yaz.
 
-⚠ **Gerçek yayını sen başlatma.** `kuru=evet` testi temiz geçtiyse AAE'ye haber ver: bundan sonrası ertesi sabah 09:00'da kendiliğinden yayınlanacak. Instagram Reel yayınlandığı an herkese açık olur ve geri alınamaz — bu yüzden ilk gerçek yayın kararı onun.
+⚠ **Gerçek yayını sen başlatma.** `kuru=evet` testi temiz geçtiyse AAE'ye haber ver: bundan sonrası ertesi sabah 09:00'da YouTube'a kendiliğinden yayınlanacak. İlk gerçek yayın kararı onun.
 
 ### 4) Bitince
 
-AAE'ye tek satır bildir: hangi secret'lar girildi, kuru test ne dedi, atlanan bir şey var mı.
+AAE'ye tek satır bildir: YouTube'un üç secret'ı girildi mi, kuru test ne dedi, atlanan bir şey var mı. Instagram'a dokunulmadığını da yaz.
 
 ---
 

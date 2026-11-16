@@ -4,7 +4,7 @@
 > ve her sabah **09:00 İstanbul**'da çalışıyor. Tek eksik: aşağıdaki beş değer.
 > Girilmezse iş akışı çalışır, videoyu üretir, ama **hiçbir yere yüklemez**.
 
-Hepsi **tek seferlik**. İkisi ayrı iş: YouTube (3 değer), Instagram (2 değer).
+Şu an yapılacak olan yalnızca **YouTube (3 değer)**; Instagram bölümü uygulanmayacak (sebebi B bölümünde).
 Birini bitirip diğerine geçebilirsin; YouTube girilirse YouTube yayınlanır,
 Instagram beklemeye devam eder.
 
@@ -67,7 +67,16 @@ Ekranda ne yazıyorsa aynı adla: `YT_CLIENT_ID`, `YT_CLIENT_SECRET`,
 
 ---
 
-## B) Instagram — 2 değer
+## B) Instagram — ⛔ ŞU AN GEREKLİ DEĞİL, GİRME
+
+> **Bu bölümü uygulamayın.** Instagram yayını **Meta Business Suite**'ten
+> yapılıyor (Brave'de açık, ayrı bir oturum oradan planlayıp yüklüyor).
+> `IG_USER_ID` + `IG_ACCESS_TOKEN` girilirse günlük iş akışı aynı dersi
+> **ikinci kez** Reel olarak yayınlar; Reel yayınlandığı an herkese açık olur
+> ve geri alınamaz.
+>
+> Bölüm referans olarak duruyor: ileride Business Suite bırakılıp yayın iş
+> akışına devredilirse adımlar burada.
 
 `IG_USER_ID`, `IG_ACCESS_TOKEN`
 
