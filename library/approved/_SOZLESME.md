@@ -1,5 +1,17 @@
 # Onaylı kütüphane — iki oturum arasındaki devir sözleşmesi
 
+> ## ⚠ ÖNCE ŞUNU OKU
+> Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyor. Kim ne yapar,
+> hangi platforma kim yayınlar — hepsi **`content/oturumlar.yml`** içinde.
+> İşe başlamadan önce onu oku, iş bitince orayı güncelle.
+>
+> Denetim tek komut:
+> ```
+> python3 scripts/sistem_kontrol.py
+> ```
+> Çıkış kodu 0 temiz · 1 uyarı · **2 çakışma**. Günlük yayın iş akışı bu
+> denetimden geçmeden yayın yapmaz: kod 2 ise durur.
+
 Bu klasör **üretim** ile **paylaşım** arasındaki tek devir noktasıdır.
 
 | Taraf | Rol |

@@ -64,9 +64,25 @@ def _anahtar(yol: str) -> str:
     return os.path.splitext(os.path.basename(yol))[0]
 
 
-def sonraki(veri: dict) -> dict | None:
-    """Henuz yayinlanmamis en kucuk numarali ders."""
-    yapildi = {k["ders"] for k in veri["yayinlananlar"]}
+PLATFORMLAR = ("youtube", "instagram")
+
+
+def yapilanlar(veri: dict, platform: str = "youtube") -> dict:
+    """{ders anahtari: kayit} - YALNIZCA o platformda yayinlanmis olanlar.
+
+    Eskiden platformdan bagimsizdi: kayitta ders adi gecen her sey
+    "yayinlandi" sayiliyordu. Instagram'i baska bir oturum Business
+    Suite'ten yurutuyor; o bir dersi kaydettigi anda YouTube is akisi o
+    dersi ATLIYORDU ve ders YouTube'a hic gitmiyordu. Iki platform iki
+    ayri kuyruk."""
+    if platform not in PLATFORMLAR:
+        raise SystemExit(f"HATA: bilinmeyen platform '{platform}'")
+    return {k["ders"]: k for k in veri["yayinlananlar"] if k.get(platform)}
+
+
+def sonraki(veri: dict, platform: str = "youtube") -> dict | None:
+    """O PLATFORMDA henuz yayinlanmamis en kucuk numarali ders."""
+    yapildi = yapilanlar(veri, platform)
     for d in dersler():
         if _anahtar(d["dosya"]) not in yapildi:
             return d
@@ -99,6 +115,8 @@ def main() -> None:
     ap.add_argument("--youtube", default="", help="--isaretle ile: YouTube video id")
     ap.add_argument("--instagram", default="", help="--isaretle ile: Instagram media id")
     ap.add_argument("--kayit", default=KAYIT_YOLU)
+    ap.add_argument("--platform", default="youtube", choices=PLATFORMLAR,
+                    help="hangi platformun kuyrugu (varsayilan youtube)")
     args = ap.parse_args()
 
     veri = kaydi_oku(args.kayit)
@@ -110,14 +128,18 @@ def main() -> None:
         return
 
     if args.durum:
-        yapildi = {k["ders"]: k for k in veri["yayinlananlar"]}
+        yt = yapilanlar(veri, "youtube")
+        ig = yapilanlar(veri, "instagram")
+        print(f"  (kuyruk: {args.platform})\n")
+        print(f"  {'sira':<6} {'ders':<26} {'YOUTUBE':<12} INSTAGRAM")
         for i, d in enumerate(dersler(), 1):
             a = _anahtar(d["dosya"])
-            k = yapildi.get(a)
-            durum = f"yayinda  {k['tarih'][:10]}" if k else "bekliyor"
-            print(f"  {i:>2}. sira  ders {d['no']:02d}  {a:<24} {durum}")
-        kalan = sum(1 for d in dersler() if _anahtar(d["dosya"]) not in yapildi)
-        print(f"\n  {kalan} ders sirada.")
+            y = yt[a]["tarih"][:10] if a in yt else "-"
+            g = ig[a]["tarih"][:10] if a in ig else "-"
+            print(f"  {i:>2}.    {a:<26} {y:<12} {g}")
+        for pl, tab in (("youtube", yt), ("instagram", ig)):
+            kalan = sum(1 for d in dersler() if _anahtar(d["dosya"]) not in tab)
+            print(f"\n  {pl:<10}: {kalan} ders sirada")
         tutulan = [d for d in dersler(True) if d.get("yayin_beklet")]
         if tutulan:
             print("\n  BEKLETILEN:")
@@ -127,7 +149,7 @@ def main() -> None:
         return
 
     if args.sonraki:
-        d = sonraki(veri)
+        d = sonraki(veri, args.platform)
         if d is None:
             print("Sirada ders yok: hepsi yayinlandi.", file=sys.stderr)
             raise SystemExit(3)

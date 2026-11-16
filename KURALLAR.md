@@ -111,6 +111,17 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
 - **Instagram:** yayınlanan Reel **anında herkese açıktır** — geri alınamaz.
   `egitim-videosu` iş akışında Instagram **hiçbir zaman kendiliğinden çalışmaz**;
   her seferinde elle seçilir (`yayin: instagram` veya `hepsi`).
+- **Oturumlar arası koordinasyon `content/oturumlar.yml` üzerinden yürür.**
+  Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyor — bu oturum
+  `list_sessions`'ta altıdan yalnızca ikisini görebiliyor, yani oturum mesajı
+  güvenilir bir kanal değil. Kim ne yapar, hangi platformun sahibi kim, kim
+  neye dokunmaz: hepsi o defterde. **Bir platformun tek sahibi vardır.**
+  Denetim `python3 scripts/sistem_kontrol.py` (0 temiz · 1 uyarı · 2 çakışma);
+  günlük yayın iş akışı bu denetimden geçmeden yayın yapmaz.
+- **İki platform iki ayrı kuyruktur.** `yayin_sirasi.py --platform youtube|instagram`.
+  Kuyruk eskiden platformdan habersizdi: Instagram oturumu bir dersi
+  kaydettiği anda YouTube iş akışı o dersi atlıyor ve ders YouTube'a hiç
+  gitmiyordu.
 - **Günlük yayın bu kuralın bilinçli istisnasıdır — ama yalnızca YouTube için.**
   `gunluk-yayin` iş akışı her sabah 09:00'da (Istanbul) sıradaki dersi
   YouTube'a `public` olarak yayınlar. **Instagram zamanlanmış çalışmada

@@ -1,0 +1,119 @@
+# ===========================================================================
+#  AAE OTURUM KAYIT DEFTERİ — kim ne yapar, hangi platforma yayınlar
+# ===========================================================================
+# NEDEN BU DOSYA VAR
+# Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyorlar. Oturum
+# mesajları uçucu: bir oturum kapanınca gider, ve her oturum ötekine mesaj
+# atamıyor — "Kanka AAE video üretimi" oturumu list_sessions'ta yalnızca
+# ikisini görebiliyor. Bu yüzden koordinasyon DEPODA tutuluyor.
+#
+# KURAL: İşe başlamadan önce BUNU OKU. İş bitince BURAYI GÜNCELLE.
+#        Denetim:  python3 scripts/sistem_kontrol.py
+#
+# DOĞRULAMA alanı dürüstlük içindir:
+#   dogrulandi → o oturumun kendi bildirimi ya da depodaki ize dayanıyor
+#   varsayim   → AAE'nin anlattığından çıkarıldı, oturum teyit etmedi
+# Bir oturum kendi satırını düzeltirse "dogrulandi" yapsın.
+
+guncelleme: "2026-11-16"
+guncelleyen: "Kanka AAE video üretimi"
+kaynak: "AAE'nin oturum listesi (ekran görüntüsü, 16.11.2026) + oturumların kendi bildirimleri"
+
+# ---------------------------------------------------------------------------
+#  PLATFORMLAR — her platformun TEK sahibi vardır
+# ---------------------------------------------------------------------------
+# En önemli kural bu. İki oturum aynı platforma yayın yapmaz; yaparsa aynı
+# içerik kanalda iki kez çıkar. Instagram Reel'i yayınlandığı an herkese
+# açıktır ve API'den geri alınamaz, yani bu hata düzeltilemez.
+platformlar:
+  youtube:
+    sahip: "gunluk-yayin.yml iş akışı (otomatik)"
+    nasil: "cron 0 6 * * * UTC = her sabah 09:00 İstanbul"
+    kayit: "content/yayin_kaydi.json  (youtube alanı)"
+    kim_elle_yapar: "hiç kimse — yalnız iş akışı hata verirse, sonra kaydı elle yaz"
+    dogrulama: dogrulandi
+
+  instagram:
+    sahip: "Onaylanmış dersleri sosyal medyada paylaş"
+    nasil: "Meta Business Suite (Brave'de açık), elle planlanır"
+    kayit: "content/yayin_kaydi.json  (instagram alanı)"
+    yasak: >
+      gunluk-yayin.yml Instagram'a ASLA yayınlamaz. IG_USER_ID ve
+      IG_ACCESS_TOKEN secret'ları GİRİLMEZ. İki kilit var: secret yokluğu
+      ve zamanlanmış çalışmada kapalı olması.
+    dogrulama: dogrulandi      # AAE 16.11'de bildirdi
+
+# ---------------------------------------------------------------------------
+#  OTURUMLAR
+# ---------------------------------------------------------------------------
+oturumlar:
+  - ad: "Kanka AAE video üretimi"
+    isi: "MOTOSİKLET YOL OKULU derslerini üretir, onaylar, kütüphaneye koyar"
+    uretir:
+      - "content/dersler/*.yml"
+      - "library/approved/<ders>/  (video + meta.json)"
+      - "scripts/sahne3b.py sahneleri"
+    yayinlar: "hiçbir platforma elle yayın YAPMAZ — YouTube'u iş akışı yürütür"
+    dokunmaz:
+      - "docs/  (site/AdSense/Play — tüm sistem kontrolleri oturumunun)"
+      - "Instagram hesabı"
+    dal: "claude/kanka-aae-video-uretimi-yccuq1"
+    ulasilabilir: true
+    dogrulama: dogrulandi
+
+  - ad: "Onaylanmış dersleri sosyal medyada paylaş"
+    isi: "library/approved içinden onaylı dersleri Instagram'a paylaşır"
+    kaynak: "library/approved/index.json — yeni onay var mı diye yalnız buna bakar"
+    yayinlar: "instagram (Meta Business Suite, Brave)"
+    yazmali:
+      - "content/yayin_kaydi.json → her Instagram paylaşımından sonra:
+         python3 scripts/yayin_sirasi.py --isaretle <ders.yml> --instagram <id>"
+      - "content/dis_yayinlar.yml → kendi ürettiği/paylaştığı dış içeriklerin başlıkları"
+    dokunmaz: ["YouTube", "content/dersler/", "scripts/"]
+    ulasilabilir: false        # list_sessions'ta görünmüyor
+    dogrulama: varsayim
+
+  - ad: "IcerikFabrikasi"
+    isi: "kendi video içeriklerini üretir (D:\\IcerikFabrikasi)"
+    not: >
+      Bu oturumun kütüphanesi depodan görünmüyor. Ürettiği başlıklar
+      content/dis_yayinlar.yml'ye elle yazılıyor; scripts/cakisma.py konu
+      çakışmasını oradan yakalıyor. O liste EKSİK OLABİLİR diye işaretli ve
+      sistemin en zayıf halkası bu.
+    bilinen_yayinlari: "content/dis_yayinlar.yml"
+    dokunmaz: ["content/dersler/", "library/approved/"]
+    ulasilabilir: false
+    dogrulama: varsayim
+
+  - ad: "KASKKAFA"
+    isi: "3B varlık üretimi (Blender)"
+    uretti: "assets/adv_motor/ — AAE'nin adventure motoru, 14 Kas'ta onaylandı"
+    not: "Model tüm 3B derslerde standart. Yeniden modelleme yapılmaz."
+    ulasilabilir: false
+    dogrulama: dogrulandi      # commit fd2b5ad bu oturumu kaynak gösteriyor
+
+  - ad: "tüm sistem kontrolleri"
+    isi: "saemuhendislik.com + Google Play + AdSense/AdMob izlemesi"
+    uretir: ["docs/*"]
+    yayinlar: "hiçbiri — ders videosu üretmez, paylaşmaz"
+    dokunmaz: ["content/dersler/", "library/approved/", "scripts/sahne3b.py"]
+    ulasilabilir: true
+    dogrulama: dogrulandi      # kendi bildirimi, 16.11
+
+  - ad: "Saemuhendislik sistem düzenlemesi (fork)"
+    isi: "saemuhendislik çalışmasının çatalı"
+    not: "Yol Okulu ile kesişmiyor."
+    ulasilabilir: false
+    dogrulama: varsayim
+
+# ---------------------------------------------------------------------------
+#  ÇAKIŞMAYI ÖNLEYEN DÖRT KURAL
+# ---------------------------------------------------------------------------
+kurallar:
+  - "Bir platformun tek sahibi vardır. Sahibi olmadığın platforma yayın yapma."
+  - "Yayınladığını content/yayin_kaydi.json'a YAZ. Yazmazsan öteki oturum
+     aynı dersi tekrar yayınlar."
+  - "İki platform İKİ AYRI KUYRUKTUR. yayin_sirasi.py --platform ile sorulur;
+     birinde yayınlanmış ders ötekinde hâlâ sırada olabilir."
+  - "Depo dışında ürettiğin içeriğin başlığını content/dis_yayinlar.yml'ye ekle,
+     yoksa konu çakışması yakalanamaz."

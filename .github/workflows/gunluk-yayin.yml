@@ -90,7 +90,10 @@ jobs:
         run: |
           DERS="${{ inputs.ders }}"
           if [ -z "$DERS" ]; then
-            if ! DERS="$(python3 scripts/yayin_sirasi.py --sonraki)"; then
+            # --platform youtube: Instagram ayri bir kuyruk, onu Business
+            # Suite oturumu yurutuyor. Platform verilmezse bir dersin
+            # Instagram kaydi YouTube kuyrugunu da atlatiyordu.
+            if ! DERS="$(python3 scripts/yayin_sirasi.py --sonraki --platform youtube)"; then
               echo "::notice::Sirada yayinlanmamis ders kalmadi; bugun atlanıyor."
               echo "bos=evet" >> "$GITHUB_OUTPUT"
               exit 0
@@ -102,6 +105,23 @@ jobs:
             echo "DERS=$DERS"
             echo "CIKTI=$CIKTI"
           } >> "$GITHUB_ENV"
+
+      # Yayindan ONCE sistem denetimi. Cikis kodu 2 = CAKISMA (ayni ders
+      # ayni platformda iki kez kayitli, ya da bir ders dis bir yayinla
+      # ayni konu). O durumda is akisi DURUR - yanlis yayin, yapilmamis
+      # yayindan pahalidir. Uyarilar (kod 1) durdurmaz.
+      - name: Sistem denetimi (cakisma varsa dur)
+        if: steps.sec.outputs.bos != 'evet'
+        run: |
+          set +e
+          python3 scripts/sistem_kontrol.py --kisa
+          KOD=$?
+          set -e
+          if [ "$KOD" = "2" ]; then
+            echo "::error::Sistem denetimi CAKISMA buldu — yayin durduruldu."
+            exit 1
+          fi
+          echo "::notice::Sistem denetimi gecti (kod $KOD)."
 
       - name: Videoyu render et
         if: steps.sec.outputs.bos != 'evet'
