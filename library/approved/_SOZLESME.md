@@ -102,7 +102,7 @@ Yayını **`.github/workflows/gunluk-yayin.yml` yapar**, elle paylaşım değil:
   bak: orada kaydı olan ders zaten yayınlanmıştır. Çift paylaşım kanalda
   aynı videonun iki kez çıkması demek.
 - Elle paylaşmak gerekirse (iş akışı hata verdiyse, bir dersi öne almak
-  gerekiyorsa) **önce `yayin_kaydi.yml`'yi kontrol et**, sonra paylaş ve
+  gerekiyorsa) **önce `yayin_kaydi.json`'u kontrol et**, sonra paylaş ve
   kaydı sen yaz.
 - Kendi ürettiğin içerikleri `content/dis_yayinlar.yml` dosyasına ekle ki
   `scripts/cakisma.py` konu çakışmasını yakalayabilsin. Şu an o liste
