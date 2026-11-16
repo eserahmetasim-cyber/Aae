@@ -1,0 +1,69 @@
+{
+  "klasor": "19-ne-kadar-ileri-bakiyorsun",
+  "ders_no": 19,
+  "slug": "ne-kadar-ileri-bakiyorsun",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Ne Kadar İleri Bakıyorsun?",
+  "alt_baslik": "2 saniye yalnızca 50 km/h'ye kadar yeter",
+  "handle": "@aae_motorcycle",
+  "video": "19-ne-kadar-ileri-bakiyorsun.mp4",
+  "kaynak_render": "output/2026-11-16_ders19_ne-kadar-ileri-bakiyorsun_v1.mp4",
+  "onay_tarihi": "2026-11-16T12:52:27+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · 90 km/h'de saniyede 25 metre gidiyorsun"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Durman 69,6 m — 2 saniyelik bakış 50 m"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Gördüğün yere duramıyorsan çok hızlısın"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · 2 saniye tam 50 km/h'ye kadar yeter"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · 3 saniye 100'e, 4 saniye 150'ye kadar"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · Göz sabit durmaz: uzak → yakın → ayna → uzak"
+    }
+  ],
+  "youtube": {
+    "baslik": "Ne Kadar İleri Bakıyorsun? 2 Saniye Yalnızca 50'ye Kadar Yeter | Yol Okulu #19",
+    "aciklama": "Ders 18'de durma mesafesini hesapladık. Şimdi öbür yarısı: o mesafeyi\ngörebiliyor musun? Çünkü duramayacağın kadar yakına bakıyorsan, hızın\ngözünden büyüktür.\n\n0:04 Saniyede 25 metre\n0:11 Durman 69,6 m, bakışın 50 m\n0:19 Gördüğün yere duramıyorsan\n0:27 2 saniye 50 km/h'ye kadar\n0:35 3 saniye 100'e, 4 saniye 150'ye\n0:43 Göz sabit durmaz\n\nİKİ ÖLÇÜ, İKİ FARKLI BÜYÜME\nBakış mesafesi basit: n saniye ileri bakıyorsan, n × hız kadar ötesi.\nHızla DOĞRUSAL büyür.\n\nDurma mesafesi ise (Ders 18) v·t + v²/(2a). Hızın KARESİYLE büyür.\n\nİkisi aynı hızda büyümüyor. İşte bütün mesele bu: sabit bir \"iki saniye\nileri bak\" alışkanlığı, hız arttıkça sessizce yetersizleşiyor.\n\nEŞİK TAM OLARAK NEREDE\nİki mesafeyi eşitleyelim:\n\n  n·v = v·t_tepki + v²/(2a)\n  n − t_tepki = v/(2a)\n  v = 2a · (n − t_tepki) = 14 · (n − 1)\n\n(1 sn tepki, 7 m/s² fren ile.) Yani:\n\n  2 saniye →  50,4 km/h'ye kadar yeter\n  3 saniye → 100,8 km/h'ye kadar\n  4 saniye → 151,2 km/h'ye kadar\n\nTersten: gereken saniye = 1 + hız(m/s)/14.\n\nRAKAMLAR\n90 km/h'de saniyede 25 metre gidiyorsun ve durma mesafen 69,6 metre.\n\n  2 saniye ileri bakmak = 50,0 m → 19,6 m EKSİK. Duramazsın.\n  3 saniye              = 75,0 m → payın sadece 5,4 m.\n  4 saniye              = 100,0 m → payın 30,4 m.\n\n50 km/h'de ise iki saniye 27,8 m, durman 27,7 m — tam tamına yetiyor.\n\"İki saniye\" kuralının nereden geldiği bu: şehir içi hızlarda doğru,\nşehir dışında değil.\n\nBUNLAR TAVSİYE DEĞİL, SIFIR NOKTASI\nYukarıdaki eşikler payın tam sıfır olduğu yerler. Gerçek sürüşte\nbunun üstüne marj koyulur — çünkü tepkin her zaman 1 saniye olmaz,\nzemin her zaman kuru olmaz, ve gördüğün şey her zaman duran bir engel\nolmaz; bazen sana doğru geliyordur.\n\nGÖZ SABİT DURMAZ\nEn uzağa bakmak tek başına yetmez. Göz sürekli dolaşır:\n\n  uzak (yolun gittiği yer, virajın çıkışı)\n  → yakın (önündeki asfalt, çukur, yama)\n  → ayna\n  → tekrar uzak\n\nUzağa bakmak yolu okumanı, yakına bakmak tuzakları görmeni, aynaya\nbakmak arkanı bilmeni sağlar. Üçü de lazım, ve hiçbirinde takılı\nkalınmaz.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "bakış",
+      "görüş mesafesi",
+      "durma mesafesi",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Ders 18'de durma mesafesini hesapladık. Şimdi öbür yarısı: o mesafeyi\nGÖREBİLİYOR musun?\n\nİki ölçü var ve aynı hızda büyümüyorlar:\n\n→ BAKIŞ mesafesi = n × hız → hızla DOĞRUSAL\n→ DURMA mesafesi = v·t + v²/(2a) → hızın KARESİYLE\n\nİşte bütün mesele bu. Sabit bir \"iki saniye ileri bak\" alışkanlığı, hız\narttıkça sessizce yetersizleşiyor.\n\nEŞİK TAM NEREDE? İkisini eşitle:\nn·v = v·t + v²/(2a) → v = 2a·(n−1) = 14·(n−1)\n\n2 saniye → 50,4 km/h'ye kadar yeter\n3 saniye → 100,8 km/h'ye kadar\n4 saniye → 151,2 km/h'ye kadar\n\n90 km/h'DE NE OLUYOR:\nSaniyede 25 m gidiyorsun, durman 69,6 m.\n→ 2 saniye = 50,0 m → 19,6 m EKSİK. GÖRDÜĞÜNE DURAMAZSIN.\n→ 3 saniye = 75,0 m → payın sadece 5,4 m\n→ 4 saniye = 100,0 m → payın 30,4 m\n\n50 km/h'de ise 2 saniye 27,8 m, durman 27,7 m — tam tamına yetiyor.\n\"İki saniye\" kuralı buradan geliyor: şehir içinde doğru, şehir dışında\ndeğil.\n\n(Bunlar tavsiye değil, payın SIFIR olduğu nokta. Üstüne marj koy:\ntepkin hep 1 sn olmaz, zemin hep kuru olmaz, gördüğün şey bazen sana\ndoğru geliyordur.)\n\nVE GÖZ SABİT DURMAZ:\nuzak → yakın → ayna → tekrar uzak\n\nUzak yolu okutur, yakın tuzağı gösterir, ayna arkanı bildirir. Üçü de\nlazım, hiçbirinde takılı kalınmaz.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #bakış #görüşmesafesi #durmamesafesi #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

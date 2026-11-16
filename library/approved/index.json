@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-16T12:00:02+00:00",
+  "guncelleme": "2026-11-16T12:52:27+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -161,6 +161,15 @@
       "video": "library/approved/18-durma-mesafesi/18-durma-mesafesi.mp4",
       "meta": "library/approved/18-durma-mesafesi/meta.json",
       "onay_tarihi": "2026-11-16T12:00:02+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "19-ne-kadar-ileri-bakiyorsun",
+      "ders_no": 19,
+      "baslik": "Ne Kadar İleri Bakıyorsun?",
+      "video": "library/approved/19-ne-kadar-ileri-bakiyorsun/19-ne-kadar-ileri-bakiyorsun.mp4",
+      "meta": "library/approved/19-ne-kadar-ileri-bakiyorsun/meta.json",
+      "onay_tarihi": "2026-11-16T12:52:27+00:00",
       "durum": "onaylandi"
     }
   ]
