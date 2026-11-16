@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-16T06:33:18+00:00",
+  "guncelleme": "2026-11-16T09:49:31+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -143,6 +143,15 @@
       "video": "library/approved/16-kaygan-yamalar/16-kaygan-yamalar.mp4",
       "meta": "library/approved/16-kaygan-yamalar/meta.json",
       "onay_tarihi": "2026-11-16T06:33:18+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "17-viraja-hizli-girmek",
+      "ders_no": 17,
+      "baslik": "Viraja Fazla Hızlı Girdin",
+      "video": "library/approved/17-viraja-hizli-girmek/17-viraja-hizli-girmek.mp4",
+      "meta": "library/approved/17-viraja-hizli-girmek/meta.json",
+      "onay_tarihi": "2026-11-16T09:49:31+00:00",
       "durum": "onaylandi"
     }
   ]
