@@ -82,3 +82,42 @@ bash scripts/make_training_video.sh content/dersler/05-xxx.yml
 python3 scripts/onayla.py content/dersler/05-xxx.yml
 git add library/approved && git commit && git push
 ```
+
+## Günlük otomatik yayın — her sabah 09:00 (İstanbul)
+
+**AAE'nin kararı (16 Kas 2026):** bu dersler her sabah **09:00'da** hem
+**YouTube'a** hem **Instagram'a** yayınlanır. (Önceden 10:00'dı.)
+
+Yayını **`.github/workflows/gunluk-yayin.yml` yapar**, elle paylaşım değil:
+
+- Cron `0 6 * * *` UTC = **09:00 İstanbul** (Türkiye yıl boyu UTC+3).
+- `scripts/yayin_sirasi.py` sıradaki yayınlanmamış dersi seçer
+  (`yayin_oncelik`, sonra `ders_no`; `yayin_beklet: true` olanlar atlanır).
+- Render eder, YouTube'a `public`, Instagram'a Reel olarak yükler.
+- Sonucu `content/yayin_kaydi.yml` dosyasına geri yazar.
+
+### Paylaşım tarafı ne yapmalı / ne YAPMAMALI
+
+- **Aynı dersi elle bir daha paylaşma.** `content/yayin_kaydi.yml` dosyasına
+  bak: orada kaydı olan ders zaten yayınlanmıştır. Çift paylaşım kanalda
+  aynı videonun iki kez çıkması demek.
+- Elle paylaşmak gerekirse (iş akışı hata verdiyse, bir dersi öne almak
+  gerekiyorsa) **önce `yayin_kaydi.yml`'yi kontrol et**, sonra paylaş ve
+  kaydı sen yaz.
+- Kendi ürettiğin içerikleri `content/dis_yayinlar.yml` dosyasına ekle ki
+  `scripts/cakisma.py` konu çakışmasını yakalayabilsin. Şu an o liste
+  **eksik olabilir** diye işaretli.
+
+### Çalışması için gereken iki şey
+
+1. İş akışının **varsayılan dalda (`main`)** olması — GitHub zamanlanmış
+   işleri yalnızca varsayılan daldan çalıştırır.
+2. Depo **Secrets**'ında şunların tanımlı olması:
+   `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`,
+   `IG_USER_ID`, `IG_ACCESS_TOKEN`.
+   Secret yoksa iş akışı yükleme adımlarını atlar, video yalnızca artifact
+   olarak kalır. **Tek freni budur.**
+
+> Instagram Reel yayınlandığı anda herkese açık olur ve API'den geri
+> alınamaz. KURALLAR.md bunu normalde elle seçime bırakır; günlük yayın bu
+> kuralın AAE tarafından istenen bilinçli istisnasıdır.

@@ -112,7 +112,7 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
   `egitim-videosu` iş akışında Instagram **hiçbir zaman kendiliğinden çalışmaz**;
   her seferinde elle seçilir (`yayin: instagram` veya `hepsi`).
 - **Günlük yayın bu kuralın bilinçli istisnasıdır.** `gunluk-yayin` iş akışı her
-  sabah 10:00'da (Istanbul) sıradaki dersi YouTube'a `public`, Instagram'a Reel
+  sabah 09:00'da (Istanbul) sıradaki dersi YouTube'a `public`, Instagram'a Reel
   olarak yayınlar. Tek freni Secret'ların varlığıdır: Secret yoksa o platform
   atlanır ve ders sırada kalır. Durdurmak için iş akışını GitHub Actions'tan
   devre dışı bırak ya da ilgili Secret'ı sil.

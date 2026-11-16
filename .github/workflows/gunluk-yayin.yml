@@ -1,6 +1,6 @@
 name: Gunluk Yayin
 
-# Her sabah 10:00'da (Istanbul) siradaki dersi render edip YouTube ve
+# Her sabah 09:00'da (Istanbul) siradaki dersi render edip YouTube ve
 # Instagram'a yayinlar, sonra yayin kaydini depoya geri yazar.
 #
 # ACMA ANAHTARI: secret'lar. Secret yoksa o platform atlanir, is akisi yesil
@@ -13,9 +13,9 @@ name: Gunluk Yayin
 # bilincli istisnasidir ve tek frenı secret'larin varligidir.
 on:
   schedule:
-    # 07:00 UTC = 10:00 Istanbul (Turkiye'de yaz saati uygulamasi yok).
+    # 06:00 UTC = 09:00 Istanbul (Turkiye yil boyu UTC+3, yaz saati yok).
     # GitHub zamanlanmis isleri yogunlukta birkac dakika gecikmeli baslatabilir.
-    - cron: "0 7 * * *"
+    - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       ders:

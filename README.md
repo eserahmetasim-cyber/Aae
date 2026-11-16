@@ -120,7 +120,7 @@ python3 scripts/publish_instagram.py --ders content/dersler/01-acil-fren.yml --k
 
 ### Günlük otomatik yayın
 
-`gunluk-yayin` iş akışı **her sabah 10:00'da (Istanbul)** sıradaki dersi render
+`gunluk-yayin` iş akışı **her sabah 09:00'da (Istanbul)** sıradaki dersi render
 edip YouTube'a `public`, Instagram'a Reel olarak yayınlar.
 
 Sıra `content/yayin_kaydi.json` içinde tutulur: her yayından sonra ders
@@ -312,7 +312,7 @@ scripts/
   adv_motor.py              → AAE'nin onaylı adventure motoru (assets/adv_motor)
   uc_boyut.py               → yazılımsal 3B motor: kamera, ışık, derinlik
 .github/workflows/egitim-videosu.yml
-.github/workflows/gunluk-yayin.yml   → her sabah 10:00 otomatik yayin
+.github/workflows/gunluk-yayin.yml   → her sabah 09:00 otomatik yayin
 content/yayin_kaydi.json             → hangi ders yayinlandi
 KURALLAR.md             → format, marka, yayın ve sır kuralları
 ```
