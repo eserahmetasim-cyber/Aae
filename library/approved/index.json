@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-16T13:28:11+00:00",
+  "guncelleme": "2026-11-16T16:58:30+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -179,6 +179,15 @@
       "video": "library/approved/20-egim/20-egim.mp4",
       "meta": "library/approved/20-egim/meta.json",
       "onay_tarihi": "2026-11-16T13:28:11+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "21-yan-ruzgar",
+      "ders_no": 21,
+      "baslik": "Yan Rüzgâr ve TIR",
+      "video": "library/approved/21-yan-ruzgar/21-yan-ruzgar.mp4",
+      "meta": "library/approved/21-yan-ruzgar/meta.json",
+      "onay_tarihi": "2026-11-16T16:58:30+00:00",
       "durum": "onaylandi"
     }
   ]
