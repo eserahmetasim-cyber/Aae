@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-16T09:49:31+00:00",
+  "guncelleme": "2026-11-16T12:00:02+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -152,6 +152,15 @@
       "video": "library/approved/17-viraja-hizli-girmek/17-viraja-hizli-girmek.mp4",
       "meta": "library/approved/17-viraja-hizli-girmek/meta.json",
       "onay_tarihi": "2026-11-16T09:49:31+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "18-durma-mesafesi",
+      "ders_no": 18,
+      "baslik": "Hız: İki Katı Değil, Dört Katı",
+      "video": "library/approved/18-durma-mesafesi/18-durma-mesafesi.mp4",
+      "meta": "library/approved/18-durma-mesafesi/meta.json",
+      "onay_tarihi": "2026-11-16T12:00:02+00:00",
       "durum": "onaylandi"
     }
   ]
