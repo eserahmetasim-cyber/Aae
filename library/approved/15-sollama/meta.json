@@ -1,0 +1,69 @@
+{
+  "klasor": "15-sollama",
+  "ders_no": 15,
+  "slug": "sollama",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Sollama",
+  "alt_baslik": "Yarım kilometre boş yol ister",
+  "handle": "@aae_motorcycle",
+  "video": "15-sollama.mp4",
+  "kaynak_render": "output/2026-11-15_ders15_sollama_v1.mp4",
+  "onay_tarihi": "2026-11-15T18:32:13+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Önce geri çekil — hem görürsün hem hız alırsın"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · 90 ile 70'i geçmek: 10 sn, 504 m boş yol"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Hız farkı 10 ise: 20 sn, 1 kilometre"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Yol standardı 90 km/h için 615 m ister"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · Düz çizgi varsa sollama yok"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · İki farını aynada gör, sonra şeride gir"
+    }
+  ],
+  "youtube": {
+    "baslik": "Sollama: Yarım Kilometre Boş Yol İster | Yol Okulu #15",
+    "aciklama": "Sollama, trafikte yaptığın en uzun süreli savunmasız an. Karşı şeritte\ngeçirdiğin her saniye, karşıdan gelenle aranı iki katı hızla kapatıyor.\nVe çoğu sürücü bunun gerçekte kaç metre istediğini hiç hesaplamadı.\n\n0:04 Önce geri çekil\n0:11 90 ile 70'i geçmek: 10 saniye, 504 metre\n0:19 Hız farkı 10 ise: 20 saniye, 1 kilometre\n0:27 Yol standardı 615 metre ister\n0:35 Düz çizgi varsa sollama yok\n0:43 İki farını aynada gör, sonra gir\n\nHESABI YAPALIM\nVarsayımlar: TIR'ın arkasında 20 metre boşluk, TIR 16 metre, geçtikten\nsonra önüne 20 metre boşluk. Toplam 56 metrelik bağıl yol kat etmen\ngerekiyor.\n\nSen 90, TIR 70 km/h. Aradaki fark 20 km/h = 5,6 m/sn.\n  56 ÷ 5,6 = 10,1 saniye\n  O 10,1 saniyede sen 252 metre gidiyorsun.\n  Karşıdan 90 ile gelen de 252 metre geliyor.\n  Gereken boş yol: 504 metre.\n\nŞİMDİ KÖTÜ HABER\nAynı hesabı TIR 80 km/h giderken yap. Fark 10 km/h:\n  56 ÷ 2,8 = 20,2 saniye\n  Gereken boş yol: 1008 metre. Bir kilometre.\n\nHız farkını yarıya indirdin, gereken yol ikiye katlandı. Sollamanın\ntehlikesi hızda değil, SÜREDE. Yavaş sollama, uzun sollama demek.\n\nSTANDART NE DİYOR\nYol mühendisliği bunu zaten hesaplamış. AASHTO tablosundan alınan\nIndiana DOT metrik değerlerine göre 90 km/h tasarım hızında geçiş\ngörüş mesafesi 615 metre, 100 km/h'de 670 metre. Bizim 504 metremiz\ndaha cimri varsayımlarla çıkıyor — yani iyimser taraf.\n\n(Not: yola \"sollama yasak\" çizgisi çizilme eşiği bundan düşüktür,\n90 km/h için 280 metre. O ayrı bir ölçüttür, güvenli sollama mesafesi\ndeğildir.)\n\nÖNCE GERİ ÇEKİL\nTIR'ın arkasına yapışmak iki şeyi birden bozar: önünü göremezsin ve\nçıkarken hızlanacak yerin kalmaz. Geri çekil, yolu gör, sonra hız\nalarak çık. Ders 13 ve 14'teki iki kuralın birleştiği yer burası.\n\nDÜZ ÇİZGİ\nYoldaki kesiksiz çizgi bir tavsiye değil. Orada görüş mesafesi\nsollamaya yetmiyor demektir — viraj, tepe ya da kavşak var. Göremediğin\nyere sollama yapılmaz; \"bir bakayım\" diye karşı şeride burun uzatmak\nda sollamadır.\n\nDÖNERKEN\nGeçtikten sonra hemen sağa kırma. Aynanda TIR'ın İKİ FARINI birden\ngörene kadar bekle — o zaman önünde yeterli boşluk var demektir.\nErken dönmek TIR'ı frene bastırır; bir TIR'ın durma mesafesi seninkinin\nçok üstündedir.\n\nVE YANINDA OYALANMA\nGeçerken aracın yanında gereğinden uzun kalma. Orası kör nokta\n(Ders 6). Geçiyorsan geç, kararsız kalma.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "sollama",
+      "geçiş görüş mesafesi",
+      "trafik",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Sollamanın gerçekte kaç metre istediğini hesapladın mı hiç?\n\nVarsayım: TIR'ın arkasında 20 m, TIR 16 m, geçince önüne 20 m. Toplam\n56 metrelik bağıl yol.\n\nSEN 90, TIR 70:\n→ fark 20 km/h = 5,6 m/sn\n→ 56 ÷ 5,6 = 10,1 saniye\n→ sen 252 m gidiyorsun, karşıdan gelen 252 m geliyor\n→ GEREKEN BOŞ YOL: 504 metre\n\nŞİMDİ TIR 80 OLSUN:\n→ fark 10 km/h\n→ 20,2 saniye\n→ GEREKEN BOŞ YOL: 1008 metre. Bir kilometre.\n\nHız farkını yarıya indirdin, gereken yol İKİYE KATLANDI. Sollamanın\ntehlikesi hızda değil, SÜREDE.\n\nYol mühendisliği bunu zaten biliyor: AASHTO tablosundan 90 km/h için\ngeçiş görüş mesafesi 615 metre. Bizim 504'ümüz daha iyimser varsayımla\nçıkıyor.\n\nÖNCE GERİ ÇEKİL. TIR'a yapışırsan ne önünü görürsün ne hızlanacak yerin\nkalır.\n\nDÜZ ÇİZGİ bir tavsiye değil — orada görüş sollamaya yetmiyor demek.\nViraj, tepe, kavşak. \"Bir bakayım\" diye burun uzatmak da sollamadır.\n\nDÖNERKEN aynanda TIR'ın İKİ FARINI birden görene kadar bekle. Erken\ndönersen onu frene bastırırsın; bir TIR'ın durma mesafesi seninkinin\nçok üstünde.\n\nVe yanında oyalanma — orası kör nokta.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #sollama #trafik #motosikleteğitimi #yolokulu #güvenlisürüş #tır",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

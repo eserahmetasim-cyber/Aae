@@ -1,0 +1,34 @@
+# Diğer içerik fabrikasında (D:\IcerikFabrikasi) yayınlanmış/planlanmış
+# içerikler. Bu depodan görünmüyorlar, o yüzden burada elle tutuluyor.
+#
+# KAYNAK: "Onaylanmış dersleri sosyal medyada paylaş" oturumunun 14 Ekim'de
+# verdiği liste (ekran görüntüsünden). LİSTE EKSİK OLABİLİR — o oturumun
+# kütüphanesinin tamamını göremiyorum. Yeni başlık öğrendikçe buraya ekle.
+#
+# Amaç: aynı konuyu iki kez yayınlamamak. scripts/cakisma.py bu dosyayı
+# derslerin anahtar kelimeleriyle karşılaştırır.
+
+guncelleme: "2026-11-14"
+kaynak: "paylaşım oturumunun bildirdiği başlıklar (ekran görüntüsü)"
+eksik_olabilir: true
+
+yayinlar:
+  - baslik: "Lastik Basıncı"
+    tarih: "2026-10-07"
+    durum: "yayında"
+    anahtarlar: [lastik, basınç, psi, bar, hava, diş]
+
+  - baslik: "Ellerin İşi"
+    tarih: "2026-10-08"
+    durum: "yayında"
+    anahtarlar: [el, parmak, gidon, kavrama, debriyaj, fren kolu, bilek]
+
+  - baslik: "Hatamı Düzeltiyorum #1"
+    tarih: "2026-10-09"
+    durum: "yayında"
+    anahtarlar: [hata, düzeltme]
+
+  - baslik: "Kapının Bekçisi"
+    tarih: "2026-10-14"
+    durum: "planlı"
+    anahtarlar: [kapı, park, duran araç, şerit arası, dooring]

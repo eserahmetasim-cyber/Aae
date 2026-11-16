@@ -1,0 +1,131 @@
+# Ders 11 · Yolcu ile sürüş (çift kişilik)
+# Kaynaklar (teknik doğrulama):
+#   https://ridermagazine.com/2017/10/31/riding-with-a-passenger/
+#   https://www.bennetts.co.uk/bikesocial/news-and-views/advice/biking-tips/pillion-skills
+#   https://www.revzilla.com/common-tread/dont-screw-this-up-advice-for-riding-with-a-passenger
+#   https://sgi.sk.ca/motorcycle/-/knowledge_base/motorcycle-handbook/riding-with-passengers
+#   https://www.wa.gov.au/organisation/road-safety-commission/safety-tips-motorcyclists-the-road
+#
+# KONU ÇAKIŞMA KONTROLÜ: scripts/cakisma.py ile tarandı. Bu depodaki 10
+# dersle ve diğer fabrikanın bildirilen yayınlarıyla (Lastik Basıncı,
+# Ellerin İşi, Hatamı Düzeltiyorum, Kapının Bekçisi) ortak konu yok.
+#
+# NOT: Kaynaklar tek bir eğitim standardında birleşmiyor; "tanka yaslan"
+# gibi tek tek sürücü görüşü olan tavsiyeler kullanılmadı. Durma mesafesinin
+# ne kadar uzadığına dair güvenilir bir oran bulunamadığı için rakam yok.
+
+ders_no: 11
+slug: yolcu
+baslik: "Yolcu ile Sürüş"
+alt_baslik: "İki kişi, tek denge"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: yolcu
+boyut: 3
+kamera: yan
+gunduz: true
+sahne_fazlari: "4:onyuk, 11:eller, 19:ayak, 27:yatis, 35:fren, 42:fren"
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "Yolcunu önceden bilgilendir"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Arka ön yükü artır, basınçları kontrol et" }
+  - { t: 11, sure: 7, metin: "2 · Yolcu belinden ya da tutamaktan tutsun" }
+  - { t: 19, sure: 7, metin: "3 · Ayaklar durakta bile basamakta kalır" }
+  - { t: 27, sure: 7, metin: "4 · Yolcu motorla birlikte yatar, tek başına değil" }
+  - { t: 35, sure: 6, metin: "5 · Durma mesafesi uzar — erken fren" }
+  - { t: 42, sure: 7, metin: "6 · Binmeden önce konuş, yolda konuşamazsın" }
+
+youtube:
+  baslik: "Yolcu ile Sürüş: İki Kişi, Tek Denge | Yol Okulu #11"
+  aciklama: |
+    Arkana birini aldığın an motosiklet başka bir motosiklet olur. Daha ağır,
+    daha geç duran, dengesi sana bağlı olmayan bir şey. İyi haber: hazırlık
+    beş dakika sürüyor.
+
+    0:04 Arka ön yükü artır, basınçları kontrol et
+    0:11 Yolcu belinden ya da tutamaktan tutsun
+    0:19 Ayaklar durakta bile basamakta kalır
+    0:27 Yolcu motorla birlikte yatar
+    0:35 Durma mesafesi uzar
+    0:42 Binmeden önce konuş
+
+    ÖNCE MOTOSİKLET
+    Yolcunun ağırlığı arkayı çökertir. Arka amortisörün ön yükünü artır —
+    çoğu motosiklette bu birkaç saniyelik bir ayar. Lastik basınçlarını da
+    kontrol et: önerilen değer yüke göre değişir ve pek çok motosiklette
+    tek ve çift kişilik için iki ayrı değer yazar. Kullanım kılavuzundaki
+    azami yükü de aş.
+
+    YOLCUYA SÖYLENECEKLER
+    En büyük hata, yolcunun ne yapacağını bildiğini varsaymaktır. Daha önce
+    bindiyse bile konuş. Üç şey yeter:
+
+    • TUTUN. Belimden ya da tutamaktan. Hızlanırken ve frende seni bu tutuş
+      yerinde tutar.
+    • AYAKLARINI İNDİRME. Kırmızı ışıkta bile. Yolcunun ayağını yere koyması
+      dengeyi bozar.
+    • BENİMLE YAT. Virajda kendi başına kayma, benimle aynı hizada kal.
+      Omzumun üzerinden virajın içine bak, yeter.
+
+    SÜRÜCÜ TARAFI
+    Her hareketin yumuşasın: gaz, fren, vites. Yolcu senin hissetmediğin bir
+    sertliği hisseder, çünkü tutunacak gidonu yok. Bazı sürücüler çift
+    kişilik sürüşü ıslak zemin sürüşü gibi düşünür — fena bir benzetme değil.
+
+    Durma mesafesi uzar. Ne kadar uzadığına dair güvenilir tek bir oran yok;
+    motosiklete, yüke ve lastiğe göre değişir. Bilmen gereken: daha erken
+    fren yap ve takip mesafeni aç.
+
+    KALKIŞ VE DURUŞ
+    Kalkarken yolcu hazır mı diye sor. Dururken motosikleti dik tut ve
+    yolcuya inme işareti sen ver; kendi başına inmeye kalkarsa denge gider.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "yolcu"
+    - "çift kişilik"
+    - "motosiklet eğitimi"
+    - "ön yük"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Arkana birini aldığın an motosiklet başka bir motosiklet olur: daha ağır,
+    daha geç duran, dengesi artık tek başına sana bağlı olmayan bir şey.
+
+    ÖNCE MOTOSİKLET: arka amortisörün ön yükünü artır, lastik basınçlarını
+    kontrol et (çoğu motorda çift kişilik için ayrı değer yazar), kılavuzdaki
+    azami yükü aşma.
+
+    SONRA YOLCU — en büyük hata, ne yapacağını bildiğini varsaymak. Üç şey
+    söyle:
+    → Tutun: belimden ya da tutamaktan.
+    → Ayaklarını indirme: kırmızı ışıkta bile.
+    → Benimle yat: virajda kendi başına kayma, omzumun üzerinden içeri bak.
+
+    SEN: her hareketin yumuşasın. Gaz, fren, vites. Yolcunun tutunacak gidonu
+    yok, senin hissetmediğin sertliği o hisseder.
+
+    Durma mesafesi uzar. Güvenilir tek bir oran yok — erken fren yap, mesafeni aç.
+
+    Kaydet, ilk yolcundan önce oku.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #yolcu #çiftkişilik #motosikleteğitimi #önyük #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

@@ -1,0 +1,130 @@
+# Ders 07 · Düşük hızda manevra (U dönüşü)
+# Kaynaklar (teknik doğrulama):
+#   https://motorcycletraining.com/team-arizona-riding-tip-slow-speed-turning-technique/
+#   https://motorcycletraining.com/riding-tip-low-speed-motorcycle-maneuvering-p2/
+#   https://ridermagazine.com/2022/12/02/motorcycle-tips-back-brake-benefits/
+#   https://www.ridinginthezone.com/?p=917
+#   https://womenridersnow.com/?p=3118
+#
+# Kaynaklar üç kumandada tamamen hemfikir: baş ve gözler çıkışta, debriyaj
+# sürtünme bölgesinde, arka fren hafif basılı — ön frene dokunulmaz.
+# Ayrıştıkları tek yer arka fren basıncının miktarı (biri "yaklaşık 5-8 lb",
+# biri "%20 civarı" diyor). Bu yüzden rakam verilmiyor, "hafif" deniyor.
+
+ders_no: 7
+slug: dusuk-hiz-manevra
+baslik: "Düşük Hızda Manevra"
+alt_baslik: "Baş çevrilir, motor takip eder"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: manevra
+boyut: 3
+kamera: tepeden         # kuşbakışı: dönüş çemberi ancak yukarıdan okunur
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+kapanis: "Nereye bakarsan motor oraya gider"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Önce başını çevir — gözün çıkışta" }
+  - { t: 11, sure: 7, metin: "2 · Ön tekere bakma, motor oraya gider" }
+  - { t: 19, sure: 7, metin: "3 · Debriyajı sürtünme bölgesinde tut" }
+  - { t: 27, sure: 7, metin: "4 · Arka frene hafif bas — motor oturur" }
+  - { t: 35, sure: 6, metin: "5 · ÖN FRENE DOKUNMA — motor yere yatar" }
+  - { t: 42, sure: 7, metin: "6 · Gövden dik kalsın, motor içeri yatsın" }
+
+youtube:
+  baslik: "Düşük Hızda Manevra: U Dönüşü Nasıl Yapılır | Yol Okulu #7"
+  aciklama: |
+    Düşük hız çoğu sürücünün en zorlandığı yer. Motosiklet 60'ta kendini
+    taşır, 10'da taşımaz — dengeyi sen kurarsın. İyi haber: bunun üç basit
+    kumandası var ve hepsi öğrenilebilir.
+
+    0:04 Önce başını çevir, gözün çıkışta
+    0:11 Ön tekere bakma
+    0:19 Debriyajı sürtünme bölgesinde tut
+    0:27 Arka frene hafif bas
+    0:35 Ön frene dokunma
+    0:42 Gövden dik, motor içeri yatsın
+
+    1. BAŞ VE GÖZLER
+    Tek en önemli şey bu. Motosiklet başının çevrildiği yere gider. U
+    dönüşüne girmeden ÖNCE başını çevir ve bitireceğin noktaya bak. Ön
+    tekere bakarsan dönüş daralır ve motor düşer. Bakışını omzunun üzerinden
+    çıkışa tak ve dönüş bitene kadar orada tut.
+
+    2. DEBRİYAJ: SÜRTÜNME BÖLGESİ
+    Sürtünme bölgesi, debriyajın kısmen tuttuğu ve arka tekere az ama sürekli
+    güç ilettiği aralıktır. Gaz sabit ve düşük kalır (rölantinin iki katı
+    civarı yeter), hızı debriyajla ayarlarsın. Böylece motor ne stop eder ne
+    de fırlar.
+
+    3. ARKA FREN
+    Hafifçe basılı tutulan arka fren motosikleti oturtur, salınımı keser ve
+    hıza süreklilik verir. Kaynaklar basıncın miktarında ayrışıyor — kimi
+    "yaklaşık 5-8 lb", kimi "%20 civarı" diyor. Rakamı boş ver: hissedeceğin
+    şey motorun gerilip sakinleşmesi.
+
+    4. ÖN FREN: ASLA
+    Dönüş içinde ön frene dokunmak çatalı çöktürür, motosikleti öne yıkar ve
+    gidon kilitteyken düşürür. U dönüşünde fren demek arka fren demektir.
+
+    5. KARŞI AĞIRLIK
+    Yaklaşık 20 km/h altında motosikletin içeri yatması, gövdenin dik
+    kalması gerekir. Sen dışarıda ağırlık yaparsın, motor içeride döner.
+    Araba gibi vücudunu içeri yatırmaya çalışırsan dönüş çemberi büyür.
+
+    ÇALIŞIRKEN
+    Boş bir otoparkta, tam ekipmanla çalış. Debriyajı sürtünme bölgesinde
+    tutmak ve arka freni sürüklemek debriyajı ısıtır: birkaç tur yap, mola
+    ver, tekrar başla. Çemberi büyük başlat, güvendikçe daralt.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "u dönüşü"
+    - "düşük hız"
+    - "sürtünme bölgesi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "manevra"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Motosiklet 60'ta kendini taşır, 10'da taşımaz. Düşük hızın üç kumandası
+    var:
+
+    1. BAŞ VE GÖZLER — en önemlisi. Motor başını çevirdiğin yere gider.
+    Dönüşe girmeden ÖNCE başını çevir, bitireceğin noktaya bak. Ön tekere
+    bakarsan dönüş daralır ve motor düşer.
+
+    2. DEBRİYAJ — sürtünme bölgesinde tut. Gaz sabit ve düşük kalsın, hızı
+    debriyajla ayarla. Ne stop eder ne fırlar.
+
+    3. ARKA FREN — hafifçe basılı. Motosikleti oturtur, salınımı keser.
+
+    Ve asla ÖN FREN: çatal çöker, motor öne yıkılır, gidon kilitteyken
+    düşersin.
+
+    Bir de karşı ağırlık: gövden dik kalsın, motor içeri yatsın. Sen dışarıda
+    ağırlık yaparsın.
+
+    Boş otoparkta çalış. Debriyaj ısınır — birkaç tur yap, mola ver.
+
+    Kaydet, ilk fırsatta dene.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #udönüşü #düşükhız #sürtünmebölgesi #motosikleteğitimi #yolokulu #manevra
+  feed_de_paylas: true
+  kapak_url: ""

@@ -1,0 +1,177 @@
+# Ders 17 · Viraja fazla hızlı girdin
+# Kaynaklar: bu derste dış kaynak rakamı KULLANILMIYOR. Verilen bütün
+# sayılar türetilmiştir; varsayımlar ekranda yazılı (60 km/h, viraj 30
+# derecelik yatışa göre kurulmuş).
+#
+# 1) YARIÇAP:  R = v² / (g · tan λ)
+#      10° → 160,6 m    20° → 77,8 m    30° → 49,0 m    40° → 33,7 m
+#    30°'den 10°'ye DOĞRULMAK yarıçapı 3,3 KATINA çıkarır.
+#    30°'den 40°'ye YATMAK virajı %31 DARALTIR.
+#    Yani motosiklet hâlâ dönebilir — sürücü bırakmazsa.
+#
+# 2) PANİKTE DIŞARI KAYMA (Ders 16'daki aynı formül):
+#      a = g · (tan λ_tasarım − tan λ_şuanki),   y = a·t²/2
+#    κ = tan λ·g/v² olduğu için a = κ·v² = g·tan λ, yani HIZDAN BAĞIMSIZ.
+#      30°→20° : a=2,09 → 1 sn 1,05 m
+#      30°→10° : a=3,93 → 1 sn 1,97 m, 1,5 sn 4,43 m
+#    Şerit 4 m, motosiklet orta çizgiden 2 m içerde: 10°'ye düşmek BİR
+#    SANİYEDE karşı şeride taşırır. Panik zincirinin tamamı bu.
+#
+# 3) TUTUŞ BÜTÇESİ (Ders 16): 30° yatışta gereken μ = tan 30° = 0,58.
+#    O tutuş zaten virajda kullanılıyor; yatıkken ön frene yapışmak
+#    aynı bütçeden ikinci kez istemektir.
+#
+# SAHNE: sağa dönen viraj. Sağa dönende DIŞARI = SOLA, yani karşı şerit
+# tarafı — "dışarı kaçmak" burada en tehlikeli yöndür. Yatış işareti
+# uc_boyut kuralına uyar (yatış > 0 SOLA), sağa yatışta eksi.
+# Sapma gerçekten böyle büyür ama adım 7 saniye sürdüğü için gösterim
+# süresi sınırlandı (panik 3,2 sn → 3,9 m); yoksa motosiklet kadrajdan
+# çıkıyordu.
+
+ders_no: 17
+slug: viraja-hizli-girmek
+baslik: "Viraja Fazla Hızlı Girdin"
+alt_baslik: "Motor dönebilir, sen bırakmazsan"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: hizli
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:panik, 11:uc, 19:daralt, 27:bakis, 35:fren, 43:giris"
+
+kapanis: "Virajı motosiklet değil, panik bitirir"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Panik zinciri: gazı kes → doğrulur → dışarı" }
+  - { t: 11, sure: 7, metin: "2 · 30°'den 10°'ye: yarıçap 3,3 katına çıkar" }
+  - { t: 19, sure: 7, metin: "3 · 30°'den 40°'ye: viraj %31 daralır" }
+  - { t: 27, sure: 7, metin: "4 · Bakışını çıkışa tak — oraya gidersin" }
+  - { t: 35, sure: 7, metin: "5 · Yatıkken ön frene yapışma" }
+  - { t: 43, sure: 7, metin: "6 · Asıl çözüm girişte: yavaş gir, hızlı çık" }
+
+youtube:
+  baslik: "Viraja Fazla Hızlı Girdin: Motor Dönebilir, Sen Bırakmazsan | Yol Okulu #17"
+  aciklama: |
+    Viraja girdin ve "bu hız fazla" dedin. Çoğu kaza buradan sonra
+    başlıyor — ve sebebi motosikletin dönememesi değil, sürücünün
+    denemeyi bırakması.
+
+    0:04 Panik zinciri
+    0:11 Doğrulmak virajı açar
+    0:19 Yatmak virajı daraltır
+    0:27 Bakışını çıkışa tak
+    0:35 Yatıkken ön fren yok
+    0:43 Asıl çözüm girişte
+
+    PANİK ZİNCİRİ
+    Hep aynı sırayla olur:
+    gazı kesersin → motosiklet doğrulur → yarıçap büyür → dışarı kaçarsın
+    → korkup frene basarsın → daha da doğrulur → şeritten çıkarsın.
+
+    Hiçbir halkası lastikle ilgili değil. Hepsi senin elinden çıkıyor.
+
+    RAKAMLARA BAKALIM
+    Virajda yarıçap şu kadardır: R = v² / (g · tan(yatış)).
+    60 km/h için:
+
+      10° → 160,6 metre
+      20° →  77,8 metre
+      30° →  49,0 metre
+      40° →  33,7 metre
+
+    Viraj 30°'ye göre kurulmuşsa, 10°'ye doğrulduğunda çizdiğin yay
+    49 metreden 161 metreye çıkar — 3,3 KATI. O viraja sığman artık
+    imkânsız. Ama tersi de doğru: 40°'ye yatarsan yayın 34 metreye iner,
+    yani viraj %31 daralır. Motosiklet hâlâ dönebiliyor.
+
+    DOĞRULMANIN BEDELİ
+    Ders 16'daki formül burada da geçerli:
+      a = g · (tan λ_tasarım − tan λ_şuanki)   → hızdan bağımsız
+
+      30°'den 20°'ye düşersen 1 saniyede 1,05 m
+      30°'den 10°'ye düşersen 1 saniyede 1,97 m, 1,5 saniyede 4,43 m
+
+    Şerit 4 metre ve sen orta çizgiden 2 metre içerdesin. Yani 10°'ye
+    doğrulmak BİR SANİYEDE seni karşı şeride taşırıyor. Videoda bunu
+    olduğu gibi görüyorsun.
+
+    BAKIŞ
+    Ders 2'nin kuralı en çok burada işe yarar: motosiklet baktığın yere
+    gider. Panikte göz, korktuğun şeye kilitlenir — banket, bariyer,
+    karşı şerit. Gözünü zorla virajın ÇIKIŞINA çevir. Çoğu zaman
+    motosiklet arkasından gelir.
+
+    YATIKKEN ÖN FREN
+    30° yatıkta yoldan istediğin tutunma zaten 0,58 (Ders 16). O bütçe
+    virajda kullanılıyor. Üstüne ön fren eklemek aynı bütçeden ikinci kez
+    istemektir — ve ön tekerlek kaçar. Hızı düşürmen gerekiyorsa gazı
+    YUMUŞAKÇA azalt, kesme; arka freni çok hafif kullanabilirsin.
+
+    ASIL ÇÖZÜM GİRİŞTE
+    Bütün bunlar acil durum tedbiri. Gerçek çözüm Ders 4'teki kural:
+    yavaş gir, hızlı çık. Virajı göremediğin sürece hız seçme; girişte
+    bıraktığın pay, çıkışta kazandığın güvendir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "viraj"
+    - "panik"
+    - "yatış"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Viraja girdin ve "bu hız fazla" dedin. Çoğu kaza buradan sonra başlar —
+    ve sebebi motosikletin dönememesi değil, sürücünün denemeyi bırakması.
+
+    PANİK ZİNCİRİ hep aynı:
+    gazı kes → motor doğrulur → yarıçap büyür → dışarı kaçarsın → korkup
+    frene basarsın → daha da doğrulur → şeritten çıkarsın.
+    Hiçbir halkası lastikle ilgili değil.
+
+    RAKAMLAR. R = v² / (g·tan λ), 60 km/h için:
+    10° → 160,6 m
+    20° → 77,8 m
+    30° → 49,0 m
+    40° → 33,7 m
+
+    Viraj 30°'ye göre kurulmuşsa, 10°'ye doğrulunca çizdiğin yay 49'dan
+    161 metreye çıkıyor — 3,3 KATI. Sığman imkânsız.
+    Ama 40°'ye yatarsan 34 metreye iniyor: viraj %31 DARALIYOR.
+    Motosiklet hâlâ dönebiliyor.
+
+    DOĞRULMANIN BEDELİ (hızdan bağımsız):
+    → 30°'den 10°'ye düşersen 1 saniyede 1,97 m dışarı
+    Şerit 4 m, sen orta çizgiden 2 m içerdesin. Yani bir saniyede karşı
+    şeritsin. Videoda olduğu gibi görüyorsun.
+
+    BAKIŞ: panikte göz korktuğun şeye kilitlenir — bariyer, banket, karşı
+    şerit. Gözünü zorla virajın ÇIKIŞINA çevir. Motosiklet genelde
+    arkasından gelir.
+
+    YATIKKEN ÖN FREN YOK: 30°'de yoldan istediğin tutuş zaten 0,58. O bütçe
+    virajda. Üstüne fren eklemek aynı bütçeden ikinci kez istemek demek.
+
+    Ve asıl çözüm girişte: yavaş gir, hızlı çık.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #viraj #panik #yatış #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""
