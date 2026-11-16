@@ -94,11 +94,26 @@ oturumlar:
 
   - ad: "tüm sistem kontrolleri"
     isi: "saemuhendislik.com + Google Play + AdSense/AdMob izlemesi"
-    uretir: ["docs/*"]
+    uretir:
+      - "docs/*"
+      - "scripts/get_youtube_token.py  (yalnızca 16.11'deki düzeltme: olmayan
+         requirements-youtube.txt yerine requirements-publish.txt. Sahiplik iddiası değil.)"
     yayinlar: "hiçbiri — ders videosu üretmez, paylaşmaz"
-    dokunmaz: ["content/dersler/", "library/approved/", "scripts/sahne3b.py"]
+    zamanlanmis: "her gün 07:10 UTC site/Play/reklam kontrolü; haber varsa
+      docs/gunluk-durum.json'a commit. O saatteki commit'ler bu oturumun."
+    dal_esitleme: "DİKKAT, çakışma riski burada: main'i kendi dalından besler,
+      sonra varsayılan dalı main'den eşitler — YALNIZ İLERİ-SARMA, force asla.
+      Yöntem video üretimi oturumuyla 16.11'de anlaşıldı: önce karşı dalı
+      birleştir, sonra ileri-sar. Böylece kimse force atmak zorunda kalmıyor."
+    dokunmaz:
+      - "content/dersler/"
+      - "library/approved/"
+      - "scripts/sahne3b.py"
+      - "content/oturumlar.yml  (yalnız kendi satırı; başkasının satırına dokunmaz)"
+      - "content/yayin_kaydi.json  (yayın kaydını yalnız iş akışı yazar)"
+      - "content/dis_yayinlar.yml  (kaynağı IcerikFabrikasi; bu oturum içerik üretmiyor)"
     ulasilabilir: true
-    dogrulama: dogrulandi      # kendi bildirimi, 16.11
+    dogrulama: dogrulandi      # kendi bildirimi, 16.11 — satır bu oturum tarafından düzeltildi
 
   - ad: "Saemuhendislik sistem düzenlemesi (fork)"
     isi: "saemuhendislik çalışmasının çatalı"
