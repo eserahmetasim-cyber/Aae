@@ -1,0 +1,198 @@
+# Ders 16 · Kaygan yamalar (yol yüzeyi tuzakları)
+# Kaynaklar (nitel doğrulama):
+#   https://www.femamotorcycling.eu/safer-roads-for-motorcycles/safer-roads-chapter-6/
+#   https://motorcycleminds.org/virtuallibrary/manholecovers/bmfmanholecovers.pdf
+#   https://www.jstage.jst.go.jp/article/eastpro/2011/0/2011_0_12/_pdf
+#   https://www.tandfonline.com/doi/full/10.1080/14680629.2024.2436953
+#   https://en.wikipedia.org/wiki/Road_slipperiness
+#
+# YÜZEYLER İÇİN SÜRTÜNME RAKAMI YOK — bilerek.
+# Kaynaklar aynı NİTEL şeyde birleşiyor: ince boya çizgileri ve dökme/pik
+# demir rögar kapakları ıslakken çevre asfalttan daha az tutar. FEMA
+# "işaretlemelerin çevre yolla benzer kayma direnci olmalı" diyor — yani
+# çoğu zaman değil. Tayvan araştırması kullanımdaki rögar kapaklarının
+# ~%90'ının ıslak eşiği tutturamadığını buluyor.
+# AMA ölçü birimleri tutmuyor (kimi BPN, kimi DFT, kimi μ) ve aynı yüzey
+# için kaynaktan kaynağa çok değişiyor. Bu yüzden "ıslak boyada μ=0,3"
+# gibi bir sayı KULLANILMIYOR.
+#
+# KULLANILAN RAKAMLARIN HEPSİ TÜREVDİR:
+# 1) Sabit virajda yanal kuvvet W·tan(λ), düşey yük W. Yolun vermesi
+#    gereken tutunma katsayısı tam tan(λ)'dır — ağırlıktan, lastikten ve
+#    HIZDAN bağımsız.
+#       0°→0,00   10°→0,18   20°→0,36   30°→0,58   40°→0,84
+# 2) "Virajda motoru dikleştir" tavsiyesinin bedeli. κ = tan(λ)·g/v²
+#    olduğu için dikleşince kaybolan yanal ivme
+#       a = κ·v² = g·tan(λ)     → HIZDAN BAĞIMSIZ
+#    y = a·t²/2 ile:
+#       15° → 1,31 m    20° → 1,79 m    25° → 2,29 m    30° → 2,83 m
+#    Hangi hızda olursan ol, 20°'den dik duruşa geçmek bir saniyede 1,8 m
+#    dışarı atar. Doğru cevap "virajın ortasında dikleş" değil, "çizgini
+#    virajdan ÖNCE seç"tir.
+#
+# SAHNE KURALA UYAR: motosiklet DÜZ yolda DİK gidiyor. KURALLAR.md'ye göre
+# yatan motosikletin yolu da bükülmeli; düz yolda yatırmak yanlış olurdu.
+# Yatış–μ ilişkisi HUD'daki çubuk grafiğinde duruyor.
+
+ders_no: 16
+slug: kaygan-yamalar
+baslik: "Kaygan Yamalar"
+alt_baslik: "Dik duruşta yoldan hiçbir şey istemezsin"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: zemin
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:gor, 11:cizgi, 19:ister, 27:dik, 35:bedel, 43:sabit"
+
+kapanis: "Yamayı sen seçemezsin, çizgini seçebilirsin"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Erken gör: rögar, boya, plaka, mazot, çakıl" }
+  - { t: 11, sure: 7, metin: "2 · Çizgini virajdan ÖNCE seç" }
+  - { t: 19, sure: 7, metin: "3 · Yatış tutuş ister: gereken μ = tan(yatış)" }
+  - { t: 27, sure: 7, metin: "4 · 20°'de 0,36 ister — dik duruşta 0,00" }
+  - { t: 35, sure: 7, metin: "5 · Dikleşmenin bedeli: 1 saniye = 1,8 m dışarı" }
+  - { t: 43, sure: 7, metin: "6 · Üstünde gaz sabit, fren yok, kavrama gevşek" }
+
+youtube:
+  baslik: "Kaygan Yamalar: Dik Duruşta Yoldan Hiçbir Şey İstemezsin | Yol Okulu #16"
+  aciklama: |
+    Rögar kapağı, yaya çizgisi, demir plaka, mazot lekesi, çakıl. Yolun
+    üzerindeki bu yamalar çevresindeki asfalttan daha az tutar — özellikle
+    ıslakken. Üstlerinden nasıl geçtiğin, ne kadar tuttuklarından daha
+    önemli.
+
+    0:04 Erken gör
+    0:11 Çizgini virajdan önce seç
+    0:19 Yatış tutuş ister
+    0:27 20°'de 0,36 — dik duruşta 0,00
+    0:35 Dikleşmenin bedeli
+    0:43 Üstünde sabit kal
+
+    NEDEN RAKAM VERMİYORUM
+    "Islak boyada tutunma katsayısı şu kadar" diyen bir sürü kaynak var ve
+    hiçbiri birbirini tutmuyor — kimi BPN ölçüyor, kimi DFT, kimi μ; aynı
+    yüzey için değerler kat kat değişiyor. Kaynakların birleştiği tek şey
+    nitel: ince boya ve dökme demir kapaklar ıslakken çevre asfalttan az
+    tutar. Tayvan'da yapılan bir araştırma kullanımdaki rögar kapaklarının
+    yaklaşık %90'ının ıslak eşiği tutturamadığını buluyor. O yüzden yüzeye
+    rakam vermiyorum — SENİN istediğin tutuşa veriyorum.
+
+    ASIL RAKAM: μ = tan(YATIŞ)
+    Sabit bir virajda motosikletin yoldan istediği tutunma katsayısı tam
+    olarak yatış açısının tanjantıdır. Ağırlığından, lastiğinden, hızından
+    bağımsız:
+
+      0°  → 0,00
+      10° → 0,18
+      20° → 0,36
+      30° → 0,58
+      40° → 0,84
+
+    Dik duruyorsan yoldan yanal olarak HİÇBİR ŞEY istemiyorsun. O kaygan
+    kapağın ne kadar tuttuğu artık önemli değil. 20° yatıktaysan 0,36
+    istiyorsun ve ıslak bir rögar kapağı bunu veremeyebilir.
+
+    "O ZAMAN VİRAJDA DİKLEŞTİREYİM"
+    Burada kötü haber var. Yatışta κ = tan(λ)·g/v² olduğu için
+    dikleştiğinde kaybolan yanal ivme a = g·tan(λ)'dır — hızdan bağımsız.
+    y = a·t²/2 ile:
+
+      20° yatıştan dik duruşa geçersen
+      1 saniyede 1,79 metre DIŞARI kayarsın.
+
+    Bir saniye. 1,8 metre. Bu neredeyse yarım şerit. Yani virajın
+    ortasında motoru dikleştirmek, kaygan yamadan kaçarken karşı şeride
+    ya da banket dışına çıkmak demek.
+
+    O yüzden doğru cevap "virajda dikleştir" değil:
+    ÇİZGİNİ VİRAJDAN ÖNCE SEÇ.
+
+    NE YAPILIR
+    Kaçınabileceğin yamalar (rögar, yağ lekesi, demir plaka) noktasaldır —
+    şerit içinde yana kayarak geç, şeritten çıkmana gerek yok (Ders 14).
+    Kaçınamayacakların (yaya çizgisi, çakıl, buz) şeridi boydan boya
+    kaplar — o zaman tek silahın dik durmak.
+
+    ÜSTÜNDEYKEN
+    Hiçbir şey değiştirme. Gaz sabit, fren yok, direksiyona yüklenme,
+    gidonu sık tutma — bırak motosiklet altında kendini toparlasın.
+    Yamanın üstündeki her kumanda hareketi lastikten tutuş ister, ve
+    isteyecek yer orası değil.
+
+    ÇAKIL VE KUM
+    En sinsi olanı. Virajın çıkışında, köy yolu ağızlarında, inşaat
+    girişlerinde birikir. Üstünde frene basmak ön tekerleği kaydırır.
+    Dümdüz, sabit gazla geç; motosiklet altında biraz oynar, bu normaldir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "kaygan zemin"
+    - "rögar kapağı"
+    - "çakıl"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Rögar kapağı, yaya çizgisi, demir plaka, mazot, çakıl. Hepsi çevre
+    asfalttan az tutar. Ama önemli olan onların ne kadar tuttuğu değil —
+    SENİN ne kadar istediğin.
+
+    ASIL RAKAM: μ = tan(YATIŞ)
+
+    Sabit virajda motosikletin yoldan istediği tutunma katsayısı tam olarak
+    yatış açısının tanjantı. Ağırlıktan, lastikten, hızdan bağımsız:
+
+    0° → 0,00
+    10° → 0,18
+    20° → 0,36
+    30° → 0,58
+    40° → 0,84
+
+    Dik duruyorsan yoldan yanal olarak HİÇBİR ŞEY istemiyorsun. O kapağın
+    ne kadar tuttuğu artık önemli değil.
+
+    "O ZAMAN VİRAJDA DİKLEŞTİREYİM" → burada kötü haber var.
+
+    Dikleşince kaybolan yanal ivme a = g·tan(λ). Hızdan bağımsız. Yani:
+
+    → 20° yatıştan dik duruşa geçersen
+    → 1 saniyede 1,79 metre DIŞARI kayarsın.
+
+    Bir saniye, 1,8 metre, neredeyse yarım şerit. Virajın ortasında motoru
+    dikleştirmek, kaygan yamadan kaçarken karşı şeride çıkmak demek.
+
+    Doğru cevap: ÇİZGİNİ VİRAJDAN ÖNCE SEÇ.
+
+    Kaçınabileceklerin (rögar, yağ, plaka) noktasaldır — şerit içinde yana
+    kay, şeritten çıkmana gerek yok. Kaçınamayacakların (çizgi, çakıl, buz)
+    şeridi boydan boya kaplar — tek silahın dik durmak.
+
+    Üstündeyken hiçbir şey değiştirme: gaz sabit, fren yok, gidonu sıkma.
+    Bırak motosiklet altında kendini toparlasın.
+
+    (Yüzeyler için rakam vermiyorum — kaynaklar birbirini tutmuyor, kimi
+    BPN ölçüyor kimi μ. Verdiğim tek rakam matematik.)
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #kayganzemin #rögarkapağı #çakıl #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

@@ -1570,7 +1570,243 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
-#  SOLLAMA
+#  KAYGAN YAMALAR (yol yuzeyi tuzaklari)
+# ---------------------------------------------------------------------------
+# DERSTE YUZEYLER ICIN SURTUNME RAKAMI YOK - bilerek.
+# Kaynaklar (FEMA yol guvenligi bolumu, Tayvan rogar kapagi calismalari,
+# pavement marking skid resistance derlemeleri) ayni NITEL seyde birlesiyor:
+# ince boya cizgileri ve dokme/pik demir rogar kapaklari ISLAKKEN cevre
+# asfalttan daha az tutar. Ama olcu birimleri tutmuyor (kimi BPN, kimi DFT,
+# kimi mu) ve ayni yuzey icin kaynaktan kaynaga cok degisiyor; "islak boyada
+# mu=0,3" gibi bir sayi KULLANILMIYOR.
+#
+# KULLANILAN RAKAMLARIN HEPSI TUREVDIR:
+# 1) Sabit virajda yanal kuvvet W*tan(yatis), dusey yuk W. Yolun vermesi
+#    gereken tutunma katsayisi tam tan(yatis)'tir - agirliktan, lastikten,
+#    hizdan BAGIMSIZ.  0->0,00  10->0,18  20->0,36  30->0,58  40->0,84
+# 2) "Virajda motoru dikleştir" tavsiyesinin bedeli. Yatista kappa =
+#    tan(L)*g/v^2 oldugu icin diklesince kaybolan yanal ivme
+#        a = kappa*v^2 = g*tan(L)
+#    yani HIZDAN BAGIMSIZ. y = a*t^2/2:
+#        15 derece -> 1,31 m   20 -> 1,79 m   25 -> 2,29 m   30 -> 2,83 m
+#    Hangi hizda olursan ol, 20 dereceden dik durusa gecmek bir saniyede
+#    1,8 m disari atar. Bu yuzden dogru cevap "virajin ortasinda dikleş"
+#    degil, "cizgini virajdan ONCE sec"tir.
+#
+# SAHNE KURALA UYAR: motosiklet DUZ yolda DIK gider (KURALLAR.md: yatan
+# motosikletin yolu da bukulur - duz yolda yatirmak yanlis olurdu).
+# Yerel yamalardan serit icinde kayarak kacinir, serit boyu uzanan
+# yamalardan (yaya cizgisi, cakil) dik gecer. Yatis-mu iliskisi HUD'daki
+# cubuk grafiginde duruyor.
+# Hiz 60'tan 45'e indirildi: 60 km/h'de yama yakin kadrajda saniyede bir
+# gecip gidiyor, okunacak zaman kalmiyordu.
+ZEMIN_DONGU = 3.6                       # yamalar arasi sure (sn)
+ZEMIN_HIZ = 45.0 / 3.6
+ZEMIN_ARA = ZEMIN_DONGU * ZEMIN_HIZ     # iki yama arasi mesafe (m)
+ZEMIN_KAYMA = 1.15                      # serit ici kacinma mesafesi (m)
+ZEMIN_MU = ((0, 0.00), (10, 0.18), (20, 0.36), (30, 0.58), (40, 0.84))
+
+ZEMIN_TUZAK = ("rogar", "boya", "mazot", "cakil", "plaka")
+ZEMIN_AD = {
+    "rogar": ("RÖGAR KAPAĞI", True),
+    "boya":  ("YOL ÇİZGİSİ", False),
+    "mazot": ("MAZOT / YAĞ", True),
+    "cakil": ("ÇAKIL", False),
+    "plaka": ("DEMİR PLAKA", True),
+}
+
+ZEMIN_NOKTA = {
+    "gor":   ("ERKEN GÖR", "rögar · boya · plaka · mazot · çakıl"),
+    "cizgi": ("ÇİZGİNİ ÖNCEDEN SEÇ", "üstünde düzeltme yapma"),
+    "ister": ("YATIŞ TUTUŞ İSTER", "gereken μ = tan(yatış)"),
+    "dik":   ("DİK DURUŞTA 0,00", "20°'de 0,36 ister"),
+    "bedel": ("DİKLEŞMENİN BEDELİ", "20°'den: 1 saniye = 1,8 m dışarı"),
+    "sabit": ("ÜSTÜNDE SABİT KAL", "gaz sabit · fren yok · kavrama gevşek"),
+}
+ZEMIN_SIRA = list(ZEMIN_NOKTA)
+ZEMIN_FAZ = [(4.0, "gor")]
+
+
+def zemin_faz_ayarla(metin):
+    """sahne_fazlari: "4:gor, 11:cizgi, ..." """
+    global ZEMIN_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in ZEMIN_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen zemin noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    ZEMIN_FAZ = sorted(f)
+
+
+def zemin_evre(t):
+    ad, bas = ZEMIN_FAZ[0][1], ZEMIN_FAZ[0][0]
+    for z, a in ZEMIN_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _disk(s, x, z, r, renk, n=16, y=0.021):
+    p = [[x + r * math.cos(2 * math.pi * i / n), y,
+          z + r * math.sin(2 * math.pi * i / n)] for i in range(n)]
+    s.yuzey(p, renk, katman=2)
+
+
+def _tuzak(s, tur, x, z):
+    """Seride dusen kaygan yama. Hepsi asfaltin ustune cizilir (katman 2)."""
+    if tur == "rogar":
+        _disk(s, x, z, 0.42, (70, 66, 62))
+        _disk(s, x, z, 0.34, (98, 94, 88), y=0.022)
+        for i in range(6):
+            a = 2 * math.pi * i / 6
+            _disk(s, x + 0.20 * math.cos(a), z + 0.20 * math.sin(a), 0.045,
+                  (60, 56, 52), n=8, y=0.023)
+    elif tur == "boya":                     # yaya gecidi: serit boyu uzanir
+        for i in range(5):
+            zz = z - 1.8 + i * 0.95
+            s.yuzey([[x - 2.1, 0.021, zz], [x + 2.1, 0.021, zz],
+                     [x + 2.1, 0.021, zz + 0.50], [x - 2.1, 0.021, zz + 0.50]],
+                    (230, 230, 224), katman=2)
+    elif tur == "mazot":
+        p = [(0.0, 1.9), (0.9, 1.0), (1.1, -0.5), (0.4, -1.8), (-0.6, -1.4),
+             (-1.0, 0.1), (-0.8, 1.3)]
+        s.yuzey([[x + a, 0.021, z + b] for a, b in p], (42, 42, 46), katman=2)
+        p2 = [(0.0, 1.1), (0.5, 0.4), (0.36, -0.8), (-0.4, -0.6), (-0.5, 0.5)]
+        s.yuzey([[x + a, 0.022, z + b] for a, b in p2], (58, 50, 66), katman=2)
+    elif tur == "cakil":                    # serit boyu serpilmis
+        rnd = 12345
+        for i in range(130):
+            rnd = (rnd * 1103515245 + 12345) % 2147483648
+            ax = ((rnd >> 7) % 1000) / 1000.0 * 3.8 - 1.9
+            rnd = (rnd * 1103515245 + 12345) % 2147483648
+            az = ((rnd >> 7) % 1000) / 1000.0 * 4.4 - 2.2
+            _disk(s, x + ax, z + az, 0.055, (152, 146, 134), n=6)
+    else:                                   # plaka
+        s.yuzey([[x - 1.25, 0.021, z - 1.5], [x + 1.25, 0.021, z - 1.5],
+                 [x + 1.25, 0.021, z + 1.5], [x - 1.25, 0.021, z + 1.5]],
+                (130, 132, 136), katman=2)
+        for ax in (-1.05, 1.05):
+            for az in (-1.28, 1.28):
+                _disk(s, x + ax, z + az, 0.08, (90, 92, 96), n=8, y=0.022)
+
+
+def _zemin_kayma(z, kacinilir):
+    """Yerel yamaya yaklasirken serit ici yanal kacinma (0..1)."""
+    if not kacinilir:
+        return 0.0
+    if z > 26.0 or z < -7.0:
+        return 0.0
+    if z > 16.0:
+        return yumusak((26.0 - z) / 10.0)
+    if z > -2.0:
+        return 1.0
+    return yumusak((z + 7.0) / 5.0)
+
+
+def kare_zemin3b(t):
+    """Serit uzerine dusen kaygan yamalar: kacinilabilen ve kacinilamayan."""
+    anahtar, _ = zemin_evre(t)
+    etiket, aciklama = ZEMIN_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    dongu = int(t // ZEMIN_DONGU)
+    u = t % ZEMIN_DONGU
+    tur = ZEMIN_TUZAK[dongu % len(ZEMIN_TUZAK)]
+    onceki = ZEMIN_TUZAK[(dongu - 1) % len(ZEMIN_TUZAK)]
+    yama_z = ZEMIN_ARA - ZEMIN_HIZ * u
+    onceki_z = yama_z - ZEMIN_ARA
+
+    kacinilir = ZEMIN_AD[tur][1]
+    kayma = ZEMIN_KAYMA * _zemin_kayma(yama_z, kacinilir)
+    x0 = FREN_SERIT + kayma
+
+    global _zem_s, _zem_tek
+    _zem_s = (globals().get("_zem_s", 0.0) + ZEMIN_HIZ / FPS) % 8.0
+    _zem_tek = (globals().get("_zem_tek", 0.0)
+                + ZEMIN_HIZ / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -20.0
+    while z < 200:
+        z2 = z + (6.0 if z < 90 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -20.0
+        while zz < 110:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-3, 16):
+        zc = i * 8.0 - _zem_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # Iki yama birden: biri yaklasirken oteki arkada kaliyor, kadraj bosalmiyor
+    if -9.0 < onceki_z < 95.0:
+        _tuzak(s, onceki, FREN_SERIT, onceki_z)
+    if -9.0 < yama_z < 95.0:
+        _tuzak(s, tur, FREN_SERIT, yama_z)
+
+    model, _, _ = motosiklet(0.0, _zem_tek, 0.0)
+    s.ekle(model, t=[x0, 0.0, 0.0])
+
+    kamera = Kamera([FREN_SERIT + 0.6, 5.4, -16.0], [FREN_SERIT - 0.5, 0.6, 13.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = YESIL if anahtar in ("dik", "sabit") else (
+        KIRMIZI if anahtar == "bedel" else TURUNCU)
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    # Yatis -> gereken tutus cubuklari. Dersin tek rakam kaynagi bu grafik.
+    gx, gy, gw = G - 372, 470, 300
+    d.rounded_rectangle([gx, gy, gx + gw, gy + 286], 16, fill=(0, 0, 0, 180),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (gx + 20, gy + 12), "GEREKEN TUTUŞ μ", 24, (150, 155, 162))
+    s2.yazi(d, (gx + 20, gy + 40), "μ = tan(yatış)", 23, (124, 132, 142))
+    for i, (aci, mu) in enumerate(ZEMIN_MU):
+        yy = gy + 78 + i * 40
+        c = YESIL if mu < 0.10 else (TURUNCU if mu < 0.50 else KIRMIZI)
+        s2.yazi(d, (gx + 20, yy), f"{aci}°", 26, (190, 196, 204))
+        d.rounded_rectangle([gx + 74, yy + 4, gx + 74 + 150 * mu, yy + 26], 5,
+                            fill=c)
+        s2.yazi(d, (gx + 232, yy), f"{mu:.2f}".replace(".", ","), 26, c)
+
+    px, py, pw = 62, 470, 418
+    d.rounded_rectangle([px, py, px + pw, py + 392], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 14), "KAYGAN YAMA", 26, (150, 155, 162))
+    for i, k in enumerate(ZEMIN_TUZAK):
+        acik = k == tur
+        yy = py + 54 + i * 52
+        d.rounded_rectangle([px + 22, yy + 4, px + 34, yy + 34], 5,
+                            fill=TURUNCU if acik else (58, 64, 72))
+        s2.yazi(d, (px + 50, yy), ZEMIN_AD[k][0], 29,
+                KREM if acik else (112, 120, 130))
+    durum, dr = (("ŞERİT İÇİNDE KAÇIN", YESIL) if kacinilir
+                 else ("KAÇINILMAZ — DİK GEÇ", TURUNCU))
+    s2.yazi(d, (px + 22, py + 330), durum, 28, dr)
+    return im
+
+
 # ---------------------------------------------------------------------------
 # Kaynak: Indiana DOT metrik geometrik tasarim boluму (AASHTO Green Book
 # tablosundan): 90 km/h tasarim hizi icin GECIS GORUS MESAFESI 615 m,
@@ -2952,7 +3188,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama"),
+                             "sollama", "zemin"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -2990,6 +3226,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "zemin":
+        zemin_faz_ayarla(args.fazlar)
+        cizer = kare_zemin3b
     elif args.sahne == "sollama":
         sollama_faz_ayarla(args.fazlar)
         cizer = kare_sollama3b
