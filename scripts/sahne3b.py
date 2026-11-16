@@ -1242,24 +1242,8 @@ def kontrol_evre(t):
     return ad, s2.yumusak((t - bas) / 0.5)
 
 
-def _basinc_gostergesi(d, x, y, w, oran):
-    """Yatay basinc cubugu: dusuk bolge, dogru bolge, azami cizgisi.
-    oran 0-1.4 arasi; 1.0 onerilen basinc."""
-    h = 56
-    d.rounded_rectangle([x, y, x + w, y + h], 10, fill=(255, 255, 255, 22))
-    d.rounded_rectangle([x, y, x + w * 0.74, y + h], 10, fill=(150, 46, 40, 190))
-    d.rectangle([x + w * 0.74, y, x + w * 0.96, y + h], fill=(32, 128, 72, 205))
-    d.rectangle([x + w * 0.96, y, x + w, y + h], fill=(118, 40, 34, 205))
-    ix = x + w * min(1.0, oran / 1.35)
-    d.polygon([(ix, y - 14), (ix - 15, y - 38), (ix + 15, y - 38)], fill=KREM)
-    d.rectangle([ix - 3, y, ix + 3, y + h], fill=KREM)
-    s2.yazi(d, (x + w * 0.36, y + 12), "DÜŞÜK", 30, (236, 190, 186), ortala=True)
-    s2.yazi(d, (x + w * 0.85, y + 12), "DOĞRU", 30, (210, 255, 226), ortala=True)
-    s2.yazi(d, (x + w - 6, y + h + 12), "AZAMİ", 24, (226, 150, 144), ortala=True)
-
-
 def kare_kontrol3b(t):
-    """On kontrol: sirayla T-CLOCS noktalari, lastikte basinc gostergesi."""
+    """On kontrol: motosikletin etrafinda T-CLOCS turu, sirayla alti nokta."""
     anahtar, gecis = kontrol_evre(t)
     ad, nokta, aciklama = KONTROL_NOKTA[anahtar]
     gok, cim, asfalt = _palet()
@@ -1277,13 +1261,12 @@ def kare_kontrol3b(t):
     model, _, _ = motosiklet(0.0, 0.0, 0.0, surucu=False)   # motordan inilmis
     s.ekle(model)
 
-    # Lastik fazinda kamera on tekerlege yaklasir: hem lastik gercekten
-    # gorunur hem de basinc gostergesine yer kalir. Diger fazlarda genis
-    # cerceve - ders motosikletin etrafinda bir tur atma dersi.
-    if anahtar == "lastik":
-        kamera = Kamera([2.45, 0.95, 2.30], [0.0, 0.40, 0.64], G, Y, fov=40)
-    else:
-        kamera = Kamera([5.15, 2.30, 3.95], [0.0, 0.72, 0.0], G, Y, fov=48)
+    # Alti nokta da AYNI genis cercevede: bu bir tur dersi, isaret halkasi
+    # motosikletin etrafinda dolasiyor. v1'de lastik fazinda kamera one
+    # yaklasiyordu (ders lastik basinci dersiydi ve gostergeye yer gerekiyordu);
+    # v2'de lastik alti maddeden biri, tek basina yakinlasmasi hata gibi
+    # duruyordu.
+    kamera = Kamera([5.15, 2.30, 3.95], [0.0, 0.72, 0.0], G, Y, fov=48)
     s.ciz(d, kamera, gok)
 
     # --- isaret halkasi: 3B noktanin ekrandaki yeri -----------------------
@@ -1316,14 +1299,9 @@ def kare_kontrol3b(t):
         s2.yazi(d, (92, yy), kad, 30,
                 KREM if aktif else (124, 132, 142))
 
-    if anahtar == "lastik":                        # basinc gostergesi
-        oran = 0.52 + 0.33 * s2.yumusak(min(1.0, (t - KONTROL_FAZ[0][0]) / 2.4))
-        s2.yazi(d, (70, 1086), "LASTİK BASINCI", 32, (158, 166, 176))
-        _basinc_gostergesi(d, 70, 1138, G - 140, oran)
-        s2.yazi(d, (70, 1232), "Yan duvardaki sayı AZAMİ basınçtır — önerilen",
-                26, (150, 158, 168))
-        s2.yazi(d, (70, 1268), "değer el kitabında ve şasi etiketinde yazar.",
-                26, (150, 158, 168))
+    # Basinc gostergesi (DUSUK/DOGRU/AZAMI cubugu) v1'den kalmaydi ve dersi
+    # hala bir lastik basinci videosu gibi gosteriyordu; v2'de kaldirildi.
+    # Basincla ilgili ayrinti ders dosyasinin aciklamasinda duruyor.
     return im
 
 
