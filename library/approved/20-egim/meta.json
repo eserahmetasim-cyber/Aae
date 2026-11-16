@@ -1,0 +1,69 @@
+{
+  "klasor": "20-egim",
+  "ders_no": 20,
+  "slug": "egim",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Eğim: Yokuş Aşağı, Yokuş Yukarı",
+  "alt_baslik": "Aynı fren, aynı hız, 7 metre daha geç",
+  "handle": "@aae_motorcycle",
+  "video": "20-egim.mp4",
+  "kaynak_render": "output/2026-11-16_ders20_egim_v1.mp4",
+  "onay_tarihi": "2026-11-16T13:28:11+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Eğim yerçekimini yola katar: g · sin(eğim)"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · %15 inişte 1,46 m/s² — frenin beşte biri"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · 70'te durma 46,5 → 53,5 m (+7,1 m)"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Uzun inişte vites küçült, fren dinlensin"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · Yokuş yukarı kısalır — ama sadece 4,6 m"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · Rampada 250 kg'ın 37 kilosu seni geri iter"
+    }
+  ],
+  "youtube": {
+    "baslik": "Eğim: Aynı Fren, Aynı Hız, 7 Metre Daha Geç | Yol Okulu #20",
+    "aciklama": "Türkiye'de yol demek eğim demek. Ve eğim, Ders 18'de hesapladığımız\ndurma mesafesini sessizce değiştiriyor — hem de simetrik olarak değil.\n\n0:04 Eğim yerçekimini yola katar\n0:11 %15 inişte 1,46 m/s²\n0:19 46,5 → 53,5 metre\n0:27 Uzun inişte vites küçült\n0:35 Yokuş yukarı kısalır, ama az\n0:43 Rampada 37 kilo\n\nFİZİĞİ TEK SATIR\nEğimli yolda yerçekiminin bir bileşeni yol boyunca etki eder:\n\n  a_eğim = g · sin(eğim açısı)\n\nİnişte bu bileşen seni ileri iter, yani frenin işini zorlaştırır.\nÇıkışta geri çeker, frene yardım eder.\n\n  Fren ivmesi inişte:  a − g·sin(θ)\n  Fren ivmesi çıkışta: a + g·sin(θ)\n\n%15 eğim (dağ yolunda sıradan bir değer) için g·sin(θ) = 1,46 m/s².\nDüzde 7 m/s² frenin varsa, inişte 5,54'e düşüyor. Frenin yaklaşık\nbeşte biri eğime gidiyor.\n\nRAKAMLAR (70 km/h, 1 sn tepki, düzde 7 m/s²)\nDüz yolda durma mesafen 46,5 metre.\n\n  %6  iniş → 48,9 m   (+2,5)      çıkış → 44,4 m  (−2,1)\n  %10 iniş → 50,8 m   (+4,4)      çıkış → 43,1 m  (−3,3)\n  %15 iniş → 53,5 m   (+7,1)      çıkış → 41,8 m  (−4,6)\n  %20 iniş → 56,7 m   (+10,2)     çıkış → 40,6 m  (−5,8)\n\nEĞİM ADİL DEĞİL\nDikkat et: %15 eğim inişte 7,1 metre ekliyor ama çıkışta sadece 4,6\nmetre indiriyor. Aynı eğim, farklı bedel. Sebebi basit: 1/(a−x)\nbüyürken 1/(a+x) aynı oranda küçülmüyor. Yani bir vadiye inip çıkarsan\nnet olarak zarardasın.\n\nUZUN İNİŞTE VİTES\nMesafe uzamasının yanında ikinci bir sorun var: ısı. Uzun bir inişte\nfreni sürekli tutarsan diskler ve hidrolik ısınır, fren hissi\nyumuşar ve derinleşir. Çözüm vitesi küçültmek: motor freni eğimin bir\nkısmını karşılar, sen de freni aralıklı ve kısa kullanırsın.\n\nYOKUŞ YUKARI\nDurmak kolaylaşır ama iki yeni iş çıkar. Birincisi kalkış: rampada\nduran 250 kg'lık bir motosikleti tutmak için %15 eğimde 37 kilogramlık\nbir kuvvet gerekir. Bu kuvveti ya arka fren tutar ya da sen.\nKalkışta arka freni bas, debriyajı tutma noktasına getir, gaz\ngelirken freni bırak — sıralama bu. Önce frenden elini çekersen geri\nkayarsın.\n\nİkincisi görüş: tepe çıkışında yolun arkası görünmez. Ders 19'daki\nkural burada en sert işler — göremediğin mesafede duramayacağın hızla\ngitme.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "eğim",
+      "yokuş",
+      "durma mesafesi",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Türkiye'de yol demek eğim demek. Ve eğim durma mesafeni sessizce\ndeğiştiriyor — hem de adil olmayan bir şekilde.\n\nFİZİĞİ TEK SATIR:\na_eğim = g · sin(eğim)\n\nİnişte fren ivmen a − g·sin(θ), çıkışta a + g·sin(θ).\n%15 eğimde g·sin(θ) = 1,46 m/s². Düzdeki 7 m/s² frenin inişte 5,54'e\ndüşüyor — yaklaşık beşte biri eğime gidiyor.\n\n70 km/h, düzde durma 46,5 m:\n\n%6  iniş 48,9 (+2,5) · çıkış 44,4 (−2,1)\n%10 iniş 50,8 (+4,4) · çıkış 43,1 (−3,3)\n%15 iniş 53,5 (+7,1) · çıkış 41,8 (−4,6)\n%20 iniş 56,7 (+10,2) · çıkış 40,6 (−5,8)\n\nEĞİM ADİL DEĞİL 👇\n%15 eğim inişte 7,1 m EKLİYOR ama çıkışta sadece 4,6 m indiriyor.\nÇünkü 1/(a−x) büyürken 1/(a+x) aynı oranda küçülmüyor. Bir vadiye inip\nçıkarsan net olarak zarardasın.\n\nUZUN İNİŞTE VİTES KÜÇÜLT. Freni sürekli tutarsan diskler ısınır, fren\nhissi yumuşar ve derinleşir. Motor freni eğimin bir kısmını karşılasın.\n\nRAMPADA: %15 eğimde 250 kg'lık motosikleti tutmak 37 kilogramlık kuvvet\nister. Kalkış sırası: arka fren basılı → debriyaj tutma noktasına → gaz\ngelirken freni bırak. Önce frenden elini çekersen geri kayarsın.\n\nVe tepe çıkışında yolun arkası görünmez — Ders 19 en sert burada işler.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #eğim #yokuş #durmamesafesi #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-16T12:52:27+00:00",
+  "guncelleme": "2026-11-16T13:28:11+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -170,6 +170,15 @@
       "video": "library/approved/19-ne-kadar-ileri-bakiyorsun/19-ne-kadar-ileri-bakiyorsun.mp4",
       "meta": "library/approved/19-ne-kadar-ileri-bakiyorsun/meta.json",
       "onay_tarihi": "2026-11-16T12:52:27+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "20-egim",
+      "ders_no": 20,
+      "baslik": "Eğim: Yokuş Aşağı, Yokuş Yukarı",
+      "video": "library/approved/20-egim/20-egim.mp4",
+      "meta": "library/approved/20-egim/meta.json",
+      "onay_tarihi": "2026-11-16T13:28:11+00:00",
       "durum": "onaylandi"
     }
   ]
