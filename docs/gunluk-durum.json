@@ -238,6 +238,15 @@
     "_benim_kacirdigim": "07.11-13.11 gunluk kontrollerinde ads.txt icin yalnizca HTTP durumu (200) olculuyordu, ICERIGI okunmuyordu. Bu yuzden degisimin tam gunu bilinmiyor; 07.11 ile 13.11 arasinda bir gun. 15.11'den itibaren gunluk kontrol ads.txt icerigini ve ana sayfadaki ca-pub- degerini de olcuyor.",
     "_yan_bulgu": "Sayfa HTML'i degistigine gore site bu arada YENIDEN DAGITILDI — ama Yol Okulu karti eklenmedi (yol_okulu 0, ikon 404). Yani reklam degisikligi icin dagitim yapildi, hazir yama uygulanmadi."
   },
+  "_yayin_kanallari": {
+    "_tarih": "16.11.2026 — AAE bildirdi",
+    "youtube": "GitHub is akisi 'Gunluk Yayin' (.github/workflows/gunluk-yayin.yml), cron 0 6 * * * UTC = 09:00 Istanbul. Varsayilan dalda kayitli ve aktif. YT_CLIENT_ID + YT_CLIENT_SECRET + YT_REFRESH_TOKEN girilince yayinlamaya baslar.",
+    "instagram": "IS AKISINDAN DEGIL: Meta Business Suite'ten yapiliyor. Brave'de acik, AAE'nin ayri bir oturumu oradan planlayip yukluyor. Bu oturumun gorus alaninda degil, mesajla da ulasilamiyor (list_sessions'ta gorunmuyor, muhtemelen yerel oturum).",
+    "YASAK_ig_secret": "IG_USER_ID ve IG_ACCESS_TOKEN deposuna ASLA girilmeyecek. Girilirse gunluk is akisi ayni dersi ikinci kez Reel olarak yayinlar (Business Suite postu + is akisi postu). Instagram Reel yayinlandigi an herkese acik ve API'den geri alinamiyor, yani bu hata duzeltilemez.",
+    "guvenli_varsayilan": "Is akisindaki Instagram adimi env.IG_VAR == 'true' kosuluna bagli; secret yoksa hic calismiyor. Yani dogru davranis hicbir sey yapmamak. Calisma logunda 'Instagram secret'lari yok — yayinlanmadi' uyarisi BEKLENEN durumdur.",
+    "izleme": "gh secret list --repo eserahmetasim-cyber/Aae cikitisinda IG_ ile baslayan ad olmamali. Belirirse biri girmis demektir, AAE'ye haber.",
+    "cakisma_notu": "scripts/cakisma.py ve content/dis_yayinlar.yml konu cakismasini yakaliyor ama Business Suite'ten yayinlananlari gormuyor; o listenin asil kaynagi Business Suite'i suren oturum."
+  },
   "_rozetler": {
     "mini_muhendis": "Ana sayfada ZATEN gercek Play linki var (06.11 dogrulandi)",
     "yol_okulu": "Ana sayfada HIC GECMIYOR (14.11'de de 0). Site 06.11-14.11 arasinda reklam degisikligi icin yeniden dagitildi ama kart konmadi. Yama docs/yol-okulu-yamasi.md'de hazir bekliyor.",
