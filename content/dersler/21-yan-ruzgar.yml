@@ -1,0 +1,185 @@
+# Ders 21 · Yan rüzgâr ve TIR
+# Dış kaynak rakamı KULLANILMIYOR. Tek varsayım sahnedeki temel yatış
+# (10°) ve TIR'ın uzunluğu (16,6 m — scripts/sahne3b.py `_tir`). Gerisi türev.
+#
+# YAN RÜZGÂRDA MOTOSİKLET RÜZGÂRA DOĞRU YATARAK DÜZ GİDER.
+# Yatışı ayakta tutan şey rüzgârın yan kuvvetidir; denge için
+#     yan kuvvet = ağırlık × tan(yatış)
+# Yani YATIŞ, RÜZGÂRIN ÖLÇÜSÜDÜR:
+#     5° → %9    8° → %14    10° → %18    15° → %27    20° → %36
+#
+# RÜZGÂR KESİLİRSE yatışı dengeleyen kuvvet kaybolur ve motosiklet yatışın
+# gösterdiği yöne kayar. Ders 16/17/20'deki aynı formül:
+#     a = g · tan(yatış)      → HIZDAN BAĞIMSIZ
+#     10° → 1,73 m/s² → 1 sn 0,86 m · 1,5 sn 1,95 m
+# Şerit 4 m. Yani bir TIR'ın rüzgâr gölgesinde 1,5 saniye, sen hiçbir şey
+# yapmadan şeridin yarısını yersin.
+#
+# TIR'I GEÇERKEN ÜÇ BÖLGE
+#   1. Burun dalgası — TIR'ın önü havayı iter, seni TIR'dan UZAĞA atar
+#   2. Gölge         — TIR yan rüzgârı keser, yatışın seni TIR'a ÇEKER
+#   3. Kuyruk        — TIR bitince rüzgâr bir anda döner, en sert vuruş
+# Sahnede sürücünün düzeltme gecikmesi 0,45 sn alındı; o gecikme yüzünden
+# kuyrukta 0,69 m sapma birikiyor. Gecikme sıfır olsa sapma da sıfır olurdu
+# — yani bu rakam sürücünün tepkisine ait, rüzgârın gücüne değil.
+#
+# KURAL İSTİSNASI: KURALLAR.md "yatan motosikletin yolu da bükülür" der.
+# Burası tek istisna — yatış dönüş üretmiyor, yan kuvveti dengeliyor.
+# Motosiklet YATIK hâlde DÜZ gidiyor ve bu doğru. İstisna KURALLAR.md'ye
+# de yazıldı ki sonraki oturum "düzeltmeye" kalkmasın.
+
+ders_no: 21
+slug: yan-ruzgar
+baslik: "Yan Rüzgâr ve TIR"
+alt_baslik: "Yatışın rüzgârın ölçüsüdür"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: ruzgar
+boyut: 3
+kamera: takip
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:yatar, 11:olcu, 19:kesilme, 27:uc, 35:geri, 43:hazir"
+
+kapanis: "Rüzgâr seni itmez, bıraktığı an iter"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Rüzgârda yatarak düz gidersin — dönüş değil" }
+  - { t: 11, sure: 7, metin: "2 · Yatış rüzgârın ölçüsü: 10° = ağırlığının %18'i" }
+  - { t: 19, sure: 7, metin: "3 · Rüzgâr kesilirse 1 saniyede 0,86 m yana" }
+  - { t: 27, sure: 7, metin: "4 · TIR'ı geçerken üç bölge: iter · çeker · iter" }
+  - { t: 35, sure: 7, metin: "5 · En sert vuruş kuyrukta — rüzgâr bir anda döner" }
+  - { t: 43, sure: 7, metin: "6 · Gevşek tut, dizleri sık, hızı düşür" }
+
+youtube:
+  baslik: "Yan Rüzgâr ve TIR: Yatışın Rüzgârın Ölçüsüdür | Yol Okulu #21"
+  aciklama: |
+    Yan rüzgârda motosiklet garip bir şey yapar: yatar ama dönmez. Bunu
+    anlarsan, bir TIR'ın yanından geçerken neden savrulduğunu da anlarsın.
+
+    0:04 Yatarak düz gidersin
+    0:11 Yatış rüzgârın ölçüsü
+    0:19 Rüzgâr kesilirse
+    0:27 Üç bölge
+    0:35 En sert vuruş kuyrukta
+    0:43 Gevşek tut
+
+    YATIŞ DÖNÜŞ DEĞİL, DENGE
+    Normalde motosiklet yattığında döner — çünkü yatış yanal bir kuvvet
+    üretir ve o kuvvet seni çembere sokar. Yan rüzgârda ise durum tersine
+    çalışır: rüzgâr zaten yanal bir kuvvet uyguluyor, sen de onu dengelemek
+    için yatıyorsun. Sonuç: yatık ama DÜZ giden bir motosiklet.
+
+    Denge şartı basit:
+
+      rüzgârın yan kuvveti = ağırlığın × tan(yatış)
+
+    Yani yatış açın, rüzgârın ne kadar sert olduğunun doğrudan ölçüsüdür:
+
+       5°  → ağırlığının %9'u
+       8°  → %14
+      10°  → %18
+      15°  → %27
+      20°  → %36
+
+    Bir dahaki sefere rüzgârda giderken ne kadar yattığına bak; rüzgârı
+    tahmin etmene gerek yok, motosiklet sana söylüyor.
+
+    ASIL TEHLİKE: RÜZGÂRIN KESİLMESİ
+    Rüzgâr aniden kesilirse yatışını dengeleyen kuvvet kaybolur ve
+    motosiklet yatışın gösterdiği yöne kayar. Ders 16, 17 ve 20'deki aynı
+    formül:
+
+      a = g · tan(yatış)      → hızdan bağımsız
+
+      10° yatıştan:  1,73 m/s²  →  1 saniyede 0,86 m
+                                   1,5 saniyede 1,95 m
+
+    Şerit 4 metre. Yani 1,5 saniyelik bir rüzgâr kesintisi, sen hiçbir şey
+    yapmadan şeridin yarısını yer.
+
+    TIR'I GEÇERKEN ÜÇ BÖLGE
+    Bir TIR tam olarak bunu yapar — hem de üç kez üst üste:
+
+    1. BURUN DALGASI. TIR'ın önü havayı iter. Seni TIR'dan uzağa atar.
+    2. GÖLGE. TIR yan rüzgârı tamamen keser. Yatışın artık dengelenmiyor
+       ve seni TIR'A DOĞRU çeker. En sinsi bölge bu.
+    3. KUYRUK. TIR biter, rüzgâr bir anda geri döner. En sert vuruş burada,
+       çünkü hem rüzgâr geri gelir hem sen gölgede yatışını azaltmışsındır.
+
+    Videoda sürücünün düzeltme gecikmesi 0,45 saniye alındı. O gecikme
+    yüzünden kuyrukta 0,69 metre sapma birikiyor. Dikkat: bu rakam
+    rüzgârın gücüne değil, SENİN tepkine ait.
+
+    NE YAPILIR
+    • Hızı düşür. Her şey yavaşlarken daha az metreye mal olur.
+    • Gidonu SIKMA. Kasılmış kollar motosikletin kendini toparlamasını
+      engeller; gevşek tut, motosiklet altında oynasın.
+    • Dizlerini depoya sık. Gövdeni motosiklete bağlayan şey bacakların.
+    • TIR'ı görünce ne olacağını ÖNCEDEN bil: iter, çeker, iter. Beklediğin
+      bir şey seni savurmaz.
+    • Şerit içinde TIR'dan uzak tarafa kay (Ders 14) — payını önceden al.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "yan rüzgâr"
+    - "tır"
+    - "rüzgâr gölgesi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Yan rüzgârda motosiklet garip bir şey yapar: YATAR AMA DÖNMEZ.
+
+    Normalde yatış dönüş üretir. Rüzgârda ise rüzgâr zaten yanal kuvvet
+    uyguluyor, sen onu dengelemek için yatıyorsun. Yatık ama düz gidiyorsun.
+
+    Denge şartı:
+    rüzgârın yan kuvveti = ağırlığın × tan(yatış)
+
+    Yani YATIŞIN, RÜZGÂRIN ÖLÇÜSÜDÜR:
+    5° → %9 · 8° → %14 · 10° → %18 · 15° → %27 · 20° → %36
+
+    Rüzgârı tahmin etmene gerek yok — motosiklet sana söylüyor.
+
+    ASIL TEHLİKE RÜZGÂRIN KESİLMESİ 👇
+
+    Kesilirse yatışını dengeleyen kuvvet kaybolur ve yatışın gösterdiği yöne
+    kayarsın. Ders 16/17/20'deki aynı formül:
+
+    a = g · tan(yatış) → hızdan bağımsız
+    10°'den: 1,73 m/s² → 1 sn'de 0,86 m, 1,5 sn'de 1,95 m
+
+    Şerit 4 m. 1,5 saniyelik kesinti, sen hiçbir şey yapmadan şeridin yarısı.
+
+    TIR'I GEÇERKEN BU ÜÇ KEZ OLUR:
+    1️⃣ BURUN DALGASI — TIR'ın önü havayı iter, seni uzağa atar
+    2️⃣ GÖLGE — rüzgârı keser, yatışın seni TIR'A ÇEKER (en sinsisi)
+    3️⃣ KUYRUK — rüzgâr bir anda döner, en sert vuruş burada
+
+    (Videoda sürücü gecikmesi 0,45 sn alındı; kuyrukta 0,69 m sapma
+    birikiyor. Bu rakam rüzgârın gücüne değil, SENİN tepkine ait.)
+
+    NE YAPILIR: Hızı düşür · gidonu SIKMA, gevşek tut · dizlerini depoya
+    sık · TIR'ı görünce ne olacağını önceden bil. Beklediğin bir şey seni
+    savurmaz.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #yanrüzgar #tır #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""

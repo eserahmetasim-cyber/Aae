@@ -1570,6 +1570,254 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  YAN RUZGAR VE TIR
+# ---------------------------------------------------------------------------
+# Dis kaynak rakami YOK. Tek varsayim sahnedeki temel yatis (10 derece) ve
+# TIR'in uzunlugu (16,6 m - _tir() ile ayni). Gerisi tureviyor.
+#
+# YAN RUZGARDA MOTOSIKLET RUZGARA DOGRU YATARAK DUZ GIDER.
+# Yatisi ayakta tutan sey ruzgarin yan kuvvetidir; denge icin
+#     yan kuvvet = agirlik * tan(yatis)
+# yani YATIS, RUZGARIN OLCUSUDUR:
+#     5 deg -> %9   8 -> %14   10 -> %18   15 -> %27   20 -> %36
+#
+# RUZGAR KESILIRSE yatisi dengeleyen kuvvet kaybolur ve motosiklet yatisin
+# gosterdigi yone kayar. Ders 16/17/20'deki ayni formul:
+#     a = g * tan(yatis)        -> HIZDAN BAGIMSIZ
+#     10 derece -> 1,73 m/s^2 -> 1 sn 0,86 m, 1,5 sn 1,95 m
+# Serit 4 m. Yani bir TIR'in ruzgar golgesinde 1,5 saniye, sen hicbir sey
+# yapmadan seridin yarisini yer.
+#
+# TIR'I GECERKEN UC BOLGE:
+#   1. Burun dalgasi  - TIR'in onu havayi iter, seni TIR'dan UZAGA atar
+#   2. Golge          - TIR yan ruzgari keser, yatisin seni TIR'a CEKER
+#   3. Kuyruk         - TIR bitince ruzgar bir anda geri doner, seni iter
+# Sahnede bunlar "w" (etkin ruzgar carpani) ile modelleniyor.
+#
+# KURAL ISTISNASI: KURALLAR.md "yatan motosikletin yolu da bukulur" der.
+# Burasi tek istisna - yatis donus uretmiyor, yan kuvveti dengeliyor.
+# Motosiklet YATIK halde DUZ gidiyor ve bu dogru.
+RUZGAR_YATIS = math.radians(10.0)       # temel yan ruzgarda yatis
+RUZGAR_K = math.tan(RUZGAR_YATIS)       # yan kuvvet / agirlik
+RUZGAR_HIZ = 80.0 / 3.6
+RUZGAR_GECIKME = 0.45                   # surucunun yatisi duzeltme gecikmesi (sn)
+RUZGAR_TIR_SERIT = -FREN_SERIT          # TIR karsi seritte
+
+RUZGAR_NOKTA = {
+    "yatar":   ("RÜZGÂRDA YATARAK DÜZ GİDERSİN", "yatış dönüş değil, denge"),
+    "olcu":    ("YATIŞ RÜZGÂRIN ÖLÇÜSÜDÜR", "10° = ağırlığının %18'i"),
+    "kesilme": ("RÜZGÂR KESİLİRSE", "1 saniyede 0,86 m yana"),
+    "uc":      ("TIR'I GEÇERKEN ÜÇ BÖLGE", "iter · çeker · iter"),
+    "geri":    ("KUYRUKTA RÜZGÂR GERİ DÖNER", "en sert vuruş burada"),
+    "hazir":   ("GEVŞEK TUT, DİZLERİ SIK", "hızı düşür, gidonu kasma"),
+}
+RUZGAR_SIRA = list(RUZGAR_NOKTA)
+RUZGAR_FAZ = [(4.0, "yatar")]
+
+
+def ruzgar_faz_ayarla(metin):
+    """sahne_fazlari: "4:yatar, 11:olcu, ..." """
+    global RUZGAR_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in RUZGAR_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen ruzgar noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    RUZGAR_FAZ = sorted(f)
+
+
+def ruzgar_evre(t):
+    ad, bas = RUZGAR_FAZ[0][1], RUZGAR_FAZ[0][0]
+    for z, a in RUZGAR_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _ruzgar_carpan(tir_z):
+    """Etkin yan ruzgar carpani. TIR'in neresindeysen ruzgar oyle."""
+    if tir_z > 15.0:
+        return 1.0, "acik"
+    if tir_z > 6.0:
+        return 1.28, "burun"              # burun dalgasi: TIR'dan uzaga iter
+    if tir_z > -19.0:
+        return 0.12, "golge"              # TIR ruzgari kesti
+    if tir_z > -34.0:
+        return 1.30, "kuyruk"             # ruzgar bir anda geri doner
+    return 1.0, "acik"
+
+
+def _ruzgar_an(anahtar, gecen):
+    """(tir_z, yatis, kayma, bolge). Adim hangi ani anlatiyorsa oraya kilitli."""
+    # Her adimda TIR ayni yolculugu yapiyor; adim sadece NEREDE duracagini
+    # secip oraya kilitliyor ki mesaj her seferinde ekranda olsun.
+    # 3,0'da golgenin daha basiydi ve sapma 0,08 m gorunuyordu - mesaji
+    # tasimiyordu. 3,4 golgenin ortasi (sapma 0,28), 3,95 kuyruk.
+    durak = {"yatar": None, "olcu": None, "kesilme": 4.5,
+             "uc": None, "geri": 5.6, "hazir": None}.get(anahtar)
+    sure = min(gecen, 4.2) if durak is None else min(gecen, durak)
+    dt, t = 0.02, 0.0
+    yat, h, y = RUZGAR_YATIS, 0.0, 0.0
+    tir_z, bolge = 70.0, "acik"
+    while t < sure:
+        # 26 m/sn'de TIR yanimizdayken golge daha yeni basliyor ve sapma
+        # birikmeden gecip gidiyordu; 17 m/sn ile golge ~1,5 sn suruyor.
+        tir_z = 70.0 - 17.0 * t
+        w, bolge = _ruzgar_carpan(tir_z)
+        hedef = math.atan(RUZGAR_K * w)
+        yat += (hedef - yat) * min(1.0, dt / RUZGAR_GECIKME)
+        a = 9.81 * (math.tan(yat) - RUZGAR_K * w)
+        h += a * dt
+        y += h * dt
+        t += dt
+    if anahtar in ("yatar", "olcu", "hazir"):      # TIR yok, sakin ruzgar
+        return 95.0, RUZGAR_YATIS, 0.0, "acik"
+    return tir_z, yat, y, bolge
+
+
+def _ruzgar_cizgi(d, kamera, yon, siddet=1.0):
+    """Yandan gelen ruzgar: kesikli cizgiler + etiketli ok.
+
+    Ilk surumde cizgiler panelin arkasinda kaliyor, sonra da asfaltin
+    uzerinde soluk kaliyordu. Artik kalin, parlak ve ETIKETLI - rüzgarin
+    nereden geldigi tahmine birakilmiyor."""
+    c = (236, 246, 255)
+    for i in range(5):
+        yy = 900 + i * 86
+        boy = 120 + 26 * i
+        x0 = 24 if yon > 0 else G - 24
+        for k in range(3):
+            a = x0 + yon * k * (boy + 34)
+            d.line([(a, yy), (a + yon * boy, yy + 11)], fill=(*c, 215), width=8)
+    oy = 900 + 2 * 86
+    ux = 24 + yon * 430
+    d.polygon([(ux, oy - 22), (ux, oy + 36), (ux + yon * 46, oy + 7)],
+              fill=(*c, 235))
+    s2.yazi(d, (28 if yon > 0 else G - 210, oy - 74), "RÜZGÂR", 30, c)
+
+
+def kare_ruzgar3b(t):
+    """Yan ruzgarda YATIK ama DUZ giden motosiklet, ve TIR'in uc bolgesi."""
+    anahtar, faz_bas = ruzgar_evre(t)
+    etiket, aciklama = RUZGAR_NOKTA[anahtar]
+    tir_z, yatis, kayma, bolge = _ruzgar_an(anahtar, max(0.0, t - faz_bas))
+    aci = math.degrees(yatis)
+    kuvvet = math.tan(abs(yatis))
+    kesilme = 0.5 * 9.81 * math.tan(abs(yatis))        # 1 sn'de kac metre
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    # Ruzgar SOLDAN geliyor, motosikleti saga itiyor; motosiklet SOLA yatiyor
+    # (yatis > 0 = sola). Ruzgar kesilince o yatis onu SOLA, yani TIR'a ceker.
+    x0 = FREN_SERIT - kayma
+
+    global _ruz_s, _ruz_tek
+    _ruz_s = (globals().get("_ruz_s", 0.0) + RUZGAR_HIZ / FPS) % 8.0
+    _ruz_tek = (globals().get("_ruz_tek", 0.0)
+                + RUZGAR_HIZ / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -20.0
+    while z < 220:
+        z2 = z + (6.0 if z < 90 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -20.0
+        while zz < 120:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-3, 18):
+        zc = i * 8.0 - _ruz_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # Baslangic cizgisi: kaymanin ne kadar oldugu ancak referansla okunur
+    zz = 2.0
+    while zz < 46.0:
+        s.yuzey([[FREN_SERIT - 0.12, 0.03, zz], [FREN_SERIT + 0.12, 0.03, zz],
+                 [FREN_SERIT + 0.12, 0.03, zz + 1.6],
+                 [FREN_SERIT - 0.12, 0.03, zz + 1.6]], (96, 170, 110), katman=2)
+        zz += 3.4
+
+    if -34.0 < tir_z < 110.0:
+        _tir(s, RUZGAR_TIR_SERIT, tir_z)
+
+    model, _, _ = motosiklet(0.0, _ruz_tek, 0.0)
+    s.ekle(model, R=donus([0, 0, 1], yatis), t=[x0, 0.0, 0.0])
+
+    kamera = Kamera([FREN_SERIT + 0.9, 5.6, -15.0],
+                    [FREN_SERIT - 0.9, 1.0, 14.0], G, Y, fov=47)
+    s.ciz(d, kamera, gok)
+
+    # Ruzgar cizgileri: golgede neredeyse yok
+    if bolge != "golge":
+        _ruzgar_cizgi(d, kamera, +1)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    bolge_renk = {"acik": TURUNCU, "burun": TURUNCU,
+                  "golge": KIRMIZI, "kuyruk": KIRMIZI}[bolge]
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=bolge_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, bolge_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    d.rounded_rectangle([G - 336, 470, G - 72, 662], 18, fill=(0, 0, 0, 178),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 204, 478), "YATIŞ", 26, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 204, 506), f"{aci:.0f}°", 60, KREM, ortala=True)
+    s2.yazi(d, (G - 204, 578), "yan kuvvet", 24, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 204, 604), f"ağırlığın %{kuvvet * 100:.0f}'i", 30,
+            bolge_renk, ortala=True)
+
+    px, py, pw = 62, 470, 468
+    d.rounded_rectangle([px, py, px + pw, py + 318], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 12), "TIR'IN NERESİNDESİN", 26, (150, 155, 162))
+    adlar = (("acik", "AÇIK YOL", "tam rüzgâr"),
+             ("burun", "BURUN DALGASI", "TIR'dan uzağa iter"),
+             ("golge", "RÜZGÂR GÖLGESİ", "yatışın TIR'a çeker"),
+             ("kuyruk", "KUYRUK", "rüzgâr bir anda döner"))
+    for i, (anh, ad, aciklama2) in enumerate(adlar):
+        acik = anh == bolge
+        yy = py + 50 + i * 50
+        c = KIRMIZI if anh in ("golge", "kuyruk") else TURUNCU
+        d.rounded_rectangle([px + 22, yy + 4, px + 34, yy + 34], 5,
+                            fill=c if acik else (58, 64, 72))
+        s2.yazi(d, (px + 50, yy), ad, 28, KREM if acik else (112, 120, 130))
+        if acik:
+            # sabit x'te "RÜZGÂR GÖLGESİ" ile ust uste biniyordu
+            ax = px + 50 + d.textlength(ad, font=s2.font(28)) + 20
+            s2.yazi(d, (ax, yy + 4), aciklama2, 23, (176, 182, 190))
+
+    s2.yazi(d, (px + 22, py + 258), "rüzgâr şimdi kesilse 1 sn'de", 23,
+            (140, 148, 158))
+    s2.yazi(d, (px + 22, py + 282), f"{kesilme:.2f} m".replace(".", ","), 34,
+            KIRMIZI if kesilme > 0.5 else TURUNCU)
+    sap = f"{kayma:+.2f} m".replace(".", ",")
+    g2 = d.textlength(sap, font=s2.font(34))
+    s2.yazi(d, (px + pw - 24 - g2, py + 282), sap, 34,
+            KIRMIZI if abs(kayma) > 0.35 else (176, 182, 190))
+    s2.yazi(d, (px + pw - 24 - g2 - 120, py + 290), "sapma", 23, (140, 148, 158))
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  EGIM: YOKUS ASAGI, YOKUS YUKARI
 # ---------------------------------------------------------------------------
 # Dis kaynak rakami YOK. Varsayimlar ekranda ve ders 08/18/19 ile ayni:
@@ -4056,7 +4304,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin", "hizli", "durma", "bakis", "egim"),
+                             "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -4094,6 +4342,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "ruzgar":
+        ruzgar_faz_ayarla(args.fazlar)
+        cizer = kare_ruzgar3b
     elif args.sahne == "egim":
         egim_faz_ayarla(args.fazlar)
         cizer = kare_egim3b
