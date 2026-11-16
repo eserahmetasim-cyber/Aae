@@ -1570,6 +1570,212 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  DURMA MESAFESI: HIZ IKIYE KATLANINCA
+# ---------------------------------------------------------------------------
+# Varsayimlar EKRANDA yazili ve ders 08 ile ayni: 1 sn tepki suresi,
+# 7 m/s^2 fren ivmesi (kuru asfalt, yetkin surucu).
+#
+#   d = v*t_tepki + v^2/(2a)
+#   Tepki parcasi hizla ORANTILI, fren parcasi hizin KARESIYLE buyur.
+#     50 km/h -> 13,89 + 13,78 = 27,67 m
+#     70 km/h -> 19,44 + 27,01 = 46,45 m
+#     90 km/h -> 25,00 + 44,64 = 69,64 m
+#
+# DERSIN VURUCU RAKAMI:
+#   50 ile giden tam 27,67 m'de duruyor. Ayni noktada 70 ile giden:
+#     tepkide 19,44 m harcamis, frende 8,22 m kalmis
+#     v = sqrt(19,44^2 - 2*7*8,22) = 16,22 m/s = 58,4 km/h
+#   Yani 50'nin TAM DURDUGU yerde 70 hala 58 km/h yapiyor. Hiz %40 artti,
+#   ama o noktadaki hiz sifirdan 58'e cikti.
+#
+# Sahne engeli tam 27,67 m'ye koyuyor: 50 ile giden burnu degdirmeden
+# duruyor, 70 ile giden 58 km/h ile variyor.
+DURMA_TEPKI = 1.0
+DURMA_IVME = 7.0
+DURMA_HEDEF = 27.67                     # 50 km/h'nin durma mesafesi (m)
+DURMA_DONGU = 7.0
+
+DURMA_NOKTA = {
+    "iki":    ("İKİ PARÇA", "tepki + fren", 50.0),
+    "kare":   ("FREN HIZIN KARESİYLE", "tepki ise orantılı", 50.0),
+    "elli":   ("50 km/h → 27,7 m", "13,9 tepki + 13,8 fren", 50.0),
+    "yetmis": ("70 km/h → 46,5 m", "19,4 tepki + 27,0 fren", 70.0),
+    "carpma": ("50'NİN DURDUĞU YERDE", "70 hâlâ 58 km/h", 70.0),
+    "secim":  ("HIZI GÖRÜŞÜNE GÖRE SEÇ", "göremediğin yere hız yok", 50.0),
+}
+DURMA_SIRA = list(DURMA_NOKTA)
+DURMA_FAZ = [(4.0, "iki")]
+
+
+def durma_faz_ayarla(metin):
+    """sahne_fazlari: "4:iki, 11:kare, ..." """
+    global DURMA_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in DURMA_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen durma noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    DURMA_FAZ = sorted(f)
+
+
+def durma_evre(t):
+    ad, bas = DURMA_FAZ[0][1], DURMA_FAZ[0][0]
+    for z, a in DURMA_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def durma_mesafe(kmh):
+    """(tepki yolu, fren yolu, toplam) - varsayimlar ekranda yazili."""
+    v = kmh / 3.6
+    return v * DURMA_TEPKI, v * v / (2 * DURMA_IVME), \
+        v * DURMA_TEPKI + v * v / (2 * DURMA_IVME)
+
+
+def _durma_an(kmh, u):
+    """(engele kalan mesafe, hiz m/s, evre). Engel tam DURMA_HEDEF'te."""
+    v0 = kmh / 3.6
+    if u < 1.2:                                   # yaklasma
+        return DURMA_HEDEF + v0 * (1.2 - u), v0, "seyir"
+    if u < 1.2 + DURMA_TEPKI:                     # tepki: hiz dusmuyor
+        return DURMA_HEDEF - v0 * (u - 1.2), v0, "tepki"
+    s = u - 1.2 - DURMA_TEPKI                     # fren
+    dur_s = v0 / DURMA_IVME
+    s = min(s, dur_s)
+    v = v0 - DURMA_IVME * s
+    kalan = DURMA_HEDEF - v0 * DURMA_TEPKI - (v0 * s - DURMA_IVME * s * s / 2)
+    if kalan <= 0.0:                              # engele vardi
+        carp = math.sqrt(max(0.0, v0 * v0 - 2 * DURMA_IVME
+                             * (DURMA_HEDEF - v0 * DURMA_TEPKI)))
+        return 0.0, carp, "carpma"
+    return kalan, v, "fren"
+
+
+def kare_durma3b(t):
+    """Engel 27,7 m'de: 50 ile giden duruyor, 70 ile giden 58 km/h ile variyor."""
+    anahtar, faz_bas = durma_evre(t)
+    etiket, aciklama, kmh = DURMA_NOKTA[anahtar]
+    u = (t - faz_bas) % DURMA_DONGU
+    kalan, v, evre = _durma_an(kmh, u)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _dur_s, _dur_tek
+    _dur_s = (globals().get("_dur_s", 0.0) + v / FPS) % 8.0
+    _dur_tek = (globals().get("_dur_tek", 0.0)
+                + v / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -20.0
+    while z < 200:
+        z2 = z + (6.0 if z < 90 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -20.0
+        while zz < 110:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-3, 16):
+        zc = i * 8.0 - _dur_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    # 50'nin durma noktasi yola isaretli: karsilastirmanin capasi bu
+    isaret_z = kalan + 2.6
+    if 0.0 < isaret_z < 90.0:
+        for yan in (-1, 1):
+            s.yuzey([[yan * 1.6, 0.03, isaret_z], [yan * 3.9, 0.03, isaret_z],
+                     [yan * 3.9, 0.03, isaret_z + 0.45],
+                     [yan * 1.6, 0.03, isaret_z + 0.45]], (96, 170, 110),
+                    katman=2)
+
+    arac_z = kalan + 4.4                       # engelin arkasi burnumuzdan
+    if arac_z < 95.0:
+        a = Sahne()
+        _araba(a, 0.0, 0.0, (150, 56, 48))
+        s.ekle(a, t=[FREN_SERIT, 0.0, arac_z])
+
+    fren_g = 0.0 if evre in ("seyir", "tepki") else 1.0
+    model, _, _ = motosiklet(fren_g, _dur_tek, 0.0)
+    s.ekle(model, t=[FREN_SERIT, 0.0, 0.0])
+
+    kamera = Kamera([FREN_SERIT + 0.6, 5.6, -15.5], [FREN_SERIT - 0.5, 0.8, 13.0],
+                    G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    carpti = evre == "carpma"
+    ust_renk = KIRMIZI if (carpti or anahtar in ("yetmis", "carpma")) else TURUNCU
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    h_renk = KIRMIZI if carpti else (YESIL if v < 0.3 else KREM)
+    d.rounded_rectangle([G - 330, 470, G - 72, 648], 18, fill=(0, 0, 0, 178),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 201, 478), "HIZ", 26, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 201, 506), f"{v * 3.6:.0f}", 62, h_renk, ortala=True)
+    s2.yazi(d, (G - 201, 578), "engele kalan", 24, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 201, 604), f"{kalan:.1f} m".replace(".", ","), 38,
+            h_renk, ortala=True)
+
+    px, py, pw = 62, 470, 470
+    d.rounded_rectangle([px, py, px + pw, py + 326], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 12), "DURMA MESAFESİ", 26, (150, 155, 162))
+    s2.yazi(d, (px + 22, py + 42), "1 sn tepki · 7 m/s² fren varsayıldı", 22,
+            (124, 132, 142))
+
+    bx, bw, olcek = px + 22, pw - 44, 50.0
+    for i, hh in enumerate((50.0, 70.0)):
+        tep, fre, top = durma_mesafe(hh)
+        yy = py + 86 + i * 78
+        aktif = abs(hh - kmh) < 1.0
+        s2.yazi(d, (bx, yy), f"{hh:.0f} km/h", 27,
+                KREM if aktif else (138, 146, 156))
+        s2.yazi(d, (bx + 150, yy), f"{top:.1f} m".replace(".", ","), 27,
+                TURUNCU if aktif else (138, 146, 156))
+        yb = yy + 34
+        d.rounded_rectangle([bx, yb, bx + bw * tep / olcek, yb + 26], 5,
+                            fill=(92, 110, 132) if not aktif else (120, 146, 176))
+        d.rounded_rectangle([bx + bw * tep / olcek, yb,
+                             bx + bw * top / olcek, yb + 26], 5,
+                            fill=(140, 60, 52) if not aktif else TURUNCU)
+    # 50'nin durdugu nokta: iki cubugun uzerinden gecen dikey cizgi
+    cx = bx + bw * DURMA_HEDEF / olcek
+    d.line([(cx, py + 110), (cx, py + 230)], fill=(120, 220, 150, 245), width=4)
+    s2.yazi(d, (bx, py + 250), "tepki", 23, (150, 170, 196))
+    s2.yazi(d, (bx + 90, py + 250), "fren", 23, (214, 132, 120))
+    if carpti:
+        uyari = f"{v * 3.6:.0f} km/h ile ÇARPAR"
+        ug = d.textlength(uyari, font=s2.font(27))
+        d.rounded_rectangle([bx, py + 282, bx + ug + 26, py + 320], 8,
+                            fill=(120, 26, 22, 235), outline=KIRMIZI, width=3)
+        s2.yazi(d, (bx + 13, py + 287), uyari, 27, (255, 214, 210))
+    elif v < 0.3:
+        s2.yazi(d, (bx, py + 286), "DURDU", 30, YESIL)
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  VIRAJA FAZLA HIZLI GIRDIN
 # ---------------------------------------------------------------------------
 # Butun rakamlar turevdir, varsayimlar ekranda yazili (60 km/h, viraj 30
@@ -3410,7 +3616,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin", "hizli"),
+                             "sollama", "zemin", "hizli", "durma"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -3448,6 +3654,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "durma":
+        durma_faz_ayarla(args.fazlar)
+        cizer = kare_durma3b
     elif args.sahne == "hizli":
         hizli_faz_ayarla(args.fazlar)
         cizer = kare_hizli3b
