@@ -1570,6 +1570,234 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  EGIM: YOKUS ASAGI, YOKUS YUKARI
+# ---------------------------------------------------------------------------
+# Dis kaynak rakami YOK. Varsayimlar ekranda ve ders 08/18/19 ile ayni:
+# 1 sn tepki, duz yolda 7 m/s^2 fren, 250 kg motosiklet+surucu.
+#
+# Egim yercekiminin bir bilesenini yola katar: a_egim = g*sin(theta).
+#   Fren ivmesi INISTE  a - g*sin(theta)   (azalir)
+#              CIKISTA  a + g*sin(theta)   (artar)
+#
+# 70 km/h'de (duzde durma 46,5 m):
+#   %6  egim: g*sin=0,59 -> inis 48,9 m (+2,5)  cikis 44,4 m (-2,1)
+#   %10 egim: g*sin=0,98 -> inis 50,8 m (+4,4)  cikis 43,1 m (-3,3)
+#   %15 egim: g*sin=1,46 -> inis 53,5 m (+7,1)  cikis 41,8 m (-4,6)
+#   %20 egim: g*sin=1,92 -> inis 56,7 m (+10,2) cikis 40,6 m (-5,8)
+# ASIMETRI: ayni egim inviste kaybettirdigi kadarini cikista kazandirmaz,
+# cunku 1/(a-x) buyurken 1/(a+x) o kadar kuculmuyor. Yani egim her zaman
+# aleyhine calisir.
+#
+# RAMPADA DURAN MOTOSIKLET: F = m*g*sin(theta)
+#   250 kg -> %10: 244 N = 25 kgf | %15: 364 N = 37 kgf | %20: 481 N = 49 kgf
+#
+# SAHNE: yol gercekten egimli ciziliyor (zemin ve asfalt z ile alcalip
+# yukseliyor), motosiklet egim acisi kadar one/arkaya yatiyor, kamera da
+# egimi takip ediyor. Yola iki isaret dusuyor: kirmizi bant O EGIMDEKI
+# durma mesafesi, beyaz cizgi DUZDE DURACAGIN yer. Aradaki fark okunuyor.
+EGIM_TEPKI = 1.0
+EGIM_IVME = 7.0
+EGIM_KUTLE = 250.0
+EGIM_HIZ = 70.0
+EGIM_ORAN = 0.15                        # %15 - dag yolunda siradan
+
+EGIM_NOKTA = {
+    "nedir":  ("EĞİM YERÇEKİMİNİ KATAR", "a = g · sin(eğim)", -1),
+    "ivme":   ("%15 İNİŞTE 1,46 m/s²", "frenin beşte biri gider", -1),
+    "mesafe": ("46,5 → 53,5 METRE", "aynı hız, aynı fren, +7,1 m", -1),
+    "vites":  ("UZUN İNİŞTE VİTES KÜÇÜLT", "fren dinlensin, ısınmasın", -1),
+    "cikis":  ("YOKUŞ YUKARI KISALIR", "ama sadece 4,6 m", +1),
+    "rampa":  ("RAMPADA 37 KİLO", "250 kg'ın %15'i seni geri iter", +1),
+}
+EGIM_SIRA = list(EGIM_NOKTA)
+EGIM_FAZ = [(4.0, "nedir")]
+
+
+def egim_faz_ayarla(metin):
+    """sahne_fazlari: "4:nedir, 11:ivme, ..." """
+    global EGIM_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in EGIM_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen egim noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    EGIM_FAZ = sorted(f)
+
+
+def egim_evre(t):
+    ad, bas = EGIM_FAZ[0][1], EGIM_FAZ[0][0]
+    for z, a in EGIM_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def egim_durma(kmh, isaret, oran=EGIM_ORAN):
+    """isaret -1 inis (fren zayiflar), +1 cikis (guclenir), 0 duz."""
+    v = kmh / 3.6
+    ivme = EGIM_IVME + isaret * 9.81 * math.sin(math.atan(oran))
+    return v * EGIM_TEPKI + v * v / (2 * ivme), ivme
+
+
+def kare_egim3b(t):
+    """Gercekten egimli yol: inis durma mesafesini uzatir, cikis kisaltir."""
+    anahtar, _ = egim_evre(t)
+    etiket, aciklama, isaret = EGIM_NOKTA[anahtar]
+    th = math.atan(EGIM_ORAN)
+    egim_a = 9.81 * math.sin(th)
+    durma, ivme = egim_durma(EGIM_HIZ, isaret)
+    duz, _ = egim_durma(EGIM_HIZ, 0)
+    fark = durma - duz
+    v = EGIM_HIZ / 3.6
+    # isaret -1 inis: yol z arttikca ALCALIR, +1 cikis: yukselir.
+    # Ilk surumde isaret ters konmustu, inis yokus yukari ciziliyordu.
+    egy = isaret * math.tan(th)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    def yy(z):
+        """Yol yuzeyinin z'deki yuksekligi."""
+        return egy * z
+
+    def nokta(mes):
+        """Yol boyunca mes metre ilerideki (z, y)."""
+        return mes * math.cos(th), yy(mes * math.cos(th))
+
+    global _eg_s, _eg_tek
+    _eg_s = (globals().get("_eg_s", 0.0) + v / FPS) % 8.0
+    _eg_tek = (globals().get("_eg_tek", 0.0)
+               + v / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    # Zemin 130 m'de biter: inişte otesinde vadi, cikista tepe ustu gokyuzu.
+    z = -24.0
+    while z < 130:
+        z2 = z + 4.0
+        a0, b0 = yy(z), yy(z2)
+        s.yuzey([[-95, a0, z], [95, a0, z], [95, b0, z2], [-95, b0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, a0 + 0.01, z], [4.2, a0 + 0.01, z],
+                 [4.2, b0 + 0.01, z2], [-4.2, b0 + 0.01, z2]], asfalt,
+                katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[yan * 4.0, a0 + 0.02, z], [yan * 3.86, a0 + 0.02, z],
+                     [yan * 3.86, b0 + 0.02, z2], [yan * 4.0, b0 + 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    # UFUKTAKI TEPELER: dunya yuksekligi SABIT, egimle birlikte donmezler.
+    # Sahnede duz bir referans olmadan egim hic okunmuyordu - cimen de yolla
+    # birlikte egildigi icin her sey duz gorunuyordu.
+    for hx, hz, hg, hd, hy in ((-62, 186, 118, 46, 15.0), (58, 198, 132, 50, 17.5),
+                               (-6, 212, 150, 44, 11.0), (124, 176, 96, 40, 12.5)):
+        _tepe(s, hx, hz, hg, hd, hy, (86, 104, 92))
+
+    # YOL KENARI DIREKLERI: dunyaya DIK duruyorlar, yolla birlikte egilmiyorlar.
+    # Egimi en net gosteren sey bu - direkle yol arasindaki aci okunuyor.
+    # Tepeler tek basina zayif kaliyordu.
+    for i in range(0, 11):
+        zc = i * 11.0 - (_eg_s % 11.0)
+        if zc < -2.0:
+            continue
+        s.kutu([4.85, yy(zc) + 0.60, zc], [0.11, 1.20, 0.11], (238, 238, 232))
+        s.kutu([4.85, yy(zc) + 1.02, zc], [0.12, 0.17, 0.12], (196, 56, 46))
+
+    for i in range(-3, 20):
+        zc = i * 8.0 - _eg_s
+        a0, b0 = yy(zc), yy(zc + 3.6)
+        s.yuzey([[-0.11, a0 + 0.02, zc], [0.11, a0 + 0.02, zc],
+                 [0.11, b0 + 0.02, zc + 3.6], [-0.11, b0 + 0.02, zc + 3.6]],
+                (210, 210, 205), katman=2)
+
+    # O egimdeki durma mesafesi: kirmizi kesikli bant
+    m = 1.5
+    while m < durma:
+        m2 = min(m + 1.3, durma)
+        z1, y1 = nokta(m)
+        z2_, y2 = nokta(m2)
+        s.yuzey([[FREN_SERIT - 0.95, y1 + 0.03, z1],
+                 [FREN_SERIT + 0.95, y1 + 0.03, z1],
+                 [FREN_SERIT + 0.95, y2 + 0.03, z2_],
+                 [FREN_SERIT - 0.95, y2 + 0.03, z2_]], (178, 54, 46), katman=2)
+        m += 2.6
+    for mes, renk, en in ((durma, (226, 86, 74), 1.9), (duz, (238, 238, 232), 1.5)):
+        z1, y1 = nokta(mes)
+        z2_, y2 = nokta(mes + 0.45)
+        s.yuzey([[FREN_SERIT - en, y1 + 0.032, z1], [FREN_SERIT + en, y1 + 0.032, z1],
+                 [FREN_SERIT + en, y2 + 0.032, z2_], [FREN_SERIT - en, y2 + 0.032, z2_]],
+                renk, katman=2)
+
+    model, _, _ = motosiklet(0.0, _eg_tek, 0.0)
+    s.ekle(model, R=donus([1, 0, 0], -isaret * th), t=[FREN_SERIT, 0.0, 0.0])
+
+    # Kamera YANDAN. Arkadan bakinca kamera da egimle birlikte donuyor ve
+    # yol dumduz okunuyordu - egim ancak disaridan bir referansla gorunur.
+    # Yandan bakista yol kadraji capraz kesiyor, inis/cikis aninda belli.
+    # Konum sayisal arandi: motosiklet kadrajda (~920, 1120) kalirken yolun
+    # 55 m ilerisi de goruluyor. Ilk denemede motosiklet kadrajin 150 px
+    # saginda kaliyordu.
+    kamera = Kamera([FREN_SERIT - 6.0, yy(-14.0) + 3.4, -14.0],
+                    [FREN_SERIT + 0.8, yy(16.0) + 0.9, 16.0], G, Y, fov=48)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    inis = isaret < 0
+    ust_renk = KIRMIZI if inis else YESIL
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    d.rounded_rectangle([G - 330, 470, G - 72, 654], 18, fill=(0, 0, 0, 178),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (G - 201, 478), "İNİŞ" if inis else "ÇIKIŞ", 28, ust_renk,
+            ortala=True)
+    s2.yazi(d, (G - 201, 512), f"%{EGIM_ORAN * 100:.0f}", 62, KREM, ortala=True)
+    s2.yazi(d, (G - 201, 584), "fren ivmesi", 24, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 201, 610), f"{ivme:.2f}".replace(".", ",") + " m/s²", 32,
+            ust_renk, ortala=True)
+
+    px, py, pw = 62, 470, 470
+    d.rounded_rectangle([px, py, px + pw, py + 330], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 12), f"70 km/h · DURMA MESAFESİ", 26,
+            (150, 155, 162))
+    s2.yazi(d, (px + 22, py + 42), "1 sn tepki · düzde 7 m/s² fren", 22,
+            (124, 132, 142))
+    bx, bw = px + 22, pw - 44
+    olcek = max(durma, duz) * 1.1
+    for i, (ad, deger, c) in enumerate(
+            (("DÜZ YOL", duz, (218, 218, 212)),
+             ("%15 " + ("İNİŞ" if inis else "ÇIKIŞ"), durma,
+              (200, 70, 60) if inis else (96, 190, 120)))):
+        y0 = py + 84 + i * 70
+        s2.yazi(d, (bx, y0), ad, 26, (190, 196, 204))
+        g = d.textlength(f"{deger:.1f} m".replace(".", ","), font=s2.font(26))
+        s2.yazi(d, (bx + bw - g, y0), f"{deger:.1f} m".replace(".", ","), 26, c)
+        d.rounded_rectangle([bx, y0 + 32, bx + bw * deger / olcek, y0 + 54], 5,
+                            fill=c)
+    # Etiket once sabit x'teydi ve "+7,1 m" ile bitisik yaziliyordu;
+    # genislik olculup arkasina konuyor.
+    fark_m = f"{fark:+.1f} m".replace(".", ",")
+    s2.yazi(d, (bx, py + 232), fark_m, 42, KIRMIZI if inis else YESIL)
+    s2.yazi(d, (bx + d.textlength(fark_m, font=s2.font(42)) + 20, py + 244),
+            "daha geç durursun" if inis else "daha erken durursun", 26,
+            (176, 182, 190))
+    s2.yazi(d, (bx, py + 288),
+            f"rampada tutma kuvveti: {EGIM_KUTLE * egim_a / 9.81:.0f} kgf "
+            f"({EGIM_KUTLE:.0f} kg)", 24, (150, 158, 168))
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  NE KADAR ILERI BAKIYORSUN
 # ---------------------------------------------------------------------------
 # Dis kaynak rakami YOK. Varsayimlar ekranda ve ders 08/18 ile ayni:
@@ -3828,7 +4056,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin", "hizli", "durma", "bakis"),
+                             "sollama", "zemin", "hizli", "durma", "bakis", "egim"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -3866,6 +4094,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "egim":
+        egim_faz_ayarla(args.fazlar)
+        cizer = kare_egim3b
     elif args.sahne == "bakis":
         bakis_faz_ayarla(args.fazlar)
         cizer = kare_bakis3b

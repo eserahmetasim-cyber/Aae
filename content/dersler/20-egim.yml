@@ -1,0 +1,170 @@
+# Ders 20 · Eğim: yokuş aşağı, yokuş yukarı
+# Dış kaynak rakamı KULLANILMIYOR. Varsayımlar ekranda ve Ders 08/18/19 ile
+# aynı: 1 sn tepki, düz yolda 7 m/s² fren, 250 kg motosiklet+sürücü.
+#
+# Eğim yerçekiminin bir bileşenini yola katar:  a_eğim = g · sin(θ)
+#   Fren ivmesi  İNİŞTE   a − g·sin(θ)   (azalır)
+#                ÇIKIŞTA  a + g·sin(θ)   (artar)
+#
+# 70 km/h'de (düzde durma 46,5 m):
+#   %6  → g·sin=0,59 → iniş 48,9 (+2,5)   çıkış 44,4 (−2,1)
+#   %10 → g·sin=0,98 → iniş 50,8 (+4,4)   çıkış 43,1 (−3,3)
+#   %15 → g·sin=1,46 → iniş 53,5 (+7,1)   çıkış 41,8 (−4,6)
+#   %20 → g·sin=1,92 → iniş 56,7 (+10,2)  çıkış 40,6 (−5,8)
+#
+# ASİMETRİ: aynı eğim, inişte kaybettirdiği kadarını çıkışta kazandırmaz —
+# çünkü 1/(a−x) büyürken 1/(a+x) o kadar küçülmüyor. Eğim her zaman net
+# olarak aleyhine çalışır.
+#
+# RAMPADA DURAN MOTOSİKLET: F = m·g·sin(θ)
+#   250 kg → %10: 25 kgf | %15: 37 kgf | %20: 49 kgf
+#
+# SAHNE NOTU: yol gerçekten eğimli çiziliyor, ama eğim yalnızca dünyaya
+# dik bir referans varken okunuyor. Çimen de yolla birlikte eğildiği için
+# ilk sürümlerde her şey düz görünüyordu. Çözüm: ufukta SABİT yükseklikte
+# tepeler + yol kenarında dünyaya DİK direkler. Kamera da arkadan değil
+# yandan bakıyor; arkadan bakınca kamera eğimle birlikte dönüp eğimi
+# tamamen gizliyordu.
+
+ders_no: 20
+slug: egim
+baslik: "Eğim: Yokuş Aşağı, Yokuş Yukarı"
+alt_baslik: "Aynı fren, aynı hız, 7 metre daha geç"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: egim
+boyut: 3
+kamera: yan
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:nedir, 11:ivme, 19:mesafe, 27:vites, 35:cikis, 43:rampa"
+
+kapanis: "Eğim iki yönde de var, ama sana bir yönde yarıyor"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Eğim yerçekimini yola katar: g · sin(eğim)" }
+  - { t: 11, sure: 7, metin: "2 · %15 inişte 1,46 m/s² — frenin beşte biri" }
+  - { t: 19, sure: 7, metin: "3 · 70'te durma 46,5 → 53,5 m (+7,1 m)" }
+  - { t: 27, sure: 7, metin: "4 · Uzun inişte vites küçült, fren dinlensin" }
+  - { t: 35, sure: 7, metin: "5 · Yokuş yukarı kısalır — ama sadece 4,6 m" }
+  - { t: 43, sure: 7, metin: "6 · Rampada 250 kg'ın 37 kilosu seni geri iter" }
+
+youtube:
+  baslik: "Eğim: Aynı Fren, Aynı Hız, 7 Metre Daha Geç | Yol Okulu #20"
+  aciklama: |
+    Türkiye'de yol demek eğim demek. Ve eğim, Ders 18'de hesapladığımız
+    durma mesafesini sessizce değiştiriyor — hem de simetrik olarak değil.
+
+    0:04 Eğim yerçekimini yola katar
+    0:11 %15 inişte 1,46 m/s²
+    0:19 46,5 → 53,5 metre
+    0:27 Uzun inişte vites küçült
+    0:35 Yokuş yukarı kısalır, ama az
+    0:43 Rampada 37 kilo
+
+    FİZİĞİ TEK SATIR
+    Eğimli yolda yerçekiminin bir bileşeni yol boyunca etki eder:
+
+      a_eğim = g · sin(eğim açısı)
+
+    İnişte bu bileşen seni ileri iter, yani frenin işini zorlaştırır.
+    Çıkışta geri çeker, frene yardım eder.
+
+      Fren ivmesi inişte:  a − g·sin(θ)
+      Fren ivmesi çıkışta: a + g·sin(θ)
+
+    %15 eğim (dağ yolunda sıradan bir değer) için g·sin(θ) = 1,46 m/s².
+    Düzde 7 m/s² frenin varsa, inişte 5,54'e düşüyor. Frenin yaklaşık
+    beşte biri eğime gidiyor.
+
+    RAKAMLAR (70 km/h, 1 sn tepki, düzde 7 m/s²)
+    Düz yolda durma mesafen 46,5 metre.
+
+      %6  iniş → 48,9 m   (+2,5)      çıkış → 44,4 m  (−2,1)
+      %10 iniş → 50,8 m   (+4,4)      çıkış → 43,1 m  (−3,3)
+      %15 iniş → 53,5 m   (+7,1)      çıkış → 41,8 m  (−4,6)
+      %20 iniş → 56,7 m   (+10,2)     çıkış → 40,6 m  (−5,8)
+
+    EĞİM ADİL DEĞİL
+    Dikkat et: %15 eğim inişte 7,1 metre ekliyor ama çıkışta sadece 4,6
+    metre indiriyor. Aynı eğim, farklı bedel. Sebebi basit: 1/(a−x)
+    büyürken 1/(a+x) aynı oranda küçülmüyor. Yani bir vadiye inip çıkarsan
+    net olarak zarardasın.
+
+    UZUN İNİŞTE VİTES
+    Mesafe uzamasının yanında ikinci bir sorun var: ısı. Uzun bir inişte
+    freni sürekli tutarsan diskler ve hidrolik ısınır, fren hissi
+    yumuşar ve derinleşir. Çözüm vitesi küçültmek: motor freni eğimin bir
+    kısmını karşılar, sen de freni aralıklı ve kısa kullanırsın.
+
+    YOKUŞ YUKARI
+    Durmak kolaylaşır ama iki yeni iş çıkar. Birincisi kalkış: rampada
+    duran 250 kg'lık bir motosikleti tutmak için %15 eğimde 37 kilogramlık
+    bir kuvvet gerekir. Bu kuvveti ya arka fren tutar ya da sen.
+    Kalkışta arka freni bas, debriyajı tutma noktasına getir, gaz
+    gelirken freni bırak — sıralama bu. Önce frenden elini çekersen geri
+    kayarsın.
+
+    İkincisi görüş: tepe çıkışında yolun arkası görünmez. Ders 19'daki
+    kural burada en sert işler — göremediğin mesafede duramayacağın hızla
+    gitme.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "eğim"
+    - "yokuş"
+    - "durma mesafesi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Türkiye'de yol demek eğim demek. Ve eğim durma mesafeni sessizce
+    değiştiriyor — hem de adil olmayan bir şekilde.
+
+    FİZİĞİ TEK SATIR:
+    a_eğim = g · sin(eğim)
+
+    İnişte fren ivmen a − g·sin(θ), çıkışta a + g·sin(θ).
+    %15 eğimde g·sin(θ) = 1,46 m/s². Düzdeki 7 m/s² frenin inişte 5,54'e
+    düşüyor — yaklaşık beşte biri eğime gidiyor.
+
+    70 km/h, düzde durma 46,5 m:
+
+    %6  iniş 48,9 (+2,5) · çıkış 44,4 (−2,1)
+    %10 iniş 50,8 (+4,4) · çıkış 43,1 (−3,3)
+    %15 iniş 53,5 (+7,1) · çıkış 41,8 (−4,6)
+    %20 iniş 56,7 (+10,2) · çıkış 40,6 (−5,8)
+
+    EĞİM ADİL DEĞİL 👇
+    %15 eğim inişte 7,1 m EKLİYOR ama çıkışta sadece 4,6 m indiriyor.
+    Çünkü 1/(a−x) büyürken 1/(a+x) aynı oranda küçülmüyor. Bir vadiye inip
+    çıkarsan net olarak zarardasın.
+
+    UZUN İNİŞTE VİTES KÜÇÜLT. Freni sürekli tutarsan diskler ısınır, fren
+    hissi yumuşar ve derinleşir. Motor freni eğimin bir kısmını karşılasın.
+
+    RAMPADA: %15 eğimde 250 kg'lık motosikleti tutmak 37 kilogramlık kuvvet
+    ister. Kalkış sırası: arka fren basılı → debriyaj tutma noktasına → gaz
+    gelirken freni bırak. Önce frenden elini çekersen geri kayarsın.
+
+    Ve tepe çıkışında yolun arkası görünmez — Ders 19 en sert burada işler.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #eğim #yokuş #durmamesafesi #motosikleteğitimi #yolokulu #güvenlisürüş
+  feed_de_paylas: true
+  kapak_url: ""
