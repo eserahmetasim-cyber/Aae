@@ -1752,7 +1752,9 @@ def kare_hizli3b(t):
     s2.yazi(d, (G - 206, 608), f"{yaricap:.0f} m", 42, a_renk, ortala=True)
 
     # Sol: yatis -> yaricap tablosu ve cizgiden sapma
-    px, py, pw = 62, 470, 404
+    # Panel 404 genisti: "ÇİZGİDEN SAPMA" ile "KARŞI ŞERİT" ayni satira
+    # sigmiyordu, uyariyi nereye koysam bir seyin ustune biniyordu.
+    px, py, pw = 62, 470, 470
     d.rounded_rectangle([px, py, px + pw, py + 336], 16, fill=(16, 20, 26, 210),
                         outline=(92, 102, 112), width=4)
     s2.yazi(d, (px + 22, py + 12), "YATIŞ → YARIÇAP", 26, (150, 155, 162))
@@ -1772,12 +1774,18 @@ def kare_hizli3b(t):
     sapma_renk = KIRMIZI if (tasti or kayma > 1.2) else (
         TURUNCU if kayma > 0.4 else YESIL)
     s2.yazi(d, (px + 22, py + 252), "ÇİZGİDEN SAPMA", 24, (150, 155, 162))
-    s2.yazi(d, (px + 22, py + 280), f"{kayma:+.2f} m".replace(".", ","), 36,
-            sapma_renk)
-    if tasti:                               # sabit x ile bitisik yaziliyordu
+    deger = f"{kayma:+.2f} m".replace(".", ",")
+    s2.yazi(d, (px + 22, py + 280), deger, 36, sapma_renk)
+    if tasti:
+        # Uyariyi once sabit x'e, sonra saga dayali koydum; ikisinde de bir
+        # seyin ustune bindi. Artik DEGERIN genisligi olculup hemen
+        # arkasina konuyor - cakismasi mumkun degil.
         uyari = "KARŞI ŞERİT"
-        gen = d.textlength(uyari, font=s2.font(27))
-        s2.yazi(d, (px + pw - 22 - gen, py + 288), uyari, 27, KIRMIZI)
+        ux = px + 22 + d.textlength(deger, font=s2.font(36)) + 24
+        ug = d.textlength(uyari, font=s2.font(26))
+        d.rounded_rectangle([ux, py + 282, ux + ug + 24, py + 320], 8,
+                            fill=(120, 26, 22, 235), outline=KIRMIZI, width=3)
+        s2.yazi(d, (ux + 12, py + 287), uyari, 26, (255, 214, 210))
     return im
 
 
