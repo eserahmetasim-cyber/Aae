@@ -285,7 +285,9 @@ def main() -> None:
         sesli = ["-map", "0:v", "-map", "1:a", "-c:a", "aac", "-b:a", "192k",
                  "-af", (f"afade=t=in:st=0:d=1.2,"
                          f"afade=t=out:st={args.sure - 1.0:.2f}:d=1.0,"
-                         "loudnorm=I=-14:TP=-1.5:LRA=11"),
+                         # -18: ders videolariyla ayni hedef. AAE 16.11'de kisilmasini istedi;
+                         # muzik_ses loudnorm yuzunden ise yaramiyor (KURALLAR.md).
+                         "loudnorm=I=-18:TP=-1.5:LRA=11"),
                  "-shortest"] if ses else []
         subprocess.run(
             ["ffmpeg", "-y", "-v", "error",
