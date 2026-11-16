@@ -1570,6 +1570,220 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  VIRAJA FAZLA HIZLI GIRDIN
+# ---------------------------------------------------------------------------
+# Butun rakamlar turevdir, varsayimlar ekranda yazili (60 km/h, viraj 30
+# derecelik yatisa gore kurulmus: R = v^2/(g*tan30) = 49 m).
+#
+# 1) YARICAP:  R = v^2 / (g * tan(yatis))
+#      10 -> 160,6 m   20 -> 77,8 m   30 -> 49,0 m   40 -> 33,7 m
+#    30'dan 10'a DOGRULMAK yaricapi 3,3 KATINA cikarir (49 -> 161 m).
+#    30'dan 40'a YATMAK viraji %31 DARALTIR (49 -> 34 m).
+#    Yani motosiklet hala donebilir - surucu birakmazsa.
+#
+# 2) PANIKTE DISARI KAYMA (ders 16'daki ayni formul):
+#    a = g * (tan(tasarim) - tan(suanki)),  y = a*t^2/2,  HIZDAN BAGIMSIZ.
+#      30 -> 20 : a=2,09  -> 1 sn 1,05 m
+#      30 -> 10 : a=3,93  -> 1 sn 1,97 m, 1,5 sn 4,43 m
+#    Serit 4 m, motosiklet orta cizgiden 2 m icerde: 10 dereceye dusmek
+#    BIR SANIYEDE karsi seride tasirir. Panik zincirinin tamami bu.
+#
+# SAGA DONEN VIRAJ. Saga donende DISARI = SOLA, yani karsi serit tarafi -
+# bu yuzden "disari kacmak" burada en tehlikeli yondur.
+# Yatis isareti uc_boyut kuralina uyar: yatis > 0 SOLA. Saga yatista eksi.
+HIZLI_V = 60.0 / 3.6
+HIZLI_TASARIM = math.radians(30.0)      # virajin kuruldugu yatis
+HIZLI_KAPPA = math.tan(HIZLI_TASARIM) * 9.81 / (HIZLI_V ** 2)
+HIZLI_R = 1.0 / HIZLI_KAPPA             # ~49 m
+HIZLI_ACI = {10: 160.6, 20: 77.8, 30: 49.0, 40: 33.7}
+
+HIZLI_NOKTA = {
+    "panik":  ("PANİK ZİNCİRİ", "gazı kes → doğrulur → dışarı"),
+    "uc":     ("DOĞRULMAK VİRAJI AÇAR", "30°→10°: yarıçap 3,3 katı"),
+    "daralt": ("YATMAK VİRAJI DARALTIR", "30°→40°: %31 daha dar"),
+    "bakis":  ("BAKIŞINI ÇIKIŞA TAK", "oraya gidersin"),
+    "fren":   ("YATIKKEN ÖN FREN YOK", "tutuşun 0,58'i zaten virajda"),
+    "giris":  ("ASIL ÇÖZÜM GİRİŞTE", "yavaş gir, hızlı çık"),
+}
+HIZLI_SIRA = list(HIZLI_NOKTA)
+HIZLI_FAZ = [(4.0, "panik")]
+
+
+def hizli_faz_ayarla(metin):
+    """sahne_fazlari: "4:panik, 11:uc, ..." """
+    global HIZLI_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in HIZLI_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen hizli noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    HIZLI_FAZ = sorted(f)
+
+
+def hizli_evre(t):
+    ad, bas = HIZLI_FAZ[0][1], HIZLI_FAZ[0][0]
+    for z, a in HIZLI_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _hizli_aci(anahtar, gecen):
+    """O anki yatis (derece). Adim ne anlatiyorsa motosiklet onu yapar."""
+    if anahtar == "panik":                  # gazi kesti, motor dogruluyor
+        return 30.0 + (10.0 - 30.0) * yumusak(min(1.0, (gecen - 1.2) / 1.3))
+    if anahtar == "daralt":                 # daha cok yatiyor
+        return 30.0 + (40.0 - 30.0) * yumusak(min(1.0, (gecen - 1.2) / 1.3))
+    return 30.0
+
+
+def _hizli_kayma(anahtar, gecen):
+    """Tasarim cizgisinden yanal sapma (m). + = DISARI (karsi serit yonu).
+
+    a = g*(tan(tasarim) - tan(suanki)) sayisal olarak iki kez integre
+    ediliyor; yatis zamanla degistigi icin kapali formul yok."""
+    if anahtar not in ("panik", "daralt"):
+        return 0.0
+    # Sapma gercekten boyle buyuyor ama adim 7 saniye surdugu icin
+    # motosiklet kadrajdan cikiyordu (7,8 m). Gosterim suresi sinirli:
+    # panik 3,2 sn'de 3,9 m (karsi seridin icinde), daralt 2,6 sn'de
+    # 0,9 m (ice dogru). Sonrasi donuyor - mesaj zaten dusmus oluyor.
+    gecen = min(gecen, 3.2 if anahtar == "panik" else 2.6)
+    dt, t, h, y = 0.02, 0.0, 0.0, 0.0
+    tan0 = math.tan(HIZLI_TASARIM)
+    while t < gecen:
+        a = 9.81 * (tan0 - math.tan(math.radians(_hizli_aci(anahtar, t))))
+        h += a * dt
+        y += h * dt
+        t += dt
+    return y
+
+
+def kare_hizli3b(t):
+    """Saga donen viraj: panik zinciri ve motosikletin hala donebildigi."""
+    anahtar, faz_bas = hizli_evre(t)
+    etiket, aciklama = HIZLI_NOKTA[anahtar]
+    gecen = max(0.0, t - faz_bas)
+    aci = _hizli_aci(anahtar, gecen)
+    kayma = _hizli_kayma(anahtar, gecen)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    x0 = FREN_SERIT - kayma            # disari = sola = karsi serit yonu
+    tasti = x0 < 0.0
+    yaricap = HIZLI_V ** 2 / (9.81 * math.tan(math.radians(max(2.0, aci))))
+
+    global _hiz_s, _hiz_tek
+    _hiz_s = (globals().get("_hiz_s", 0.0) + HIZLI_V / FPS) % 8.0
+    _hiz_tek = (globals().get("_hiz_tek", 0.0)
+                + HIZLI_V / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    def kx(z):
+        return 0.0 if z <= 0 else HIZLI_KAPPA * z * z / 2.0
+
+    z = -14.0
+    while z < 66:
+        z2 = z + 3.0
+        a, b = kx(z), kx(z2)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[a - 4.2, 0.01, z], [a + 4.2, 0.01, z],
+                 [b + 4.2, 0.01, z2], [b - 4.2, 0.01, z2]], asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[a + yan * 4.0, 0.02, z], [a + yan * 3.86, 0.02, z],
+                     [b + yan * 3.86, 0.02, z2], [b + yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(-2, 14):
+        zc = i * 8.0 - _hiz_s
+        a, b = kx(zc), kx(zc + 3.6)
+        s.yuzey([[a - 0.11, 0.02, zc], [a + 0.11, 0.02, zc],
+                 [b + 0.11, 0.02, zc + 3.6], [b - 0.11, 0.02, zc + 3.6]],
+                (210, 210, 205), katman=2)
+
+    # Tasarim cizgisi: sapma ancak bir referansa gore okunur
+    zz = 2.0
+    while zz < 58.0:
+        z2 = zz + 1.8
+        s.yuzey([[kx(zz) + FREN_SERIT - 0.13, 0.03, zz],
+                 [kx(zz) + FREN_SERIT + 0.13, 0.03, zz],
+                 [kx(z2) + FREN_SERIT + 0.13, 0.03, z2],
+                 [kx(z2) + FREN_SERIT - 0.13, 0.03, z2]],
+                (86, 150, 96), katman=2)
+        zz += 3.6
+
+    model, _, _ = motosiklet(0.0, _hiz_tek, 0.0)
+    s.ekle(model, R=donus([0, 0, 1], -math.radians(aci)), t=[x0, 0.0, 0.0])
+
+    # Kamera motosikletin yanal kaymasini kismen takip eder. Sabit hedefle
+    # bakilinca panikte motosiklet kadrajin sol kenarina yapisiyordu; tamamen
+    # takip edilse bu sefer kayma hic okunmuyor.
+    kamera = Kamera([0.6 + 0.6 * x0, 7.4, -20.0],
+                    [kx(15.0) + 1.3 - 0.45 * kayma, 1.3, 15.0], G, Y, fov=46)
+    s.ciz(d, kamera, gok)
+
+    if anahtar == "bakis":                 # bakis virajin CIKISINA
+        _bakis_oku(d, kamera, np.array([x0, 1.5, 1.2]),
+                   np.array([kx(34.0) + 1.6, 0.1, 34.0]), YESIL)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if anahtar in ("panik", "uc", "fren") else YESIL
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    # Sag: yatis ve o yatisin cizdigi yaricap
+    d.rounded_rectangle([G - 340, 470, G - 72, 658], 18, fill=(0, 0, 0, 178),
+                        outline=(92, 102, 112), width=4)
+    a_renk = YESIL if aci >= 28 else (TURUNCU if aci >= 18 else KIRMIZI)
+    s2.yazi(d, (G - 206, 478), "YATIŞ", 26, (150, 155, 162), ortala=True)
+    s2.yazi(d, (G - 206, 508), f"{aci:.0f}°", 60, a_renk, ortala=True)
+    s2.yazi(d, (G - 206, 580), "çizdiği yarıçap", 24, (150, 155, 162),
+            ortala=True)
+    s2.yazi(d, (G - 206, 608), f"{yaricap:.0f} m", 42, a_renk, ortala=True)
+
+    # Sol: yatis -> yaricap tablosu ve cizgiden sapma
+    px, py, pw = 62, 470, 404
+    d.rounded_rectangle([px, py, px + pw, py + 336], 16, fill=(16, 20, 26, 210),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 12), "YATIŞ → YARIÇAP", 26, (150, 155, 162))
+    s2.yazi(d, (px + 22, py + 40), "60 km/h · viraj 30° için kurulmuş", 22,
+            (124, 132, 142))
+    for i, (a_deg, rr) in enumerate(sorted(HIZLI_ACI.items())):
+        yy = py + 78 + i * 40
+        c = KIRMIZI if a_deg < 20 else (YESIL if a_deg >= 30 else TURUNCU)
+        vurgu = abs(aci - a_deg) < 5
+        s2.yazi(d, (px + 22, yy), f"{a_deg}°", 27,
+                KREM if vurgu else (150, 158, 168))
+        d.rounded_rectangle([px + 78, yy + 5, px + 78 + 150 * (33.7 / rr),
+                             yy + 27], 5, fill=c if vurgu else (62, 68, 76))
+        s2.yazi(d, (px + 240, yy), f"{rr:.0f} m".replace(".0", ""), 27,
+                c if vurgu else (150, 158, 168))
+
+    sapma_renk = KIRMIZI if (tasti or kayma > 1.2) else (
+        TURUNCU if kayma > 0.4 else YESIL)
+    s2.yazi(d, (px + 22, py + 252), "ÇİZGİDEN SAPMA", 24, (150, 155, 162))
+    s2.yazi(d, (px + 22, py + 280), f"{kayma:+.2f} m".replace(".", ","), 36,
+            sapma_renk)
+    if tasti:                               # sabit x ile bitisik yaziliyordu
+        uyari = "KARŞI ŞERİT"
+        gen = d.textlength(uyari, font=s2.font(27))
+        s2.yazi(d, (px + pw - 22 - gen, py + 288), uyari, 27, KIRMIZI)
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  KAYGAN YAMALAR (yol yuzeyi tuzaklari)
 # ---------------------------------------------------------------------------
 # DERSTE YUZEYLER ICIN SURTUNME RAKAMI YOK - bilerek.
@@ -3188,7 +3402,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin"),
+                             "sollama", "zemin", "hizli"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -3226,6 +3440,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "hizli":
+        hizli_faz_ayarla(args.fazlar)
+        cizer = kare_hizli3b
     elif args.sahne == "zemin":
         zemin_faz_ayarla(args.fazlar)
         cizer = kare_zemin3b
