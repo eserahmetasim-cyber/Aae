@@ -1,0 +1,246 @@
+{
+  "_aciklama": "Gunluk kontrol rutininin durum dosyasi. Rutin her kosuda yeni bir oturumda dogdugu icin 'degisti mi?' sorusunu ancak bu dosyayla cevaplayabiliyor. Rutin: oku -> yeni olcumleri al -> farki hesapla -> fark varsa bildir ve bu dosyayi guncelle; fark yoksa sessiz kal. null = henuz olculemedi.",
+  "_rutin": "SAE gunluk kontrol. DIKKAT: trig_01WdNFNckb7vVZfzpLbB2eC9 (her gun 08:50 Europe/Istanbul) KOR — firlattigi oturumda mcp_servers bos, Gmail gorunmuyor, ag CONNECT 403. Gercek gunluk kontrol 08.10dan itibaren session_01Bk2vAVxQmjnVoApiFfWWQF icinden send_later zinciriyle yapiliyor (ilk tetik trig_01Dz569oUzKyXZc1mGmARyhF, 09.10 09:55 UTC, 20 saat arayla kendini zincirliyor). Bu oturumun Gmail baglayicisi var ve 08.10da iki onemli haberi onunla buldu.",
+  "_dogrulama_06_10": {
+    "kosu": "2026-10-06 19:06 UTC, elle tetiklendi",
+    "git_clone": "CALISTI — bu dosya okunabildi",
+    "curl_play_ve_site": "CONNECT 403 — ag politikasi engelliyor",
+    "gmail_baglayicisi": "YOK — firlatilan oturumda mcp_servers bos",
+    "claude_code_remote_baglayicisi": "YOK",
+    "maliyet_usd": 0.2,
+    "sonuc": "Mekanik tarafi saglam (klon + durum okuma + rapor + ucuz). Dort kontrolden ikisi baglayici, ikisi ag erisimi bekliyor. Ag acilirsa iki oyunun store durumu ve www/301 testi baglayici gerektirmeden calisir — en degerli kisim orasi."
+  },
+  "guncelleme": "2026-11-06",
+  "ag_erisimi": true,
+  "_ag_notu": "06.11'de bu oturumun ortam izin listesine saemuhendislik.com, www.saemuhendislik.com ve play.google.com eklendi (update_environment, AAE onayladi). 30 gunluk CONNECT 403 engeli kalkti; canli testler artik buradan yapilabiliyor.",
+  "mini_muhendis": {
+    "ad": "Mini Mühendis: Malzeme Oyunu",
+    "paket": "com.saemuhendislik.mini_muhendis",
+    "store_http": 200,
+    "yayinda": true,
+    "asama": "YAYINDA — 06.11'de anonim olarak Play sayfasi dogrulandi (200, gercek icerik, yukleme dugmesi)",
+    "son_mail": "2026-10-07 — Play Developer Support [3-2357000041354], inceleme hizlandirildi",
+    "_yayin_notu": "DUZELTME 08.10: 07.10 teshisim YANLISTI. \"Uretim surumu hic yayinlanmamis\" demistim; gercek su ki surum incelemede ve destek kaydi acilmis. Bir gun gec gordum cunku takip zincirinin gonderen filtresinde googleplay-developer-support@google.com yoktu.",
+    "destek_kaydi": "3-2357000041354",
+    "_KURAL": "KALKTI. Inceleme bitti ve uygulama yayinda; 'yeni surum gonderme' yasagi artik gecerli degil. AdMob SDK'si bu uygulamaya da eklenebilir (konum toplama kapali olarak).",
+    "destek_kaydi_durumu": "KAPANDI — 08.10 09:56 UTC memnuniyet anketi geldi (Re: [3-2357000041354] Google Play Developer Support Survey). Inceleme sonucu HENUZ gelmedi.",
+    "_gecen_sure_notu": "21.10 itibariyla destek 'incelemeyi hizlandirdik' dediginden beri 14 gun gecti ve hic sonuc maili gelmedi (yayinlandi/reddedildi yok). Play Console'dan durumun OKUNMASI gerekiyor. Hala 'Incelemede' ise MEVCUT destek konusuna (3-2357000041354) cevap yazmak makul — bu YENI kayit acmak degildir, yasak olan o. Yeni surum gondermek yine YASAK.",
+    "_inceleme_notu": "Inceleme sonucu maili hic gelmedi ya da 008/baska bir adrese gitti; yayina girdigini ancak 06.11'de magaza sayfasini test ederek anladim. Ders: mail beklemek yerine magaza sayfasini dogrudan test etmek gerekiyordu — ag acilir acilmaz ilk yapilan bu oldu."
+  },
+  "yol_okulu": {
+    "ad": "AAE Motosiklet Yol Okulu",
+    "paket": "com.saemuhendislik.yol_okulu_3b",
+    "store_http": 200,
+    "yayinda": true,
+    "asama": "YAYINDA — 06.11'de anonim olarak Play sayfasi dogrulandi (200, gercek icerik, yukleme dugmesi)",
+    "kapali_test_baslangic": "2026-09-22",
+    "davet_edilen_tester": 14,
+    "opt_in_kalan_tester": ">=12 (izin verildigine gore sart tutmus)",
+    "_tester_notu": "Google kisisel hesaplar icin 14 gun boyunca 12 kesintisiz opt-in tester istiyor. Bu sayi YALNIZCA Play Console'da gorunur, mailden okunamaz.",
+    "son_mail": "2026-10-27 02:57 — production access granted",
+    "uretim_izni": true,
+    "uretim_izni_tarihi": "2026-10-27",
+    "_SIRALAMA_KURALI": "AdMob'u YAYINDAN ONCE ekle. Mini Muhendis deneyimi: surum bir kez incelemeye girdi mi yeni surum gonderilemiyor (sayac sifirlaniyor) ve inceleme haftalarca surebiliyor. Yol Okulu su an incelemede DEGIL, yani simdi serbest. Dogru sira: 1) AdMob SDK (pub-7223494011776010) eklenir, reklam birimleri kurulur, test edilir; 2) Play Console'da 'reklam icerir' beyani isaretlenir (artik dogru beyan); 3) uretim surumu olusturulup BIR KEZ incelemeye gonderilir. Tersi sirada (once yayinla sonra reklam ekle) oyun incelemedeyken reklamli guncelleme gonderilemez, bekleme uzar.",
+    "_rozet_notu": "Ana sayfadaki 'YAKINDA GOOGLE PLAY'DE' rozeti HALA DOGRU. Izin yayin demek degil; rozet ancak store sayfasi gercekten 200 donduktan sonra Play linkine cevrilir."
+  },
+  "adsense": {
+    "yayinci": "pub-7223494011776010",
+    "hesap": "eserahmetasim@gmail.com",
+    "_yayinci_eski": "ca-pub-8433209614215281 (hesap ahmetasimeser008@gmail.com) — 14.11'de ARTIK KULLANILMIYOR, ayrintisi _adsense_hesap_degisikligi_14_11 bolumunde",
+    "basvuru": "2026-08-28",
+    "durum": "SITE YENI HESABA TASINDI (14.11 olculdu). Reklamlar pub-7223494011776010 uzerinden. Profil EKSIK: odeme adresi + telefon dogrulama bekliyor.",
+    "auto_ads": true,
+    "cmp_yayinda": false,
+    "son_mail": "2026-11-13 14:59 — 'AdSense'e hos geldiniz' (adsense-noreply@google.com -> eserahmetasim@gmail.com), yayinci pub-7223494011776010, 'Sitenizi eklediniz'",
+    "_mail_notu": "ARTIK GORUNUYOR: yeni hesap eserahmetasim@gmail.com'da, yani Gmail baglayicisi AdSense mailini dogrudan goruyor. Eski 008 hesabinin mailleri hala gorunmez.",
+    "onay_tarihi": "2026-10-07",
+    "yogunluk_karari": "MAKSIMUM — tum formatlar (vignette, anchor, yan panel) acik, yogunluk en yuksek, ANA SAYFA DAHIL (AAE karari 07.10)",
+    "reklamsiz_kalacak": [
+      "gizlilik.html",
+      "gizlilik-politikasi.html",
+      "404.html"
+    ],
+    "_reklamsiz_notu": "Ilk ikisi Play Store'a verilen uygulama gizlilik politikalari, ucuncusu iceriksiz sayfa. AdSense script'i bu ucunde hic yok ve EKLENMEYECEK.",
+    "_kalan": "Riza mesaji (CMP) yayinlandi mi teyit edilecek; ads.txt panelde 'Yetkili'ye dondu mu bakilacak.",
+    "auto_ads_tarihi": "2026-10-31",
+    "_auto_ads_notu": "AAE 31.10'da 'adsense reklamlari actim' dedi. BAGIMSIZ DOGRULANAMADI: bu oturumda tarayici yok, site egress'te engelli (CONNECT 403), AdSense maili 008 hesabina gidiyor. Teyit icin AAE'den iki sey bekleniyor: (1) riza mesaji (Gizlilik ve mesajlasma -> Avrupa tuzukleri) 'Yayinda' mi, (2) sitede gercekten reklam goruluyor mu. Yeni onaylanan sitelerde ilk reklamlarin cikmasi birkac saat surebilir."
+  },
+  "search_console": {
+    "acik_sorun": 3,
+    "sorunlar": [
+      "Yonlendirmeli sayfa — 07.09 duzeltmesi 16.09'da BASARISIZ bildirildi, o gunden beri durum bilinmiyor",
+      "Kopya, Google kullanicidan farkli bir standart sayfa secti — 12.10'da dogrulama BASARISIZ (WNC-10031170)",
+      "Bulunamadi (404) — YENI, 26.10'da bildirildi (WNC-20237597)"
+    ],
+    "son_mail": "2026-10-26 11:59 — 'sayfalarin dizine eklenmesini engelleyen YENI nedenler: Bulunamadi (404)' (WNC-20237597)",
+    "dogrulama": {
+      "baslangic": "2026-10-08",
+      "sonuclandi": "2026-10-12",
+      "basarili": {
+        "sorun": "Kullanici tarafindan secilen standart sayfa olmadan kopya",
+        "sayfa": 3,
+        "kod": "WNC-10030335"
+      },
+      "basarisiz": {
+        "sorun": "Kopya, Google kullanicidan farkli bir standart sayfa secti",
+        "kod": "WNC-10031170",
+        "google_metni": "Sayfalarinizdan bazilari bu sorundan etkilenmeye devam ediyor"
+      },
+      "_not": "08.10'da uyarmistim: dogrulama dugmesine basmak sorunu cozmez, asil sebep (www -> apex 301 yok) duzeltilmediyse basarisiz doner. Aynen oyle oldu ve basarisiz olan tam da o sebebin hedef aldigi sorun."
+    },
+    "cozulen": [
+      "Kullanici tarafindan secilen standart sayfa olmadan kopya — 12.10'da 3 sayfa DUZELTILMIS dogrulandi (WNC-10030335)"
+    ],
+    "_404_notu": "Yeni sorun. Hangi URL'lerin 404 verdigi bilinmiyor; konsoldan ornek URL listesi alinmali. Buradan site test edilemiyor (CONNECT 403), tahminle ugrasilmayacak.",
+    "_06_11_bulgulari": "www->apex 301 CALISIYOR, yani 'Kopya/farkli standart sayfa' icin bir aydir surdurdugum bas teshis YANLIS. Sitemap'teki 87 adresin hepsi 200, yani 404'ler sitemap'ten degil eski/disaridan gelen adreslerden. 'Yonlendirmeli sayfa' sorunu .html adreslerinin 308 ile temiz URL'ye gitmesinden; bu Cloudflare Pages'in normal davranisi. Kalan gercek is: konsoldan uc sorunun ornek URL listesini almak — artik tahmin yerine olcum var.",
+    "_404_TESHIS_06_11": {
+      "yontem": "Sitemap'teki 87 sayfanin tamami indirildi, icindeki 298 benzersiz ic link cikarildi ve hepsi tek tek test edildi.",
+      "sonuc": "77 adres 404 veriyor ve 77'sinin de TAMAMI /cdn-cgi/l/email-protection#... biciminde",
+      "cdn_disi_404": 0,
+      "KOK_SEBEP": "Cloudflare'in Email Address Obfuscation (Scrape Shield) ozelligi. mailto: baglantilarini /cdn-cgi/l/email-protection#<hex> + JavaScript cozucu ile degistiriyor. JavaScript calistiran tarayicida sorun yok, ama JS calistirmayan tarayici/bot bunu gercek bir link sanip istiyor ve 404 aliyor. Search Console'un 26.10'da bildirdigi 'Bulunamadi (404)' (WNC-20237597) bu.",
+      "robots_txt": "/cdn-cgi/ icin Disallow YOK; robots.txt 'Allow: /' diyor, yani Googlebot bu adresleri taramakta serbest ve 404 aliyor.",
+      "DEGERLENDIRME": "CIDDI DEGIL. Gercek icerik sayfalarinin hicbiri 404 vermiyor — sitemap'teki 87 adresin hepsi 200. Bu 404'ler rapor gurultusu; dizine girmesi gereken hicbir sayfayi engellemiyor.",
+      "secenekler": [
+        "A) Hicbir sey yapma — en makul. Gercek sayfalar etkilenmiyor, rapor kalabaligina katlanilir.",
+        "B) Cloudflare → Scrape Shield → Email Address Obfuscation KAPAT. 404'ler biter ama e-posta adresleri HTML'de duz gorunur, spam toplama riski artar. Ozellik zaten bunun icin var.",
+        "C) robots.txt'te /cdn-cgi/ engelle — Cloudflare bu blogu kendi yonetiyor ve /cdn-cgi/ engellemek baska seyleri bozabiliyor; onerilmez."
+      ],
+      "ONERIM": "A — dokunma. Fayda/zarar dengesi B'yi hakli cikarmiyor."
+    },
+    "_ic_link_taramasi": "298 ic linkin 298'i kontrol edildi; email-protection disinda tek bir kirik link yok.",
+    "_html_link_kurali": "Canli sitede .html iceren TEK BIR link yok — kural tutuyor (06.11 taramasi)."
+  },
+  "site": {
+    "apex_http": 200,
+    "www_http": 301,
+    "www_301_apexe": true,
+    "ads_txt_http": 200,
+    "ads_txt_dogru": true,
+    "_www_notu": "DUZELTILDI 06.11: www APEX'E 301 YONLENDIRIYOR. 10.09'da www/ads.txt'nin 200 donmesine dayanarak bir aydir 'www yonlendirmiyor, kopya sorununun koku bu' diyordum; canli test bunu curuttu. Ya arada duzeltildi ya da o cikarim bastan yanlisti.",
+    "_oncelik": "Cloudflare Redirect Rule isine GEREK YOK — yonlendirme zaten calisiyor."
+  },
+  "yerel_oturum": {
+    "id": "session_014mvmA2G5DBuuSRYtxDLTwk",
+    "baglanti": "disconnected (08.10 09:20 UTC) — 08.10da yanlislikla arsivlenmisti, unarchive edildi",
+    "son_baglanti_denemesi": "2026-09-13",
+    "kuyruktaki_is_emri": 7,
+    "son_kontrol": "2026-10-08",
+    "_kuyruk_notu": "07.10'da tek bir BIRLESIK yapilacaklar listesi gonderildi (AdSense Auto ads maksimum + CMP -> Mini Muhendis uretim surumu -> Yol Okulu uretime gecis -> Android dogrulamasi -> Search Console 3 sorun -> www/apex 301 -> rozetler). Hangi mesaji once okursa tam listeyi gorur.",
+    "_takip_zinciri": "4 saatlik 6 kontrolluk zincir 08.10 13:26da planlandigi gibi bitti (1/6 07.10 09:40 … 6/6 08.10 13:26). Alti kontrolun hicbirinde yerel oturum baglanmadi. 5/6 iki gercek haber buldu. Yerine gunluk kontrol kuruldu.",
+    "_calisan_pencere": "08.10: AAE bilgisayarini acti ve is emrini yapistirdi, ama list_sessions icinde yeni Claude Code oturumu YOK. Calisan sey muhtemelen masaustu uygulamasinin normal sohbet penceresi (claude.ai konusmasi) — ekrani gorebiliyor ama buradan izlenemiyor. Search Console dogrulamasinin baslamis olmasi orada is yapildiginin kaniti."
+  },
+  "_mail_filtresi_dersi": "Google Play destek maillerinin gondericisi googleplay-developer-support@google.com, AdMob'unki admob-noreply@google.com, odeme bildirimlerininki payments-noreply@google.com. Dar gonderen listesi 08.10'da bir tam gun gecikmeye yol acti. Gunluk taramada genis from:google.com filtresi kullaniliyor.",
+  "admob": {
+    "_aciklama": "AdMob = UYGULAMA ICI reklam. AdSense'ten (site reklami) tamamen ayri urun ve ayri hesap.",
+    "yayinci": "pub-7223494011776010",
+    "hesap": "eserahmetasim@gmail.com (ana hesap — AdSense 008'de)",
+    "durum": "ONAYLANDI",
+    "onay_tarihi": "2026-10-13",
+    "son_mail": "2026-10-13 18:00 UTC — 'Size guzel bir haberimiz var: Hesabiniz onaylandi'",
+    "hangi_uygulamalar": "Iki oyun: mini_muhendis ve yol_okulu_3b",
+    "sdk_eklendi": false,
+    "_KURAL_mini_muhendis": "MINI MUHENDIS'E SIMDI AdMob SDK'SI EKLENMEYECEK. Reklam gostermek yeni surum yuklemeyi gerektirir; uygulama su anda incelemede ve Google 07.10'da yazili olarak 'yeni surum gondermeyin, her gonderim inceleme sayacini sifirlar' dedi ([3-2357000041354]). Once inceleme bitsin ve yayina girsin, reklamli surum AYRI bir guncelleme olarak cikar.",
+    "_yol_okulu_notu": "Yol Okulu kapali testte, uretim incelemesinde DEGIL — AdMob simdi eklenebilir, risk yok. Ama uretime gecis basvurusu gonderilecekse once onu bitirmek daha temiz.",
+    "_beyan_notu": "Play Console'daki 'reklam icerir' beyani ancak uygulamada GERCEKTEN reklam oldugunda isaretlenir. Simdiden isaretlemek yanlis beyan olur.",
+    "_sdk_konum_degisikligi": {
+      "kaynak": "2026-11-03 16:42 UTC, admob-noreply@google.com, 'Changes to coarse location collection in Google Mobile Ads SDK'",
+      "ne_degisiyor": "GMA SDK, uygulamanin konum izni varsa cihazin KABA (coarse) konumunu toplayip reklam cografi alakasini artirmak icin kullanacak. Hassas izin verilse bile yalnizca kaba konum aliniyor.",
+      "hangi_surumden": "Android 1.7.0 / iOS 13.12.0 ve uzeri",
+      "varsayilan": "Bu surumleri alirsan ve kapatmazsan ACIK gelir",
+      "kapatilabilir": true,
+      "KARAR": "Yol Okulu'na SDK eklenirken KONUM TOPLAMA KAPATILACAK (yapilandirma bayragiyla). Gerekce: (1) Yol Okulu'nun konum iznine ihtiyaci yok, varsa da reklam cografi alakasinin degeri bu asamada sifira yakin; (2) acik birakmak gizlilik politikasi ve Play 'Veri guvenligi' formunun guncellenmesini gerektiriyor — ilk uretim gonderiminde fazladan risk; (3) hedef kitle cocuk/aile ise Families politikasiyla ek surtunme cikarir. Maliyeti: biraz daha dusuk reklam alakasi, henuz kullanicisi olmayan bir oyunda ihmal edilebilir.",
+      "_not": "Uygulama konum izni hic istemiyorsa SDK zaten bir sey toplamaz; bayragi kapatmak yine de garanti olsun diye yapilacak."
+    }
+  },
+  "odeme": {
+    "banka_dogrulandi": true,
+    "dogrulama_tarihi": "2026-10-13",
+    "odeme_profili": "3396-9499-8629",
+    "_not": "13.10 09:08 UTC payments-noreply: 'Banka hesabiniz dogrulandi. Artik banka hesabinizdan odeme yapmaya veya almaya baslayabilirsiniz.' Bu ana hesabin (eserahmetasim) profili; AdSense 008 hesabinda ayri bir odeme profili olabilir, dogrulanmadi."
+  },
+  "trafik": {
+    "_aciklama": "Search Console'dan gelen ILK somut trafik olcumu. Bu projede daha once hic trafik sayisi kaydedilmemisti.",
+    "kaynak": "sc-noreply@google.com esik mailleri (5 -> 40)",
+    "esik_tarihi": "2026-10-26",
+    "tiklama_28_gun": 40,
+    "_yorum": "DUZELTME 29.10: 21.10'da '5 tiklama pratikte sifir, reklam kayda deger gelir uretmez' demistim. O rakam icin dogruydu ama artik gecerli degil — 11 gunde 8 KAT artis var (5 -> 40) ve egri yukari. 40 hala kucuk ama 'hic' degil. Reklamlari acmanin degeri artti; AdSense Auto ads + CMP 22 gundur bekliyor ve trafik buyurken reklamin kapali olmasi artik dogrudan kacan gelir. Indeksleme isi (www->apex 301, uc Search Console sorunu) yine de en buyuk kaldirac: 40 tiklama, sayfalarin bir kismi dizine girememisken alinan rakam.",
+    "seri": [
+      {
+        "tarih": "2026-10-15",
+        "tiklama_28_gun": 5
+      },
+      {
+        "tarih": "2026-10-26",
+        "tiklama_28_gun": 40
+      }
+    ]
+  },
+  "_bilgisayar_baglantisi": {
+    "arac": "list_computer_folders / request_computer_folder (29.10'da bu oturuma geldi)",
+    "durum": "KULLANILAMIYOR",
+    "olcum": "list_computer_folders -> {\"folders\":[],\"cannot_be_used\":[]} — AAE'nin listesinde hic klasor yok",
+    "_neden": "Arac tanimi: klasor ancak Mac ya da Linux bilgisayarda olabilir ve bir git deposunun koku olmali. AAE Windows kullaniyor (13.10 ve 17.10 guvenlik mailleri 'Windows cihazinda yeni oturum acma' diyor). Yani klasor eklese bile kullanilamaz. Konsol isleri hala AAE'nin bilgisayarindaki Claude penceresini gerektiriyor."
+  },
+  "play_politika": {
+    "_kaynak": "2026-10-29 19:08 UTC, googleplay-noreply@google.com, 'Google Play Developer Program Policy Update'",
+    "_nitelik": "Tum gelistiricilere giden GENEL duyuru, uygulamaya ozel degil. Maddelerin cogu (Local Network / Manage Contacts izinleri, AppFunctions, kripto, XR, abonelik indirimleri) iki basit oyunla ilgisiz. Mail 'en az 30 gun' veriyor.",
+    "ilgili_maddeler": [
+      {
+        "madde": "Trader status beyani — 'Starting in November 2026, you must declare your trader status in Play Console'",
+        "tarih": "2026-11 (iki gun sonra)",
+        "bizi_ilgilendiriyor": "EVET",
+        "neden": "Tum gelistiriciler icin Console zorunlulugu. Beyan edilmezse yayinlamayi engelleyebilir; iki oyun da yayin surecinde."
+      },
+      {
+        "madde": "Japonya'ya/Japonya'dan satis yapanlar 1 Aralik 2026'ya kadar yetkilendirme yapmazsa odemeler kuresel olarak TUTULUR",
+        "tarih": "2026-12-01",
+        "bizi_ilgilendiriyor": "MUHTEMELEN HAYIR",
+        "neden": "Oyunlar ucretsiz, uygulama ici satin alma yok. Yine de Console'da bir bakista teyit edilmeli."
+      },
+      {
+        "madde": "Families Self-Certified Ads SDK Program — yeni basvurulara acildi",
+        "tarih": null,
+        "bizi_ilgilendiriyor": "BELKI",
+        "neden": "Oyunlar cocuk/aile hedef kitlesindeyse gosterilen reklam SDK'sinin bu programda self-certified olmasi gerekiyor. AdMob EKLENMEDEN ONCE hedef kitle ayarina bakilmali."
+      }
+    ]
+  },
+  "trader_status": {
+    "_kaynak": "2026-11-04 22:49 UTC, googleplay-noreply@google.com, 'Google Play'de uygulama dagitmaya devam etmek icin satici durumunuzu beyan edin' (Islem Gerekli)",
+    "SON_TARIH": "2027-02-01",
+    "_tarih_duzeltmesi": "30.10'da genel politika duyurusuna bakip 'Kasim 2026'dan itibaren zorunlu, tarihi iki gun sonra' demistim. Dogrusu: Kasim 2026 Console alaninin ACILDIGI tarih; BEYAN SON TARIHI 1 Subat 2027. Yani acil degil ama atlanamaz.",
+    "yapilmadiginda": "Uygulama GUNCELLEMESI gonderilemez VE gelistirici profili ile TUM uygulamalar Google Play'den dunya genelinde KALDIRILIR.",
+    "AAE_muhtemelen_satici": "Mail: 'uygulamalarinizdan gelir elde etmek (ucretli indirmeler, uygulama ici urunler, abonelikler veya REKLAMLAR) dahil ticari faaliyette bulunuyorsaniz genellikle satici sayilirsiniz.' AdMob ile reklam gelirine geciliyor → satici. Tek istisna: AEA/Birlesik Krallik'ta dagitim yapmamak.",
+    "DIKKAT_gizlilik": "Satici olarak beyan eden BIREYSEL gelistiricinin herkese acik bir TELEFON NUMARASI vermesi ve dogrulamasi gerekiyor; mail acikca 'telefon numaraniz ve ADRESINIZ Google Play'de herkese acik gosterilecek' diyor. AAE bireysel gelistirici — ev adresi ve telefonu magazada gorunur olacak. Karar vermeden once bunu bilmesi gerek. Alternatifler: isletme olarak kayit (isyeri adresi gorunur) ya da AEA/BK disinda dagitim (pazari daraltir).",
+    "adimlar_hesap": "Play Console → Hesabi yonet → Hesap ayrintilari → Hakkinizda → Satici durumu → beyan et → (satici ise) telefon dogrula + yerel yasalara uyum taahhudu → Kaydet.",
+    "adimlar_uygulama": "Her uygulama icin ayrica: Tum uygulamalar → uygulama sec → Izleyin ve gelistirin → Politika ve programlar → Uygulama icerigi → 'Ilgilenilmesi gerekiyor' bolumunde satici durumu beyani; gecerliyse Hizmet Sartlari baglantisi eklenir. Iki oyun icin de tekrarlanacak.",
+    "_yanlis_beyan": "Yanlis beyan Gelistirici Dagitim Sozlesmesi Bolum 11.4 ihlali; uygulama kaldirma veya hesap askiya alma sebebi. Dogru cevabi AAE kendi durumuna gore verecek, tahminle doldurulmayacak."
+  },
+  "_canli_dogrulama_06_11": {
+    "www_301": "DOGRULANDI — www.saemuhendislik.com/ -> 301 -> https://saemuhendislik.com/ ; /ads.txt de 301 veriyor",
+    "apex": "200",
+    "ads_txt": "200, icerik: google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0 — DIKKAT: bu 06.11 kaydi, 14.11'de icerik pub-7223494011776010 olarak DEGISTI",
+    "adsbygoogle": "Ana sayfada ve /hasar'da ...adsbygoogle.js?client=ca-pub-8433209614215281 VAR — DIKKAT: bu 06.11 kaydi, 14.11'de client ca-pub-7223494011776010 oldu",
+    "canonical": "/hasar -> <link rel=canonical href=https://saemuhendislik.com/hasar> dogru",
+    "sitemap": "87 adresin TAMAMI 200 — 404'ler sitemap'ten gelmiyor",
+    "html_uzantili": ".html adresleri 308 ile temiz URL'ye gidiyor (hasar.html, index.html, dokum.html...). 'Yonlendirmeli sayfa' sorununun kaynagi bu; eski baglantilardan geliyor.",
+    "dogrulama_dosyasi": "google19071191ddf4150f.html 308 ile yonleniyor AMA hedefte dogru token 200 ile servis ediliyor — Search Console dogrulamasi saglam",
+    "404_davranisi": "/404 -> 200 (yumusak 404 deseni, kucuk sorun); gercekten olmayan adres -> 404 dogru",
+    "play_mini_muhendis": "200, gercek magaza sayfasi, gelistirici 'SAE Muhendislik', yukleme dugmesi var",
+    "play_yol_okulu": "200, gercek magaza sayfasi, ayni gelistirici, yukleme dugmesi var"
+  },
+  "_adsense_hesap_degisikligi_14_11": {
+    "ne_oldu": "Site, eski AdSense hesabindan (pub-8433209614215281, ahmetasimeser008@gmail.com) AdMob hesabina (pub-7223494011776010, eserahmetasim@gmail.com) tasindi. ads.txt VE sayfa icindeki adsbygoogle script'i birlikte degisti.",
+    "kanit_mail": "13.11.2026 14:59 UTC, adsense-noreply@google.com -> eserahmetasim@gmail.com, konu 'AdSense'e hos geldiniz'. Govdesinde 'Yayinci kimliginiz: pub-7223494011776010' ve 'Sitenizi eklediniz' yaziyor.",
+    "kanit_olcum": "14.11 canli: ads.txt -> 'google.com, pub-7223494011776010, DIRECT, f08c47fec0942fa0'; ana sayfa ve /en/ -> client=ca-pub-7223494011776010. 06.11'de ikisi de 8433209614215281'di.",
+    "EKSIK_IS": "Mail iki eksik adim sayiyor: (1) gecerli ODEME ADRESI eklenmesi, (2) TELEFON NUMARASI dogrulamasi. Bunlar tamamlanmadan odeme alinamaz. AAE'nin yapmasi gereken is.",
+    "_eski_hesap": "KAPANDI. AAE 14.11'de teyit etti: 'eski hesabi kapatmistim zaten'. Yani pub-8433209614215281 artik acik degil, mukerrer AdSense hesabi sorunu YOK. Bu soru kapandi, tekrar sorulmayacak.",
+    "_benim_kacirdigim": "07.11-13.11 gunluk kontrollerinde ads.txt icin yalnizca HTTP durumu (200) olculuyordu, ICERIGI okunmuyordu. Bu yuzden degisimin tam gunu bilinmiyor; 07.11 ile 13.11 arasinda bir gun. 15.11'den itibaren gunluk kontrol ads.txt icerigini ve ana sayfadaki ca-pub- degerini de olcuyor.",
+    "_yan_bulgu": "Sayfa HTML'i degistigine gore site bu arada YENIDEN DAGITILDI — ama Yol Okulu karti eklenmedi (yol_okulu 0, ikon 404). Yani reklam degisikligi icin dagitim yapildi, hazir yama uygulanmadi."
+  },
+  "_rozetler": {
+    "mini_muhendis": "Ana sayfada ZATEN gercek Play linki var (06.11 dogrulandi)",
+    "yol_okulu": "Ana sayfada HIC GECMIYOR (14.11'de de 0). Site 06.11-14.11 arasinda reklam degisikligi icin yeniden dagitildi ama kart konmadi. Yama docs/yol-okulu-yamasi.md'de hazir bekliyor.",
+    "_not": "Rozet kurali ('store sayfasi gercekten 200 donmeden link koyma') artik saglandi, ikisi de 200."
+  }
+}

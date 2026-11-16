@@ -1,0 +1,922 @@
+# saemuhendislik.com — Tam Sistem Bilgisi
+
+> Bu dosya, "Saemuhendislik sistem düzenlemesi" oturumunun (28.08–12.09.2026) tam
+> transkriptinden, oradaki wiki kavram sayfasından ve kalıcı hafıza dosyasından
+> damıtıldı. Amaç: siteyle ilgili işe bu depodan devam edebilmek.
+>
+> Son güncel bilgi tarihi: **08.10.2026** (§0). 12.09 öncesi bilgiler o
+> oturumun transkriptinden; sonrası Gmail ve konsol kayıtlarından doğrulandı.
+
+---
+
+## 0. GÜNCEL DURUM
+
+### ⚠️ 14.11.2026 — SİTENİN ADSENSE HESABI DEĞİŞTİ (ölçüldü)
+
+Günlük kontrol ilk kez gerçek bir değişiklik yakaladı. İki bağımsız kanıt:
+
+**1. Mail.** 13.11.2026 14:59 UTC, `adsense-noreply@google.com` →
+`eserahmetasim@gmail.com`, konu **"AdSense'e hoş geldiniz"**. Gövdesinde
+*"Yayıncı kimliğiniz: pub-7223494011776010"* ve *"Sitenizi eklediniz"* yazıyor.
+
+**2. Canlı ölçüm.**
+
+| | 06.11'de | 14.11'de |
+|---|---|---|
+| `ads.txt` | `google.com, pub-8433209614215281, DIRECT, …` | **`google.com, pub-7223494011776010, DIRECT, …`** |
+| ana sayfa `adsbygoogle` client | `ca-pub-8433209614215281` | **`ca-pub-7223494011776010`** |
+| `/en/` client | — | **`ca-pub-7223494011776010`** |
+
+Yani site, eski AdSense hesabından (`pub-8433209614215281`,
+`ahmetasimeser008@gmail.com`) **AdMob hesabına** (`pub-7223494011776010`,
+`eserahmetasim@gmail.com`) taşındı. `ads.txt` ve sayfa script'i birlikte
+değişti. Bu, §6'daki "eserahmetasim'de AdSense hesabı YOK" kaydını geçersiz
+kılar.
+
+**Eksik iş (AAE'de):** mail iki adım sayıyor — **geçerli ödeme adresi** ve
+**telefon doğrulaması**. Bunlar tamamlanmadan ödeme alınamıyor.
+
+**Eski hesap: kapalı.** AAE 14.11'de teyit etti — *"eski hesabı kapatmıştım
+zaten"*. Yani `pub-8433209614215281` artık açık değil, mükerrer AdSense hesabı
+sorunu yok. Bu soru kapandı.
+
+**Kendi hatam, açıkça:** 07.11–13.11 günlük kontrollerinde `ads.txt` için
+yalnızca HTTP durumunu (200) ölçüyordum, **içeriğini okumuyordum**. Bu yüzden
+değişimin tam günü bilinmiyor — 07.11 ile 13.11 arasında bir gün. 15.11'den
+itibaren günlük kontrol `ads.txt` içeriğini ve ana sayfadaki `ca-pub-` değerini
+de ölçüyor.
+
+**Yan bulgu:** sayfa HTML'i değiştiğine göre site bu arada **yeniden
+dağıtıldı** — ama ana sayfada `yol_okulu` hâlâ 0, `images/yol-okulu-ikon.png`
+hâlâ 404. Reklam değişikliği için dağıtım yapıldı, hazır Yol Okulu yaması
+(`docs/yol-okulu-yamasi.md`) uygulanmadı.
+
+### 🎉 06.11.2026 — AĞ AÇILDI, CANLI TEST YAPILDI: İKİ OYUN DA YAYINDA
+
+Bu oturumun ortam izin listesine `saemuhendislik.com`, `www.saemuhendislik.com`
+ve `play.google.com` eklendi (AAE onayladı). 30 günlük `CONNECT 403` engeli
+kalktı ve bir aydır tahminle yürütülen her şey ölçüldü.
+
+**İki büyük sonuç — ikisi de benim yürüttüğüm varsayımları çürütüyor:**
+
+#### 1. ✅ İki oyun da GOOGLE PLAY'DE YAYINDA
+
+| Paket | Sonuç |
+|---|---|
+| `com.saemuhendislik.mini_muhendis` | **200**, gerçek mağaza sayfası, geliştirici "SAE Muhendislik", yükleme düğmesi |
+| `com.saemuhendislik.yol_okulu_3b` | **200**, aynı |
+
+Anonim olarak (Google oturumu olmayan bir bulut konteynerinden) çekildi, yani
+gerçekten herkese açık. **İnceleme sonucu maili hiç gelmedi** — Mini Mühendis'i
+29 gündür "incelemede" diye takip ediyordum, meğer yayına girmiş.
+
+→ **"Yeni sürüm gönderme / AdMob ekleme" yasağı KALKTI.** İnceleme bitti.
+AdMob artık iki oyuna da eklenebilir (konum toplama kapalı olarak).
+
+> **Ders:** mail beklemek yerine mağaza sayfasını doğrudan test etmek
+> gerekiyordu. Ağ açılır açılmaz ilk yapılan bu oldu ve bir aylık yanlış
+> varsayımı tek komutla bitirdi.
+
+#### 2. ✅ `www` → apex 301 ÇALIŞIYOR — bir aylık baş teşhisim YANLIŞMIŞ
+
+```
+https://www.saemuhendislik.com/         → 301 → https://saemuhendislik.com/
+https://www.saemuhendislik.com/ads.txt  → 301 → https://saemuhendislik.com/ads.txt
+```
+
+12.10'dan beri "kopya sorununun kökü www'nin yönlendirmemesi" diyordum ve
+Cloudflare Redirect Rule'u **en acil iş** olarak işaretlemiştim. Yanlışmış: ya
+arada düzeltildi ya da 10.09'da `www/ads.txt` 200 döndüğü için yaptığım çıkarım
+baştan hatalıydı. **O iş listeden düşüyor.**
+
+#### Diğer ölçümler
+
+| Ne | Sonuç |
+|---|---|
+| `ads.txt` | 200, içerik (`google.com, pub-8433209614215281, DIRECT, f08c47fec0942fa0`) — **14.11'de `pub-7223494011776010` oldu, bkz. §0** |
+| AdSense script | Ana sayfada **ve** `/hasar`'da var — reklam kodu canlıda |
+| `/hasar` canonical | `https://saemuhendislik.com/hasar` — doğru |
+| Sitemap | **87 adresin hepsi 200** → 404'ler sitemap'ten gelmiyor, eski/dış bağlantılardan |
+| `.html` adresleri | 308 ile temiz URL'ye gidiyor → **"Yönlendirmeli sayfa" sorununun kaynağı bu** |
+| `google19071191ddf4150f.html` | 308 yönleniyor **ama** hedefte doğru token 200 ile servis ediliyor → Search Console doğrulaması sağlam |
+| `/404` | 200 dönüyor (yumuşak 404 deseni, küçük sorun); gerçekten olmayan adres doğru 404 veriyor |
+| Ana sayfa rozetleri | Mini Mühendis'in **gerçek Play linki zaten var**; **Yol Okulu hiç geçmiyor** |
+
+**Sıradaki somut iş:** Yol Okulu yayında ama sitede hiç yok — ana sayfaya Play
+linkiyle eklenmeli. (Dağıtım gerektirir: `C:\SAE-yukleme` → Pages.)
+
+### 🔍 06.11.2026 — "Bulunamadı (404)" sorununun kök sebebi bulundu
+
+Ağ açılınca tam tarama yapıldı: sitemap'teki **87 sayfa** indirildi, içlerindeki
+**298 benzersiz iç link** çıkarıldı, hepsi tek tek test edildi.
+
+**Sonuç: 77 adres 404 veriyor ve 77'sinin de tamamı aynı biçimde —**
+`/cdn-cgi/l/email-protection#<hex>`. **cdn-cgi dışında tek bir 404 yok.**
+
+**Kök sebep: Cloudflare'in Email Address Obfuscation'ı** (Scrape Shield).
+`mailto:` bağlantılarını bu adrese + bir JavaScript çözücüye çeviriyor.
+Tarayıcıda sorun yok; ama JS çalıştırmayan bir bot bunu gerçek link sanıp
+istiyor ve 404 alıyor. `robots.txt`'te `/cdn-cgi/` için `Disallow` yok, yani
+Googlebot taramakta serbest. 26.10'daki WNC-20237597 bu.
+
+**Değerlendirme: ciddi değil.** Gerçek içerik sayfalarının hiçbiri 404
+vermiyor — sitemap'teki 87 adresin hepsi 200. Bunlar rapor gürültüsü, dizine
+girmesi gereken hiçbir sayfayı engellemiyor.
+
+| Seçenek | Sonuç |
+|---|---|
+| **A) Dokunma** ✅ **önerim** | Gerçek sayfalar etkilenmiyor; rapordaki kalabalığa katlanılır |
+| B) Scrape Shield → Email Address Obfuscation'ı kapat | 404'ler biter, ama e-posta adresleri HTML'de düz görünür → spam riski. Özellik zaten bunun için var. |
+| C) `robots.txt`'te `/cdn-cgi/` engelle | Cloudflare bu bloğu kendi yönetiyor; `/cdn-cgi/` engellemek başka şeyleri bozabiliyor — önerilmez |
+
+Aynı taramanın yan bulgusu: **canlı sitede `.html` içeren tek bir link yok** —
+"link/canonical/sitemap'te `.html` yazılmaz" kuralı tutuyor.
+
+### 🟢 27.10.2026 — YOL OKULU'NA ÜRETİM İZNİ VERİLDİ (yayın değil)
+
+`no-reply-googleplay-developer@google.com`, 02:57:
+
+> *"You applied for Google Play production access for your app **AAE Motosiklet
+> Yol Okulu (com.saemuhendislik.yol_okulu_3b)**, and this **has now been
+> granted**. … **Before you release to production**, we recommend testing your
+> app extensively…"*
+
+Kapalı test şartı (12 kesintisiz tester / 14 gün) tutmuş; 22.09'da başlayan test
+tamamlandı ve üretime geçiş başvurusu onaylandı.
+
+⚠ **İzin ≠ yayın.** Metin, Mini Mühendis'in 12.09 maliyle birebir aynı — o gün
+de "izin verildi" yayınlandı sanılmıştı ve yanlış çıkmıştı. Oyun **hâlâ yayında
+değil**; üretim sürümü oluşturulup yayına alınması gerekiyor. Ana sayfadaki
+**"YAKINDA GOOGLE PLAY'DE" rozeti hâlâ doğru.**
+
+**⚠ Sıralama kuralı — AdMob yayından ÖNCE.** Mini Mühendis'ten öğrenildi: sürüm
+bir kez incelemeye girince yeni sürüm gönderilemiyor (sayaç sıfırlanıyor) ve
+inceleme haftalarca sürebiliyor. Yol Okulu şu an incelemede **değil**, yani
+şimdi serbest. Doğru sıra:
+
+1. AdMob SDK'sı (`pub-7223494011776010`) eklenir, reklam birimleri kurulur, test edilir
+2. Play Console → **"reklam içerir"** beyanı işaretlenir (artık doğru beyan)
+3. Üretim sürümü oluşturulur ve **bir kez** incelemeye gönderilir
+
+Tersi sırada (önce yayınla, sonra reklam ekle) oyun incelemedeyken reklamlı
+güncelleme gönderilemez, bekleme uzar.
+
+### 🔴 26.10.2026 — Search Console'da ÜÇÜNCÜ sorun: "Bulunamadı (404)"
+
+`sc-noreply@google.com` (WNC-20237597): *"Search Console, sitenizdeki bazı sayfa
+içeriklerinin aşağıdaki **yeni nedenden** dolayı dizine eklenmediğini belirledi:
+**Bulunamadı (404)**"*
+
+Açık sorun sayısı 2 → **3**. Hangi URL'lerin 404 verdiği bilinmiyor; konsoldan
+**örnek URL listesi** alınmalı. Bu oturumdan site test edilemiyor
+(`CONNECT 403`), o yüzden tahminle uğraşılmayacak.
+
+### 📈 28.10.2026 — TRAFİK 5'TEN 40'A ÇIKTI (11 günde 8 kat)
+
+`sc-noreply@google.com`: *"**Eki 26, 2026** tarihi itibarıyla sitenizin son 28
+gün içinde Google Arama'dan aldığı tıklama sayısı **40** değerine ulaştı."*
+
+| Tarih | 28 günlük tıklama |
+|---|---|
+| 15.10 | 5 |
+| 26.10 | **40** |
+
+**Aşağıdaki 17.10 değerlendirmemi düzeltiyorum.** O gün "5 tıklama pratikte
+sıfır, maksimum yoğunlukta reklam bile kayda değer gelir üretmez" demiştim. O
+rakam için doğruydu, **artık değil**: 11 günde 8 kat artış var, eğri yukarı.
+40 hâlâ küçük ama "hiç" değil.
+
+→ **Reklamı açmanın değeri arttı.** AdSense Auto ads + CMP 07.10'dan beri
+bekliyor; trafik büyürken reklamın kapalı olması artık doğrudan kaçan gelir.
+→ İndeksleme (www→apex 301 + üç Search Console sorunu) yine de en büyük
+kaldıraç: 40 tıklama, sayfaların bir kısmı dizine girememişken alınan rakam.
+
+### 📉 17.10.2026 — İLK TRAFİK ÖLÇÜMÜ: 28 günde 5 tıklama
+
+Search Console: *"28 gün içinde 5 tıklamaya ulaştığınız için tebrikler"*
+(eşik 15.10'da aşıldı). Bu, bu projede kaydedilen **ilk somut trafik sayısı**.
+
+**Okuması acı ama net: 5 tıklama/28 gün pratikte sıfır trafik.** Reklam geliri
+tamamen trafiğe bağlı olduğu için, Auto ads maksimum yoğunlukta açılsa bile bu
+sayıyla kayda değer gelir üretmez.
+
+→ **Asıl kaldıraç reklam ayarı değil, sayfaların Google'da dizine girmesi.**
+Yani `www` → apex 301 kuralı ve kalan Search Console sorunları. Reklamı açmak
+yine de doğru (açık olsun, trafik geldikçe çalışsın), ama gelir beklentisi
+indeksleme düzelene kadar gerçekçi değil.
+
+### 🟢 13.10.2026 — ADMOB HESABI ONAYLANDI + BANKA HESABI DOĞRULANDI
+
+AAE 13.10'da yeni bir para kanalı açtı. Bu depoda daha önce hiç geçmeyen bir konu:
+
+| Saat (UTC) | Olay |
+|---|---|
+| 09:08 | **Banka hesabı doğrulandı** — ödeme profili `3396-9499-8629`. *"Artık banka hesabınızdan ödeme yapmaya veya almaya başlayabilirsiniz."* |
+| 14:18 | "Google AdMob'a hoş geldiniz" |
+| 18:00 | **"Hesabınız onaylandı"** — yayıncı kimliği **`pub-7223494011776010`** |
+
+**AdMob ≠ AdSense.** İkisi ayrı ürün, ayrı hesap, ayrı yayıncı kimliği:
+
+| | AdSense | AdMob |
+|---|---|---|
+| Ne için | **Site** reklamı (saemuhendislik.com) | **Uygulama içi** reklam (iki oyun) |
+| Yayıncı | `ca-pub-8433209614215281` — **14.11'de site `pub-7223494011776010`'a taşındı, bkz. §0** | `pub-7223494011776010` |
+| Hesap | `ahmetasimeser008@gmail.com` | `eserahmetasim@gmail.com` (ana) |
+| Onay | 07.10.2026 | 13.10.2026 |
+
+Banka doğrulaması ayrıca ödemelerin **gerçekten akabilmesi** demek — bugüne
+kadar hiç ödeme çıkmamıştı.
+
+⚠ **Burada bir tuzak var, bkz. §5 yeni kural:** AdMob reklamı göstermek
+uygulamaya SDK ekleyip **yeni sürüm yüklemeyi** gerektiriyor. Mini Mühendis şu
+anda incelemede ve Google yazılı olarak "yeni sürüm göndermeyin" dedi.
+
+### 🟢 07.10.2026 — ADSENSE ONAYI GELDİ
+
+AAE panelde "site için reklam onayı alındı" yazdığını gördü ve reklamların
+yayına alınmasını istedi. Başvuru 28.08'de yapılmıştı → **40 gün**.
+
+> ⚠ Bu bulut oturumundan **bağımsız doğrulanamadı**: tarayıcı/ekran aracı yok,
+> site egress'te engelli, onay maili 008 hesabına gittiği için Gmail'de de yok
+> (7 gün tarandı, hiç AdSense maili gelmemiş). Bu projede bir kez önbellekten
+> gelen yanlış uyarı yaşandığı için iş emri **paneldeki durumu okumakla
+> başlıyor** — onaylı değilse dur ve bildir.
+
+**AAE'nin kararı:** Auto ads **maksimum gelir** — tüm formatlar açık (vignette,
+anchor, yan panel dahil), yoğunluk en yüksek, **ana sayfa dahil**.
+(28.08'de danışmanlık sitesinde imaj maliyeti olabileceğini söylemiştim; AAE o
+gün de bugün de bilerek devam dedi. Karar onun, tam kapsamıyla uygulanıyor.)
+
+**Reklamsız kalacak üç sayfa — tercih değil zorunluluk:** `gizlilik.html` ve
+`gizlilik-politikasi.html` (Play Store'a verilen uygulama gizlilik politikaları;
+reklam koymak uygulama incelemesinde sorun çıkarır) ve `404.html` (içeriksiz
+sayfa, AdSense politikası). Bu üçünde AdSense script'i **hiç yok ve
+eklenmeyecek**. `google19071191ddf4150f.html` da dokunulmaz.
+
+**Kalan iş iki tık, ikisi de yerel oturumda:** Auto ads'i açmak ve 30.08'de
+kurulup onay beklediği için yayınlanamayan **CMP (AB rıza mesajı)** mesajını
+yayınlamak. İş emri 07.10'da kuyruğa alındı.
+
+### 🔴 08.10.2026 — Mini Mühendis GERÇEKTEN incelemede: YENİ SÜRÜM GÖNDERİLMEYECEK
+
+**07.10 teşhisim yanlıştı ve düzeltiyorum.** O gün "üretim sürümü hiç
+yayınlanmamış, desteğe yazmak yanlış kapı" demiştim. Gerçek bunun tersi:
+
+| Saat (UTC) | Gönderen | İçerik |
+|---|---|---|
+| 07.10 09:24 | `googleplay-developer-support@google.com` | Destek kaydı açıldı: **`[3-2357000041354]`** |
+| 07.10 09:33 | aynı | İnceleme **hızlandırıldı** |
+
+Google'ın cevabı, kelimesi kelimesine:
+
+> *"We've **expedited your app to the Google Play Review Team**. Keep an eye on
+> your Google Play Console for the latest updates… **Please refrain from
+> submitting any further versions until the current review is finished and the
+> issue is resolved.** Please be advised that each new submission will **reset
+> the review turnaround time**, as the evaluation period is counted from the
+> date of the most recent change."*
+
+**→ Yeni bir değişmez kural (bkz. §5):** bu inceleme bitene kadar Mini Mühendis
+için **yeni sürüm / AAB gönderilmeyecek, yeni üretim sürümü oluşturulmayacak,
+"incelemeye gönder"e basılmayacak, yeni destek kaydı açılmayacak.** Her yeni
+gönderim inceleme sayacını sıfırlar. Play Console yalnızca **okunacak**.
+
+**Neden bir gün geç görüldü:** takip zincirinin Gmail gönderen filtresinde
+`googleplay-developer-support@google.com` yoktu (yalnızca
+`no-reply-googleplay-developer`, `googleplay-noreply`, `noreply-play-console`
+vardı). Bundan sonra Gmail taramalarında geniş `from:google.com` filtresi
+kullanılıyor.
+
+`docs/play-destek-mesaji.md` artık **arşiv** — başına "kullanma" uyarısı kondu.
+
+### 🔴 12.10.2026 — Doğrulama sonuçlandı: biri düzeldi, biri BAŞARISIZ
+
+08.10'da başlayan doğrulama bugün iki ayrı mailde sonuçlandı:
+
+| Saat (UTC) | Sorun | Sonuç | Kod |
+|---|---|---|---|
+| 05:39 | "Kullanıcı tarafından seçilen standart sayfa olmadan kopya" | ✅ **DÜZELTİLDİ** — 3 sayfa doğrulandı | WNC-10030335 |
+| 05:44 | "Kopya, Google kullanıcıdan farklı bir standart sayfa seçti" | ❌ **BAŞARISIZ** — *"Sayfalarınızdan bazıları bu sorundan etkilenmeye devam ediyor"* | WNC-10031170 |
+
+08.10'da yazdığım uyarı aynen gerçekleşti: *"Düğmeye basmak sorunu çözmez…
+gerçek düzeltme yapılmadıysa bu doğrulama da başarısız döner."* Başarısız olan,
+`www` teşhisinin doğrudan hedef aldığı sorun.
+
+**→ `www` teşhisi artık kanıta dayanıyor.** "Google farklı bir standart sayfa
+seçti" tam olarak `www.saemuhendislik.com` ile `saemuhendislik.com`'un iki ayrı
+özdeş site gibi görünmesinin verdiği hata. 10.09'da `www/ads.txt` 200
+dönüyordu — yani `www` apex'e 301 yönlendirmiyor.
+
+**Çözüm (AAE'nin bilgisayarını gerektiriyor), artık en acil iş:**
+Cloudflare dash → `saemuhendislik.com` zone → **Rules → Redirect Rules**:
+hostname `www.saemuhendislik.com` → `concat("https://saemuhendislik.com",
+http.request.uri.path)`, **301**, query string korunur, Active. (Mevcut
+`dokum-pdf-yonlendirme` kuralının deseni.) Sonra Search Console'da aynı sorun
+için yeniden **"Düzeltmeyi doğrula"**.
+
+Bu doğrudan para konusu: reklam geliri trafiğe, trafik de dizine eklenmeye bağlı.
+
+**Açık kalan ikinci sorun:** "Yönlendirmeli sayfa" — 16.09'da başarısız
+bildirilmişti, o günden beri durumu bilinmiyor; konsoldan URL listesi alınacak.
+
+## 0b. Önceki durum — 03.10.2026 (bulut oturumu tespiti)
+
+Gmail (eserahmetasim@gmail.com) üzerinden doğrulandı. **12.09'dan beri kimsenin
+görmediği iki uyarı var** — AAE'nin bilgisayarı 13.09'dan beri erişilemez olduğu
+için `adsense-gunluk-kontrol` görevi ~3 haftadır çalışmamış.
+
+### 🔴 Search Console: düzeltme BAŞARISIZ + iki yeni sorun
+
+**16.09.2026 20:29 — `sc-noreply@google.com` [WNC-10031170]:**
+> "Sayfayı dizine ekleme sorunlarıyla ilgili bazı düzeltmeler **başarısız oldu**.
+> İstenen düzeltme şu sorunla ilgiliydi: *Yönlendirmeli sayfa*. Sayfalarınızdan
+> bazıları bu sorundan etkilenmeye devam ediyor."
+
+→ 07.09'daki temiz-URL düzeltmesi **kısmen tutmamış**.
+
+**16.09.2026 20:29 + 20:37 — `sc-noreply@google.com` [WNC-20237597]:** iki YENİ neden:
+> * "Kopya, Google kullanıcıdan farklı bir standart sayfa seçti"
+> * "Kullanıcı tarafından seçilen standart sayfa olmadan kopya"
+
+16.09'dan bugüne yeni Search Console maili yok → **durum hâlâ bu.**
+
+#### Teşhis hipotezleri (canlı doğrulama bekliyor, sırayla bakılacak)
+1. **`www` vs apex — en güçlü şüpheli.** 10.09'da `www.saemuhendislik.com/ads.txt`
+   **200** dönüyordu. Eğer `www` apex'e yönlendirmiyor, içeriği doğrudan sunuyorsa
+   Google iki özdeş site görüyor — "Google farklı bir standart sayfa seçti"nin
+   klasik sebebi. Kontrol:
+   `curl -sS --ssl-no-revoke -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.saemuhendislik.com/`
+   200 ise zone'da `www.saemuhendislik.com/*` → `https://saemuhendislik.com/$1`
+   **301 Redirect Rule** kurulacak (`dokum-pdf-yonlendirme` deseni).
+2. **Canonical'ı olmayan sayfalar.** 07.09 betiğinin `DOKUNMA` kümesi
+   `{404.html, google19071191ddf4150f.html}` idi → bu ikisinde canonical YOK.
+   Doğrulama dosyası dizine giriyorsa "standart sayfa olmadan kopya" tam bu.
+   Çözüm: robots.txt `Disallow` (dosya **silinmeyecek**, içeriği değiştirilmeyecek).
+3. **`gizlilik.html` ↔ `gizlilik-politikasi.html` ikizliği.** 3662 / 4144 bayt,
+   içerik neredeyse aynı. Özdeş içerikli iki URL = kopya kümesi. Play Console'a
+   verilen adres korunacak; Play'de kayıtlı olan kanonik yapılacak.
+
+> ⚠ Teşhis **tahminle değil**, Search Console "Dizine ekleme" raporundaki örnek
+> URL listesiyle kesinleştirilecek.
+
+### 🟡 AdSense: 36. gün, hâlâ "Hazırlanıyor"
+Başvuru 28.08 → bugün **36 gün**. Google'ın normal aralığı 1–14 gün; reçetedeki
+**21 gün eşiği çoktan aşıldı** → panelden **yeniden inceleme talebi** gönderilmeli.
+Bu hesaba (eserahmetasim) hiç AdSense maili gelmedi — beklenen, 008'e gidiyor.
+
+### 🟢 Mini Mühendis: Play production access VERİLDİ
+**12.09.2026 — `no-reply-googleplay-developer@google.com`:**
+> "Congratulations! Your app has been granted Google Play production access"
+> (`com.saemuhendislik.mini_muhendis`)
+
+→ Ana sayfadaki "Uygulamalarımız" bandında Mini Mühendis'in
+**"YAKINDA GOOGLE PLAY'DE" rozeti artık yanlış** — gerçek Play Store linkine
+çevrilmeli (TR+EN).
+
+### 06.10.2026 — üç gün sonra: hiçbir şey hareket etmedi
+
+Buluttan doğrulandı:
+- **Gmail: 16.09'dan beri yeni Search Console / AdSense maili YOK** → yukarıdaki
+  üç sorun hâlâ açık, durum değişmemiş.
+- **AdSense başvurusu 39. günde**, hâlâ "Hazırlanıyor" varsayılıyor (panel
+  okunamadı). 21 gün eşiği 18 gün önce aşıldı → yeniden inceleme talebi gerekli.
+- **Yerel oturum 13.09'dan beri hiç bağlanmadı** (`computer_unreachable`);
+  03.10'da kuyruğa alınan iş emri işlenmedi. 06.10'da üç maddelik öncelikli emir
+  daha kuyruğa eklendi (AdSense durumu → SC kopya raporu → www/apex 301 testi).
+- **Site bu ortamdan hâlâ erişilemez** (egress 403) → `www` hipotezi buluttan
+  doğrulanamıyor.
+- Günlük bulut rutini (`SAE Muhendislik gunluk takip`) çalışıyor ama
+  **bağlayıcısız** kaydedildiği için Gmail'i ve oturum araçlarını göremiyor —
+  koşuları 30 saniyede bitiyor. Rutinin istemi, bağlayıcı yokken tek satır
+  "kör çalışıyor + ne eklenmeli" raporu verecek şekilde güncellendi.
+  Kalıcı çözüm: claude.ai → Routines → bu rutine **Gmail** + **Claude Code
+  Remote** bağlayıcılarını ekle.
+
+Yapıştırmaya hazır kısa iş emri: `docs/yerel-oturum-is-emri.md`.
+
+### 06.10.2026 — Mini Mühendis / Google Play kontrolü
+
+`play.google.com` da bu ortamda egress'te engelli, canlı listeleme okunamadı;
+bulgular Gmail'den.
+
+**🔴 Android geliştirici doğrulaması — SON TARİH GEÇTİ.**
+04.09, `googleplay-noreply@google.com`, "[Son hatırlatma]":
+> "Tüm Google Play uygulamalarının ... **30 Eylül 2026'ya kadar kaydedilmesi
+> gerekir. Kaydedilmeyen tüm Google Play uygulamaları dünya genelinde Google
+> Play'den kaldırılacak.**" ... "%99'undan fazlası otomatik olarak kaydedilmiş
+> olsa da ... ana sayfanızı kontrol edip otomatik olarak kaydedilemeyen ...
+> uygulamalarınız olup olmadığına bakmanız gerekir." ... "Başladığınız paket adı
+> kaydı taslaklarını başarıyla tamamladığınızdan emin olun."
+
+Son tarih 6 gün önce geçti. Kaldırma bildirimi gelmedi (muhtemelen otomatik
+kaydedilmiş) ama Play Console → *Android geliştirici doğrulama* sayfasından
+doğrulanmalı. **Bu iş sıranın başına alındı** — uygulama kaldırma riski taşıyor.
+
+**🟡 Mini Mühendis: izin var, yayın YOK (muhtemelen).**
+12.09 mailinin tam metni yayınlama **izni** verildiğini söylüyor, uygulamanın
+canlı olduğunu değil:
+> "this has now been granted. **Production is where you make your app
+> available**... **Before you release to production** we recommend testing your
+> app extensively..."
+
+12.09'dan bugüne "yayınlandı/canlı" maili de gelmedi → sürüm büyük olasılıkla
+hiç yayınlanmadı.
+
+> ⚠ **03.10'daki değerlendirme düzeltildi.** O gün "YAKINDA GOOGLE PLAY'DE
+> rozeti artık yanlış, Play linkine çevrilmeli" demiştim. Uygulama yayında
+> değilse rozet **doğru**; link ölü sayfaya gider. Yeni kural: rozet ancak Play
+> Console'da production canlı olduğu **doğrulandıktan sonra** linke çevrilir.
+> Yerel oturuma düzeltme gönderildi ve `yerel-oturum-is-emri.md` güncellendi.
+
+### Ek sinyal (06.10, doğrulanmamış)
+
+Morning brief rutininin 06.10 koşusu şunu yazmış: *"22 Eylül'de gönderilen
+kapalı test davetinin 14 günlük Google Play sayacı bu akşam ~20:49'da doluyor —
+Play Console'da üretime geçiş başvurusu bundan sonra açılabiliyor."*
+
+Bu, Mini Mühendis'in hâlâ **kapalı test → üretim** akışında olduğuna işaret eder
+ve "rozet kalsın" kararını destekler. Ama başka bir oturumun çıktısı, **teyit
+edilmedi** — hangi uygulamayı kastettiği (Mini Mühendis mi, Malzeme Bilgisi mi)
+ve 12.09'daki production access ile nasıl bağdaştığı Play Console'dan
+doğrulanmalı.
+
+### Günlük bulut rutini kuruldu ve DOĞRULANDI (06.10 19:06)
+
+`SAE gunluk kontrol — oyunlar + reklam` (`trig_01WdNFNckb7vVZfzpLbB2eC9`, her gün
+08:50 Europe/Istanbul) kuruldu ve `fire_trigger` ile hemen bir kez çalıştırılıp
+gerçekten ne yapabildiği ölçüldü — 03.10'daki rutinde atlanan adım buydu.
+
+| Kontrol | Sonuç |
+|---|---|
+| `git clone` + `docs/gunluk-durum.json` okuma | ✅ **çalışıyor** (durumu okudu, karşılaştırdı) |
+| İki oyunun Play store sayfası (curl) | ❌ `CONNECT 403` — ağ politikası `play.google.com`'u engelliyor |
+| Site / `ads.txt` / `www`→apex 301 (curl) | ❌ `CONNECT 403` — `saemuhendislik.com` engelli |
+| Gmail taraması | ❌ fırlatılan oturumda `mcp_servers: []` — **bağlayıcı yok** |
+| Yerel oturum kontrolü | ❌ aynı sebep, `mcp__claude-code-remote__*` yok |
+| Maliyet | ✅ koşu başına ~**0,20 $** (Morning brief ~6 $) |
+
+**Yorum:** rutinin mekaniği sağlam ve ucuz, ama dört kontrolün ikisi bağlayıcı,
+ikisi ağ erişimi bekliyor — yani şu an her gün "durum aynı" deyip duracak.
+**Ağ açılması tek başına en değerli kilidi açıyor:** iki oyunun yayında olup
+olmadığı ve `www`/301 cevabı **bağlayıcı gerektirmeden** ölçülebilir hale geliyor.
+Mail tarafı için claude.ai → Routines → bu rutine **Gmail** + **Claude Code
+Remote** eklenmesi gerekiyor (araç bu organizasyonda bağlayıcı eklemeye izin
+vermiyor).
+
+Not: rutin, `fire_trigger` ile gönderdiğim doğrulama talimatını **veri sayıp
+uygulamadı** — doğru davranış; bilgiyi oturumun kendi kaydından okudum.
+
+### Bu tespitlerle ne yapıldı
+03.10'da yerel oturuma (`Saemuhendislik sistem düzenlemesi`,
+`session_014mvmA2G5DBuuSRYtxDLTwk`) 7 maddelik iş emri **kuyruğa alındı**:
+AdSense durumu/yeniden inceleme → SC raporundan URL listesi → üç hipotezin
+doğrulanması → düzeltme + dağıtım + 200 doğrulama → SC'de "Düzeltmeyi doğrula" →
+Mini Mühendis Play linki → wiki/hafıza güncellemesi.
+AAE'nin bilgisayarı bağlanınca çalışacak.
+
+---
+
+## 1. Künye
+
+| | |
+|---|---|
+| Alan adı | https://saemuhendislik.com (+ `www`) |
+| Sahibi | Ahmet Asım ESER — ahmetasimeser@hotmail.com |
+| Barındırma | **Cloudflare Pages**, proje adı `saemuhendislik` (`saemuhendislik.pages.dev`) |
+| Cloudflare hesabı | eserahmetasim@gmail.com (Google SSO); hesap id `80fd2279…` |
+| NS | `eoin.ns.cloudflare.com`, `paige.ns.cloudflare.com` |
+| Diller | TR (kök) + EN (`/en/`), hreflang'li, nav'da `.lang-switch` düğmesi |
+| Teknoloji | Şablonsuz statik HTML + tek `css/style.css`; build adımı yok |
+| Palet | Lacivert `#16233d` / `#0b1220` + turuncu `#f97316` / `#c2410c` |
+
+### Tarihçe
+- **2020:** Eski site — ücretsiz "Music8" müzik şablonu, HTTPS yok, kırık linkler,
+  AdSense + sayaç + TRT Haber iframe'i. Tasarım M.Abdullah Özel'e aitti
+  (kredisi yeni sitede kaldırıldı).
+- **10.08.2026:** Sıfırdan yeniden yazıldı. Güzel Hosting (guzel.net.tr)
+  DirectAdmin ücretsiz paket, 50 MB kota, kullanıcı `saemuhen`.
+  Cloudflare Free + **Flexible SSL** ile HTTPS sağlandı.
+- **26.08.2026:** Güzel Hosting ücretsiz hesabı askıya alındı → site **tamamen
+  Cloudflare Pages'e taşındı**, hosting bağımlılığı sıfır. Domain kaydı Güzel
+  Hosting'de 2028'e kadar duruyor (yalnız kayıt firması).
+- **26.08–12.09.2026:** PDF yayın serisi, AdSense, Search Console, temiz URL
+  düzeltmesi, günlük otomatik takip görevi.
+
+> ⚠ `mail/ftp/pop/smtp` DNS kayıtları hâlâ eski IP'de (`45.84.188.101`, askıda).
+> Kullanılmıyor, sorun değil. E-posta gerekirse Cloudflare Email Routing kurulabilir.
+
+---
+
+## 2. Sayfa yapısı
+
+Dosya adları eski siteden **bilinçli korundu** (Google dizini kırılmasın diye),
+o yüzden dosya adı ile menü adı örtüşmüyor:
+
+| Dosya | TR menü | EN menü |
+|---|---|---|
+| `index.html` | Ana Sayfa | Home |
+| `hk.html` | Hakkında | About |
+| `gallery.html` | Sektörler | Industries |
+| `events.html` | Kaynaklar | Resources |
+| `contact.html` | İletişim | Contact |
+
+### Teknik yayın sayfaları (her birinin PDF'i var)
+`dokum.html`, `dovme.html`, `alu.html`, `titanyum.html`, `ssf.html`, `hasar.html`
+— hepsinin `/en/` karşılığı var.
+
+### Hukuki / yardımcı sayfalar
+| Dosya | Ne işe yarar |
+|---|---|
+| `cerez-politikasi.html` | **Web sitesi** çerez/gizlilik politikası (TR+EN). AdSense CMP bunu istiyor. 30.08'de yazıldı, 22 sayfanın altbilgisinde linki var. |
+| `gizlilik.html` | Mobil uygulama gizlilik politikası (Play Store) — **KORUNMALI** |
+| `gizlilik-politikasi.html` | İkinci uygulama gizlilik politikası (Play Store) — **KORUNMALI** |
+| `404.html` | Şık 404 |
+| `google19071191ddf4150f.html` | Search Console sahiplik doğrulama dosyası — **SİLİNMEMELİ** |
+| `ads.txt` | AdSense; **14.11'den beri** içeriği: `google.com, pub-7223494011776010, DIRECT, f08c47fec0942fa0` (öncesi `pub-8433209614215281`, bkz. §0) |
+| `robots.txt`, `sitemap.xml`, `favicon.svg` | — |
+
+### Ana sayfadaki özel bloklar
+- **Yayın kartları** (TR+EN) — her teknik yayın için bir kart.
+- `hasar` kartında `.card-badge` ile turuncu **"YENİ"/"NEW"** rozeti (28.08).
+  ⚠ Bir sonraki yayın çıkınca rozet ona taşınmalı ya da kaldırılmalı.
+- **`#uygulamalar` / `#apps` bandı** — Mini Mühendis + Malzeme Bilgisi,
+  ikonlar `images/mini-muhendis-ikon.png`, `images/malzeme-bilgisi-ikon.png`,
+  `.app-soon` ile "YAKINDA GOOGLE PLAY'DE" rozeti.
+  ⚠ Uygulamalar yayınlanınca rozet yerine Play Store düğmesi konacak
+  (Moto Bakım da eklenebilir).
+- CSS sınıfları: `.grid-2`, `.app-row`, `.app-soon` (900px altı tek kolon).
+
+---
+
+## 3. SAE Teknik Yayınları serisi — 6/6 YAYINDA
+
+Özgün hazırlanmış, **telifi bizde** olan A4 PDF ders notları. `pdf/` altında.
+Kapak künyesi: *"Hazırlayan: Ahmet Asım ESER"*. Her notta 1–2 "Saha notu" kutusu.
+
+| No | Başlık | Sayfa | Site sayfası | PDF |
+|----|--------|-------|---|---|
+| 1 | Döküm Teknolojisi | 7 | `dokum.html` | `sae-dokum-teknolojisi.pdf` |
+| 2 | Dövme Teknolojisi | 7 | `dovme.html` | `sae-dovme-teknolojisi.pdf` |
+| 3 | Alüminyum Alaşımları | 5 | `alu.html` | `sae-aluminyum-alasimlari.pdf` |
+| 4 | Titanyum Alaşımları | 6 | `titanyum.html` | `sae-titanyum-alasimlari.pdf` |
+| 5 | Yarı Katı Şekillendirme | 5 | `ssf.html` | `sae-yari-kati-sekillendirme.pdf` |
+| 6 | Hasar ve Kırık Yüzey Analizi | 6 | `hasar.html` | `sae-hasar-kirik-analizi.pdf` |
+
+İlgili sayfalarda TR **"Ders Notu"** / EN **"Technical Note"** indirme kutusu var.
+
+No.6 (28.08.2026), `kirik-yuzey-analizi` wiki birikiminden damıtıldı: 10 bölüm +
+2 özgün inline SVG şema (sünek/gevrek kıyası, yorulma yüzeyi gerilme-seviyesi
+okuması). Kaynakça: ASM Handbook V11/V12, Wulpi, Kayalı, Eryürek, Murakami.
+Kart/hero görseli için özgün `images/hasar.svg` çizildi.
+
+### Yayın üretim reçetesi (kanıtlanmış)
+1. Kaynak HTML'ler: `patent\saemuhendislik-site\icerik\`. Şablon olarak **No.5 /
+   No.6 dosyalarını kopyala** — lacivert degrade kapak + turuncu `h2` +
+   `.tablo` / `.kutu-bilgi` / `.sekil` / `.kaynakca` / `.kunye` sınıfları.
+2. **HTML → PDF: Edge headless**
+   ```
+   msedge --headless=new --disable-gpu --no-pdf-header-footer \
+     --print-to-pdf="cikti.pdf" "file:///kaynak.html"
+   ```
+   A4 marjları CSS `@page` ile; flexbox/gradient/SVG sorunsuz basılır.
+3. PDF'i `Read` ile sayfa sayfa **görsel QA** yap, `SendUserFile` ile AAE onayına sun.
+4. Site sayfası çifti: `X.html` + `en/X.html` (`dokum.html` desenini kopyala),
+   ana sayfa kartı (TR+EN), `sitemap.xml` + 2 satır.
+5. Kart görseli yoksa özgün SVG çiz; SVG'yi **Edge headless `--screenshot`** ile
+   PNG'ye basıp görsel doğrula (Browser paneli kapalıyken pane screenshot çalışmaz).
+
+---
+
+## 4. Dağıtım reçetesi (tam otomatik, 5+ kez kanıtlandı)
+
+1. **Tek kaynak: `C:\SAE-yukleme\`** — tüm değişiklikler oraya işlenir.
+   Kaynak yedek: `C:\Users\ahmet\OneDrive\Masaüstü\patent\saemuhendislik-site\`.
+   ⚠ **OneDrive klasöründen dağıtım YAPMA** (senkron sızıntısı yaşandı).
+2. **.NET `ZipFile` ile zip'le — girdi adları DÜZ bölü (`/`).**
+   PowerShell `Compress-Archive` KULLANMA: ters bölü yazıyor, Linux tarafında
+   klasörleri bozuyor. Zip scratchpad'e yazılır (`C:\` köküne sandbox yazamaz).
+   Silme gerekirse `Remove-Item` hook'a takılır → `[IO.File]::Delete` kullan.
+3. Chrome MCP ile:
+   `dash.cloudflare.com/<hesap>/pages/view/saemuhendislik/deployments/new`
+   - Gizli `input[accept=.zip]`, `read_page`'de **`button type="file"`** olarak
+     görünür → ref'i oradan al. Görünmüyorsa JS ile `display:block` yapıp `find` et.
+   - `file_upload` aracıyla zip'i ver (10 MB sınırı; site ~1,7 MB).
+   - **"N/N files uploaded"** doğrula. Aradaki *"Unzipped N"* mesajları yanıltıcı.
+     ⚠ Yükleme takılırsa bekleme → **sayfayı yenile + aynı zip'i tekrar yükle**.
+   - **Save and deploy** → ilk tık sık sık işlemez; ref tıklaması çalışmazsa
+     `scroll_to` + **ekran görüntüsünden KOORDİNAT** ile tıkla.
+   - **"Success!"** metnini bekle.
+4. **Doğrulama:**
+   - **Alan adı üzerinden** test et — `pages.dev` Türk ISS'lerinde SNI-reset ile engelli.
+   - `?v=x` sorgu ekiyle Pages üst katman önbelleğini atla.
+   - Sandbox curl dış ağa çıkamaz → tarayıcı sekmesinde `fetch` ile durum kodu topla.
+   - Windows'ta `curl` kullanacaksan **`--ssl-no-revoke` şart**, yoksa sertifika hatası.
+
+### Dağıtım sonrası zorunlu kontrol
+Her dağıtımdan sonra `/`, `/hasar`, `/en/`, `/cerez-politikasi`, `/sitemap.xml`,
+`/ads.txt` **200** mü diye bak. (26.08'de apex custom domain bağı koptu, site bir
+süre boş 404 verdi — dağıtım sonrası 200 testi bu yüzden şart.)
+
+---
+
+## 5. Değişmez kurallar
+
+1. **Temiz URL — KALICI KURAL (07.09).** Cloudflare Pages `.html` adreslerini
+   uzantısız adrese **308** yönlendiriyor. `.html` yazılan sitemap/iç link/canonical
+   yüzünden Google *"Yönlendirmeli sayfa"* deyip dizine EKLEMİYOR.
+   **Siteye eklenen her sayfada link, canonical ve sitemap uzantısız yazılacak**
+   (`/hasar`, `/en/hasar`).
+2. **SSL modu Flexible kalmalı.** Eski hosting döneminden kalma; Pages'e geçildi
+   ama zone ayarına dokunulmuyor.
+3. **Süspansiyon / direksiyon / rotil sektör vurgusu sitede YASAK.** Rot başı
+   yalnızca nötr örnek olabilir. Firma verisi hiç kullanılmaz.
+4. `gizlilik.html` + `gizlilik-politikasi.html` **her dağıtımda korunmalı**
+   (Play Store'a verilen adresler). Zip her zaman tüm siteyi içerir.
+5. `google19071191ddf4150f.html` **silinmez** (Search Console doğrulaması).
+6. `404.html` + iki gizlilik sayfası **bilinçli reklamsız** kalır.
+7. **Aynı projede iki Claude oturumu aynı anda dağıtım yapmasın.** 26.08'de iki
+   oturum birbirinin dağıtımını ve domain bağını ezdi, kök DNS kaydı silindi.
+   İşe başlarken production deployment durumuna bak.
+8. Türkçe metin düzenlemede **PowerShell `-replace` kullanma** — Türkçe karakteri
+   bozuyor. Python + UTF-8 ile düzenle. Satır içi çok satırlı `python -c`
+   sınıflandırıcıya takılabiliyor → betiği dosyaya yazıp çalıştır.
+
+### Önbellek davranışları
+- `css/style.css` tarayıcıda `max-age=14400` (**4 saat**) önbelleklenir. CSS
+  değişikliği dönen ziyaretçide 4 saate kadar gecikir (edge anında taze verir).
+  Doğrulamayı **Ctrl+Shift+R** sert yenilemeyle yap.
+- Pages'te silinen dosya 200 dönüyorsa: `Age > 0` + `cf-cache-status: MISS` =
+  Pages'in kendi üst katman önbelleği (`s-maxage=604800`). Zone "Purge Everything"
+  İŞLEMEZ. Kalıcı çözüm **Redirect Rule**; yoksa 7 günde düşer.
+  (Örnek: `dokum.pdf` kalıntısı için `dokum-pdf-yonlendirme` kuralı, 301, Active.)
+- Cloudflare `robots.txt`'imizin başına kendi "Content Signals" AI-bot engellerini
+  (GPTBot, ClaudeBot vb.) basıyor. **Googlebot ve Mediapartners-Google serbest** —
+  arama ve reklam etkilenmiyor.
+
+### Cloudflare dash tuzakları
+- Formlar React'lı: `computer.type` ile yazılan değer re-render'da kaybolabilir.
+  JS **native setter + `input` event** ile doldurmak sağlam.
+- Oturum düşerse giriş sayfasındaki **"eserahmetasim@gmail.com — Last used"**
+  profil düğmesi şifresiz giriş sağlıyor (Google SSO). **Şifre girmeye çalışma.**
+- API gerekirse: dash → profile → API Tokens → Custom (Account / Cloudflare Pages /
+  Edit). API, domain sil/ekle işinde UI'nin *"already associated"* hatasına takılmıyor.
+  (26.08'de açılan geçici `pages-tamir-gecici` token'ı güvenlik gereği SİLİNDİ.)
+
+### ✅ ~~Google Play — açık inceleme sırasında hiçbir şey gönderilmez~~ — KALKTI (06.11.2026)
+
+Bu kural Mini Mühendis incelemedeyken konmuştu. **06.11'de iki oyunun da Play'de
+yayında olduğu doğrulandı** → inceleme bitti, kural geçersiz. Yeni sürüm
+gönderilebilir, AdMob iki oyuna da eklenebilir. Aşağıdaki iki bölüm tarihsel
+kayıt olarak duruyor.
+
+### ⛔ AdMob — incelemedeki uygulamaya SDK eklenmez (14.10.2026, 06.11'de KALKTI)
+
+AdMob 13.10'da onaylandı (`pub-7223494011776010`) ve iki oyuna reklam konabilir.
+Ama reklam göstermek **yeni bir sürüm yüklemeyi** gerektiriyor, bu da yukarıdaki
+Play kuralına çarpıyor:
+
+- **Mini Mühendis** (`com.saemuhendislik.mini_muhendis`) **incelemede** →
+  AdMob SDK'sı **şimdi eklenmez**. Önce inceleme bitsin, uygulama yayına girsin;
+  reklamlı sürüm **ayrı bir güncelleme** olarak çıkar.
+- **Yol Okulu** (`com.saemuhendislik.yol_okulu_3b`) kapalı testte, üretim
+  incelemesinde değil → AdMob şimdi eklenebilir, risk yok. (Üretime geçiş
+  başvurusu gönderilecekse önce onu bitirmek daha temiz.)
+- Play Console'daki **"reklam içerir" beyanı** ancak uygulamada gerçekten reklam
+  olduğunda işaretlenir; önceden işaretlemek yanlış beyan olur.
+
+### ⛔ Google Play — açık inceleme sırasında hiçbir şey gönderilmez (08.10.2026, 06.11'de KALKTI)
+
+Mini Mühendis (`com.saemuhendislik.mini_muhendis`) incelemede ve Google
+incelemeyi hızlandırdı (destek kaydı `[3-2357000041354]`, 07.10). Google'ın
+yazılı talimatı: *"Please refrain from submitting any further versions until
+the current review is finished… each new submission will reset the review
+turnaround time."*
+
+İnceleme bitene kadar, bu uygulama için:
+- **yeni sürüm / AAB gönderilmez**, yeni üretim sürümü **oluşturulmaz**,
+  "incelemeye gönder"e **basılmaz** — her gönderim sayacı sıfırlar;
+- **ikinci destek kaydı açılmaz** — aynı konuda ikinci kayıt sırayı öne almaz;
+- Play Console yalnızca **okunur**, durum raporlanır.
+
+Eksik zorunlu bölüm (içerik derecelendirmesi, veri güvenliği, hedef kitle,
+reklam beyanı, gizlilik URL'si) görülürse **doldurulabilir** ama **sürüm
+gönderilmez**.
+
+Bu kural Yol Okulu'nu (`com.saemuhendislik.yol_okulu_3b`) **kapsamıyor** — o
+ayrı bir uygulama, incelemede değil; üretime geçiş başvurusu serbest.
+
+---
+
+## 6. Google AdSense
+
+| | |
+|---|---|
+| Yayıncı kimliği | ~~**ca-pub-8433209614215281**~~ → **14.11'den beri `pub-7223494011776010`** (bkz. §0) |
+| Hesap | ~~**ahmetasimeser008@gmail.com**~~ → **14.11'den beri `eserahmetasim@gmail.com`**. ("eserahmetasim'de AdSense hesabı YOK" kaydı 13.11'de geçersizleşti: o adrese AdSense hoş geldiniz maili geldi.) |
+| Konsol | Güncel: https://adsense.google.com/adsense/u/1/pub-7223494011776010/sites — eski: `.../pub-8433209614215281/sites` |
+| Başvuru | 28.08.2026 14:19 |
+| Son bilinen durum | **ONAYLANDI — 07.10.2026** (AAE panelden okudu; bkz. §0). Öncesinde 12.09'da "Hazırlanıyor" idi. |
+
+Yayıncı kimliği eski 2020 sitesinin AdSense hesabından geri kazanıldı
+(`eski-site-yedek\` içinde grep ile bulundu) — ödeme bilgileri bile hazırdı.
+
+- **Auto Ads kodu 22 içerik sayfasının `<head>`'inde** (TR 11 + EN 11):
+  `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7223494011776010`
+  (14.11'e kadar `ca-pub-8433209614215281` idi; bkz. §0)
+- `ads.txt` kökte ve 200. Google'ın kendi bot kimlikleriyle test edildi
+  (AdsBot-Google, Mediapartners-Google, Googlebot, `www`, http→https) → hepsi 200.
+- Panelde **"ads.txt: Bulunamadı"** uyarısı çıkıyor ama **bizim tarafta sorun yok** —
+  hesap onaylanmadığı ve reklam sunulmadığı için Google dosyayı düzenli taramıyor.
+  Onayla birlikte kendiliğinden "Bulundu"ya döner.
+- Panel durumu (10.09): *"Tebrikler, tüm adımları tamamladınız"* — Ödemeler ✅,
+  Reklam ayarları onaylandı ✅, Siteye bağlandı ✅, sahiplik doğrulandı ✅,
+  inceleme istendi ✅. **Top tamamen Google'da.**
+
+### Onay gelince yapılacak 2 iş (~5 dakika)
+1. **Auto ads AÇ:** Reklamlar → Siteye göre → `saemuhendislik.com` satırı →
+   kalem/düzenle → "Otomatik reklamlar" anahtarı AÇIK → Siteye uygula / Kaydet.
+2. **CMP (AB rıza mesajı) YAYINLA:** Gizlilik ve mesajlaşma → Avrupa tüzükleri →
+   mesaj oluştur. Site, site adı ("SAE Mühendislik"), gizlilik URL'si
+   (`/cerez-politikasi`) ve logo (`images/sae-logo-yatay.png`, 5:1, PIL ile
+   üretildi, 12 KB) **hesapta kayıtlı**. İş ortakları zaten ayarlı (198).
+   ⚠ 30.08'de kuruldu ama **"Yayınla" düğmesi hesap onayı gelene kadar PASİF** —
+   onay sonrası mesajı yeniden oluşturup yayınlamak 1 dakikalık iş.
+
+> Not: 21 günü geçerse panelden yeniden inceleme talebi gönderilecek (normal, zararsız).
+> Oturum düşerse şifre girilmez, AAE'den 008 ile giriş istenir.
+
+---
+
+## 7. Google Search Console
+
+- `saemuhendislik.com` **URL-öneki mülkü** olarak doğrulandı (30.08).
+  Yöntem: HTML dosyası `google19071191ddf4150f.html`.
+  (Alan adı doğrulaması Cloudflare DNS hesabına erişim istediği için bilinçli
+  olarak daha az yetkili yol seçildi.)
+- `sitemap.xml` sunuldu → **"Başarılı"**; 22 sayfa → 07.09'da 23 sayfa.
+- 30.08'den beri gösterim/tıklama verisi toplanıyor; site aramada görünüyor
+  (ilk ölçüm: 1 gösterim, 0 tıklama, ort. konum 62 — yeni site için normal).
+
+### 06.09 dizine ekleme hataları ve çözümü
+İki uyarı maili: *"Sayfalarınızın dizine eklenmesini engelleyen yeni nedenler:
+Yönlendirmeli sayfa"*. Kök neden = `.html` → uzantısız 308 (bkz. Kural 1).
+
+Yapılanlar: sitemap temiz URL'ye geçti, 23 sayfanın iç linkleri mutlak temiz yola
+çevrildi, **her sayfaya `rel="canonical"` eklendi** (daha önce hiç yoktu),
+hreflang temizlendi. 59 dosya dağıtıldı, canlıda hepsi doğrudan 200 doğrulandı.
+Sitemap yeniden gönderildi, iki hata için **"Düzeltmeyi doğrula"** başlatıldı.
+
+07.09 rapor tablosu:
+
+| Durum | Sayfa |
+|---|---|
+| ✅ Dizine eklenmiş | 12 |
+| ⚠ Yönlendirmeli sayfa | 9 → düzeltildi, doğrulama başladı |
+| ⚠ Canonical'sız kopya | 3 → düzeltildi, doğrulama başladı |
+| ⏳ Keşfedildi, taranmadı | 10 |
+| ⏳ Tarandı, eklenmedi | 1 |
+
+**Doğrulama sonucu 12.09'dan sonra geldi — kontrol edilmeli.**
+
+---
+
+## 8. Günlük otomatik takip
+
+### 8a. Bulut rutini — `SAE gunluk kontrol — oyunlar + reklam` (06.10'da kuruldu)
+
+- Trigger id: `trig_01WdNFNckb7vVZfzpLbB2eC9`, her gün **08:50** (Europe/Istanbul).
+- Her koşuda yeni bir bulut oturumu doğar; AAE'nin bilgisayarı kapalı olsa da çalışır.
+- Kontrol ettiği dört şey: (1) Gmail'de Play Console / Search Console / AdSense
+  maili, (2) iki oyunun Play store sayfasının HTTP kodu, (3) site + `ads.txt` +
+  **`www` → apex 301** testi, (4) yerel oturumun bağlantı durumu.
+- **Sessiz çalışır:** fark yoksa tek satır, bildirim yok. Fark varsa push bildirimi
+  + `docs/gunluk-durum.json` ve bu dosyanın §0'ı güncellenip push edilir.
+- Durum dosyası: **`docs/gunluk-durum.json`** (bu depoda). Rutin her koşuda sıfırdan
+  doğduğu için "değişti mi?" sorusunu ancak bu dosyayla cevaplayabiliyor.
+- ⚠ **Dağıtım yapmaz**, panele şifre girmez. Panel/dağıtım işleri yerel oturuma devredilir.
+- ⚠ Rutin **bağlayıcısız** kaydedildi (araç bu organizasyonda bağlayıcı eklemeye izin
+  vermiyor). Gmail'i görüp göremediği ilk koşuda ölçüldü — sonuç §0'da. Göremiyorsa
+  claude.ai → Routines → bu rutine **Gmail** + **Claude Code Remote** eklenmeli.
+
+### 8b. Yerel görev — `adsense-gunluk-kontrol` (12.09'da kuruldu, GÜVENİLMEZ)
+
+- `C:\Users\ahmet\.claude\scheduled-tasks\adsense-gunluk-kontrol\SKILL.md`, her gün 12:00.
+- Yaptığı: Gmail + site sağlık (curl, `--ssl-no-revoke` şart) + AdSense paneli
+  (Chrome eklentisi, `u/1`). **Onay gelirse sormadan Auto ads'i açar ve CMP'yi
+  yayınlar** (yetki 12.09'da verildi).
+- ⚠ **Yalnızca uygulama AÇIKKEN çalışır.** 13.09–06.10 arasında bilgisayar
+  erişilemez olduğu için **hiç çalışmadı**; 16.09'daki iki Search Console uyarısı
+  20 gün boyunca görülmedi. **Takibin tek dayanağı bu görev olmamalı** — 8a bu
+  yüzden kuruldu.
+- Panel ekran görüntüsü sık sık "0 width"/timeout veriyor → screenshot yerine
+  JS / `get_page_text` kullanılıyor.
+
+Gmail bağlayıcısı **eserahmetasim@gmail.com**'a bağlı: Search Console ve Google
+Play mailleri oraya gelir, **AdSense maili GELMEZ** (008'e gider). AAE 06.10'da
+008'den ana hesaba yönlendirme kurmayı üstlendi; kurulunca AdSense onayı/reddi
+maille görünür hale gelecek.
+
+---
+
+## 8c. Google Play'deki iki oyun
+
+Her gün takip edilen iki oyun (06.10.2026'da kimlikleri doğrulandı):
+
+| | Mini Mühendis | AAE Motosiklet Yol Okulu |
+|---|---|---|
+| Tam ad | Mini Mühendis: Malzeme Oyunu | AAE Motosiklet Yol Okulu |
+| Paket | `com.saemuhendislik.mini_muhendis` | `com.saemuhendislik.yol_okulu_3b` |
+| Aşama | production access **verildi** (12.09) | kapalı test, 14 günlük sayaç **06.10'da doldu** |
+| Yayında? | Hayır (görünüşe göre sürüm hiç yayınlanmadı) | Hayır |
+
+- Store linkleri: `https://play.google.com/store/apps/details?id=<paket>`
+- Yol Okulu opt-in linki:
+  `https://play.google.com/apps/testing/com.saemuhendislik.yol_okulu_3b`
+- **Mini Mühendis:** 12.09 maili yayınlama **izni** veriyor, yayında olduğunu
+  değil ("Before you release to production..."). O tarihten beri "yayınlandı"
+  maili gelmedi.
+- **Yol Okulu:** kapalı test daveti 22.09 17:49 UTC'de **14 kişiye** gönderildi
+  (AAE'nin kendi mailinden, bcc). Google kişisel hesaplar için **14 gün boyunca
+  12 kesintisiz opt-in test kullanıcısı** istiyor. Sayaç davetin gönderildiği an
+  değil her kullanıcının **opt-in anı** üzerinden işler; **kaç kişinin testte
+  kaldığı YALNIZCA Play Console'da görünür**, mailden okunamaz.
+- Oyunun içeriği (davet mailinden): yolda bir durum çıkıyor (ıslak yolda takip
+  mesafesi, tırın arkasında görüş, tünele giriş, dönel kavşak), üç şık ve kısa
+  süre; seçimin sonucu gerçek metre ölçüsüyle oynuyor. Ücretsiz, reklamsız,
+  çevrimdışı, veri toplamıyor.
+- Sitedeki "Uygulamalarımız" bandındaki **"YAKINDA GOOGLE PLAY'DE" rozetleri**,
+  ancak store sayfası 200 döndüğü **doğrulandıktan sonra** Play linkine çevrilir —
+  yayında olmayan oyuna link vermek ölü sayfaya gider.
+
+---
+
+## 9. Bilgi kaynakları (AAE'nin bilgisayarında)
+
+| Yol | Ne |
+|---|---|
+| `C:\SAE-yukleme\` | **Canlı sitenin tek kaynağı** (07.09 itibarıyla 59 dosya) |
+| `…\patent\saemuhendislik-site\` | Çalışma alanı / kaynak yedek |
+| `…\saemuhendislik-site\eski-site-yedek\` | Eski sitenin tam yedeği (11 sayfa, 16 görsel, 5 PDF) |
+| `…\saemuhendislik-site\icerik\` | Yayın PDF'lerinin kaynak HTML'leri |
+| `…\patent\wiki\kavramlar\saemuhendislik-sitesi.md` | **Ana reçete sayfası** |
+| `…\patent\wiki\kaynak-ozetleri\konusma-2026-08-10-saemuhendislik-sitesi.md` | Kuruluş öyküsü |
+| `…\patent\wiki\index.md`, `log.md` | Wiki indeksi ve günlük |
+| `…\.claude\projects\C--Users-ahmet-OneDrive-Masa-st--patent\memory\saemuhendislik-sitesi.md` | Kalıcı proje hafızası |
+| `…\patent\kirik-yuzey-analizi\`, `…\KirikAnalizProgram\` | No.6'nın kaynak birikimi |
+
+---
+
+## 10. Bekleyen işler
+
+### Siteyle ilgili
+1. **AdSense — yeniden inceleme talebi** (36. gün, 21 eşiği aşıldı). Onay
+   geldiyse Auto ads + CMP (bkz. §6). → *iş emri kuyrukta, bkz. §0*
+2. **Search Console** — 08.10'da "Kopya, Google farklı standart sayfa seçti"
+   sorunu için **doğrulama başlatıldı** (3 sayfa, WNC-10030260). Diğer iki sorun
+   açık. ⚠ Gerçek düzeltme (`www` → apex 301) hâlâ doğrulanmadı; yapılmadıysa bu
+   doğrulama da 07.09'daki gibi başarısız döner. → *bkz. §0*
+3. **Patent ve Ar-Ge Danışmanlığı sayfası** — AAE sıcak, henüz yapılmadı.
+4. **"YENİ" rozeti** — bir sonraki yayında taşınmalı ya da kaldırılmalı.
+5. **Uygulama bandı rozetleri** — Mini Mühendis **incelemede** (08.10). Rozet
+   ancak store sayfası **gerçekten 200 döndüğü doğrulandıktan sonra** Play
+   linkine çevrilecek (TR+EN); yayında değilken link ölü sayfaya gider, o yüzden
+   "YAKINDA" şimdilik **doğru**. Malzeme Bilgisi hâlâ bekliyor; Moto Bakım
+   eklenebilir.
+6. **Blog** — trafik için önerildi, yapılmadı.
+7. `info@` e-postası — hosting askıda; gerekirse Cloudflare Email Routing.
+8. Eski sunucudaki çöp (artık erişilmiyor): `parca1-site.zip/.tar.gz`,
+   `parca2-linkfix.tar.gz`, `taslak.html` vb.
+9. `dovme1.pdf` / `dovme2.pdf` eski sunucuda da yoktu — hâlâ kayıp.
+
+### Yan projeler (aynı oturumda geçen, site dışı)
+- **Mini Mühendis** — 🔄 **İNCELEMEDE (08.10.2026)**,
+  `com.saemuhendislik.mini_muhendis`. 12.09'da production access verildi, 07.10'da
+  destek kaydı `[3-2357000041354]` ile inceleme hızlandırıldı. ⛔ **Yeni sürüm
+  gönderilmeyecek** (bkz. §5). Sıradaki: inceleme sonucunu beklemek, sonra site
+  bandındaki rozeti linke çevirmek.
+- **Malzeme Bilgisi** + **Moto Bakım** — mağaza paketleri hazır, Play Console'da
+  uygulama oluşturma bekliyor. (`MalzemeBilgisi-v1.3.1-playstore.aab` hazır.)
+- **Yayın 0125-05** — normalize grup testleri + SEM kayıtları bekliyor.
+- **VAKA-026** — AYDMET-26/007 sonucu bekliyor.
+
+---
+
+## 11. Bu depodan çalışmanın sınırları
+
+Bu bulut oturumunda **site dosyalarına ve canlı siteye erişim yok**:
+
+- `C:\SAE-yukleme` AAE'nin Windows makinesinde; bu konteyner Linux ve ayrı bir makine.
+- `saemuhendislik.com` bu ortamın **ağ politikası tarafından engelli** (egress proxy
+  403 veriyor). Canlı doğrulama için ortamın Network access ayarına bu alan adının
+  eklenmesi gerekir.
+- Cloudflare dash + AdSense + Search Console işleri **Chrome eklentisiyle AAE'nin
+  bilgisayarından** yürüyor.
+
+Yani buradan yapılabilecekler: içerik/HTML/CSS yazmak, PDF içeriği hazırlamak,
+reçeteleri güncellemek, plan çıkarmak. Dağıtım ve panel işleri için yerel oturum
+(`Saemuhendislik sistem düzenlemesi`) gerekiyor.
+
+**Kalıcı iyileştirme önerisi:** `C:\SAE-yukleme` bir git deposuna alınıp Cloudflare
+Pages'in **Git entegrasyonu**na bağlanırsa, dağıtım `git push` ile olur — zip
+yükleme, gizli input, koordinat tıklaması, "Save and deploy işlemedi" derdi tamamen
+biter ve siteye bu bulut oturumundan da çalışılabilir hale gelir.
