@@ -94,11 +94,11 @@ Yayını **`.github/workflows/gunluk-yayin.yml` yapar**, elle paylaşım değil:
 - `scripts/yayin_sirasi.py` sıradaki yayınlanmamış dersi seçer
   (`yayin_oncelik`, sonra `ders_no`; `yayin_beklet: true` olanlar atlanır).
 - Render eder, YouTube'a `public`, Instagram'a Reel olarak yükler.
-- Sonucu `content/yayin_kaydi.yml` dosyasına geri yazar.
+- Sonucu `content/yayin_kaydi.json` dosyasına geri yazar.
 
 ### Paylaşım tarafı ne yapmalı / ne YAPMAMALI
 
-- **Aynı dersi elle bir daha paylaşma.** `content/yayin_kaydi.yml` dosyasına
+- **Aynı dersi elle bir daha paylaşma.** `content/yayin_kaydi.json` dosyasına
   bak: orada kaydı olan ders zaten yayınlanmıştır. Çift paylaşım kanalda
   aynı videonun iki kez çıkması demek.
 - Elle paylaşmak gerekirse (iş akışı hata verdiyse, bir dersi öne almak
