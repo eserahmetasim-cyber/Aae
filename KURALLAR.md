@@ -126,6 +126,18 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
 - **Instagram:** yayınlanan Reel **anında herkese açıktır** — geri alınamaz.
   `egitim-videosu` iş akışında Instagram **hiçbir zaman kendiliğinden çalışmaz**;
   her seferinde elle seçilir (`yayin: instagram` veya `hepsi`).
+- **Yayın saati cron'a değil, YouTube'un `publishAt`'ine bağlıdır.**
+  GitHub cron bir saat garantisi vermez: 17 Kas'ta `0 6 * * *` slotu
+  **15:21 UTC**'de çalıştı — 9 saat 21 dakika gecikme. Dakikayı saat
+  başından kaydırmak bu büyüklükte bir gecikmeyi çözmez. Çözüm: video
+  **private** yüklenir ve `status.publishAt` ile bir sonraki 09:00'a
+  programlanır; CI ne zaman koşarsa koşsun video tam 09:00'da kendiliğinden
+  açılır. `publish_youtube.py --yayinla-saat 09:00`, iş akışı zamanlanmış
+  çalışmada bunu otomatik geçer. YouTube `publishAt`'i yalnızca
+  `privacyStatus=private` ile kabul eder; istenen gizlilik public olsa bile
+  zamanlı yayında private'a çekilir. Cron tam zamanında çalışırsa video
+  ertesi günün 09:00'ına programlanır — bu doğrudur, render bittiğinde o
+  günün 09:00'ı çoktan geçmiş olur.
 - **Oturumlar arası koordinasyon `content/oturumlar.yml` üzerinden yürür.**
   Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyor — bu oturum
   `list_sessions`'ta altıdan yalnızca ikisini görebiliyor, yani oturum mesajı

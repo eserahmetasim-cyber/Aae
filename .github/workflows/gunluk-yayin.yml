@@ -37,6 +37,10 @@ on:
         type: choice
         options: [evet, hayir]
         required: false
+      yayinla_saat:
+        description: "Bu saatte acilacak sekilde zamanla (HH:MM, bos = hemen yayinla)"
+        default: ""
+        required: false
       kuru:
         description: "Kuru calistirma (hicbir sey yayinlanmaz)"
         default: "hayir"
@@ -66,6 +70,14 @@ jobs:
       # Elle calistirmada (workflow_dispatch) acilir kutu hala gecerli.
       IG_ISTENDI: ${{ github.event_name == 'workflow_dispatch' && inputs.instagram != 'hayir' }}
       KURU: ${{ inputs.kuru == 'evet' && '--kuru' || '' }}
+      # ZAMANLI YAYIN. GitHub cron bir SAAT GARANTISI vermiyor: 17 Kas'ta
+      # 06:00 UTC slotu 15:21'de calisti (9 sa 21 dk gecikme). Bu yuzden
+      # "her sabah 09:00" sozu cron'un calisma anina baglanamaz. Video
+      # PRIVATE yuklenip status.publishAt ile bir sonraki 09:00'a
+      # programlaniyor; CI ne zaman calisirsa calissin video tam 09:00'da
+      # kendiliginden aciliyor. Elle calistirmada bos birakilirsa eski
+      # davranis (hemen yayinla) gecerli.
+      YT_SAAT: ${{ github.event_name == 'schedule' && '09:00' || inputs.yayinla_saat }}
     steps:
       - name: Depoyu indir
         uses: actions/checkout@v4
@@ -146,9 +158,11 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
         run: |
+          SAAT_ARG=()
+          [ -n "${YT_SAAT:-}" ] && SAAT_ARG=(--yayinla-saat "$YT_SAAT")
           python3 scripts/publish_youtube.py "$CIKTI" --ders "$DERS" \
             --gizlilik "${{ inputs.gizlilik || 'public' }}" \
-            --id-dosyasi yt_id.txt $KURU
+            "${SAAT_ARG[@]}" --id-dosyasi yt_id.txt $KURU
           echo "YT_ID=$(cat yt_id.txt 2>/dev/null || true)" >> "$GITHUB_ENV"
 
       - name: YouTube atlandi (bilgi)
