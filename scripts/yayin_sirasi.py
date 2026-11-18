@@ -106,6 +106,37 @@ def isaretle(veri: dict, ders_yolu: str, youtube: str = "",
     return veri
 
 
+ISTANBUL = dt.timezone(dt.timedelta(hours=3))   # Turkiye yil boyu UTC+3
+GUNLUK_SAAT = 9                                  # yayin saati (Istanbul)
+
+
+def plan(veri: dict, platform: str = "youtube", baslangic: str = "") -> list:
+    """[(tarih, ders)] - sirasi gelmemis dersleri gunluk takvime dizer.
+
+    Is akisi videoyu publishAt ile bir sonraki 09:00'a programliyor, yani
+    kuyruktaki her ders bir sonraki gune dusuyor. Bu liste onu gosterir.
+    baslangic bos ise ilk slot SIMDIDEN sonraki 09:00."""
+    if baslangic:
+        try:
+            g = dt.datetime.strptime(baslangic, "%Y-%m-%d").replace(
+                hour=GUNLUK_SAAT, tzinfo=ISTANBUL)
+        except ValueError:
+            raise SystemExit(f"HATA: tarih YYYY-AA-GG olmali, '{baslangic}' degil")
+    else:
+        simdi = dt.datetime.now(ISTANBUL)
+        g = simdi.replace(hour=GUNLUK_SAAT, minute=0, second=0, microsecond=0)
+        if g <= simdi:
+            g += dt.timedelta(days=1)
+    yapildi = yapilanlar(veri, platform)
+    cikti = []
+    for d in dersler():
+        if _anahtar(d["dosya"]) in yapildi:
+            continue
+        cikti.append((g, d))
+        g += dt.timedelta(days=1)
+    return cikti
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="AAE gunluk yayin sirasi")
     ap.add_argument("--sonraki", action="store_true",
@@ -115,6 +146,8 @@ def main() -> None:
     ap.add_argument("--youtube", default="", help="--isaretle ile: YouTube video id")
     ap.add_argument("--instagram", default="", help="--isaretle ile: Instagram media id")
     ap.add_argument("--kayit", default=KAYIT_YOLU)
+    ap.add_argument("--plan", nargs="?", const="", metavar="YYYY-AA-GG",
+                    help="tarihli yayin takvimi (bos = bir sonraki 09:00'dan)")
     ap.add_argument("--platform", default="youtube", choices=PLATFORMLAR,
                     help="hangi platformun kuyrugu (varsayilan youtube)")
     args = ap.parse_args()
@@ -125,6 +158,22 @@ def main() -> None:
         kaydi_yaz(isaretle(veri, args.isaretle, args.youtube, args.instagram),
                   args.kayit)
         print(f"isaretlendi: {_anahtar(args.isaretle)}")
+        return
+
+    if args.plan is not None:
+        satirlar = plan(veri, args.platform, args.plan)
+        if not satirlar:
+            print(f"  {args.platform}: sirada ders yok.")
+            return
+        ilk, son = satirlar[0][0], satirlar[-1][0]
+        print(f"  YAYIN PLANI · {args.platform} · her gun {GUNLUK_SAAT:02d}:00 "
+              f"(Istanbul)\n")
+        gunler = ("Pzt", "Sal", "Car", "Per", "Cum", "Cmt", "Paz")
+        for g, d in satirlar:
+            print(f"  {g:%d.%m.%Y}  {gunler[g.weekday()]}  "
+                  f"ders {d['no']:02d}  {d['baslik']}")
+        print(f"\n  {len(satirlar)} ders · {ilk:%d.%m.%Y} - {son:%d.%m.%Y}")
+        print("  (secret'lar girilene kadar hicbiri yayinlanmaz)")
         return
 
     if args.durum:

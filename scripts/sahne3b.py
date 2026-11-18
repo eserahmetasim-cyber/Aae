@@ -1570,6 +1570,220 @@ def kare_yolcu3b(t):
 
 
 # ---------------------------------------------------------------------------
+#  MOTOSIKLETI YUKLEMEK
+# ---------------------------------------------------------------------------
+# Rakamlar KENDI MOTORUMUZDAN olculdu (assets/adv_motor):
+#   aks arasi L = 1,470 m   (on aks z=+0,74 · arka aks z=-0,73)
+#   ust bagajin merkezi z=-1,06, yani ARKA AKSIN 0,33 m ARKASINDA, y=1,20
+#
+# STATIK AKS YUKU: on akstan d uzakliga m kutle eklenirse
+#     on tekere binen  = m * (L - d) / L
+#     arka tekere binen= m - yukaridaki
+# d > L ise (yani arka aksin ARKASI) on teker yuku EKSILIR.
+#
+# 10 kg icin:
+#   depo ustu   d=0,54 -> on +6,33 kg   arka +3,67
+#   sele        d=1,14 -> on +2,24      arka +7,76
+#   yan canta   d=1,47 -> on  0,00      arka +10,00   (tam aks hizasi)
+#   ust bagaj   d=1,80 -> on -2,24      arka +12,24
+# Ayni 10 kilo: depoda on tekere +6,3 kg BINER, ust bagajda 2,2 kg ALIR.
+# Aradaki fark 8,6 kg ve tek degisken yukun YERI.
+#
+# VARSAYIM (ekranda yazili): yuksuz dagilim 50/50, motosiklet+surucu 250 kg,
+# yani 125/125 kg. Bu tek varsayim; geri kalan her sey turev.
+#
+# YUKSEKLIK: ust bagaj y=1,20'de, yani yuk yuksege biniyor. Agirlik
+# merkezinin ne kadar yukseldigini hesaplamak icin motorun kendi agirlik
+# merkezi yuksekligini VARSAYMAK gerekirdi; o yuzden yukseklik derste
+# NITEL veriliyor, rakam verilmiyor.
+YUK_L = 1.470
+YUK_ON_AKS = 0.74
+YUK_KUTLE = 250.0
+YUK_TABAN = 125.0                 # yuksuz on aks yuku (50/50 varsayimi)
+YUK_EK = 10.0                     # eklenen yuk (kg)
+
+# y degerleri kutunun OTURDUGU yer; cagride ayrica ofset VERILMIYOR.
+# Ilk surumde +0,30 ekleniyordu ve kutu 30 cm havada duruyordu.
+# bagaj 1,45: modelin kendi ust bagaji 1,01-1,33 arasinda, yuk onun ustune.
+YUK_YERLERI = (
+    ("depo",  "DEPO ÜSTÜ",   0.20, 1.24),
+    ("sele",  "SELE ÜSTÜ",  -0.40, 1.24),
+    ("canta", "YAN ÇANTA",  -0.73, 0.86),
+    ("bagaj", "ÜST BAGAJ",  -1.06, 1.52),
+)
+
+YUK_NOKTA = {
+    "nerede": ("AYNI KİLO, FARKLI YER", "ön teker yükünü izle", None),
+    "depo":   ("DEPO ÜSTÜ", "ön tekere +6,3 kg biner", "depo"),
+    "canta":  ("YAN ÇANTA", "aks hizası: öne hiç binmez", "canta"),
+    "bagaj":  ("ÜST BAGAJ", "ön tekerden 2,2 kg ALIR", "bagaj"),
+    "yuksek": ("YÜKSEK YÜK AYRI DERT", "ağırlık merkezi yukarı çıkar", "bagaj"),
+    "kural":  ("AĞIR OLAN AŞAĞI VE ÖNE", "hafif olan arkaya", "canta"),
+}
+YUK_SIRA = list(YUK_NOKTA)
+YUK_FAZ = [(4.0, "nerede")]
+
+
+def yuk_faz_ayarla(metin):
+    """sahne_fazlari: "4:nerede, 11:depo, ..." """
+    global YUK_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in YUK_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen yuk noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    YUK_FAZ = sorted(f)
+
+
+def yuk_evre(t):
+    ad, bas = YUK_FAZ[0][1], YUK_FAZ[0][0]
+    for z, a in YUK_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def yuk_on_aks(z_yuk, m=YUK_EK):
+    """On aksa binen EK yuk (kg). z_yuk motosiklet koordinatinda."""
+    d = YUK_ON_AKS - z_yuk
+    return m * (YUK_L - d) / YUK_L
+
+
+def _yuk_konum(anahtar, gecen):
+    """(z, y, etiket). 'nerede' adiminda yuk motosiklet boyunca geziyor."""
+    if anahtar == "nerede":
+        p = (gecen / 7.0) % 1.0
+        n = len(YUK_YERLERI)
+        i = min(n - 2, int(p * (n - 1)))
+        u = yumusak((p * (n - 1)) - i)
+        _, _, z0, y0 = YUK_YERLERI[i]
+        ad1, et1, z1, y1 = YUK_YERLERI[i + 1]
+        return z0 + (z1 - z0) * u, y0 + (y1 - y0) * u, (et1 if u > 0.5
+                                                        else YUK_YERLERI[i][1])
+    hedef = YUK_NOKTA[anahtar][2]
+    for ad, et, z, y in YUK_YERLERI:
+        if ad == hedef:
+            return z, y, et
+    return 0.0, 1.0, ""
+
+
+def _yuk_kutusu(s, x, z, y, renk):
+    """Yuku temsil eden kutu + ustunde 10 kg etiketi icin isaret."""
+    s.kutu([x, y, z], [0.46, 0.34, 0.40], renk)
+    s.kutu([x, y + 0.19, z], [0.40, 0.04, 0.34],
+           tuple(min(255, int(k * 1.3)) for k in renk))
+
+
+def kare_yuk3b(t):
+    """Yan gorus: yuk motosiklet boyunca gezerken aks yukleri degisiyor."""
+    anahtar, faz_bas = yuk_evre(t)
+    etiket, aciklama, _ = YUK_NOKTA[anahtar]
+    z_yuk, y_yuk, yer_adi = _yuk_konum(anahtar, max(0.0, t - faz_bas))
+    on_ek = yuk_on_aks(z_yuk)
+    arka_ek = YUK_EK - on_ek
+    on = YUK_TABAN + on_ek
+    arka = YUK_TABAN + arka_ek
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _yuk_tek
+    _yuk_tek = (globals().get("_yuk_tek", 0.0) + 0.22) % (2 * math.pi)
+
+    z = -30.0
+    while z < 120:
+        z2 = z + 6.0
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -30.0
+        while zz < 90:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+
+    model, _, _ = motosiklet(0.0, _yuk_tek, 0.0, surucu=False)
+    s.ekle(model, t=[0.0, 0.0, 0.0])
+    # Yuk kutusu: on tekere BINIYORSA yesil, ALIYORSA kirmizi
+    _yuk_kutusu(s, 0.0, z_yuk, y_yuk,
+                (86, 170, 104) if on_ek > 0.5 else
+                ((198, 70, 58) if on_ek < -0.2 else (214, 170, 70)))
+
+    # Aks isaretleri: yukun aks arasinda mi disinda mi oldugu okunmali.
+    # Once yola enine uzanan seritlerdi ve serit cizgisi gibi okunuyordu;
+    # artik motosikletin altinda kisa yer tirnaklari + kucuk dikme.
+    for zz, c in ((YUK_ON_AKS, (120, 190, 240)), (YUK_ON_AKS - YUK_L, (240, 160, 120))):
+        s.yuzey([[-0.62, 0.03, zz - 0.05], [0.62, 0.03, zz - 0.05],
+                 [0.62, 0.03, zz + 0.05], [-0.62, 0.03, zz + 0.05]], c, katman=2)
+        s.kutu([-0.56, 0.17, zz], [0.05, 0.34, 0.05], c)
+
+    # Tam yandan ve geride: 5,6 m'den bakinca motosiklet kadraji tasiyor,
+    # tekerlekler kesiliyordu.
+    kamera = Kamera([8.4, 1.45, 0.25], [0.0, 0.88, -0.18], G, Y, fov=26)
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if on_ek < -0.2 else (YESIL if on_ek > 0.5 else TURUNCU)
+    f = s2.font(40)
+    tw = d.textlength(etiket, font=f)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    px, py, pw = 62, 470, 520
+    d.rounded_rectangle([px, py, px + pw, py + 350], 16, fill=(16, 20, 26, 212),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (px + 22, py + 12), f"{YUK_EK:.0f} KİLO NEREYE?", 26,
+            (150, 155, 162))
+    s2.yazi(d, (px + 22, py + 42),
+            "yüksüz 125/125 varsayıldı · aks arası 1,47 m", 22, (124, 132, 142))
+    s2.yazi(d, (px + 22, py + 76), yer_adi, 34, KREM)
+
+    bx, bw, olcek = px + 22, pw - 44, 150.0
+    for i, (ad, deger, ek, c) in enumerate(
+            (("ÖN TEKER", on, on_ek, (120, 190, 240)),
+             ("ARKA TEKER", arka, arka_ek, (240, 160, 120)))):
+        yy = py + 126 + i * 82
+        s2.yazi(d, (bx, yy), ad, 26, (190, 196, 204))
+        m1 = f"{deger:.1f} kg".replace(".", ",")
+        g1 = d.textlength(m1, font=s2.font(28))
+        s2.yazi(d, (bx + bw - g1, yy), m1, 28, c)
+        d.rounded_rectangle([bx, yy + 34, bx + bw * YUK_TABAN / olcek, yy + 56],
+                            5, fill=(66, 74, 84))
+        if ek >= 0:
+            d.rounded_rectangle([bx + bw * YUK_TABAN / olcek, yy + 34,
+                                 bx + bw * deger / olcek, yy + 56], 5, fill=c)
+        else:
+            d.rounded_rectangle([bx + bw * deger / olcek, yy + 34,
+                                 bx + bw * YUK_TABAN / olcek, yy + 56], 5,
+                                fill=KIRMIZI)
+
+    # Sabit x ile "ÖN TEKERE" ve deger bitisik yaziliyordu; ikisi de
+    # olculmus genislikten sonra konuluyor.
+    isaret = f"{on_ek:+.2f} kg".replace(".", ",")
+    s2.yazi(d, (bx, py + 296), "ÖN TEKERE", 24, (150, 155, 162))
+    ix = bx + d.textlength("ÖN TEKERE", font=s2.font(24)) + 22
+    s2.yazi(d, (ix, py + 290), isaret, 34, ust_renk)
+    son = ("biner" if on_ek > 0.5 else ("ALIR" if on_ek < -0.2 else "etki yok"))
+    s2.yazi(d, (ix + d.textlength(isaret, font=s2.font(34)) + 20,
+                py + 298), son, 26, (176, 182, 190))
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
 #  YAN RUZGAR VE TIR
 # ---------------------------------------------------------------------------
 # Dis kaynak rakami YOK. Tek varsayim sahnedeki temel yatis (10 derece) ve
@@ -4304,7 +4518,7 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar"),
+                             "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -4342,6 +4556,9 @@ def main():
     elif args.sahne == "yolcu":
         yolcu_faz_ayarla(args.fazlar)
         cizer = kare_yolcu3b
+    elif args.sahne == "yuk":
+        yuk_faz_ayarla(args.fazlar)
+        cizer = kare_yuk3b
     elif args.sahne == "ruzgar":
         ruzgar_faz_ayarla(args.fazlar)
         cizer = kare_ruzgar3b

@@ -1,0 +1,170 @@
+# Ders 22 · Motosikleti yüklemek
+# Dış kaynak rakamı KULLANILMIYOR. Rakamlar KENDİ MOTORUMUZDAN ölçüldü
+# (assets/adv_motor — KASKKAFA'nın kurduğu, AAE'nin onayladığı model):
+#   aks arası L = 1,470 m   (ön aks z=+0,74 · arka aks z=−0,73)
+#   üst bagajın merkezi z=−1,06 → ARKA AKSIN 0,33 m ARKASINDA, y=1,20
+#
+# STATİK AKS YÜKÜ. Ön akstan d uzaklığa m kütle eklenirse:
+#     ön tekere binen   = m · (L − d) / L
+#     arka tekere binen = m − (yukarıdaki)
+# d > L ise (yani arka aksın ARKASI) ön teker yükü EKSİLİR.
+#
+# 10 kg için:
+#   depo üstü  d=0,54 → ön +6,33 kg   arka +3,67
+#   sele       d=1,14 → ön +2,21      arka +7,79
+#   yan çanta  d=1,47 → ön  0,00      arka +10,00   (tam aks hizası)
+#   üst bagaj  d=1,80 → ön −2,24      arka +12,24
+# Aynı 10 kilo: depoda ön tekere +6,3 kg BİNER, üst bagajda 2,2 kg ALIR.
+# Aradaki fark 8,6 kg ve tek değişken yükün YERİ.
+#
+# TEK VARSAYIM (ekranda yazılı): yüksüz dağılım 50/50, motosiklet+sürücü
+# 250 kg → 125/125 kg. Geri kalan her şey türev.
+#
+# YÜKSEKLİK NİTEL VERİLİYOR: üst bagaj y=1,20'de, yani yük yükseğe biniyor.
+# Ağırlık merkezinin ne kadar yükseldiğini hesaplamak için motosikletin
+# kendi ağırlık merkezi yüksekliğini VARSAYMAK gerekirdi; o yüzden rakam
+# verilmiyor, yalnızca etkisi anlatılıyor.
+
+ders_no: 22
+slug: yuk
+baslik: "Motosikleti Yüklemek"
+alt_baslik: "Aynı kilo, farklı yer, farklı motosiklet"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""              # boş = aşağıdaki sahne çizimle üretilir
+sahne: yuk
+boyut: 3
+kamera: yan
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:nerede, 11:depo, 19:canta, 27:bagaj, 35:yuksek, 43:kural"
+
+kapanis: "Yükün ağırlığı değil, yeri belirler"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Aynı kilo, farklı yer, farklı sonuç" }
+  - { t: 11, sure: 7, metin: "2 · Depo üstü: ön tekere +6,3 kg biner" }
+  - { t: 19, sure: 7, metin: "3 · Yan çanta aks hizasında: öne hiç binmez" }
+  - { t: 27, sure: 7, metin: "4 · Üst bagaj: ön tekerden 2,2 kg ALIR" }
+  - { t: 35, sure: 7, metin: "5 · Yüksek yük ayrı dert: merkez yukarı çıkar" }
+  - { t: 43, sure: 7, metin: "6 · Ağır olan aşağı ve öne, hafif olan arkaya" }
+
+youtube:
+  baslik: "Motosikleti Yüklemek: Aynı Kilo, Farklı Yer | Yol Okulu #22"
+  aciklama: |
+    Çantanı nereye koyduğun, kaç kilo olduğundan daha önemli. Aynı 10 kilo,
+    konduğu yere göre ön tekerine ya 6 kilo bindirir ya da 2 kilo alır.
+
+    0:04 Aynı kilo, farklı yer
+    0:11 Depo üstü
+    0:19 Yan çanta
+    0:27 Üst bagaj
+    0:35 Yüksek yük
+    0:43 Kural
+
+    HESAP BASİT
+    Ön akstan d uzaklığa m kilo koyarsan ön tekere binen yük:
+
+      ön teker = m × (L − d) / L        L = aks arası
+
+    Videodaki rakamlar bu motosikletin kendi ölçülerinden çıkıyor: aks
+    arası 1,47 metre, üst bagajın merkezi arka aksın 33 santim arkasında.
+    Yüksüz dağılım 50/50 varsayıldı (125/125 kg).
+
+    10 KİLO, DÖRT YER
+      depo üstü   → ön +6,33 kg   arka  +3,67 kg
+      sele        → ön +2,21 kg   arka  +7,79 kg
+      yan çanta   → ön  0,00 kg   arka +10,00 kg
+      üst bagaj   → ön −2,24 kg   arka +12,24 kg
+
+    Dikkat et: üst bagaj arka aksın ARKASINDA. Oraya koyduğun yük kaldıraç
+    gibi çalışır ve ön tekerden yük ALIR. Aynı 10 kilonun iki uç arasındaki
+    farkı 8,6 kilogram — ve tek değişken nereye koyduğun.
+
+    NEDEN ÖNEMLİ
+    Ön teker iki iş yapar: yönlendirir ve frenin büyük kısmını o taşır
+    (Ders 1). Ön tekerden yük almak ikisini birden zayıflatır. Belirtisi
+    tanıdıktır: direksiyon hafifler, viraj girişinde motosiklet "yüzer",
+    hızda gidon sallanmaya başlar.
+
+    YAN ÇANTA NEDEN İYİ YER
+    Yan çantalar arka aks hizasında ve alçakta durur. Aks hizasındaki yük
+    ön tekere HİÇ binmez — tamamı arkaya gider ama denge bozulmaz. Alçak
+    olması da ayrı kazanç.
+
+    YÜKSEKLİK AYRI DERT
+    Üst bagaj sadece arkada değil, yüksekte. Yüksek yük ağırlık merkezini
+    yukarı taşır; motosiklet yatıp doğrulurken daha fazla atalet taşır,
+    düşük hızda hantallaşır, rüzgârda daha çok etkilenir (Ders 21).
+    Bunun kaç santim olduğunu söylemiyorum — motosikletin kendi ağırlık
+    merkezi yüksekliğini varsaymadan hesaplanamaz, ben de varsaymıyorum.
+
+    KURAL
+    • Ağır olan AŞAĞI ve ÖNE: yan çanta dibi, tank çantası.
+    • Hafif ve hacimli olan arkaya: uyku tulumu, mont, boş çanta.
+    • Üst bagaja ağır şey koyma. Kask, eldiven, yağmurluk — hafif şeyler.
+    • Yükü motosiklete SIKI bağla. Oynayan yük, yerinde durmayan ağırlık
+      merkezi demektir.
+    • Yük bindikten sonra arka süspansiyon ön yükünü artır (Ders 11) ve
+      lastik basıncını el kitabındaki yüklü değere getir (Ders 9).
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "yük"
+    - "bagaj"
+    - "yan çanta"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Çantanı NEREYE koyduğun, kaç kilo olduğundan daha önemli.
+
+    Hesap basit. Ön akstan d uzaklığa m kilo koyarsan:
+    ön teker = m × (L − d) / L
+
+    Rakamlar bu motosikletin kendi ölçülerinden: aks arası 1,47 m, üst
+    bagajın merkezi arka aksın 33 cm arkasında. Yüksüz 50/50 varsayıldı.
+
+    AYNI 10 KİLO, DÖRT YER 👇
+    depo üstü → ön +6,33 kg · arka +3,67
+    sele → ön +2,21 · arka +7,79
+    yan çanta → ön 0,00 · arka +10,00
+    üst bagaj → ön −2,24 · arka +12,24
+
+    Üst bagaj arka aksın ARKASINDA. Oraya koyduğun yük kaldıraç gibi
+    çalışır ve ön tekerden yük ALIR. İki uç arasındaki fark 8,6 kg — tek
+    değişken nereye koyduğun.
+
+    NEDEN ÖNEMLİ: ön teker hem yönlendirir hem frenin büyük kısmını taşır
+    (Ders 1). Ondan yük almak ikisini birden zayıflatır. Belirtisi tanıdık:
+    direksiyon hafifler, viraj girişinde motosiklet "yüzer", hızda gidon
+    sallanır.
+
+    YAN ÇANTA NEDEN İYİ: aks hizasında ve alçak. Aks hizasındaki yük ön
+    tekere HİÇ binmez.
+
+    YÜKSEKLİK AYRI DERT: üst bagaj hem arkada hem yüksekte. Ağırlık merkezi
+    yukarı çıkar, motosiklet yatıp doğrulurken hantallaşır, rüzgârda daha
+    çok etkilenir (Ders 21). Kaç santim olduğunu söylemiyorum — motorun
+    kendi ağırlık merkezini varsaymadan hesaplanamaz.
+
+    KURAL: Ağır olan AŞAĞI ve ÖNE. Hafif ve hacimli olan arkaya. Üst bagaja
+    ağır şey koyma. Yükü SIKI bağla. Sonra arka ön yükünü ve lastik
+    basıncını yüklü değere getir.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #yük #bagaj #yançanta #motosikleteğitimi #yolokulu #güvenlisürüş
