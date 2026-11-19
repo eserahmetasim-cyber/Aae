@@ -105,4 +105,4 @@ AAE'ye tek satır bildir: YouTube'un üç secret'ı girildi mi, kuru test ne ded
 
 - `gh` komutu yoksa: `https://cli.github.com/` adresinden kur, sonra `gh auth login`.
 - `pip`/`python` tanınmıyorsa: Python 3.11+ kur (`https://www.python.org/downloads/`), kurulumda **"Add Python to PATH"** işaretli olsun.
-- Google Cloud'da "quota" uyarısı görürsen: YouTube Data API'nin günlük yükleme kotası var, yeni projelerde düşük. Günde bir video sorun değil.
+- Google Cloud'da "quota" uyarısı görürsen: YouTube Data API'nin günlük yükleme kotası var. Bu kanal günde **iki** video yüklüyor; düşük bir kullanım. Yine de kota hatası görürsen metnini AAE'ye yaz, tahmin yürütme.
