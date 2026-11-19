@@ -1605,11 +1605,18 @@ YUK_EK = 10.0                     # eklenen yuk (kg)
 # y degerleri kutunun OTURDUGU yer; cagride ayrica ofset VERILMIYOR.
 # Ilk surumde +0,30 ekleniyordu ve kutu 30 cm havada duruyordu.
 # bagaj 1,45: modelin kendi ust bagaji 1,01-1,33 arasinda, yuk onun ustune.
+# (ad, etiket, z, y). z HESABA girer, y yalnizca cizime: y kutunun MERKEZI.
+# y'ler motorun KENDI yuzeyinden olculdu (sele ustu 0,96 - ust bagajin
+# tepesi 1,34) ve kutu oraya oturacak sekilde secildi. En yuksegi (ust
+# bagaj) kadrajda gosterge seridinin ALTINDA kalmak zorunda:
+#   kutunun tepesi = y + 0,21 <= 1,63 m  ->  y <= 1,42
+# (sinir 1,63; cunku kutu x=+0,52'de, yani kameraya 0,52 m daha yakin ve
+#  ekranda 350 degil 373 piksel/metre olcekle buyuyor.)
 YUK_YERLERI = (
-    ("depo",  "DEPO ÜSTÜ",   0.20, 1.24),
-    ("sele",  "SELE ÜSTÜ",  -0.40, 1.24),
-    ("canta", "YAN ÇANTA",  -0.73, 0.86),
-    ("bagaj", "ÜST BAGAJ",  -1.06, 1.52),
+    ("depo",  "DEPO ÜSTÜ",   0.20, 1.22),
+    ("sele",  "SELE ÜSTÜ",  -0.40, 1.15),
+    ("canta", "YAN ÇANTA",  -0.73, 0.64),
+    ("bagaj", "ÜST BAGAJ",  -1.06, 1.42),
 )
 
 YUK_NOKTA = {
@@ -1714,8 +1721,11 @@ def kare_yuk3b(t):
 
     model, _, _ = motosiklet(0.0, _yuk_tek, 0.0, surucu=False)
     s.ekle(model, t=[0.0, 0.0, 0.0])
-    # Yuk kutusu: on tekere BINIYORSA yesil, ALIYORSA kirmizi
-    _yuk_kutusu(s, 0.0, z_yuk, y_yuk,
+    # Yuk kutusu: on tekere BINIYORSA yesil, ALIYORSA kirmizi.
+    # x=0'da iken kutu motosikletin ICINDE kaliyordu: yakin taraftaki
+    # kaportalar ustune ciziliyor ve yuk gorunmez oluyordu. x=+0,52 ile
+    # her zaman motorun ONUNDE, "baglanmis" gibi duruyor.
+    _yuk_kutusu(s, 0.52, z_yuk, y_yuk,
                 (86, 170, 104) if on_ek > 0.5 else
                 ((198, 70, 58) if on_ek < -0.2 else (214, 170, 70)))
 
@@ -1727,9 +1737,20 @@ def kare_yuk3b(t):
                  [0.62, 0.03, zz + 0.05], [-0.62, 0.03, zz + 0.05]], c, katman=2)
         s.kutu([-0.56, 0.17, zz], [0.05, 0.34, 0.05], c)
 
-    # Tam yandan ve geride: 5,6 m'den bakinca motosiklet kadraji tasiyor,
-    # tekerlekler kesiliyordu.
-    kamera = Kamera([8.4, 1.45, 0.25], [0.0, 0.88, -0.18], G, Y, fov=26)
+    # TAM DIK YAN GORUS, sayisal olarak kuruldu. Onceki egik kameralarda
+    # motosikletin ONU kadrajdan tasiyor, ON AKS tirnagi hic gorunmuyordu -
+    # oysa bu dersin can alici noktasi yukun aksa gore NEREDE durdugu.
+    #   k  = F/D = piksel/metre olcegi
+    #   ekran_x = 540 + (z - cz) * k      ekran_y = 960 - (y - cy) * k
+    # Motosiklet z'de [-1,45 .. +1,15] (2,60 m), y'de [0 .. 1,80].
+    # k=350, goz yuksekligi 0,95 secildi: genislik 910 px (85-995 arasi),
+    # yer cizgisi 960 + 0,95*350 = 1292 px, yani adim yazisi bandinin
+    # (1324) ustunde; yukun tepesi 960 - (1,71-0,95)*350 = 694 px, yani
+    # gosterge seridinin (690) altinda. Ikisi de OLCULDU, tahmin degil.
+    #   F = k*D = 350*8,4 = 2940 -> fov = 2*atan(960/2940) = 36,2 derece
+    YUK_K, YUK_D = 350.0, 8.4
+    kamera = Kamera([YUK_D, 0.95, -0.15], [0.0, 0.95, -0.15], G, Y,
+                    fov=2 * math.degrees(math.atan(960.0 / (YUK_K * YUK_D))))
     s.ciz(d, kamera, gok)
 
     # --- 2B gostergeler -----------------------------------------------------
@@ -1741,43 +1762,50 @@ def kare_yuk3b(t):
     s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
     s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
 
-    px, py, pw = 62, 470, 520
-    d.rounded_rectangle([px, py, px + pw, py + 350], 16, fill=(16, 20, 26, 212),
+    # Gosterge artik SOL USTTE DEGIL: dar dikey panel motosikletin arkasini
+    # (ust bagaji!) ortuyordu. Simdi kadraj boyunca uzanan bir serit ve
+    # motosiklet onun ALTINDA, tamamen serbest duruyor.
+    px, py, pw, ph = 62, 450, G - 124, 240
+    d.rounded_rectangle([px, py, px + pw, py + ph], 16, fill=(16, 20, 26, 212),
                         outline=(92, 102, 112), width=4)
-    s2.yazi(d, (px + 22, py + 12), f"{YUK_EK:.0f} KİLO NEREYE?", 26,
+    s2.yazi(d, (px + 24, py + 14), f"{YUK_EK:.0f} KİLO NEREYE?", 26,
             (150, 155, 162))
-    s2.yazi(d, (px + 22, py + 42),
-            "yüksüz 125/125 varsayıldı · aks arası 1,47 m", 22, (124, 132, 142))
-    s2.yazi(d, (px + 22, py + 76), yer_adi, 34, KREM)
+    varsayim = "yüksüz 125/125 varsayıldı · aks arası 1,47 m"
+    s2.yazi(d, (px + pw - 24 - d.textlength(varsayim, font=s2.font(22)),
+                py + 18), varsayim, 22, (124, 132, 142))
+    s2.yazi(d, (px + 24, py + 46), yer_adi, 38, KREM)
 
-    bx, bw, olcek = px + 22, pw - 44, 150.0
+    bx, bw, olcek = px + 24, 476, 150.0
     for i, (ad, deger, ek, c) in enumerate(
             (("ÖN TEKER", on, on_ek, (120, 190, 240)),
              ("ARKA TEKER", arka, arka_ek, (240, 160, 120)))):
-        yy = py + 126 + i * 82
+        yy = py + 96 + i * 74
         s2.yazi(d, (bx, yy), ad, 26, (190, 196, 204))
         m1 = f"{deger:.1f} kg".replace(".", ",")
         g1 = d.textlength(m1, font=s2.font(28))
         s2.yazi(d, (bx + bw - g1, yy), m1, 28, c)
-        d.rounded_rectangle([bx, yy + 34, bx + bw * YUK_TABAN / olcek, yy + 56],
+        # Cubuk 34 px asagidayken 28 puntoluk deger yazisinin icine
+        # giriyordu (yazi ~36 px yer kapliyor); 42'ye indi.
+        d.rounded_rectangle([bx, yy + 42, bx + bw * YUK_TABAN / olcek, yy + 60],
                             5, fill=(66, 74, 84))
         if ek >= 0:
-            d.rounded_rectangle([bx + bw * YUK_TABAN / olcek, yy + 34,
-                                 bx + bw * deger / olcek, yy + 56], 5, fill=c)
+            d.rounded_rectangle([bx + bw * YUK_TABAN / olcek, yy + 42,
+                                 bx + bw * deger / olcek, yy + 60], 5, fill=c)
         else:
-            d.rounded_rectangle([bx + bw * deger / olcek, yy + 34,
-                                 bx + bw * YUK_TABAN / olcek, yy + 56], 5,
+            d.rounded_rectangle([bx + bw * deger / olcek, yy + 42,
+                                 bx + bw * YUK_TABAN / olcek, yy + 60], 5,
                                 fill=KIRMIZI)
 
-    # Sabit x ile "ÖN TEKERE" ve deger bitisik yaziliyordu; ikisi de
-    # olculmus genislikten sonra konuluyor.
+    # Sagdaki blok: dersin tek cumlesi. Her sey OLCULEN genislige gore
+    # ortalaniyor; sabit x ile yazilar birbirine giriyordu.
+    sx, sg = px + pw - 24, 400
+    som = sx - sg
+    s2.yazi(d, (som + sg / 2, py + 82), "ÖN TEKERE", 24, (150, 155, 162),
+            ortala=True)
     isaret = f"{on_ek:+.2f} kg".replace(".", ",")
-    s2.yazi(d, (bx, py + 296), "ÖN TEKERE", 24, (150, 155, 162))
-    ix = bx + d.textlength("ÖN TEKERE", font=s2.font(24)) + 22
-    s2.yazi(d, (ix, py + 290), isaret, 34, ust_renk)
-    son = ("biner" if on_ek > 0.5 else ("ALIR" if on_ek < -0.2 else "etki yok"))
-    s2.yazi(d, (ix + d.textlength(isaret, font=s2.font(34)) + 20,
-                py + 298), son, 26, (176, 182, 190))
+    s2.yazi(d, (som + sg / 2, py + 108), isaret, 58, ust_renk, ortala=True)
+    son = ("BİNER" if on_ek > 0.5 else ("ALIR" if on_ek < -0.2 else "ETKİ YOK"))
+    s2.yazi(d, (som + sg / 2, py + 184), son, 28, (176, 182, 190), ortala=True)
     return im
 
 

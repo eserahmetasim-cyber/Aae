@@ -50,7 +50,15 @@ Bu başlık **motosiklet eğitim içeriği video üretimi**. Her ders tek bir do
 - **Sahnedeki durum, o anda ekranda yazan adımla aynı şeyi anlatmalı.**
   Viraj sahnesinde `sahne_fazlari` ile hizalanır; aksi halde animasyon
   "KAPANIYOR" derken yazı "açılıyor" diyebiliyor.
-- İçerik 300–1400 px bandında durur: üstte ders bandı, altta adım kutuları var.
+- **İçerik 300–1300 px bandında durur.** Üstte ders bandı, altta adım
+  kutuları var. Alt sınır TAHMİN DEĞİL, ölçüldü: adım kutusunun alt kenarı
+  `1920 − 140 (alt bant) − 320 (Reels rezervi) = 1460`, üst kenarı ise
+  `1460 − satır × punto × 1,3 − 22 (kutu payı)`. İki satırlık adım
+  yazılarında bu 1302–1326 arasında çıkıyor, yani **1300 güvenli sınır**.
+  Kadraj bu sayılarla KURULUR, gözle değil: önce metre/piksel ölçeği
+  (`k = F/D`) seçilir, sonra kameranın yüksekliği `yer çizgisi = 960 + k·göz`
+  denkleminden çözülür. Ders 22'de bu yapılmadığı için motosikletin önü
+  kadrajdan taşmış ve ön aks işareti hiç görünmemişti.
 - **Motosiklet AAE'nin kendi motorudur.** Tüm 3B sahneler
   `assets/adv_motor/adv_motor_ucgen.npz` içindeki onaylı adventure modeli
   (~7300 üçgen, KASKAFA oturumunda Blender'da kuruldu, 14 Kas 2026'da
