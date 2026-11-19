@@ -179,8 +179,8 @@ def main() -> None:
         print("# Yayın planı · her sabah 09:00 (İstanbul)\n")
         print(f"Üretildi: {ur:%d.%m.%Y %H:%M} · "
               f"kaynak: `{KAYIT_YOLU}` + `content/dersler/`\n")
-        print("| Ders | Başlık | YouTube | Instagram |")
-        print("|---:|---|---|---|")
+        print("| Ders | Başlık | YouTube | Instagram | Dosyalar |")
+        print("|---:|---|---|---|---|")
         for no in sorted(tablo):
             satir = tablo[no]
             d = satir["ders"]
@@ -189,7 +189,13 @@ def main() -> None:
                 g = satir.get(pl)
                 hucre.append("— *(yayınlandı)*" if g is None
                              else f"{g:%d.%m.%Y} {gunler[g.weekday()]}")
-            print(f"| {no:02d} | {d['baslik']} | {hucre[0]} | {hucre[1]} |")
+            # Business Suite'ten planlayan oturumun ihtiyaci olan her sey
+            # burada: video + caption (meta.json icinde instagram.caption).
+            klasor = _anahtar(d["dosya"])
+            yol = f"library/approved/{klasor}/"
+            kutu = (f"`{yol}`" if os.path.isdir(yol) else "*(onaylanmadı)*")
+            print(f"| {no:02d} | {d['baslik']} | {hucre[0]} | {hucre[1]} "
+                  f"| {kutu} |")
         print("\n**YouTube**: `gunluk-yayin.yml` iş akışı otomatik yürütür; "
               "video `publishAt` ile 09:00'a programlanır.")
         print("\n**Instagram**: bu tablo Business Suite'ten planlayan oturumun "
@@ -198,6 +204,9 @@ def main() -> None:
               "`IG_USER_ID` ve `IG_ACCESS_TOKEN` secret'ları girilmez.")
         print("\nBir ders bir platformda yayınlandığında o platformun "
               "sütunundan düşer, diğerininkinden düşmez — iki ayrı kuyruk.")
+        print("\nHer klasörde video (`<ders>.mp4`) ve `meta.json` var; "
+              "Instagram açıklaması `meta.json` → `instagram.caption` "
+              "alanında hazır duruyor, elle yazmaya gerek yok.")
         return
 
     if args.plan is not None:
