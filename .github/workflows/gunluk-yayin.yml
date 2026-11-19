@@ -90,6 +90,11 @@ jobs:
       # davranis (hemen yayinla) gecerli.
       # Hangi cron atesledi, o slotun saati. github.event.schedule
       # zamanlanmis calismada tetikleyen cron ifadesini birebir veriyor.
+      # DIKKAT: asagidaki dizi yukaridaki "cron:" satiriyla HARFI HARFINE
+      # ayni olmali. Tek bosluk farkinda kosul sessizce '14:00'e duser,
+      # ilk slot yanlis saate programlanir ve is YINE success biter - yani
+      # hata kendini hic gostermez. Cron'u degistirirsen IKI YERI birden
+      # degistir. (Sistem kontrolleri oturumunun 19.11 uyarisi.)
       # Slotu SABITLEMEK kasitli: "ilk uygun slot" mantigi iki calisma
       # birbirine yaklasirsa ayni saate iki video koyabilirdi.
       YT_SAAT: >-
