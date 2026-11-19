@@ -4539,6 +4539,233 @@ def kare_viraj3b(t, toplam=55.0, gosterge=True):
     return im
 
 
+
+
+# ---------------------------------------------------------------------------
+#  TUTUS DAIRESI: FREN VE VIRAJ AYNI KASADAN HARCAR
+# ---------------------------------------------------------------------------
+# DIS KAYNAK RAKAMI YOK. Tek varsayim ekranda yazili: tutusun bittigi yatis
+# acisi (TUTUS_LIMIT). Geri kalan her sey ondan tureviyor.
+#
+# LASTIGIN VEREBILECEGI YATAY KUVVET TEKTIR. Viraj icin kullanilan kuvvetle
+# fren icin kullanilan kuvvet AYNI butceden cikar ve VEKTOREL toplanir:
+#     (viraj)^2 + (fren)^2  <=  (toplam tutus)^2
+# Bu yuzden gosterge bir DAIREDIR: ucu dairenin disina cikamazsin.
+#
+# Diger derslerle ayni temel: duzgun virajda yanal ivme = g*tan(yatis)
+# (ders 17, 20, 21). Tutusun bittigi yatis L ise toplam tutus mu = tan(L).
+# O zaman yatis a'da:
+#     viraj payi      u = tan(a) / tan(L)             (butcenin ne kadari)
+#     frene kalan     f = sqrt(1 - u^2)               (tam frenin orani)
+#     durma mesafesi  1/f  kat                        (ayni hizdan)
+#
+# L = 40 derece icin (olculdu, yuvarlanmadi):
+#     10 -> u %21,0   f %97,8   x1,02
+#     20 -> u %43,4   f %90,1   x1,11
+#     30 -> u %68,8   f %72,6   x1,38
+#     36 -> u %86,6   f %50,0   x2,00      <- frenin YARISI
+#     38 -> u %93,1   f %36,5   x2,74
+#
+# f = 1/2 olan yatis TAM 36,0 derece cikiyor, yani limitin YALNIZCA 4 DERECE
+# altinda frenin yarisi gitmis oluyor. Dersin can alici noktasi bu.
+TUTUS_LIMIT = 40.0                 # VARSAYIM (ekranda yazili)
+TUTUS_V = 60.0 / 3.6
+TUTUS_KAPPA = math.tan(math.radians(26.0)) * 9.81 / (TUTUS_V ** 2)
+
+TUTUS_NOKTA = {
+    "butce":    ("TEK BİR BÜTÇE", "viraj ve fren aynı kasadan harcar", None),
+    "yirmi":    ("20 DERECE", "bütçenin %43'ü viraja gitti", 20.0),
+    "otuz":     ("30 DERECE", "fren gücünün %27'si yok", 30.0),
+    "otuzalti": ("36 DERECE", "frenin YARISI gitti", 36.0),
+    # "mesafe" fazinda aci SABIT DEGIL: 34 ile 38,5 arasinda gidip geliyor.
+    # Sabit 36'da sahne "otuzalti" ile birebir ayni kaliyordu, yani adim
+    # degisiyor ama ekranda hicbir sey degismiyordu. Salinim limite
+    # yaklasmanin ne kadar PAHALI oldugunu gosteriyor:
+    #   34,0 -> u %80,4  fren %59,5  mesafe x1,68
+    #   38,5 -> u %94,8  fren %31,9  mesafe x3,14
+    # 4,5 derece, mesafe neredeyse iki kati.
+    "mesafe":   ("SON DERECELER PAHALI", "4 derece, mesafe 1,7'den 3,1'e", None),
+    "kural":    ("ÖNCE DOĞRULT, SONRA FREN", "doğruldukça fren geri gelir", None),
+}
+TUTUS_FAZ = [(4.0, "butce")]
+
+
+def tutus_faz_ayarla(metin):
+    """sahne_fazlari: "4:butce, 12:yirmi, ..." """
+    global TUTUS_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in TUTUS_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen tutus noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    TUTUS_FAZ = sorted(f)
+
+
+def tutus_evre(t):
+    ad, bas = TUTUS_FAZ[0][1], TUTUS_FAZ[0][0]
+    for z, a in TUTUS_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def tutus_pay(aci):
+    """Yatis acisinda tutus butcesinin VIRAJA giden orani (0..1)."""
+    u = math.tan(math.radians(aci)) / math.tan(math.radians(TUTUS_LIMIT))
+    return min(1.0, max(0.0, u))
+
+
+def tutus_fren(aci):
+    """Ayni anda kullanilabilecek frenin, tam frene orani (0..1)."""
+    return math.sqrt(max(0.0, 1.0 - tutus_pay(aci) ** 2))
+
+
+def _tutus_aci(anahtar, gecen):
+    """Fazin o anindaki yatis acisi."""
+    sabit = TUTUS_NOKTA[anahtar][2]
+    if sabit is not None:
+        return sabit
+    if anahtar == "butce":
+        # 0'dan limite yaklasip geri donen suspus: butcenin dolusu izlenir
+        p = (gecen / 6.0) % 1.0
+        return 38.0 * math.sin(math.pi * p)
+    if anahtar == "mesafe":
+        p = (gecen / 4.0) % 1.0
+        return 34.0 + 4.5 * (1.0 - math.cos(2 * math.pi * p)) / 2.0
+    # "kural": 36'dan dogrulma. Fren cubugu dolarken izlenir.
+    return 36.0 * (1.0 - yumusak(min(1.0, gecen / 3.5)))
+
+
+def _tutus_dairesi(d, cx, cy, R, aci, yon=1):
+    """Tutus dairesi: yatay kol viraja giden pay, dikey kol frene kalan.
+
+    Dairenin YARICAPI toplam tutus. Uc nokta daireNIN USTUNDE durur, cunku
+    (viraj)^2 + (fren)^2 = (toplam)^2. Daire disina cikmak = kaymak."""
+    u, f = tutus_pay(aci), tutus_fren(aci)
+    ax, ay = cx + yon * u * R, cy
+    bx, by = ax, cy - f * R
+
+    d.ellipse([cx - R, cy - R, cx + R, cy + R], fill=(10, 14, 20, 200),
+              outline=(126, 136, 148), width=4)
+    # Eksenler
+    d.line([(cx - R, cy), (cx + R, cy)], fill=(70, 78, 88), width=2)
+    d.line([(cx, cy - R), (cx, cy + R)], fill=(70, 78, 88), width=2)
+    # Viraja giden pay (yatay). Yon virajin yonu: saga donuyoruz, yanal
+    # kuvvet de saga, yani kol motosikletin yattigi tarafa uzaniyor.
+    d.line([(cx, cy), (ax, ay)], fill=TURUNCU, width=11)
+    # Frene kalan (dikey) - uc nokta tam dairenin uzerinde
+    fren_renk = KIRMIZI if f < 0.55 else (TURUNCU if f < 0.8 else YESIL)
+    d.line([(ax, ay), (bx, by)], fill=fren_renk, width=11)
+    d.ellipse([bx - 11, by - 11, bx + 11, by + 11], fill=KREM)
+    d.ellipse([cx - 7, cy - 7, cx + 7, cy + 7], fill=(150, 158, 168))
+    return fren_renk
+
+
+def kare_tutus3b(t):
+    """Saga donen viraj + tutus dairesi gostergesi."""
+    anahtar, faz_bas = tutus_evre(t)
+    etiket, aciklama, _ = TUTUS_NOKTA[anahtar]
+    aci = _tutus_aci(anahtar, max(0.0, t - faz_bas))
+    u, f = tutus_pay(aci), tutus_fren(aci)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _tut_s, _tut_tek
+    _tut_s = (globals().get("_tut_s", 0.0) + TUTUS_V / FPS) % 8.0
+    _tut_tek = (globals().get("_tut_tek", 0.0)
+                + TUTUS_V / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    def kx(z):
+        return 0.0 if z <= 0 else TUTUS_KAPPA * z * z / 2.0
+
+    z = -14.0
+    while z < 66:
+        z2 = z + 3.0
+        a, b = kx(z), kx(z2)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[a - 4.2, 0.01, z], [a + 4.2, 0.01, z],
+                 [b + 4.2, 0.01, z2], [b - 4.2, 0.01, z2]], asfalt, katman=1)
+        for yan in (-1, 1):
+            s.yuzey([[a + yan * 4.0, 0.02, z], [a + yan * 3.86, 0.02, z],
+                     [b + yan * 3.86, 0.02, z2], [b + yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(-2, 14):
+        zc = i * 8.0 - _tut_s
+        a, b = kx(zc), kx(zc + 3.6)
+        s.yuzey([[a - 0.11, 0.02, zc], [a + 0.11, 0.02, zc],
+                 [b + 0.11, 0.02, zc + 3.6], [b - 0.11, 0.02, zc + 3.6]],
+                (210, 210, 205), katman=2)
+
+    x0 = FREN_SERIT
+    model, _, _ = motosiklet(0.0, _tut_tek, 0.0)
+    # Saga donuyoruz: yatis > 0 SOLA yatirir, o yuzden isaret ters.
+    s.ekle(model, R=donus([0, 0, 1], -math.radians(aci)), t=[x0, 0.0, 0.0])
+
+    # KADRAJ SAYIYLA KURULDU (KURALLAR.md). Tam arkadan, YATAY eksen:
+    # boyle bakinca yatis en iyi okunuyor ve hesap basit kaliyor.
+    #   ekran_y = 960 - (y - goz) * F/mesafe
+    # Motosikletin EN ALCAK gorunen noktasi ARKA lastigin temasi (y=0) ve o
+    # kameraya en yakin olan: mesafe D-0,73. En YUKSEK nokta kaskin tepesi
+    # (y=1,83), mesafe D-0,30. Ilk denemede bu fark hesaba katilmadigi icin
+    # arka lastik 1291'e, yani adim yazisi bandinin (1302) 11 piksel dibine
+    # dusmustu. Iki denklem, iki bilinmeyen (F ve goz):
+    #   goz*F/(D-0,73)        = 1270-960 = 310
+    #   (1,83-goz)*F/(D-0,30) =  960-850 = 110
+    # D=11,2 icin toplayinca 1,83*F = 310*10,47 + 110*10,90 = 4445,
+    #   F = 2429  ->  goz = 1,336 m  ->  fov = 2*atan(960/2429) = 43,1 derece
+    TUT_D = 11.2
+    _f = (310.0 * (TUT_D - 0.73) + 110.0 * (TUT_D - 0.30)) / 1.83
+    TUT_GOZ = 310.0 * (TUT_D - 0.73) / _f
+    kamera = Kamera([x0 + 0.35, TUT_GOZ, -TUT_D], [x0 + 0.35, TUT_GOZ, 14.0],
+                    G, Y, fov=2 * math.degrees(math.atan(960.0 / _f)))
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if f < 0.55 else (TURUNCU if f < 0.8 else YESIL)
+    fo = s2.font(40)
+    tw = d.textlength(etiket, font=fo)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    # ph 366 iken seridin alti 816'ya geliyordu, motosikletin tepesi ise
+    # 36 derece yatista 827'ye cikiyor: 11 piksel pay. 356 ile 21 oldu.
+    px, py, pw, ph = 62, 450, G - 124, 356
+    d.rounded_rectangle([px, py, px + pw, py + ph], 16, fill=(16, 20, 26, 212),
+                        outline=(92, 102, 112), width=4)
+    _tutus_dairesi(d, px + 190, py + 180, 128, aci)
+    s2.yazi(d, (px + 190, py + 322), "TUTUŞ DAİRESİ", 22, (150, 155, 162),
+            ortala=True)
+
+    sx = px + 372
+    s2.yazi(d, (sx, py + 18), "YATIŞ", 24, (150, 155, 162))
+    s2.yazi(d, (sx + 136, py + 4), f"{aci:.0f}°", 52, KREM)
+    for i, (ad, metin, renk) in enumerate((
+            ("VİRAJA GİDEN", f"%{u * 100:.0f}", TURUNCU),
+            ("FRENE KALAN", f"%{f * 100:.0f}", ust_renk),
+            ("DURMA MESAFESİ",
+             ("—" if f <= 0.02 else f"×{1 / f:.2f}".replace(".", ",")),
+             ust_renk))):
+        yy = py + 84 + i * 76
+        s2.yazi(d, (sx, yy + 14), ad, 26, (150, 155, 162))
+        # Deger OLCULEN etiket genisliginden sonra, sabit x ile degil.
+        gx = sx + max(268.0, d.textlength(ad, font=s2.font(26)) + 28)
+        s2.yazi(d, (gx, yy), metin, 46, renk)
+    s2.yazi(d, (sx, py + 306),
+            f"varsayım: tutuş {TUTUS_LIMIT:.0f}°'de biter · gerisi türev",
+            20, (124, 132, 142))
+    return im
+
+
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
@@ -4546,7 +4773,8 @@ def main():
                     choices=("fren", "viraj", "kontra", "gaz", "islak",
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
-                             "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk"),
+                             "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk",
+                             "tutus"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -4587,6 +4815,9 @@ def main():
     elif args.sahne == "yuk":
         yuk_faz_ayarla(args.fazlar)
         cizer = kare_yuk3b
+    elif args.sahne == "tutus":
+        tutus_faz_ayarla(args.fazlar)
+        cizer = kare_tutus3b
     elif args.sahne == "ruzgar":
         ruzgar_faz_ayarla(args.fazlar)
         cizer = kare_ruzgar3b

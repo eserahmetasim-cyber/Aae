@@ -1,0 +1,170 @@
+# Ders 23 · Tutuş dairesi
+# DIŞ KAYNAK RAKAMI KULLANILMIYOR. Tek varsayım ekranda yazılı:
+# tutuşun bittiği yatış açısı L = 40°. Geri kalan her şey ondan türev.
+#
+# LASTİĞİN VEREBİLECEĞİ YATAY KUVVET TEKTİR. Viraj için harcanan kuvvetle
+# fren için harcanan kuvvet aynı bütçeden çıkar ve VEKTÖREL toplanır:
+#     (viraj)² + (fren)² ≤ (toplam tutuş)²
+# Gösterge bu yüzden bir DAİRE: ucu dairenin dışına çıkaramazsın.
+#
+# Düzgün virajda yanal ivme = g·tan(yatış) — ders 17, 20 ve 21 ile aynı
+# temel. Tutuşun bittiği yatış L ise toplam tutuş μ = tan(L). O hâlde
+# yatış a'da:
+#     viraja giden pay  u = tan(a) / tan(L)
+#     frene kalan       f = √(1 − u²)        (tam frenin oranı)
+#     durma mesafesi    1/f kat              (aynı hızdan)
+#
+# L = 40° için (yuvarlanmadan hesaplandı):
+#     10° → u %21,0  f %97,8  ×1,02
+#     20° → u %43,4  f %90,1  ×1,11
+#     30° → u %68,8  f %72,6  ×1,38
+#     34° → u %80,4  f %59,5  ×1,68
+#     36° → u %86,6  f %50,0  ×2,00     ← frenin YARISI
+#     38,5° → u %94,8  f %31,9  ×3,14
+#
+# f = 1/2 olan yatış TAM 36,0° çıkıyor: limitin yalnızca 4 DERECE altında
+# frenin yarısı gitmiş oluyor. Dersin can alıcı noktası bu.
+#
+# NEDEN RAKAM VERMİYORUM: μ'nün kendisi (lastik, asfalt, sıcaklık, kir)
+# ölçülmeden bilinemez. O yüzden hiçbir yerde "şu kadar metre" demiyorum;
+# her şey KENDİ tam frenine ORAN olarak veriliyor. Tek varsayım L=40° ve
+# o da ekranda yazılı duruyor.
+
+ders_no: 23
+slug: tutus
+baslik: "Tutuş Dairesi"
+alt_baslik: "Viraj ve fren aynı kasadan harcar"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""
+sahne: tutus
+boyut: 3
+kamera: yan
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:butce, 12:yirmi, 20:otuz, 28:otuzalti, 36:mesafe, 44:kural"
+
+kapanis: "Önce doğrult, sonra fren"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Tutuş tek bütçe: viraj ve fren aynı kasadan" }
+  - { t: 12, sure: 7, metin: "2 · 20 derecede bütçenin %43'ü viraja gitti" }
+  - { t: 20, sure: 7, metin: "3 · 30 derecede fren gücünün %27'si yok" }
+  - { t: 28, sure: 7, metin: "4 · 36 derecede frenin YARISI gitti" }
+  - { t: 36, sure: 7, metin: "5 · 4 derece daha: mesafe 1,7'den 3,1 katına" }
+  - { t: 44, sure: 7, metin: "6 · Önce doğrult, sonra fren: doğruldukça geri gelir" }
+
+youtube:
+  baslik: "Tutuş Dairesi: Viraj ve Fren Aynı Kasadan | Yol Okulu #23"
+  aciklama: |
+    Lastiğin verebileceği yatay kuvvet tektir. Viraja harcadığın da frene
+    harcadığın da aynı bütçeden çıkar — ve ikisi toplanmaz, VEKTÖREL
+    toplanır. Bu yüzden gösterge bir daire.
+
+    0:04 Tek bir bütçe
+    0:12 20 derece
+    0:20 30 derece
+    0:28 36 derece
+    0:36 Son dereceler pahalı
+    0:44 Kural
+
+    HESAP
+    Düzgün virajda yanal ivme = g × tan(yatış). Tutuşun bittiği yatış L
+    ise toplam tutuş μ = tan(L). O hâlde yatış a'da:
+
+      viraja giden pay   u = tan(a) / tan(L)
+      frene kalan        f = √(1 − u²)
+      durma mesafesi     1/f kat
+
+    Videodaki tek varsayım L = 40° ve ekranda yazılı duruyor. Gerisi türev.
+
+    AYNI BÜTÇE, FARKLI YATIŞ
+      10°   → viraja %21,0 · frene %97,8 kalır · mesafe ×1,02
+      20°   → viraja %43,4 · frene %90,1 kalır · mesafe ×1,11
+      30°   → viraja %68,8 · frene %72,6 kalır · mesafe ×1,38
+      34°   → viraja %80,4 · frene %59,5 kalır · mesafe ×1,68
+      36°   → viraja %86,6 · frene %50,0 kalır · mesafe ×2,00
+      38,5° → viraja %94,8 · frene %31,9 kalır · mesafe ×3,14
+
+    36 DERECE NEDEN ÖNEMLİ
+    f = 1/2 çıkan yatış tam 36,0 derece. Yani limitin yalnızca DÖRT DERECE
+    altında frenin yarısı gitmiş oluyor. Gidonda bunu hissetmezsin; motor
+    hâlâ rahat gidiyor gibi durur. Sonra önüne bir şey çıkar.
+
+    SON DERECELER PAHALI
+    34'ten 38,5'e dört buçuk derece var. Durma mesafesi 1,68 kattan 3,14
+    kata çıkıyor. Bütçenin son dilimi en pahalı dilimdir; eğri lineer
+    değil, daire.
+
+    NEDEN METRE DEMİYORUM
+    μ'yü lastik, asfalt, sıcaklık ve kir belirler; ölçmeden bilinemez. O
+    yüzden hiçbir yerde "şu kadar metre" demiyorum. Her şey SENİN kendi
+    tam frenine oran olarak veriliyor — hangi motor, hangi lastik olursa
+    olsun oranlar aynı kalır.
+
+    KURAL
+    • Viraja fren bitmiş olarak gir (Ders 4, Ders 17).
+    • Virajın içinde fren gerekiyorsa ÖNCE DOĞRULT. Doğruldukça bütçe
+      boşalır ve fren geri gelir.
+    • Yatıkken ani gaz da aynı bütçeden harcar — fren tarafı için geçerli
+      olan her şey hızlanma için de geçerli.
+    • Islakta, soğuk lastikte, kaygan yamada bütçenin tamamı küçülür
+      (Ders 5, Ders 16): aynı yatış, daha az kalan.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "tutuş"
+    - "fren"
+    - "viraj"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Lastiğin verebileceği yatay kuvvet TEKTİR. Viraja harcadığın da frene
+    harcadığın da aynı bütçeden çıkar — ve toplanmaz, VEKTÖREL toplanır.
+    Gösterge bu yüzden bir daire.
+
+    HESAP
+    viraja giden  u = tan(yatış) / tan(limit)
+    frene kalan   f = √(1 − u²)
+    durma mesafesi  1/f kat
+
+    Tek varsayım: tutuş 40°'de biter. Ekranda yazılı. Gerisi türev.
+
+    AYNI BÜTÇE, FARKLI YATIŞ 👇
+    20° → frene %90 kalır · mesafe ×1,11
+    30° → frene %73 kalır · mesafe ×1,38
+    36° → frene %50 kalır · mesafe ×2,00
+    38,5° → frene %32 kalır · mesafe ×3,14
+
+    36 DERECE: f tam 1/2 çıkıyor. Limitin YALNIZCA 4 DERECE altında frenin
+    yarısı gitmiş oluyor. Gidonda hissetmezsin, motor rahat gidiyor gibi
+    durur. Sonra önüne bir şey çıkar.
+
+    SON DERECELER PAHALI: 34'ten 38,5'e dört buçuk derece, mesafe 1,68'den
+    3,14 kata. Eğri lineer değil, daire.
+
+    NEDEN METRE DEMİYORUM: μ'yü lastik, asfalt, sıcaklık, kir belirler;
+    ölçmeden bilinemez. Her şey SENİN tam frenine oran — hangi motor olursa
+    olsun oranlar aynı.
+
+    KURAL: Viraja fren bitmiş gir. İçeride fren gerekiyorsa ÖNCE DOĞRULT;
+    doğruldukça fren geri gelir. Yatıkken ani gaz da aynı bütçeden harcar.
+    Islakta ve soğuk lastikte bütçenin TAMAMI küçülür.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #tutuş #fren #viraj #motosikleteğitimi #yolokulu #güvenlisürüş
