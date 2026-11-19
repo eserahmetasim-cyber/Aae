@@ -15,7 +15,7 @@
 #   varsayim   → AAE'nin anlattığından çıkarıldı, oturum teyit etmedi
 # Bir oturum kendi satırını düzeltirse "dogrulandi" yapsın.
 
-guncelleme: "2026-11-16"
+guncelleme: "2026-11-19"
 guncelleyen: "Kanka AAE video üretimi"
 kaynak: "AAE'nin oturum listesi (ekran görüntüsü, 16.11.2026) + oturumların kendi bildirimleri"
 
@@ -37,6 +37,12 @@ platformlar:
     sahip: "Onaylanmış dersleri sosyal medyada paylaş"
     nasil: "Meta Business Suite (Brave'de açık), elle planlanır"
     kayit: "content/yayin_kaydi.json  (instagram alanı)"
+    plan: "content/yayin_plani.md  (üretilmiş tablo — Business Suite çalışma listesi)"
+    # AAE 19.11'de "hem youtube hem instagram planla" dedi. İSTENEN BU:
+    # her ders iki platformda da planlı olsun. DEĞİŞMEYEN şu: Instagram'a
+    # yayını Business Suite oturumu yapar, iş akışı DEĞİL. İkisi birden
+    # yaparsa Reel iki kez çıkar ve geri alınamaz. Yani "iki platforma da
+    # planla" = iki kuyruk + iki sütunlu plan tablosu, iki yayıncı değil.
     yasak: >
       gunluk-yayin.yml Instagram'a ASLA yayınlamaz. IG_USER_ID ve
       IG_ACCESS_TOKEN secret'ları GİRİLMEZ. İki kilit var: secret yokluğu

@@ -150,6 +150,9 @@ def main() -> None:
                     help="tarihli yayin takvimi (bos = bir sonraki 09:00'dan)")
     ap.add_argument("--platform", default="youtube", choices=PLATFORMLAR,
                     help="hangi platformun kuyrugu (varsayilan youtube)")
+    ap.add_argument("--plan-md", nargs="?", const="", metavar="YYYY-AA-GG",
+                    dest="plan_md",
+                    help="iki platformu yan yana gosteren markdown takvim")
     args = ap.parse_args()
 
     veri = kaydi_oku(args.kayit)
@@ -158,6 +161,43 @@ def main() -> None:
         kaydi_yaz(isaretle(veri, args.isaretle, args.youtube, args.instagram),
                   args.kayit)
         print(f"isaretlendi: {_anahtar(args.isaretle)}")
+        return
+
+    if args.plan_md is not None:
+        # Iki kuyruk AYRI. Bugun ayni tarihler cikiyor cunku hicbir ders
+        # yayinlanmadi; biri digerinden once ilerlerse tablo ayrisir.
+        # Bu dosya Business Suite'i yuruten oturumun calisma listesidir.
+        tablo = {}
+        for pl in PLATFORMLAR:
+            for g, d in plan(veri, pl, args.plan_md):
+                tablo.setdefault(d["no"], {"ders": d})[pl] = g
+        gunler = ("Pzt", "Sal", "Car", "Per", "Cum", "Cmt", "Paz")
+        ur = dt.datetime.now(ISTANBUL)
+        print("<!-- URETILMIS DOSYA - elle duzenlemeyin.")
+        print("     python3 scripts/yayin_sirasi.py --plan-md "
+              "> content/yayin_plani.md -->")
+        print("# Yayın planı · her sabah 09:00 (İstanbul)\n")
+        print(f"Üretildi: {ur:%d.%m.%Y %H:%M} · "
+              f"kaynak: `{KAYIT_YOLU}` + `content/dersler/`\n")
+        print("| Ders | Başlık | YouTube | Instagram |")
+        print("|---:|---|---|---|")
+        for no in sorted(tablo):
+            satir = tablo[no]
+            d = satir["ders"]
+            hucre = []
+            for pl in PLATFORMLAR:
+                g = satir.get(pl)
+                hucre.append("— *(yayınlandı)*" if g is None
+                             else f"{g:%d.%m.%Y} {gunler[g.weekday()]}")
+            print(f"| {no:02d} | {d['baslik']} | {hucre[0]} | {hucre[1]} |")
+        print("\n**YouTube**: `gunluk-yayin.yml` iş akışı otomatik yürütür; "
+              "video `publishAt` ile 09:00'a programlanır.")
+        print("\n**Instagram**: bu tablo Business Suite'ten planlayan oturumun "
+              "çalışma listesidir. `gunluk-yayin.yml` zamanlanmış çalışmada "
+              "Instagram'a **yayınlamaz**; iki kez paylaşılmasın diye "
+              "`IG_USER_ID` ve `IG_ACCESS_TOKEN` secret'ları girilmez.")
+        print("\nBir ders bir platformda yayınlandığında o platformun "
+              "sütunundan düşer, diğerininkinden düşmez — iki ayrı kuyruk.")
         return
 
     if args.plan is not None:
