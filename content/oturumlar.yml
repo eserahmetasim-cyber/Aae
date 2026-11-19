@@ -38,16 +38,17 @@ platformlar:
     nasil: "Meta Business Suite (Brave'de açık), elle planlanır"
     kayit: "content/yayin_kaydi.json  (instagram alanı)"
     plan: "content/yayin_plani.md  (üretilmiş tablo — Business Suite çalışma listesi)"
-    # AAE 19.11'de "hem youtube hem instagram planla" dedi. İSTENEN BU:
-    # her ders iki platformda da planlı olsun. DEĞİŞMEYEN şu: Instagram'a
-    # yayını Business Suite oturumu yapar, iş akışı DEĞİL. İkisi birden
-    # yaparsa Reel iki kez çıkar ve geri alınamaz. Yani "iki platforma da
-    # planla" = iki kuyruk + iki sütunlu plan tablosu, iki yayıncı değil.
+    # AAE 19.11'de "hem youtube hem instagram planla" dedi ve aynı gün
+    # soruldu: Instagram'a yayını KİM yapsın? Cevabı "Business Suite devam
+    # etsin". Yani "iki platforma da planla" = iki kuyruk + iki sütunlu
+    # plan tablosu; İKİ YAYINCI DEĞİL. İş akışı Instagram'a basmaz.
+    # İkisi birden basarsa Reel iki kez çıkar ve geri alınamaz.
+    aae_karari: "19.11.2026 — Business Suite devam etsin (AAE'ye soruldu, cevabı bu)"
     yasak: >
       gunluk-yayin.yml Instagram'a ASLA yayınlamaz. IG_USER_ID ve
       IG_ACCESS_TOKEN secret'ları GİRİLMEZ. İki kilit var: secret yokluğu
       ve zamanlanmış çalışmada kapalı olması.
-    dogrulama: dogrulandi      # AAE 16.11'de bildirdi
+    dogrulama: dogrulandi      # AAE 16.11'de bildirdi, 19.11'de teyit etti
 
 # ---------------------------------------------------------------------------
 #  OTURUMLAR
