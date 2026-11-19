@@ -1,6 +1,9 @@
 # Bilgisayardaki Claude'a yapıştırılacak iş emri — SECRET KURULUMU
 
-> Yazılma tarihi: **16.11.2026** (aynı gün güncellendi: Instagram çıkarıldı)
+> Yazılma tarihi: **16.11.2026** · güncellendi **19.11.2026**
+>
+> Değişenler: Instagram çıkarıldı (16.11) · yayın saati günde iki ders,
+> **10:00 ve 14:00** (19.11, AAE'nin isteği)
 >
 > **AAE, senin yapacağın tek şey:** bilgisayarındaki **Claude uygulamasını aç** →
 > **yeni bir sohbet** başlat → aşağıdaki çizgiler arasındaki metni olduğu gibi
@@ -20,7 +23,7 @@
 
 Merhaba. Bir kurulum işi var, ekranı ve tarayıcıyı kullanarak sen yapacaksın. AAE teknik değil — ona adım sorma, mümkün olan her şeyi kendin yap. Yalnızca şifre girilecek yerlerde ve "İzin Ver" kutularında ona dokundur. Yapamadığın madde olursa sebebini yaz, uydurma.
 
-**Hedef:** `eserahmetasim-cyber/Aae` deposuna **YouTube'un üç** GitHub secret'ını girmek. Bunlar girilmeden her sabah 09:00'da çalışan `Gunluk Yayin` iş akışı videoyu üretiyor ama hiçbir yere yüklemiyor.
+**Hedef:** `eserahmetasim-cyber/Aae` deposuna **YouTube'un üç** GitHub secret'ını girmek. Bunlar girilmeden `Gunluk Yayin` iş akışı videoyu üretiyor ama hiçbir yere yüklemiyor. İş akışı günde iki kez çalışıyor ve dersleri **10:00 ile 14:00**'e (İstanbul) programlıyor.
 
 - YouTube (**yapılacak**): `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, `YT_REFRESH_TOKEN`
 - Instagram (**YAPILMAYACAK**): `IG_USER_ID`, `IG_ACCESS_TOKEN` — sebebi 2. maddede, okumadan geçme
@@ -90,7 +93,7 @@ görürsen bu **beklenen** durumdur, düzeltmeye çalışma.
 3. Çalışmayı izle. Beklenen: **"YouTube secret'lari yok" uyarısı artık ÇIKMAMALI** (çıkıyorsa secret eksik ya da adı yanlış). **"Instagram secret'lari yok" uyarısı ise ÇIKMALI** — o doğru davranış, dokunma.
 4. Hata varsa logdan sebebini oku ve düzelt. Düzeltemiyorsan hatanın tam metnini AAE'ye yaz.
 
-⚠ **Gerçek yayını sen başlatma.** `kuru=evet` testi temiz geçtiyse AAE'ye haber ver: bundan sonrası ertesi sabah 09:00'da YouTube'a kendiliğinden yayınlanacak. İlk gerçek yayın kararı onun.
+⚠ **Gerçek yayını sen başlatma.** `kuru=evet` testi temiz geçtiyse AAE'ye haber ver: bundan sonrası bir sonraki slotta (10:00 ya da 14:00, İstanbul) YouTube'a kendiliğinden yayınlanacak. İlk gerçek yayın kararı onun.
 
 ### 4) Bitince
 
