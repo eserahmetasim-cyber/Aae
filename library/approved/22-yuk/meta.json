@@ -1,0 +1,69 @@
+{
+  "klasor": "22-yuk",
+  "ders_no": 22,
+  "slug": "yuk",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Motosikleti Yüklemek",
+  "alt_baslik": "Aynı kilo, farklı yer, farklı motosiklet",
+  "handle": "@aae_motorcycle",
+  "video": "22-yuk.mp4",
+  "kaynak_render": "output/2026-11-19_ders22_yuk_v1.mp4",
+  "onay_tarihi": "2026-11-19T04:03:14+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Aynı kilo, farklı yer, farklı sonuç"
+    },
+    {
+      "t": 11.0,
+      "bitis": 18.0,
+      "metin": "2 · Depo üstü: ön tekere +6,3 kg biner"
+    },
+    {
+      "t": 19.0,
+      "bitis": 26.0,
+      "metin": "3 · Yan çanta aks hizasında: öne hiç binmez"
+    },
+    {
+      "t": 27.0,
+      "bitis": 34.0,
+      "metin": "4 · Üst bagaj: ön tekerden 2,2 kg ALIR"
+    },
+    {
+      "t": 35.0,
+      "bitis": 42.0,
+      "metin": "5 · Yüksek yük ayrı dert: merkez yukarı çıkar"
+    },
+    {
+      "t": 43.0,
+      "bitis": 50.0,
+      "metin": "6 · Ağır olan aşağı ve öne, hafif olan arkaya"
+    }
+  ],
+  "youtube": {
+    "baslik": "Motosikleti Yüklemek: Aynı Kilo, Farklı Yer | Yol Okulu #22",
+    "aciklama": "Çantanı nereye koyduğun, kaç kilo olduğundan daha önemli. Aynı 10 kilo,\nkonduğu yere göre ön tekerine ya 6 kilo bindirir ya da 2 kilo alır.\n\n0:04 Aynı kilo, farklı yer\n0:11 Depo üstü\n0:19 Yan çanta\n0:27 Üst bagaj\n0:35 Yüksek yük\n0:43 Kural\n\nHESAP BASİT\nÖn akstan d uzaklığa m kilo koyarsan ön tekere binen yük:\n\n  ön teker = m × (L − d) / L        L = aks arası\n\nVideodaki rakamlar bu motosikletin kendi ölçülerinden çıkıyor: aks\narası 1,47 metre, üst bagajın merkezi arka aksın 33 santim arkasında.\nYüksüz dağılım 50/50 varsayıldı (125/125 kg).\n\n10 KİLO, DÖRT YER\n  depo üstü   → ön +6,33 kg   arka  +3,67 kg\n  sele        → ön +2,21 kg   arka  +7,79 kg\n  yan çanta   → ön  0,00 kg   arka +10,00 kg\n  üst bagaj   → ön −2,24 kg   arka +12,24 kg\n\nDikkat et: üst bagaj arka aksın ARKASINDA. Oraya koyduğun yük kaldıraç\ngibi çalışır ve ön tekerden yük ALIR. Aynı 10 kilonun iki uç arasındaki\nfarkı 8,6 kilogram — ve tek değişken nereye koyduğun.\n\nNEDEN ÖNEMLİ\nÖn teker iki iş yapar: yönlendirir ve frenin büyük kısmını o taşır\n(Ders 1). Ön tekerden yük almak ikisini birden zayıflatır. Belirtisi\ntanıdıktır: direksiyon hafifler, viraj girişinde motosiklet \"yüzer\",\nhızda gidon sallanmaya başlar.\n\nYAN ÇANTA NEDEN İYİ YER\nYan çantalar arka aks hizasında ve alçakta durur. Aks hizasındaki yük\nön tekere HİÇ binmez — tamamı arkaya gider ama denge bozulmaz. Alçak\nolması da ayrı kazanç.\n\nYÜKSEKLİK AYRI DERT\nÜst bagaj sadece arkada değil, yüksekte. Yüksek yük ağırlık merkezini\nyukarı taşır; motosiklet yatıp doğrulurken daha fazla atalet taşır,\ndüşük hızda hantallaşır, rüzgârda daha çok etkilenir (Ders 21).\nBunun kaç santim olduğunu söylemiyorum — motosikletin kendi ağırlık\nmerkezi yüksekliğini varsaymadan hesaplanamaz, ben de varsaymıyorum.\n\nKURAL\n• Ağır olan AŞAĞI ve ÖNE: yan çanta dibi, tank çantası.\n• Hafif ve hacimli olan arkaya: uyku tulumu, mont, boş çanta.\n• Üst bagaja ağır şey koyma. Kask, eldiven, yağmurluk — hafif şeyler.\n• Yükü motosiklete SIKI bağla. Oynayan yük, yerinde durmayan ağırlık\n  merkezi demektir.\n• Yük bindikten sonra arka süspansiyon ön yükünü artır (Ders 11) ve\n  lastik basıncını el kitabındaki yüklü değere getir (Ders 9).\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "yük",
+      "bagaj",
+      "yan çanta",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Çantanı NEREYE koyduğun, kaç kilo olduğundan daha önemli.\n\nHesap basit. Ön akstan d uzaklığa m kilo koyarsan:\nön teker = m × (L − d) / L\n\nRakamlar bu motosikletin kendi ölçülerinden: aks arası 1,47 m, üst\nbagajın merkezi arka aksın 33 cm arkasında. Yüksüz 50/50 varsayıldı.\n\nAYNI 10 KİLO, DÖRT YER 👇\ndepo üstü → ön +6,33 kg · arka +3,67\nsele → ön +2,21 · arka +7,79\nyan çanta → ön 0,00 · arka +10,00\nüst bagaj → ön −2,24 · arka +12,24\n\nÜst bagaj arka aksın ARKASINDA. Oraya koyduğun yük kaldıraç gibi\nçalışır ve ön tekerden yük ALIR. İki uç arasındaki fark 8,6 kg — tek\ndeğişken nereye koyduğun.\n\nNEDEN ÖNEMLİ: ön teker hem yönlendirir hem frenin büyük kısmını taşır\n(Ders 1). Ondan yük almak ikisini birden zayıflatır. Belirtisi tanıdık:\ndireksiyon hafifler, viraj girişinde motosiklet \"yüzer\", hızda gidon\nsallanır.\n\nYAN ÇANTA NEDEN İYİ: aks hizasında ve alçak. Aks hizasındaki yük ön\ntekere HİÇ binmez.\n\nYÜKSEKLİK AYRI DERT: üst bagaj hem arkada hem yüksekte. Ağırlık merkezi\nyukarı çıkar, motosiklet yatıp doğrulurken hantallaşır, rüzgârda daha\nçok etkilenir (Ders 21). Kaç santim olduğunu söylemiyorum — motorun\nkendi ağırlık merkezini varsaymadan hesaplanamaz.\n\nKURAL: Ağır olan AŞAĞI ve ÖNE. Hafif ve hacimli olan arkaya. Üst bagaja\nağır şey koyma. Yükü SIKI bağla. Sonra arka ön yükünü ve lastik\nbasıncını yüklü değere getir.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #yük #bagaj #yançanta #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}
