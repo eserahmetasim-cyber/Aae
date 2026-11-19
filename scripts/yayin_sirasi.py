@@ -107,7 +107,10 @@ def isaretle(veri: dict, ders_yolu: str, youtube: str = "",
 
 
 ISTANBUL = dt.timezone(dt.timedelta(hours=3))   # Turkiye yil boyu UTC+3
-GUNLUK_SAAT = 9                                  # yayin saati (Istanbul)
+# GUNDE IKI DERS: 10:00 ve 14:00 (Istanbul). AAE 19.11'de boyle istedi;
+# oncesinde gunde bir ders, 09:00'daydi. Saatler artan sirada olmali,
+# cunku plan() gunu bu sirayla dolduruyor.
+GUNLUK_SAATLER = (10, 14)
 
 
 def plan(veri: dict, platform: str = "youtube", baslangic: str = "") -> list:
@@ -118,22 +121,32 @@ def plan(veri: dict, platform: str = "youtube", baslangic: str = "") -> list:
     baslangic bos ise ilk slot SIMDIDEN sonraki 09:00."""
     if baslangic:
         try:
-            g = dt.datetime.strptime(baslangic, "%Y-%m-%d").replace(
-                hour=GUNLUK_SAAT, tzinfo=ISTANBUL)
+            gun = dt.datetime.strptime(baslangic, "%Y-%m-%d").replace(
+                tzinfo=ISTANBUL)
         except ValueError:
             raise SystemExit(f"HATA: tarih YYYY-AA-GG olmali, '{baslangic}' degil")
+        simdi = None
     else:
         simdi = dt.datetime.now(ISTANBUL)
-        g = simdi.replace(hour=GUNLUK_SAAT, minute=0, second=0, microsecond=0)
-        if g <= simdi:
+        gun = simdi
+    # Gunu GUNLUK_SAATLER ile dolduran sonsuz slot uretici. Tek saat
+    # varsayan eski surum gunde bir ders diziyordu; artik gun basina
+    # len(GUNLUK_SAATLER) ders var.
+    def slotlar():
+        g = gun
+        while True:
+            for saat in GUNLUK_SAATLER:
+                an = g.replace(hour=saat, minute=0, second=0, microsecond=0)
+                if simdi is None or an > simdi:
+                    yield an
             g += dt.timedelta(days=1)
     yapildi = yapilanlar(veri, platform)
+    uret = slotlar()
     cikti = []
     for d in dersler():
         if _anahtar(d["dosya"]) in yapildi:
             continue
-        cikti.append((g, d))
-        g += dt.timedelta(days=1)
+        cikti.append((next(uret), d))
     return cikti
 
 
@@ -176,7 +189,8 @@ def main() -> None:
         print("<!-- URETILMIS DOSYA - elle duzenlemeyin.")
         print("     python3 scripts/yayin_sirasi.py --plan-md "
               "> content/yayin_plani.md -->")
-        print("# Yayın planı · her sabah 09:00 (İstanbul)\n")
+        saatler = " ve ".join(f"{h:02d}:00" for h in GUNLUK_SAATLER)
+        print(f"# Yayın planı · her gün {saatler} (İstanbul)\n")
         print(f"Üretildi: {ur:%d.%m.%Y %H:%M} · "
               f"kaynak: `{KAYIT_YOLU}` + `content/dersler/`\n")
         print("| Ders | Başlık | YouTube | Instagram | Dosyalar |")
@@ -188,7 +202,8 @@ def main() -> None:
             for pl in PLATFORMLAR:
                 g = satir.get(pl)
                 hucre.append("— *(yayınlandı)*" if g is None
-                             else f"{g:%d.%m.%Y} {gunler[g.weekday()]}")
+                             else f"{g:%d.%m.%Y} {gunler[g.weekday()]} "
+                                  f"{g:%H:%M}")
             # Business Suite'ten planlayan oturumun ihtiyaci olan her sey
             # burada: video + caption (meta.json icinde instagram.caption).
             klasor = _anahtar(d["dosya"])
@@ -196,8 +211,10 @@ def main() -> None:
             kutu = (f"`{yol}`" if os.path.isdir(yol) else "*(onaylanmadı)*")
             print(f"| {no:02d} | {d['baslik']} | {hucre[0]} | {hucre[1]} "
                   f"| {kutu} |")
-        print("\n**YouTube**: `gunluk-yayin.yml` iş akışı otomatik yürütür; "
-              "video `publishAt` ile 09:00'a programlanır.")
+        print(f"\n**YouTube**: `gunluk-yayin.yml` iş akışı otomatik yürütür. "
+              f"Günde {len(GUNLUK_SAATLER)} çalışma var; her biri videoyu "
+              f"`publishAt` ile kendi saatine ({saatler}) programlar, yani "
+              f"cron gecikse bile video tam saatinde açılır.")
         print("\n**Instagram**: bu tablo Business Suite'ten planlayan oturumun "
               "çalışma listesidir. `gunluk-yayin.yml` zamanlanmış çalışmada "
               "Instagram'a **yayınlamaz**; iki kez paylaşılmasın diye "
@@ -215,11 +232,12 @@ def main() -> None:
             print(f"  {args.platform}: sirada ders yok.")
             return
         ilk, son = satirlar[0][0], satirlar[-1][0]
-        print(f"  YAYIN PLANI · {args.platform} · her gun {GUNLUK_SAAT:02d}:00 "
+        saatler = " ve ".join(f"{h:02d}:00" for h in GUNLUK_SAATLER)
+        print(f"  YAYIN PLANI · {args.platform} · her gun {saatler} "
               f"(Istanbul)\n")
         gunler = ("Pzt", "Sal", "Car", "Per", "Cum", "Cmt", "Paz")
         for g, d in satirlar:
-            print(f"  {g:%d.%m.%Y}  {gunler[g.weekday()]}  "
+            print(f"  {g:%d.%m.%Y}  {gunler[g.weekday()]}  {g:%H:%M}  "
                   f"ders {d['no']:02d}  {d['baslik']}")
         print(f"\n  {len(satirlar)} ders · {ilk:%d.%m.%Y} - {son:%d.%m.%Y}")
         print("  (secret'lar girilene kadar hicbiri yayinlanmaz)")

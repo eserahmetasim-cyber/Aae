@@ -138,14 +138,20 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
   GitHub cron bir saat garantisi vermez: 17 Kas'ta `0 6 * * *` slotu
   **15:21 UTC**'de çalıştı — 9 saat 21 dakika gecikme. Dakikayı saat
   başından kaydırmak bu büyüklükte bir gecikmeyi çözmez. Çözüm: video
-  **private** yüklenir ve `status.publishAt` ile bir sonraki 09:00'a
-  programlanır; CI ne zaman koşarsa koşsun video tam 09:00'da kendiliğinden
-  açılır. `publish_youtube.py --yayinla-saat 09:00`, iş akışı zamanlanmış
-  çalışmada bunu otomatik geçer. YouTube `publishAt`'i yalnızca
-  `privacyStatus=private` ile kabul eder; istenen gizlilik public olsa bile
-  zamanlı yayında private'a çekilir. Cron tam zamanında çalışırsa video
-  ertesi günün 09:00'ına programlanır — bu doğrudur, render bittiğinde o
-  günün 09:00'ı çoktan geçmiş olur.
+  **private** yüklenir ve `status.publishAt` ile bir sonraki yayın saatine
+  programlanır; CI ne zaman koşarsa koşsun video tam o saatte kendiliğinden
+  açılır. YouTube `publishAt`'i yalnızca `privacyStatus=private` ile kabul
+  eder; istenen gizlilik public olsa bile zamanlı yayında private'a çekilir.
+- **Günde İKİ ders: 10:00 ve 14:00 (İstanbul).** AAE 19.11'de böyle istedi
+  (öncesinde günde bir ders, 09:00'daydı). İki ayrı cron var ve her biri
+  kendi slotunu taşıyor — `20 4 * * *` → 10:00, `20 8 * * *` → 14:00; iş
+  akışı hangi cron'un ateşlediğini `github.event.schedule` ile okuyor.
+  **Çalışma saati yayın saati değildir:** cron hedeften 2 saat 40 dakika
+  önce başlatılıyor ki gecikmeye pay kalsın. Pay yetmezse (çalışma hedef
+  saatten sonra başlarsa) `sonraki_saat()` ertesi güne kaydırır — ders
+  atlanmaz, yalnızca bir gün geriye düşer. Slot sabitlenmiştir; "ilk uygun
+  slotu seç" mantığı iki çalışma birbirine yaklaşırsa aynı saate iki video
+  koyabilirdi. Saatler tek yerde: `yayin_sirasi.GUNLUK_SAATLER`.
 - **Oturumlar arası koordinasyon `content/oturumlar.yml` üzerinden yürür.**
   Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyor — bu oturum
   `list_sessions`'ta altıdan yalnızca ikisini görebiliyor, yani oturum mesajı
@@ -158,8 +164,8 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
   kaydettiği anda YouTube iş akışı o dersi atlıyor ve ders YouTube'a hiç
   gitmiyordu.
 - **Günlük yayın bu kuralın bilinçli istisnasıdır — ama yalnızca YouTube için.**
-  `gunluk-yayin` iş akışı her sabah 09:00'da (Istanbul) sıradaki dersi
-  YouTube'a `public` olarak yayınlar. **Instagram zamanlanmış çalışmada
+  `gunluk-yayin` iş akışı her gün 10:00 ve 14:00'te (İstanbul) sıradaki
+  dersi YouTube'a `public` olarak yayınlar. **Instagram zamanlanmış çalışmada
   KAPALIDIR**: AAE 16.11'de Instagram'ı başka bir oturumun her gün Instagram
   Business Suite üzerinden elle planladığını bildirdi; iş akışı da atsaydı aynı
   ders kanalda iki kez çıkardı ve Reel geri alınamaz. Elle çalıştırmada

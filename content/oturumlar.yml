@@ -28,7 +28,10 @@ kaynak: "AAE'nin oturum listesi (ekran görüntüsü, 16.11.2026) + oturumların
 platformlar:
   youtube:
     sahip: "gunluk-yayin.yml iş akışı (otomatik)"
-    nasil: "cron 0 6 * * * UTC = her sabah 09:00 İstanbul"
+    nasil: "cron 20 4 ve 20 8 UTC; video publishAt ile 10:00 ve 14:00 İstanbul'a programlanır"
+    # Çalışma saati yayın saati DEĞİL: cron saatlerce gecikebiliyor,
+    # o yüzden video private yüklenip publishAt ile kendi saatine
+    # programlanıyor. AAE 19.11: günde iki ders, 10:00 ve 14:00.
     kayit: "content/yayin_kaydi.json  (youtube alanı)"
     kim_elle_yapar: "hiç kimse — yalnız iş akışı hata verirse, sonra kaydı elle yaz"
     dogrulama: dogrulandi

@@ -1,7 +1,8 @@
 name: Gunluk Yayin
 
-# Her sabah 09:00'da (Istanbul) siradaki dersi render edip YOUTUBE'a
-# yayinlar, sonra yayin kaydini depoya geri yazar.
+# GUNDE IKI DERS: 10:00 ve 14:00 (Istanbul). Siradaki dersi render edip
+# YOUTUBE'a yayinlar, sonra yayin kaydini depoya geri yazar.
+# (AAE 19.11'de boyle istedi; oncesinde gunde bir ders, 09:00'daydi.)
 # Instagram'i bu is akisi ZAMANLANMIS calismada YAYINLAMAZ: onu baska bir
 # oturum Instagram Business Suite'ten elle planliyor (AAE, 16.11). Elle
 # calistirmada acilir kutudan secilebilir.
@@ -16,9 +17,19 @@ name: Gunluk Yayin
 # bilincli istisnasidir ve tek frenı secret'larin varligidir.
 on:
   schedule:
-    # 06:00 UTC = 09:00 Istanbul (Turkiye yil boyu UTC+3, yaz saati yok).
-    # GitHub zamanlanmis isleri yogunlukta birkac dakika gecikmeli baslatabilir.
-    - cron: "0 6 * * *"
+    # Turkiye yil boyu UTC+3, yaz saati yok.
+    # Calisma saati = YAYIN saati DEGIL. Video private yuklenip publishAt ile
+    # kendi saatine programlaniyor, o yuzden cron'u hedeften EPEY ONCE
+    # baslatiyoruz: GitHub zamanlanmis isleri saatlerce geciktirebiliyor
+    # (17 Kas'ta olculen gecikme 9 sa 21 dk). Dakika 20 secildi; tam saat
+    # basi GitHub'in en yogun slotu.
+    #   04:20 UTC = 07:20 Istanbul -> publishAt 10:00 (2 sa 40 dk pay)
+    - cron: "20 4 * * *"
+    #   08:20 UTC = 11:20 Istanbul -> publishAt 14:00 (2 sa 40 dk pay)
+    - cron: "20 8 * * *"
+    # Pay yetmezse (calisma hedef saatten sonra baslarsa) sonraki_saat()
+    # ERTESI GUNE kaydirir: ders atlanmaz, yalnizca bir gun geriye duser.
+    # Bu kasitli; alternatifi yarim yuklenmis videoyu reddettirmekti.
   workflow_dispatch:
     inputs:
       ders:
@@ -77,7 +88,14 @@ jobs:
       # programlaniyor; CI ne zaman calisirsa calissin video tam 09:00'da
       # kendiliginden aciliyor. Elle calistirmada bos birakilirsa eski
       # davranis (hemen yayinla) gecerli.
-      YT_SAAT: ${{ github.event_name == 'schedule' && '09:00' || inputs.yayinla_saat }}
+      # Hangi cron atesledi, o slotun saati. github.event.schedule
+      # zamanlanmis calismada tetikleyen cron ifadesini birebir veriyor.
+      # Slotu SABITLEMEK kasitli: "ilk uygun slot" mantigi iki calisma
+      # birbirine yaklasirsa ayni saate iki video koyabilirdi.
+      YT_SAAT: >-
+        ${{ github.event_name == 'schedule'
+            && (github.event.schedule == '20 4 * * *' && '10:00' || '14:00')
+            || inputs.yayinla_saat }}
     steps:
       - name: Depoyu indir
         uses: actions/checkout@v4
