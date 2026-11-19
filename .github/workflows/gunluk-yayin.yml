@@ -112,7 +112,25 @@ jobs:
             fi
           fi
           echo "Secilen ders: $DERS"
-          CIKTI="$(python3 scripts/lesson.py "$DERS" --json | jq -r .cikti)"
+          # Var olmayan bir ders adi verilince bu adim SESSIZCE geciyordu.
+          # Sebep: boru hattinin cikis kodu SON komuta (jq) ait, yani
+          # lesson.py patlasa bile adim basarili sayiliyor ve jq bos
+          # girdiden "null" uretiyordu. Hata iki adim sonra "Videoyu render
+          # et"te ciplak "exit code 1" olarak ciikiyor, logdan sebebi
+          # anlamak icin ortam degiskenlerini okumak gerekiyordu.
+          # (19.11.2026, calisma 44463744975: DERS=01-fren.yml - o dosya yok,
+          #  dogrusu 01-acil-fren.yml.)
+          if [ ! -f "$DERS" ]; then
+            echo "::error::Ders dosyasi yok: $DERS"
+            echo "Mevcut dersler:" >&2
+            ls content/dersler/*.yml >&2
+            exit 1
+          fi
+          if ! CIKTI="$(python3 scripts/lesson.py "$DERS" --json | jq -er .cikti)" \
+               || [ -z "$CIKTI" ]; then
+            echo "::error::lesson.py bu dersten cikti yolu uretemedi: $DERS"
+            exit 1
+          fi
           {
             echo "DERS=$DERS"
             echo "CIKTI=$CIKTI"
