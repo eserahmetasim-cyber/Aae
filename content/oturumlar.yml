@@ -52,6 +52,12 @@ platformlar:
       IG_ACCESS_TOKEN secret'ları GİRİLMEZ. İki kilit var: secret yokluğu
       ve zamanlanmış çalışmada kapalı olması.
     dogrulama: dogrulandi      # AAE 16.11'de bildirdi, 19.11'de teyit etti
+    atlanan: >
+      01-acil-fren, 02-viraj-bakisi, 03-kontra, 04-viraj-gazi Instagram'a
+      PLANLANMAZ: ayni videolar @aae_motorcycle'da 9-12.11.2026'da zaten
+      yayinda (kare kare ayni, yalniz muzik -18 LUFS). AAE 19.11: "asla
+      tekrar ayni icerik olmasin". Plan tablosundaki IG 20-21.11 slotlari bos.
+    planlanan: "05-23 Business Suite'te 22.11 10:00 - 01.12 10:00 (planli; media id yayindan sonra --isaretle ile yazilir)"
 
 # ---------------------------------------------------------------------------
 #  OTURUMLAR
