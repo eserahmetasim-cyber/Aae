@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-19T04:03:14+00:00",
+  "guncelleme": "2026-11-19T06:36:25+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -197,6 +197,15 @@
       "video": "library/approved/22-yuk/22-yuk.mp4",
       "meta": "library/approved/22-yuk/meta.json",
       "onay_tarihi": "2026-11-19T04:03:14+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "23-tutus",
+      "ders_no": 23,
+      "baslik": "Tutuş Dairesi",
+      "video": "library/approved/23-tutus/23-tutus.mp4",
+      "meta": "library/approved/23-tutus/meta.json",
+      "onay_tarihi": "2026-11-19T06:36:25+00:00",
       "durum": "onaylandi"
     }
   ]

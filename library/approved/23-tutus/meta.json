@@ -1,0 +1,69 @@
+{
+  "klasor": "23-tutus",
+  "ders_no": 23,
+  "slug": "tutus",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Tutuş Dairesi",
+  "alt_baslik": "Viraj ve fren aynı kasadan harcar",
+  "handle": "@aae_motorcycle",
+  "video": "23-tutus.mp4",
+  "kaynak_render": "output/2026-11-19_ders23_tutus_v1.mp4",
+  "onay_tarihi": "2026-11-19T06:36:25+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Tutuş tek bütçe: viraj ve fren aynı kasadan"
+    },
+    {
+      "t": 12.0,
+      "bitis": 19.0,
+      "metin": "2 · 20 derecede bütçenin %43'ü viraja gitti"
+    },
+    {
+      "t": 20.0,
+      "bitis": 27.0,
+      "metin": "3 · 30 derecede fren gücünün %27'si yok"
+    },
+    {
+      "t": 28.0,
+      "bitis": 35.0,
+      "metin": "4 · 36 derecede frenin YARISI gitti"
+    },
+    {
+      "t": 36.0,
+      "bitis": 43.0,
+      "metin": "5 · 4 derece daha: mesafe 1,7'den 3,1 katına"
+    },
+    {
+      "t": 44.0,
+      "bitis": 51.0,
+      "metin": "6 · Önce doğrult, sonra fren: doğruldukça geri gelir"
+    }
+  ],
+  "youtube": {
+    "baslik": "Tutuş Dairesi: Viraj ve Fren Aynı Kasadan | Yol Okulu #23",
+    "aciklama": "Lastiğin verebileceği yatay kuvvet tektir. Viraja harcadığın da frene\nharcadığın da aynı bütçeden çıkar — ve ikisi toplanmaz, VEKTÖREL\ntoplanır. Bu yüzden gösterge bir daire.\n\n0:04 Tek bir bütçe\n0:12 20 derece\n0:20 30 derece\n0:28 36 derece\n0:36 Son dereceler pahalı\n0:44 Kural\n\nHESAP\nDüzgün virajda yanal ivme = g × tan(yatış). Tutuşun bittiği yatış L\nise toplam tutuş μ = tan(L). O hâlde yatış a'da:\n\n  viraja giden pay   u = tan(a) / tan(L)\n  frene kalan        f = √(1 − u²)\n  durma mesafesi     1/f kat\n\nVideodaki tek varsayım L = 40° ve ekranda yazılı duruyor. Gerisi türev.\n\nAYNI BÜTÇE, FARKLI YATIŞ\n  10°   → viraja %21,0 · frene %97,8 kalır · mesafe ×1,02\n  20°   → viraja %43,4 · frene %90,1 kalır · mesafe ×1,11\n  30°   → viraja %68,8 · frene %72,6 kalır · mesafe ×1,38\n  34°   → viraja %80,4 · frene %59,5 kalır · mesafe ×1,68\n  36°   → viraja %86,6 · frene %50,0 kalır · mesafe ×2,00\n  38,5° → viraja %94,8 · frene %31,9 kalır · mesafe ×3,14\n\n36 DERECE NEDEN ÖNEMLİ\nf = 1/2 çıkan yatış tam 36,0 derece. Yani limitin yalnızca DÖRT DERECE\naltında frenin yarısı gitmiş oluyor. Gidonda bunu hissetmezsin; motor\nhâlâ rahat gidiyor gibi durur. Sonra önüne bir şey çıkar.\n\nSON DERECELER PAHALI\n34'ten 38,5'e dört buçuk derece var. Durma mesafesi 1,68 kattan 3,14\nkata çıkıyor. Bütçenin son dilimi en pahalı dilimdir; eğri lineer\ndeğil, daire.\n\nNEDEN METRE DEMİYORUM\nμ'yü lastik, asfalt, sıcaklık ve kir belirler; ölçmeden bilinemez. O\nyüzden hiçbir yerde \"şu kadar metre\" demiyorum. Her şey SENİN kendi\ntam frenine oran olarak veriliyor — hangi motor, hangi lastik olursa\nolsun oranlar aynı kalır.\n\nKURAL\n• Viraja fren bitmiş olarak gir (Ders 4, Ders 17).\n• Virajın içinde fren gerekiyorsa ÖNCE DOĞRULT. Doğruldukça bütçe\n  boşalır ve fren geri gelir.\n• Yatıkken ani gaz da aynı bütçeden harcar — fren tarafı için geçerli\n  olan her şey hızlanma için de geçerli.\n• Islakta, soğuk lastikte, kaygan yamada bütçenin tamamı küçülür\n  (Ders 5, Ders 16): aynı yatış, daha az kalan.\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "tutuş",
+      "fren",
+      "viraj",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Lastiğin verebileceği yatay kuvvet TEKTİR. Viraja harcadığın da frene\nharcadığın da aynı bütçeden çıkar — ve toplanmaz, VEKTÖREL toplanır.\nGösterge bu yüzden bir daire.\n\nHESAP\nviraja giden  u = tan(yatış) / tan(limit)\nfrene kalan   f = √(1 − u²)\ndurma mesafesi  1/f kat\n\nTek varsayım: tutuş 40°'de biter. Ekranda yazılı. Gerisi türev.\n\nAYNI BÜTÇE, FARKLI YATIŞ 👇\n20° → frene %90 kalır · mesafe ×1,11\n30° → frene %73 kalır · mesafe ×1,38\n36° → frene %50 kalır · mesafe ×2,00\n38,5° → frene %32 kalır · mesafe ×3,14\n\n36 DERECE: f tam 1/2 çıkıyor. Limitin YALNIZCA 4 DERECE altında frenin\nyarısı gitmiş oluyor. Gidonda hissetmezsin, motor rahat gidiyor gibi\ndurur. Sonra önüne bir şey çıkar.\n\nSON DERECELER PAHALI: 34'ten 38,5'e dört buçuk derece, mesafe 1,68'den\n3,14 kata. Eğri lineer değil, daire.\n\nNEDEN METRE DEMİYORUM: μ'yü lastik, asfalt, sıcaklık, kir belirler;\nölçmeden bilinemez. Her şey SENİN tam frenine oran — hangi motor olursa\nolsun oranlar aynı.\n\nKURAL: Viraja fren bitmiş gir. İçeride fren gerekiyorsa ÖNCE DOĞRULT;\ndoğruldukça fren geri gelir. Yatıkken ani gaz da aynı bütçeden harcar.\nIslakta ve soğuk lastikte bütçenin TAMAMI küçülür.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #tutuş #fren #viraj #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}
