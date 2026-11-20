@@ -215,6 +215,17 @@ def main() -> None:
               f"Günde {len(GUNLUK_SAATLER)} çalışma var; her biri videoyu "
               f"`publishAt` ile kendi saatine ({saatler}) programlar, yani "
               f"cron gecikse bile video tam saatinde açılır.")
+        # Durust olalim: SAAT garanti, TARIH degil. GitHub zamanlanmis isleri
+        # saatlerce geciktiriyor (20.11'de iki slot da ~8 sa 45 dk gecikti),
+        # publishAt ise "bir SONRAKI o saat"i hedefliyor. Calisma hedef saatten
+        # once baslarsa ders o gun, sonra baslarsa ertesi gun cikar. Sira hic
+        # bozulmaz; yalnizca takvim bir gun kayabilir.
+        print("\n**Saat garanti, tarih değil.** GitHub zamanlanmış işleri "
+              "saatlerce geciktirebiliyor; `publishAt` \"bir sonraki\" "
+              f"{GUNLUK_SAATLER[0]:02d}:00 ya da {GUNLUK_SAATLER[-1]:02d}:00'ı "
+              "hedeflediği için çalışma geç başlarsa ders ertesi güne düşer. "
+              "Sıra bozulmaz, takvim bir gün kayabilir. Gerçekte ne yayınlandı: "
+              "`content/yayin_kaydi.json`.")
         print("\n**Instagram**: bu tablo Business Suite'ten planlayan oturumun "
               "çalışma listesidir. `gunluk-yayin.yml` zamanlanmış çalışmada "
               "Instagram'a **yayınlamaz**; iki kez paylaşılmasın diye "
