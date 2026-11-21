@@ -251,7 +251,11 @@ def main() -> None:
             print(f"  {g:%d.%m.%Y}  {gunler[g.weekday()]}  {g:%H:%M}  "
                   f"ders {d['no']:02d}  {d['baslik']}")
         print(f"\n  {len(satirlar)} ders · {ilk:%d.%m.%Y} - {son:%d.%m.%Y}")
-        print("  (secret'lar girilene kadar hicbiri yayinlanmaz)")
+        # Eskiden burada "secret'lar girilene kadar hicbiri yayinlanmaz"
+        # yaziyordu. Secret'lar 21.11'de girildi; satir artik yanlisti.
+        # Script secret'lari goremez, o yuzden her zaman DOGRU olan seyi
+        # yaziyor: gercegin kaynagi kayit dosyasi.
+        print(f"  (gercekte ne yayinlandi: {KAYIT_YOLU})")
         return
 
     if args.durum:

@@ -1,0 +1,69 @@
+{
+  "klasor": "25-cizgi",
+  "ders_no": 25,
+  "slug": "cizgi",
+  "seri": "MOTOSİKLET YOL OKULU",
+  "baslik": "Virajın Çizgisi",
+  "alt_baslik": "Yarıçapı sen seçersin",
+  "handle": "@aae_motorcycle",
+  "video": "25-cizgi.mp4",
+  "kaynak_render": "output/2026-11-21_ders25_cizgi_v1.mp4",
+  "onay_tarihi": "2026-11-21T10:26:18+00:00",
+  "durum": "onaylandi",
+  "adimlar": [
+    {
+      "t": 4.0,
+      "bitis": 10.0,
+      "metin": "1 · Yarıçapı sen seçersin: sapma = R × (1 − cos(θ/2))"
+    },
+    {
+      "t": 12.0,
+      "bitis": 19.0,
+      "metin": "2 · 60 derecede sapma 3,15 m: düz çizgi şeride sığar"
+    },
+    {
+      "t": 20.0,
+      "bitis": 27.0,
+      "metin": "3 · 90 derecede sığmaz ama yarıçap 21,75'ten 42,50'ye"
+    },
+    {
+      "t": 28.0,
+      "bitis": 35.0,
+      "metin": "4 · İki katı yarıçap, aynı tutuşla %40 daha hızlı"
+    },
+    {
+      "t": 36.0,
+      "bitis": 43.0,
+      "metin": "5 · 50 km/h: şerit ortası 42° ister, mümkün değil"
+    },
+    {
+      "t": 44.0,
+      "bitis": 51.0,
+      "metin": "6 · Geç apeks: biraz yarıçaptan ver, görüş al"
+    }
+  ],
+  "youtube": {
+    "baslik": "Virajın Çizgisi: Yarıçapı Sen Seçersin | Yol Okulu #25",
+    "aciklama": "Virajın yarıçapı yolda yazmıyor. Şeridin içinde nereden geçtiğine göre\nsen belirliyorsun — ve fark iki katına kadar çıkıyor.\n\n0:04 Yarıçapı sen seçersin\n0:12 60 derece\n0:20 90 derece\n0:28 İki katı yarıçap\n0:36 50 km/h, aynı viraj\n0:44 Geç apeks\n\nHESAP: SAPMA\nVirajı dış kenardan dış kenara düz bir çizgiyle kesersen içeri doğru\nen fazla şu kadar saparsın:\n\n  sapma = R_dış × (1 − cos(θ/2))      R_dış = iç kenar + şerit\n\nBu sapma şerit genişliğinden küçükse düz çizgi şeride sığar.\n\n  60° → 23,5 × 0,1340 = 3,15 m  <  3,5 m  → sığar, viraj neredeyse yok\n  90° → 23,5 × 0,2929 = 6,88 m  >  3,5 m  → sığmaz\n\nHESAP: EN BÜYÜK YARIÇAP\nSığmıyorsa en iyisi, şeridin içinde kalan en büyük daire: iç kenara\napekste teğet, giriş ve çıkışta dış kenara değen. 90 derecelik viraj,\niç kenar 20 m, şerit 3,5 m için çözdüm:\n\n  şerit ortası (sabit yarıçap)   21,75 m\n  dışarıdan gir, içerden geç     42,50 m      ×1,95\n\nYarıçap neredeyse ikiye katlanıyor. Yol değişmedi, lastik değişmedi,\nmotosiklet değişmedi. Tek değişen çizgi.\n\nSONUÇ\nViraj hızı yarıçapın karekökü ile artar, yani ×1,95 yarıçap ×1,40 hız\ndemek: aynı tutuşla %40 daha hızlı. Ya da aynı hızda çok daha az\nyatış. 50 km/h için:\n\n  şerit ortası  → yatış 42,1° → tutuş bütçesinin %108'i\n  apeks çizgisi → yatış 24,8° → bütçenin %55'i, frene %83 kalır\n\nDikkat et: %108. Ders 23'teki 40 derecelik limitle şerit ortasından 50\nkm/h ile geçmek MÜMKÜN DEĞİL — kayarsın. Aynı hız, aynı viraj, aynı\nlastik: bir çizgide imkânsız, öbüründe rahat.\n\nGEÇ APEKS\nYukarıdaki en büyük daire \"geometrik apeks\" verir: yarıçabı azamiye\nçıkarır ama apeksi virajın tam ortasına koyar. Bunun iki bedeli var:\ngiriş anında virajın devamını göremezsin, ve çıkışta hâlâ yatıktasın.\nGeç apeks bir miktar yarıçaptan vazgeçip bunları satın alır — daha\nuzun görüş, daha erken ve daha düz çıkış.\n\nNE SÖYLEMİYORUM: ne kadar geç apeks gerektiğinin rakamı yok. O,\nvirajın görüşünü neyin kapattığına bağlı — duvar mı, şev mi, ağaç mı,\nyoksa hiçbir şey mi. Ölçmeden bilinmez, uydurmuyorum.\n\nSINIR — BUNU ATLAMA\nBu hesap ŞERİDİN TAMAMINI kullanmayı varsayar. Çift yönlü dar yolda\nkarşı şeride taşmak çizgi değil, kaza sebebidir. Kendi şeridin\niçinde kal; dışarıdan girmek demek karşı şeride çıkmak demek değil.\n\nKURAL\n• Viraja girmeden çizgini seç, içeride düzeltme (Ders 17).\n• Dışarıdan gir — ama kendi şeridinin dışına değil.\n• Göremiyorsan apeksi geciktir: görüş yarıçaptan önce gelir.\n• Apeksi geçtikten sonra motosiklet doğruluyorsa gaz açılabilir\n  (Ders 4, Ders 23).\n\nBu video genel bilgilendirmedir, birebir eğitim yerine geçmez.\n\n@aae_motorcycle",
+    "etiketler": [
+      "motosiklet",
+      "sürüş eğitimi",
+      "viraj çizgisi",
+      "apeks",
+      "viraj",
+      "motosiklet eğitimi",
+      "yol okulu",
+      "güvenli sürüş"
+    ],
+    "kategori": "2",
+    "gizlilik": "private"
+  },
+  "instagram": {
+    "caption": "Virajın yarıçapı yolda yazmıyor. Şeridin içinde nereden geçtiğine göre\nSEN belirliyorsun — ve fark iki katına çıkıyor.\n\nSAPMA\nsapma = R_dış × (1 − cos(θ/2))\n\n60° → 3,15 m < 3,5 m şerit → düz çizgi sığar, viraj neredeyse yok\n90° → 6,88 m > 3,5 m → sığmaz\n\nEN BÜYÜK YARIÇAP (90°, iç kenar 20 m, şerit 3,5 m) 👇\nşerit ortası: 21,75 m\napeks çizgisi: 42,50 m → ×1,95\n\nYol değişmedi, lastik değişmedi, motosiklet değişmedi. Tek değişen\nçizgi.\n\nSONUÇ: v ~ √R, yani ×1,95 yarıçap = ×1,40 hız. Ya da aynı hızda çok\ndaha az yatış. 50 km/h'de:\nşerit ortası → 42,1° → bütçenin %108'i\napeks çizgisi → 24,8° → bütçenin %55'i, frene %83 kalır\n\n%108'e dikkat: 40° limitle şerit ortasından 50 km/h geçmek MÜMKÜN\nDEĞİL. Aynı hız, aynı viraj, aynı lastik — birinde imkânsız,\nöbüründe rahat.\n\nGEÇ APEKS: geometrik apeks yarıçabı azamiye çıkarır ama girişte\ngöremezsin, çıkışta hâlâ yatıksın. Geç apeks biraz yarıçaptan\nvazgeçip görüş ve düz çıkış satın alır. Ne kadar geç? Rakamı yok —\nvirajın görüşünü neyin kapattığına bağlı, ölçmeden bilinmez.\n\nSINIR: bu hesap KENDİ şeridini tamamen kullanmayı varsayar. Çift\nyönlü dar yolda karşı şeride taşmak çizgi değil, kaza sebebidir.\n\n@aae_motorcycle\n#motosiklet #sürüşeğitimi #virajçizgisi #apeks #viraj #motosikleteğitimi #yolokulu #güvenlisürüş",
+    "feed_de_paylas": true,
+    "kapak_url": ""
+  },
+  "genislik": 1080,
+  "yukseklik": 1920,
+  "sure_sn": 55.0
+}

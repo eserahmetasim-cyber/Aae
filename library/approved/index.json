@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-21T08:51:49+00:00",
+  "guncelleme": "2026-11-21T10:26:18+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -215,6 +215,15 @@
       "video": "library/approved/24-kamber/24-kamber.mp4",
       "meta": "library/approved/24-kamber/meta.json",
       "onay_tarihi": "2026-11-21T08:51:49+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "25-cizgi",
+      "ders_no": 25,
+      "baslik": "Virajın Çizgisi",
+      "video": "library/approved/25-cizgi/25-cizgi.mp4",
+      "meta": "library/approved/25-cizgi/meta.json",
+      "onay_tarihi": "2026-11-21T10:26:18+00:00",
       "durum": "onaylandi"
     }
   ]

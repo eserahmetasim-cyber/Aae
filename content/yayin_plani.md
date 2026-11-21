@@ -2,7 +2,7 @@
      python3 scripts/yayin_sirasi.py --plan-md > content/yayin_plani.md -->
 # Yayın planı · her gün 10:00 ve 14:00 (İstanbul)
 
-Üretildi: 21.11.2026 11:51 · kaynak: `content/yayin_kaydi.json` + `content/dersler/`
+Üretildi: 21.11.2026 13:26 · kaynak: `content/yayin_kaydi.json` + `content/dersler/`
 
 | Ders | Başlık | YouTube | Instagram | Dosyalar |
 |---:|---|---|---|---|
@@ -30,6 +30,7 @@
 | 22 | Motosikleti Yüklemek | 02.12.2026 Car 10:00 | 02.12.2026 Car 10:00 | `library/approved/22-yuk/` |
 | 23 | Tutuş Dairesi | 02.12.2026 Car 14:00 | 02.12.2026 Car 14:00 | `library/approved/23-tutus/` |
 | 24 | Kamber: Virajın Yana Eğimi | 03.12.2026 Per 10:00 | 03.12.2026 Per 10:00 | `library/approved/24-kamber/` |
+| 25 | Virajın Çizgisi | 03.12.2026 Per 14:00 | 03.12.2026 Per 14:00 | `library/approved/25-cizgi/` |
 
 **YouTube**: `gunluk-yayin.yml` iş akışı otomatik yürütür. Günde 2 çalışma var; her biri videoyu `publishAt` ile kendi saatine (10:00 ve 14:00) programlar, yani cron gecikse bile video tam saatinde açılır.
 
