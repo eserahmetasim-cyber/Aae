@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-19T06:36:25+00:00",
+  "guncelleme": "2026-11-21T08:51:49+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -206,6 +206,15 @@
       "video": "library/approved/23-tutus/23-tutus.mp4",
       "meta": "library/approved/23-tutus/meta.json",
       "onay_tarihi": "2026-11-19T06:36:25+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "24-kamber",
+      "ders_no": 24,
+      "baslik": "Kamber: Virajın Yana Eğimi",
+      "video": "library/approved/24-kamber/24-kamber.mp4",
+      "meta": "library/approved/24-kamber/meta.json",
+      "onay_tarihi": "2026-11-21T08:51:49+00:00",
       "durum": "onaylandi"
     }
   ]
