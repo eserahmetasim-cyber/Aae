@@ -1,0 +1,190 @@
+# Ders 24 · Kamber: virajın yana eğimi
+# DIŞ KAYNAK RAKAMI YOK. Tek varsayım ders 23 ile AYNI: tutuşun bittiği
+# yatış 40°. Sahnedeki yatış 30° sabit ve yarıçap sabit; geri kalan türev.
+#
+# Lastiğin istediği tutuş, motosikletin YOLA GÖRE ne kadar yatık olduğudur
+# — dikeye göre değil. Yol yana β kadar eğimliyse:
+#     yola göre yatış = λ − β
+#     gereken tutuş   = tan(λ − β)
+# β > 0: viraja İÇE eğimli (dever) — yol yardım eder
+# β < 0: DIŞA eğimli ("ters kamber") — yol senden çalar
+#
+# λ = 30°, limit 40° için (aynı hız, aynı yarıçap):
+#   içe  +5 → yola göre 25°  tutuş payı %55,6  frene kalan %83,1
+#   düz   0 → yola göre 30°  tutuş payı %68,8  frene kalan %72,6
+#   dışa −5 → yola göre 35°  tutuş payı %83,4  frene kalan %55,1
+#   dışa −8 → yola göre 38°  tutuş payı %93,1  frene kalan %36,5
+#
+# TUTUŞ ARTIŞI (düze göre, aynı hızda):
+#   −3° → tan33/tan30 = 1,125   %12 daha fazla tutuş
+#   −5° → tan35/tan30 = 1,213   %21
+#   −8° → tan38/tan30 = 1,353   %35
+#
+# AZAMİ HIZ (limitte, aynı yarıçap): v ~ √(tan(40 + β))
+#   −5° → v ×0,913: düzde 60 km/h girilen viraj 54,8 km/h
+#   −8° → v ×0,863: 51,8 km/h
+#   +5° → v ×1,092: 65,5 km/h
+#
+# DERSİN CAN ALICI YERİ: 5 derecelik eğimi gözle neredeyse seçemezsin ama
+# tutuş payı %69'dan %83'e çıkar, frene kalan %73'ten %55'e düşer. Bu
+# yüzden sahnedeki kesit BÜYÜTÜLMEDEN, gerçek açısıyla çiziliyor — ne
+# kadar az göründüğü dersin kendisi.
+#
+# NE SÖYLENMİYOR: gerçek yolun kamberi ölçülmeden bilinmez, bu yüzden
+# "şu viraj şu kadar eğimli" denmiyor. Hepsi aynı hız ve aynı yarıçap
+# varsayımıyla, oran olarak veriliyor.
+
+ders_no: 24
+slug: kamber
+baslik: "Kamber: Virajın Yana Eğimi"
+alt_baslik: "Tutuş, yola göre yatışına bakar"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""
+sahne: kamber
+boyut: 3
+kamera: yan
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:duz, 12:disa, 20:cok, 28:ice, 36:hiz, 44:kural"
+
+kapanis: "Kamberi girişte oku"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Tutuş yola göre yatışına bakar, dikeye değil" }
+  - { t: 12, sure: 7, metin: "2 · 5 derece dışa eğim: frene kalan %73'ten %55'e" }
+  - { t: 20, sure: 7, metin: "3 · 8 derecede frenin üçte ikisi gitmiş olur" }
+  - { t: 28, sure: 7, metin: "4 · İçe eğimli viraj: yol sana yardım eder" }
+  - { t: 36, sure: 7, metin: "5 · Aynı viraj, azami hız 60 yerine 54,8 km/h" }
+  - { t: 44, sure: 7, metin: "6 · Kamberi girişte oku, dışa eğimliyse yavaş gir" }
+
+youtube:
+  baslik: "Kamber: Virajın Yana Eğimi | Yol Okulu #24"
+  aciklama: |
+    Lastiğin umurunda olan şey, senin dikeye göre ne kadar yattığın değil
+    — YOLA göre ne kadar yattığın. Yol yana eğimliyse bu ikisi aynı şey
+    olmaktan çıkar.
+
+    0:04 Düz yol
+    0:12 Dışa eğimli 5°
+    0:20 Dışa eğimli 8°
+    0:28 İçe eğimli 5°
+    0:36 Aynı viraj, daha yavaş
+    0:44 Kural
+
+    HESAP
+    Yol yana β kadar eğimliyse:
+
+      yola göre yatış = λ − β
+      gereken tutuş   = tan(λ − β)
+
+    β > 0 viraja İÇE eğimli (dever, yol yardım eder).
+    β < 0 DIŞA eğimli, yani "ters kamber" — yol senden çalar.
+
+    Tek varsayım ders 23'tekiyle aynı: tutuş 40°'de biter. Aşağıdakiler
+    30° yatışla, aynı hız ve aynı yarıçap için:
+
+      içe  +5° → yola göre 25° · tutuş payı %56 · frene kalan %83
+      düz   0° → yola göre 30° · tutuş payı %69 · frene kalan %73
+      dışa −5° → yola göre 35° · tutuş payı %83 · frene kalan %55
+      dışa −8° → yola göre 38° · tutuş payı %93 · frene kalan %36
+
+    AYNI HIZDA NE KADAR FAZLA TUTUŞ İSTER
+      −3° → tan33/tan30 = 1,125 → %12 daha fazla
+      −5° → tan35/tan30 = 1,213 → %21
+      −8° → tan38/tan30 = 1,353 → %35
+
+    AZAMİ HIZ
+    Limitte yola göre yatış 40° olur, yani dikeye göre 40+β. Oradan:
+
+      v ~ √(tan(40 + β))
+
+      −5° → ×0,913: düzde 60 km/h girilen viraj 54,8 km/h
+      −8° → ×0,863: 51,8 km/h
+      +5° → ×1,092: 65,5 km/h
+
+    NEDEN TEHLİKELİ
+    Beş derecelik bir eğimi gözle neredeyse seçemezsin. Videodaki kesit
+    bu yüzden büyütülmeden, gerçek açısıyla çizildi: ne kadar az
+    göründüğünü gör. Ama o görünmeyen beş derece tutuş payını %69'dan
+    %83'e çıkarıyor ve frene kalanı %73'ten %55'e düşürüyor (Ders 23).
+
+    NEREDE KARŞINA ÇIKAR
+    • Virajın dışına doğru su akıtmak için eğimlendirilmiş kesimler
+    • Kavşak çıkışları ve yan yol ağızları
+    • Onarım görmüş, yeniden asfaltlanmış şeritler
+    • Dağ yollarında sağa dönen virajın dış şeridi
+
+    NE SÖYLEMİYORUM
+    Gerçek bir yolun kamberini ölçmeden bilemezsin, o yüzden "şu viraj şu
+    kadar eğimli" demiyorum. Hepsi oran olarak, aynı hız ve aynı yarıçap
+    varsayımıyla veriliyor.
+
+    KURAL
+    • Kamberi VİRAJA GİRMEDEN oku: su izlerine, kaldırım taşının
+      yüksekliğine, önündeki aracın yatışına bak.
+    • Dışa eğimli görünüyorsa giriş hızını düşür — içeride düzeltmek
+      pahalıdır (Ders 17).
+    • Dışa eğimlide yatışını az tut, çizgiyi geç aç (Ders 4).
+    • İçe eğimli viraj hediyedir ama hediyeyi sonuna kadar harcama;
+      eğim virajın ortasında bitebilir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "kamber"
+    - "viraj"
+    - "yol eğimi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Lastiğin umurunda olan, senin DİKEYE göre değil YOLA göre ne kadar
+    yattığın. Yol yana eğimliyse bu ikisi aynı şey olmaktan çıkar.
+
+    yola göre yatış = λ − β
+    gereken tutuş = tan(λ − β)
+
+    β > 0 içe eğimli (dever, yol yardım eder)
+    β < 0 dışa eğimli, "ters kamber" — yol senden çalar
+
+    30° YATIŞ, AYNI HIZ, AYNI YARIÇAP 👇
+    içe +5° → yola göre 25° · frene kalan %83
+    düz 0° → yola göre 30° · frene kalan %73
+    dışa −5° → yola göre 35° · frene kalan %55
+    dışa −8° → yola göre 38° · frene kalan %36
+
+    AYNI HIZDA NE KADAR FAZLA TUTUŞ İSTER
+    −3° → %12 · −5° → %21 · −8° → %35
+
+    AZAMİ HIZ: v ~ √(tan(40 + β))
+    −5° → düzde 60 km/h girilen viraj 54,8 km/h
+    −8° → 51,8 km/h
+
+    NEDEN TEHLİKELİ: beş derecelik eğimi gözle neredeyse seçemezsin.
+    Videodaki kesit bu yüzden büyütülmeden, gerçek açısıyla çizildi. Ama o
+    görünmeyen beş derece frene kalanı %73'ten %55'e düşürüyor.
+
+    NEREDE: su akıtmak için eğimlendirilmiş kesimler, kavşak çıkışları,
+    yeniden asfaltlanmış şeritler, dağ yolunda sağa dönen virajın dışı.
+
+    KURAL: Kamberi viraja GİRMEDEN oku — su izleri, kaldırım yüksekliği,
+    önündeki aracın yatışı. Dışa eğimli görünüyorsa giriş hızını düşür,
+    yatışını az tut, çizgiyi geç aç. İçe eğimli hediyedir ama eğim virajın
+    ortasında bitebilir.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #kamber #viraj #motosikleteğitimi #yolokulu #güvenlisürüş

@@ -4766,6 +4766,527 @@ def kare_tutus3b(t):
     return im
 
 
+
+
+# ---------------------------------------------------------------------------
+#  LASTIK BASINCI: TUTUSU TASIYAN YER KREDI KARTI KADAR
+# ---------------------------------------------------------------------------
+# BU SAHNEYI HICBIR DERS KULLANMIYOR — ve bu bilincli.
+# 21.11.2026'da ders 24 olarak hazirlandi, sonra scripts/cakisma.py
+# content/dis_yayinlar.yml'de 07.10.2026 tarihli, YAYINDA olan bir
+# "Lastik Basinci" buldu. Ayni konuyu iki kez yayinlamama kurali geregi
+# ders yapilmadi; ders 24 "kamber" oldu. Sahne silinmedi cunku hesaplari
+# ve olculeri hazir: AAE o yayindan yeterince farkli oldugunu soylerse
+# tek yapilacak is bir ders dosyasi yazmak (sahne: basinc).
+# ---------------------------------------------------------------------------
+# DIS KAYNAK RAKAMI YOK. Lastik genislikleri KENDI MODELIMIZDEN olculdu
+# (assets/adv_motor): on 11,3 cm, arka 17,0 cm. Varsayimlar ekranda yazili:
+# motosiklet+surucu 250 kg, yuksuz dagilim 50/50 (ders 22 ile ayni), ve
+# atmosfer basinci 1,0 bar.
+#
+# 1) TEMAS ALANI.  Lastik esnek bir zarf; icerideki hava basinci yuku
+#    tasiyor. Ilk mertebede:
+#        alan = yuk / basinc
+#    (Karkasin kendisi de bir miktar yuk tasir, yani gercek alan bundan bir
+#    parca kucuktur. Bu yuzden derste "yaklasik" deniyor ve karsilastirma
+#    ORAN uzerinden yapiliyor; oranlar karkas payindan etkilenmez.)
+#        125 kg = 1226 N
+#        1,5 bar -> 81,8 cm2     2,0 -> 61,3     2,2 -> 55,7
+#        2,5 bar -> 49,0 cm2     2,9 -> 42,3
+#    Kredi karti 8,56 x 5,40 = 46,2 cm2. Yani 2,5 barda HER lastigin yere
+#    degdigi yer asagi yukari BIR KREDI KARTI.
+#    2,5'tan 2,0'a dusunce alan tam %25 buyuyor (alan ~ 1/basinc).
+#
+# 2) SICAKLIK.  Lastikteki hava icin P_mutlak ~ T (hacim kabaca sabit):
+#        P2 = (P1 + 1,0) * T2/T1 - 1,0        T mutlak (Kelvin)
+#        5 C'de 2,5 bar  -> 45 C'de 3,00 bar   (+0,50)
+#        45 C'de 2,5 bar -> 5 C'de  2,06 bar   (-0,44)  <- TUZAK
+#        25 C'de 2,5 bar -> 0 C'de  2,21 bar   (-0,29)  mevsim etkisi
+#    Sicakken olcup 2,5'a indirirsen sogukta 2,06 ile gidiyorsun: temas
+#    alani hedeflenenin %21 ustunde, lastik her turda fazladan eziliyor.
+#
+# NE SOYLENMIYOR: buyuk temas alani "daha cok tutus" DEMEK DEGIL, ve
+# dusuk basincin isinma/asinma etkisi rakamla verilmiyor — ikisi de
+# lastigin kendi olculeri olmadan hesaplanamaz. Derste nitel birakildi.
+BAS_KUTLE = 250.0                 # motosiklet + surucu (varsayim, ekranda)
+BAS_AKS = 125.0                   # aks basina (50/50 varsayimi, ders 22)
+BAS_ON_EN = 0.113                 # m - KENDI modelimizden olculdu
+BAS_ARKA_EN = 0.170               # m - KENDI modelimizden olculdu
+BAS_ATM = 1.0                     # bar, atmosfer (varsayim)
+BAS_KART = (8.56, 5.398)          # cm - kredi karti
+BAS_HEDEF = 2.5                   # bar - dersin referans basinci
+
+
+def bas_alan(bar, kg=BAS_AKS):
+    """Temas alani, cm2.  alan = yuk / basinc (ilk mertebe)."""
+    return kg * 9.81 / (max(0.2, bar) * 1e5) * 1e4
+
+
+def bas_uzunluk(bar, en_m):
+    """Temas izinin UZUNLUGU, m. Genislik lastigin kendi genisligi."""
+    return (bas_alan(bar) / 1e4) / en_m
+
+
+def bas_donustur(bar, t1, t2):
+    """t1'de bar olan basinc t2'de kac bar gosterir (mutlak uzerinden)."""
+    return (bar + BAS_ATM) * (t2 + 273.15) / (t1 + 273.15) - BAS_ATM
+
+
+BAS_NOKTA = {
+    "avuc":  ("İKİ AVUÇ KADAR YER", "alan = yük / basınç", None, ""),
+    "dusuk": ("2,5 YERİNE 2,0 BAR", "alan tam %25 büyüyor", 2.0,
+              "basınç %20 düştü · alan %25 büyüdü"),
+    "sicak": ("SICAK LASTİK YÜKSEK GÖSTERİR", "5°C'de 2,5 → 45°C'de 3,00",
+              None, "aynı hava, sadece ısındı"),
+    "tuzak": ("SICAKKEN AYARLAMA", "soğuyunca 2,06 bar kalırsın", None,
+              "hedefin 0,44 bar altı · alan %21 fazla"),
+    "kis":   ("KIŞ SABAHI 0,29 BAR ALIR", "25°C'de 2,5 → 0°C'de 2,21",
+              None, "sen hiçbir şey yapmadan"),
+    "kural": ("SOĞUKKEN ÖLÇ", "el kitabındaki değere ayarla", BAS_HEDEF,
+              "yüklüyken arkayı artır · ders 22"),
+}
+BAS_FAZ = [(4.0, "avuc")]
+
+
+def bas_faz_ayarla(metin):
+    """sahne_fazlari: "4:avuc, 12:dusuk, ..." """
+    global BAS_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in BAS_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen basinc noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    BAS_FAZ = sorted(f)
+
+
+def bas_evre(t):
+    ad, bas = BAS_FAZ[0][1], BAS_FAZ[0][0]
+    for z, a in BAS_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _bas_deger(anahtar, gecen):
+    """O andaki basinc (bar)."""
+    sabit = BAS_NOKTA[anahtar][2]
+    if sabit is not None:
+        return sabit
+    if anahtar == "avuc":
+        # 1,5 ile 2,9 arasinda gidip gelir: alanin basincla nasil
+        # soludugu tek bakista gorulsun.
+        p = (gecen / 7.0) % 1.0
+        return 2.2 + 0.7 * math.sin(2 * math.pi * p)
+    if anahtar == "sicak":
+        return bas_donustur(BAS_HEDEF, 5.0, 45.0)      # 3,00
+    if anahtar == "tuzak":
+        return bas_donustur(BAS_HEDEF, 45.0, 5.0)      # 2,06
+    return bas_donustur(BAS_HEDEF, 25.0, 0.0)          # kis: 2,21
+
+
+def _bas_iz(d, x0, y0, olcek, bar):
+    """Temas izini ve kredi kartini AYNI olcekte, yan yana cizer.
+
+    Kart bir sus degil: alanin ne kadar kucuk oldugu ancak bilinen bir
+    seye gore okunuyor. 2,5 barda ikisi neredeyse ayni."""
+    ren = YESIL if abs(bar - BAS_HEDEF) < 0.12 else (
+        KIRMIZI if bar < BAS_HEDEF - 0.12 else TURUNCU)
+    cizimler = (("ÖN", BAS_ON_EN, ren), ("ARKA", BAS_ARKA_EN, ren),
+                ("KREDİ KARTI", None, (150, 158, 168)))
+    x = x0
+    for ad, en_m, renk in cizimler:
+        if en_m is None:
+            g, u = BAS_KART
+            d.rectangle([x, y0 - u * olcek, x + g * olcek, y0], outline=renk,
+                        width=3)
+            s2.yazi(d, (x + g * olcek / 2, y0 + 10), ad, 20, renk, ortala=True)
+            s2.yazi(d, (x + g * olcek / 2, y0 - u * olcek - 28),
+                    f"{g * BAS_KART[1]:.0f} cm²".replace(".", ","), 20, renk,
+                    ortala=True)
+            x += g * olcek + 34
+            continue
+        g = en_m * 100.0
+        u = bas_uzunluk(bar, en_m) * 100.0
+        d.rectangle([x, y0 - u * olcek, x + g * olcek, y0],
+                    fill=renk + (120,), outline=renk, width=3)
+        s2.yazi(d, (x + g * olcek / 2, y0 + 10), ad, 20, (190, 196, 204),
+                ortala=True)
+        s2.yazi(d, (x + g * olcek / 2, y0 - u * olcek - 28),
+                f"{bas_alan(bar):.0f} cm²", 20, renk, ortala=True)
+        x += g * olcek + 34
+    return x
+
+
+def kare_basinc3b(t):
+    """Yan gorus: temas izleri isaretli, ustte gercek olcekli karsilastirma."""
+    anahtar, faz_bas = bas_evre(t)
+    etiket, aciklama, _, notu = BAS_NOKTA[anahtar]
+    bar = _bas_deger(anahtar, max(0.0, t - faz_bas))
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _bas_tek
+    _bas_tek = (globals().get("_bas_tek", 0.0) + 0.16) % (2 * math.pi)
+
+    z = -30.0
+    while z < 120:
+        z2 = z + 6.0
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -30.0
+        while zz < 90:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+
+    model, _, _ = motosiklet(0.0, _bas_tek, 0.0, surucu=False)
+    s.ekle(model, t=[0.0, 0.0, 0.0])
+
+    # Temas izleri: basinc dustukce UZUYORLAR. 3B'de degisim birkac
+    # piksel, o yuzden asil anlatim yukaridaki gercek olcekli cizimde;
+    # buradakiler izin NEREDE oldugunu gosteriyor.
+    iz_renk = YESIL if abs(bar - BAS_HEDEF) < 0.12 else (
+        KIRMIZI if bar < BAS_HEDEF - 0.12 else TURUNCU)
+    for zc, en_m in ((0.74, BAS_ON_EN), (-0.73, BAS_ARKA_EN)):
+        yari = bas_uzunluk(bar, en_m) / 2.0
+        s.yuzey([[-en_m / 2, 0.03, zc - yari], [en_m / 2, 0.03, zc - yari],
+                 [en_m / 2, 0.03, zc + yari], [-en_m / 2, 0.03, zc + yari]],
+                iz_renk, katman=2)
+
+    # KADRAJ SAYIYLA KURULDU (KURALLAR.md). Tam dik yan gorus.
+    # En alcak gorunen nokta ARKA lastigin temasi (kameraya en yakin,
+    # mesafe D-0,73); en yuksek nokta motorun tepesi y=1,579 (mesafe
+    # D-0,30). Istenen: yer 1285 px (adim bandinin ustunde), tepe 840 px
+    # (gosterge seridinin altinda). Iki denklem, iki bilinmeyen:
+    #   goz*F/(D-0,73) = 325   ve   (1,579-goz)*F/(D-0,30) = 120
+    BAS_D = 9.0
+    _f = (325.0 * (BAS_D - 0.73) + 120.0 * (BAS_D - 0.30)) / 1.579
+    BAS_GOZ = 325.0 * (BAS_D - 0.73) / _f
+    kamera = Kamera([BAS_D, BAS_GOZ, -0.15], [0.0, BAS_GOZ, -0.15], G, Y,
+                    fov=2 * math.degrees(math.atan(960.0 / _f)))
+    s.ciz(d, kamera, gok)
+
+    # Izin 3B kopyasi lastigin ALTINDA kaliyor. Dahasi, OLCTUM: bu
+    # kameradan gercek iz ekranda 14 x 4 piksel cikiyor - lastigin
+    # genisligi kamera eksenine paralel oldugu icin neredeyse tamamen
+    # kisaliyor. Yani izi "gercek boyutunda" gostermenin anlami yok.
+    # Cozum: izin gercek dortgeni yine kendi olcusunde ciziliyor ama
+    # etrafina bir ISARET HALKASI konuyor. Halka bir olcu degil, isaret:
+    # "yere burasi degiyor" diyor. NE KADAR oldugu panelde, gercek
+    # olcekte. Buyutulmus sahte bir iz cizmek yaniltici olurdu.
+    for zc, en_m in ((0.74, BAS_ON_EN), (-0.73, BAS_ARKA_EN)):
+        yari = bas_uzunluk(bar, en_m) / 2.0
+        kose = np.array([[-en_m / 2, 0.012, zc - yari],
+                         [en_m / 2, 0.012, zc - yari],
+                         [en_m / 2, 0.012, zc + yari],
+                         [-en_m / 2, 0.012, zc + yari]])
+        ek = kamera.ekrana(kamera.kameraya(kose))
+        mx, my = float(ek[:, 0].mean()), float(ek[:, 1].mean())
+        d.ellipse([mx - 30, my - 30, mx + 30, my + 30], outline=iz_renk,
+                  width=5)
+        d.polygon([tuple(q) for q in ek], fill=iz_renk + (230,),
+                  outline=KREM, width=2)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = iz_renk
+    fo = s2.font(40)
+    tw = d.textlength(etiket, font=fo)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    # Yerlesim: sayilar USTTE iki satir, cizim ALTTA kadraj boyu. Ilk
+    # denemede baslik ile varsayim satiri ayni satirdaydi ve ust uste
+    # biniyordu; cizim de dar bir kutuya sikisip okunmuyordu.
+    px, py, pw, ph = 62, 450, G - 124, 356
+    d.rounded_rectangle([px, py, px + pw, py + ph], 16, fill=(16, 20, 26, 212),
+                        outline=(92, 102, 112), width=4)
+    sag = px + pw - 26
+    s2.yazi(d, (px + 26, py + 14), "YERE DEĞEN YER · GERÇEK ÖLÇEK", 22,
+            (150, 155, 162))
+    metin = f"{bar:.2f}".replace(".", ",") + " bar"
+    s2.yazi(d, (sag - d.textlength(metin, font=s2.font(48)), py + 6), metin,
+            48, ust_renk)
+    s2.yazi(d, (px + 26, py + 46),
+            "varsayım: 250 kg · 50/50 · atmosfer 1,0 bar", 19, (124, 132, 142))
+    olcu = (f"ön iz {bas_alan(bar):.0f} cm² · "
+            f"{bas_uzunluk(bar, BAS_ON_EN) * 100:.1f} cm".replace(".", ","))
+    s2.yazi(d, (sag - d.textlength(olcu, font=s2.font(24)), py + 64), olcu,
+            24, (190, 196, 204))
+    if notu:
+        s2.yazi(d, (px + 26, py + 78), notu, 22, ust_renk)
+    _bas_iz(d, px + 40, py + 322, 20.0, bar)
+    return im
+
+
+
+
+# ---------------------------------------------------------------------------
+#  KAMBER: VIRAJIN YANA EGIMI
+# ---------------------------------------------------------------------------
+# DIS KAYNAK RAKAMI YOK. Tek varsayim ders 23 ile AYNI: tutusun bittigi
+# yatis 40 derece. Geri kalan turev.
+#
+# Lastigin istedigi tutus, motosikletin YOLA GORE ne kadar yatik oldugudur
+# - dikeye gore degil. Yol yana beta kadar egimliyse:
+#       yola gore yatis = lambda - beta
+#       gereken tutus   = tan(lambda - beta)
+# beta > 0: viraja ICE egimli (devletin yaptigi dever) - yol sana yardim eder
+# beta < 0: DISA egimli ("ters kamber") - yol senden calar
+#
+# AYNI HIZ, AYNI YARICAP, lambda = 30 derece icin (40 derece limitle):
+#   ice  +5  -> yola gore 25  tutus payi %55,6  frene kalan %83,1
+#   duz   0  -> yola gore 30  tutus payi %68,8  frene kalan %72,6
+#   disa -3  -> yola gore 33  tutus payi %77,4  frene kalan %63,3
+#   disa -5  -> yola gore 35  tutus payi %83,4  frene kalan %55,1
+#   disa -8  -> yola gore 38  tutus payi %93,1  frene kalan %36,5
+#
+# TUTUS ARTISI (duze gore, ayni hizda):
+#   -3 -> tan33/tan30 = 1,125   %12 daha fazla tutus
+#   -5 -> tan35/tan30 = 1,213   %21
+#   -8 -> tan38/tan30 = 1,353   %35
+#
+# AZAMI HIZ (limitte, ayni yaricap): v ~ sqrt(tan(40 + beta))
+#   -5 derece -> v x0,913: duzde 60 km/h girilen viraj 54,8 km/h
+#
+# DERSIN CAN ALICI YERI: 5 derecelik egimi GOZLE neredeyse secemezsin ama
+# tutus butcenin %69'undan %83'une ciksin diye yeter; frene kalan %73'ten
+# %55'e duser. Bu yuzden sahnedeki egim BUYUTULMEDEN, gercek acisiyla
+# ciziliyor - ne kadar az gorundugu dersin kendisi.
+KAM_LIMIT = 40.0                  # VARSAYIM (ekranda), ders 23 ile ayni
+KAM_YATIS = 30.0                  # sahnedeki sabit yatis (dikeye gore)
+KAM_V = 60.0 / 3.6
+KAM_KAPPA = math.tan(math.radians(KAM_YATIS)) * 9.81 / (KAM_V ** 2)
+
+KAM_NOKTA = {
+    "duz":  ("DÜZ YOL", "yola göre yatış 30°", 0.0),
+    "disa": ("DIŞA EĞİMLİ · 5°", "yola göre 35° oldu", -5.0),
+    "cok":  ("DIŞA EĞİMLİ · 8°", "frenin %63'ü gitti", -8.0),
+    "ice":  ("İÇE EĞİMLİ · 5°", "yol sana yardım ediyor", 5.0),
+    "hiz":  ("AYNI VİRAJ, DAHA YAVAŞ", "60 km/h yerine 54,8", -5.0),
+    "kural": ("KAMBERI GİRİŞTE OKU", "dışa eğimliyse yavaş gir", None),
+}
+KAM_FAZ = [(4.0, "duz")]
+
+
+def kam_faz_ayarla(metin):
+    """sahne_fazlari: "4:duz, 12:disa, ..." """
+    global KAM_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in KAM_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen kamber noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    KAM_FAZ = sorted(f)
+
+
+def kam_evre(t):
+    ad, bas = KAM_FAZ[0][1], KAM_FAZ[0][0]
+    for z, a in KAM_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def kam_beta(anahtar, gecen):
+    sabit = KAM_NOKTA[anahtar][2]
+    if sabit is not None:
+        return sabit
+    # "kural": ice egimliden disa egimliye salinir, yolun degistigi gorulsun
+    p = (gecen / 6.0) % 1.0
+    return 5.0 * math.cos(2 * math.pi * p) - 1.5
+
+
+def kam_pay(beta, yatis=KAM_YATIS):
+    """Tutus butcesinin viraja giden orani (ders 23'teki u)."""
+    u = (math.tan(math.radians(yatis - beta))
+         / math.tan(math.radians(KAM_LIMIT)))
+    return min(1.0, max(0.0, u))
+
+
+def kam_fren(beta):
+    return math.sqrt(max(0.0, 1.0 - kam_pay(beta) ** 2))
+
+
+def kam_hiz(beta, v0=KAM_V * 3.6):
+    """Ayni yaricapta AZAMI hiz (km/h). Limitte yola gore yatis = KAM_LIMIT,
+    yani dikeye gore yatis KAM_LIMIT + beta:
+        tan(lambda) = v^2/(g*R)  ->  v ~ sqrt(tan(KAM_LIMIT + beta))
+    v0 duz yolun azami hizi olarak aliniyor (60 km/h)."""
+    oran = math.sqrt(math.tan(math.radians(KAM_LIMIT + beta))
+                     / math.tan(math.radians(KAM_LIMIT)))
+    return v0 * oran
+
+
+def _kam_kesit(d, cx, cy, R, beta, yatis=KAM_YATIS):
+    """Yoldan kesit: yol cizgisi, yol dikmesi, motosiklet, aradaki aci.
+
+    Egim GERCEK acisiyla ciziliyor, buyutulmeden: 5 derecenin ne kadar az
+    goründügü dersin kendisi."""
+    br = math.radians(beta)
+    # Yol cizgisi: saga dogru beta kadar alcalir (ice egim) ya da yukselir
+    dx, dy = math.cos(br) * R, -math.sin(br) * R
+    d.line([(cx - dx, cy - dy), (cx + dx, cy + dy)], fill=(176, 182, 190),
+           width=7)
+    # Yolun dikmesi (kesik): yatisin kime gore olculdugu bu
+    nx, ny = math.sin(br) * R * 0.86, -math.cos(br) * R * 0.86
+    adim = 13
+    n = max(2, int(R * 0.86 / adim))
+    for i in range(0, n, 2):
+        a0, a1 = i / n, min(1.0, (i + 1) / n)
+        d.line([(cx + nx * a0, cy + ny * a0), (cx + nx * a1, cy + ny * a1)],
+               fill=(120, 128, 138), width=3)
+    # Motosiklet: DIKEYE gore yatis kadar egik
+    yr = math.radians(yatis)
+    mx, my = math.sin(yr) * R * 0.95, -math.cos(yr) * R * 0.95
+    renk = KIRMIZI if kam_fren(beta) < 0.55 else (
+        TURUNCU if kam_fren(beta) < 0.8 else YESIL)
+    d.line([(cx, cy), (cx + mx, cy + my)], fill=renk, width=11)
+    d.ellipse([cx - 8, cy - 8, cx + 8, cy + 8], fill=KREM)
+    # Aradaki aci: YOLA GORE yatis
+    yay = R * 0.46
+    d.arc([cx - yay, cy - yay, cx + yay, cy + yay],
+          start=-90 - yatis, end=-90 + beta, fill=renk, width=5)
+    orta = math.radians((beta - yatis) / 2.0)
+    s2.yazi(d, (cx + math.sin(orta) * yay * 1.32,
+                cy - math.cos(orta) * yay * 1.32 - 16),
+            f"{yatis - beta:.0f}°", 32, renk, ortala=True)
+    return renk
+
+
+def kare_kamber3b(t):
+    """Saga donen viraj; yol yana egimli. Kesit gostergesi ustte."""
+    anahtar, faz_bas = kam_evre(t)
+    etiket, aciklama, _ = KAM_NOKTA[anahtar]
+    beta = kam_beta(anahtar, max(0.0, t - faz_bas))
+    pay, fren = kam_pay(beta), kam_fren(beta)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _kam_s, _kam_tek
+    _kam_s = (globals().get("_kam_s", 0.0) + KAM_V / FPS) % 8.0
+    _kam_tek = (globals().get("_kam_tek", 0.0)
+                + KAM_V / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    tb = math.tan(math.radians(beta))
+
+    def kx(z):
+        return 0.0 if z <= 0 else KAM_KAPPA * z * z / 2.0
+
+    def ky(x, z):
+        """Yol yuzeyinin yuksekligi. beta>0 ice egim: sag taraf ALCAK."""
+        return -(x - kx(z)) * tb
+
+    z = -14.0
+    while z < 66:
+        z2 = z + 3.0
+        a, b = kx(z), kx(z2)
+        s.yuzey([[-95, ky(-95, z), z], [95, ky(95, z), z],
+                 [95, ky(95, z2), z2], [-95, ky(-95, z2), z2]], cim, katman=0)
+        s.yuzey([[a - 4.2, ky(a - 4.2, z) + 0.01, z],
+                 [a + 4.2, ky(a + 4.2, z) + 0.01, z],
+                 [b + 4.2, ky(b + 4.2, z2) + 0.01, z2],
+                 [b - 4.2, ky(b - 4.2, z2) + 0.01, z2]], asfalt, katman=1)
+        for yan in (-1, 1):
+            x1, x2 = a + yan * 4.0, a + yan * 3.86
+            x3, x4 = b + yan * 3.86, b + yan * 4.0
+            s.yuzey([[x1, ky(x1, z) + 0.02, z], [x2, ky(x2, z) + 0.02, z],
+                     [x3, ky(x3, z2) + 0.02, z2], [x4, ky(x4, z2) + 0.02, z2]],
+                    (205, 205, 200), katman=2)
+        z = z2
+    for i in range(-2, 14):
+        zc = i * 8.0 - _kam_s
+        a, b = kx(zc), kx(zc + 3.6)
+        s.yuzey([[a - 0.11, ky(a, zc) + 0.02, zc],
+                 [a + 0.11, ky(a, zc) + 0.02, zc],
+                 [b + 0.11, ky(b, zc + 3.6) + 0.02, zc + 3.6],
+                 [b - 0.11, ky(b, zc + 3.6) + 0.02, zc + 3.6]],
+                (210, 210, 205), katman=2)
+
+    x0 = FREN_SERIT
+    model, _, _ = motosiklet(0.0, _kam_tek, 0.0)
+    # Motosiklet DIKEYE gore yatik; yol egimli oldugu icin temas noktasi
+    # da yolun o noktadaki yuksekliginde.
+    s.ekle(model, R=donus([0, 0, 1], -math.radians(KAM_YATIS)),
+           t=[x0, ky(x0, 0.0), 0.0])
+
+    # KADRAJ SAYIYLA KURULDU (KURALLAR.md), ders 23 ile ayni yontem:
+    #   goz*F/(D-0,73) = 1285-960 = 325   (arka lastik, kameraya en yakin)
+    #   (1,83-goz)*F/(D-0,30) = 960-845 = 115   (kaskin tepesi)
+    KAM_D = 11.2
+    _f = (325.0 * (KAM_D - 0.73) + 115.0 * (KAM_D - 0.30)) / 1.83
+    KAM_GOZ = 325.0 * (KAM_D - 0.73) / _f
+    kamera = Kamera([x0 + 0.35, KAM_GOZ, -KAM_D], [x0 + 0.35, KAM_GOZ, 14.0],
+                    G, Y, fov=2 * math.degrees(math.atan(960.0 / _f)))
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = KIRMIZI if fren < 0.55 else (TURUNCU if fren < 0.8 else YESIL)
+    fo = s2.font(40)
+    tw = d.textlength(etiket, font=fo)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    px, py, pw, ph = 62, 450, G - 124, 370
+    d.rounded_rectangle([px, py, px + pw, py + ph], 16, fill=(16, 20, 26, 212),
+                        outline=(92, 102, 112), width=4)
+    # Varsayim satiri BASLIK SATIRINDA, saga dayali. Once panelin altina
+    # konmustu ve "AZAMI HIZ" satiriyla ust uste biniyordu; sag sutun
+    # px+470'te basliyor, varsayim ise olculmeden 466'ya kadar uzuyordu.
+    # Baslik kisa tutuldu: OLCTUM, "YOLDAN KESİT · GERÇEK AÇI" 351 px,
+    # varsayim satiri 626 px, panel ici 904 px - ikisi 977 edip ust uste
+    # biniyordu. "GERÇEK AÇI" vurgusu cizimin altina indi.
+    s2.yazi(d, (px + 26, py + 14), "YOLDAN KESİT", 22, (150, 155, 162))
+    varsayim = (f"varsayım: tutuş {KAM_LIMIT:.0f}°'de biter · yatış "
+                f"{KAM_YATIS:.0f}° sabit · aynı yarıçap")
+    s2.yazi(d, (px + pw - 26 - d.textlength(varsayim, font=s2.font(19)),
+                py + 16), varsayim, 19, (124, 132, 142))
+    _kam_kesit(d, px + 220, py + 310, 180, beta)
+    s2.yazi(d, (px + 220, py + 332), "gerçek açı · büyütülmedi", 19,
+            (124, 132, 142), ortala=True)
+
+    # AZAMI HIZ satiri her fazda var: "hiz" fazinda panel yoksa o adim
+    # "disa" ile birebir ayni kareyi veriyordu, yani adim degisiyor ama
+    # ekranda hicbir sey degismiyordu (ders 22'de ayni tuzaga dusmustum).
+    sx = px + 470
+    satirlar = (
+        ("KAMBER", (f"{beta:+.0f}°" if abs(beta) >= 0.5 else "0°"),
+         (YESIL if beta > 0.5 else (KIRMIZI if beta < -0.5 else KREM))),
+        ("YOLA GÖRE YATIŞ", f"{KAM_YATIS - beta:.0f}°", ust_renk),
+        ("TUTUŞ PAYI", f"%{pay * 100:.0f}", TURUNCU),
+        ("FRENE KALAN", f"%{fren * 100:.0f}", ust_renk),
+        ("AZAMİ HIZ", f"{kam_hiz(beta):.1f}".replace(".", ",") + " km/h",
+         ust_renk),
+    )
+    for i, (ad, deger, renk) in enumerate(satirlar):
+        yy = py + 46 + i * 64
+        s2.yazi(d, (sx, yy + 12), ad, 24, (150, 155, 162))
+        gx = sx + max(300.0, d.textlength(ad, font=s2.font(24)) + 28)
+        s2.yazi(d, (gx, yy), deger, 40, renk)
+    return im
+
+
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
@@ -4774,7 +5295,7 @@ def main():
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
                              "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk",
-                             "tutus"),
+                             "tutus", "basinc", "kamber"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -4818,6 +5339,12 @@ def main():
     elif args.sahne == "tutus":
         tutus_faz_ayarla(args.fazlar)
         cizer = kare_tutus3b
+    elif args.sahne == "basinc":
+        bas_faz_ayarla(args.fazlar)
+        cizer = kare_basinc3b
+    elif args.sahne == "kamber":
+        kam_faz_ayarla(args.fazlar)
+        cizer = kare_kamber3b
     elif args.sahne == "ruzgar":
         ruzgar_faz_ayarla(args.fazlar)
         cizer = kare_ruzgar3b
