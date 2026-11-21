@@ -5287,6 +5287,333 @@ def kare_kamber3b(t):
     return im
 
 
+
+
+# ---------------------------------------------------------------------------
+#  VIRAJIN CIZGISI: YARICAPI SEN SECERSIN
+# ---------------------------------------------------------------------------
+# DIS KAYNAK RAKAMI YOK. Hepsi geometriden cozuldu; cozum ikiye bolme ile
+# bu dosyada yapiliyor (CIZGI_COZ), yani rakamlar sabit yazilmis degil.
+# Varsayimlar ekranda: ic kenar yaricapi 20 m, serit 3,5 m, tutus 40
+# derecede biter (ders 23 ile ayni).
+#
+# 1) SAPMA (sagitta).  teta'lik bir viraji duz bir cizgiyle kesersen
+#    yoldan en fazla
+#        sapma = R * (1 - cos(teta/2))
+#    kadar ayrilirsin. Bu sapma SERIT GENISLIGINDEN kucukse viraji
+#    neredeyse duz gecebilirsin.
+#        60 derece, R=21,75 -> sapma 2,91 m  <  3,5 m serit  -> neredeyse duz
+#        90 derece, R=21,75 -> sapma 6,37 m  >  3,5 m serit  -> duzelmez
+#
+# 2) EN BUYUK YARICAP.  Serit icinde kalan, ic kenara apekste teget ve
+#    giris/cikista dis kenara degen daire. 90 derece, ic kenar 20 m,
+#    serit 3,5 m icin cozuldu:
+#        serit ortasi (sabit)       21,75 m
+#        disaridan gir, icerden gec 42,50 m      -> x1,95
+#    Yarıcap neredeyse IKIYE katlaniyor ve tek degisen cizgi.
+#
+# 3) SONUC.  v ~ sqrt(R):  x1,95 yaricap -> x1,40 hiz, yani %40.
+#    Ya da ayni hizda cok daha az yatis. 50 km/h'de:
+#        serit ortasi  : yatis 42,1 deg -> tutus butcesinin %108'i. 40
+#                        derece limitle bu MUMKUN DEGIL, kayarsin.
+#        apeks cizgisi : yatis 24,8 deg -> butcenin %55'i, frene %83 kalir.
+#    Ayni hiz, ayni viraj, ayni lastik: biri imkansiz, oburu rahat.
+#
+# NE SOYLENMIYOR: "ne kadar gec apeks" sorusunun rakami YOK. Gec apeks
+# bir miktar yaricaptan vazgecip gorus ve cikis aliyor; ne kadar vazgecmek
+# gerektigi virajin gorusunu NEYIN kapattigina bagli ve bu olculmeden
+# bilinmez. Derste bu acikca soyleniyor, rakam uydurulmuyor.
+CIZGI_IC = 20.0                   # m, ic kenar yaricapi (varsayim)
+CIZGI_SERIT = 3.5                 # m, serit genisligi (varsayim)
+CIZGI_LIMIT = 40.0                # derece, tutus limiti (ders 23 ile ayni)
+CIZGI_V = 50.0                    # km/h, karsilastirma hizi
+
+
+def _bisekt(f, a, b, n=120):
+    fa = f(a)
+    for _ in range(n):
+        m = 0.5 * (a + b)
+        fm = f(m)
+        if (fa < 0) == (fm < 0):
+            a, fa = m, fm
+        else:
+            b = m
+    return 0.5 * (a + b)
+
+
+def cizgi_coz(teta_deg, r_i=CIZGI_IC, w=CIZGI_SERIT):
+    """Serit icine sigan EN BUYUK yaricap (apeks cizgisi).
+
+    O merkez, apeks (r_i, 0), yol dairesinin merkezi C=(r_i-Rp, 0).
+    P(a) = C + Rp*(cos a, sin a). Aranan Rp: O'dan teta/2 acisiyla
+    gorulen nokta tam dis kenarda (r_i + w) olsun."""
+    # Duz cizgi serite siginca cozum SONSUZ. Eskiden cozucu ust sinira
+    # dayanip 1200 m gibi bir sayi veriyordu ve ekranda oyle yaziyordu.
+    if cizgi_duz_sigar(teta_deg):
+        return float("inf")
+    r_o, t2 = r_i + w, math.radians(teta_deg) / 2.0
+
+    def hata(Rp):
+        def aci(a):
+            x, y = r_i - Rp + Rp * math.cos(a), Rp * math.sin(a)
+            return math.atan2(y, x) - t2
+        a = _bisekt(aci, 1e-7, math.pi - 1e-7)
+        x, y = r_i - Rp + Rp * math.cos(a), Rp * math.sin(a)
+        return math.hypot(x, y) - r_o
+    return _bisekt(hata, r_i + 1e-7, r_i * 60.0)
+
+
+def cizgi_sapma(teta_deg, R=CIZGI_IC + CIZGI_SERIT):
+    """Dis kenardan dis kenara DUZ gidersen ice en fazla ne kadar sapar.
+
+    Olcu DIS kenardan aliniyor (R = ic kenar + serit), cunku duz cizgi
+    oradan baslayip oraya bitiyor; serite sigmasi icin sapmanin SERIT
+    GENISLIGINDEN kucuk olmasi gerekir. Orta cizgiden olcmek yaniltirdi."""
+    return R * (1.0 - math.cos(math.radians(teta_deg) / 2.0))
+
+
+def cizgi_duz_sigar(teta_deg):
+    """Duz cizgi serite sigiyor mu? Sigiyorsa 'en buyuk yaricap' sonsuz."""
+    return cizgi_sapma(teta_deg) <= CIZGI_SERIT
+
+
+def cizgi_yatis(R, v_kmh=CIZGI_V):
+    v = v_kmh / 3.6
+    return math.degrees(math.atan(v * v / (9.81 * R)))
+
+
+def cizgi_pay(R, v_kmh=CIZGI_V):
+    return (math.tan(math.radians(cizgi_yatis(R, v_kmh)))
+            / math.tan(math.radians(CIZGI_LIMIT)))
+
+
+CIZGI_NOKTA = {
+    # (etiket, aciklama, teta, vurgulanan cizgi)
+    "sapma":  ("YARIÇAPI SEN SEÇERSİN", "sapma = R × (1 − cos(θ/2))", 90.0, None),
+    "altmis": ("60 DERECE: SAPMA 3,15 m", "şerit 3,5 m — düz çizgi sığıyor", 60.0, "apeks"),
+    "doksan": ("90 DERECE: SAPMA 6,88 m", "sığmaz, ama yarıçap katlanır", 90.0, "apeks"),
+    "hiz":    ("21,75 → 42,50 METRE", "aynı tutuşla %40 daha hızlı", 90.0, "apeks"),
+    "butce":  ("50 km/h, AYNI VİRAJ", "şerit ortası: 42° — mümkün değil", 90.0, "orta"),
+    "kural":  ("GEÇ APEKS", "biraz yarıçaptan ver, görüş al", 90.0, "apeks"),
+}
+CIZGI_FAZ = [(4.0, "sapma")]
+
+
+def cizgi_faz_ayarla(metin):
+    global CIZGI_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in CIZGI_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen cizgi noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    CIZGI_FAZ = sorted(f)
+
+
+def cizgi_evre(t):
+    ad, bas = CIZGI_FAZ[0][1], CIZGI_FAZ[0][0]
+    for z, a in CIZGI_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+# --- Tepeden gorus yardimcilari --------------------------------------------
+# Bir cizgi lesson'i YANDAN anlatilamaz: yaricap farki ancak kus bakisi
+# okunuyor. O yuzden bu tek sahne TEPEDEN cekiliyor.
+#   O = donus merkezi (orijin). Viraj fi = 180'den 180-teta'ya suzuluyor.
+#   merkez cizgi yaricapi Rc = ic kenar + serit/2
+CIZGI_RC = CIZGI_IC + CIZGI_SERIT / 2.0
+CIZGI_DUZ = 6.0                   # m, giris ve cikistaki duz parcalar
+
+
+def _cz_nokta(fi, R):
+    return np.array([R * math.cos(fi), 0.0, R * math.sin(fi)])
+
+
+def _cz_merkez_yol(teta_deg, n=90):
+    """Yolun orta cizgisi: duz giris + yay + duz cikis. [(nokta, teget)]"""
+    t = math.radians(teta_deg)
+    fi0, fi1 = math.pi, math.pi - t
+    nk = []
+    g0 = _cz_nokta(fi0, CIZGI_RC)
+    tg0 = np.array([math.sin(fi0), 0.0, -math.cos(fi0)])
+    for i in range(12, 0, -1):
+        nk.append((g0 - tg0 * (CIZGI_DUZ * i / 12.0), tg0))
+    for i in range(n + 1):
+        fi = fi0 + (fi1 - fi0) * i / n
+        nk.append((_cz_nokta(fi, CIZGI_RC),
+                   np.array([math.sin(fi), 0.0, -math.cos(fi)])))
+    g1 = _cz_nokta(fi1, CIZGI_RC)
+    tg1 = np.array([math.sin(fi1), 0.0, -math.cos(fi1)])
+    for i in range(1, 13):
+        nk.append((g1 + tg1 * (CIZGI_DUZ * i / 12.0), tg1))
+    return nk
+
+
+def _cz_apeks_yol(teta_deg, n=90):
+    """Apeks cizgisi: ic kenara apekste teget, uclari dis kenarda.
+
+    Teget UZANTI YOK: ucuna duz parca eklendiginde cizgi yolun disina,
+    kadrajin kosesine dogru firliyordu (apeks dairesinin ucundaki teget
+    giris duzuyle ayni yonde degil)."""
+    t = math.radians(teta_deg)
+    fim = math.pi - t / 2.0                    # apeks yonu (aci ortay)
+    u = np.array([math.cos(fim), 0.0, math.sin(fim)])
+    ud = np.array([-math.sin(fim), 0.0, math.cos(fim)])   # u'ya dik
+    Rp = cizgi_coz(teta_deg)
+    if math.isinf(Rp):
+        # Duz cizgi sigiyor: dis kenarin iki ucunu DOGRU ile birlestir
+        r_o = CIZGI_IC + CIZGI_SERIT
+        p0 = _cz_nokta(math.pi, r_o)
+        p1 = _cz_nokta(math.pi - t, r_o)
+        tg = (p1 - p0) / np.linalg.norm(p1 - p0)
+        return [(p0 + (p1 - p0) * i / n, tg) for i in range(n + 1)], Rp
+    C = -(Rp - CIZGI_IC) * u
+    # Uc acisi: O'dan teta/2 ile gorulen nokta
+    def aci_hatasi(a):
+        p = C + Rp * (math.cos(a) * u + math.sin(a) * ud)
+        return (abs(math.atan2(p[2], p[0]) - fim) - t / 2.0)
+    amax = _bisekt(aci_hatasi, 1e-6, math.pi / 2)
+    nk = []
+    for i in range(n + 1):
+        a = -amax + 2 * amax * i / n
+        p = C + Rp * (math.cos(a) * u + math.sin(a) * ud)
+        tg = Rp * (-math.sin(a) * u + math.cos(a) * ud)
+        tg = tg / np.linalg.norm(tg)
+        nk.append((p, tg))
+    return nk, Rp
+
+
+def _cz_serit(s, nk, yari, renk, katman, yuk=0.0):
+    """Nokta dizisinden serit yuzeyi uretir."""
+    for i in range(len(nk) - 1):
+        p0, t0 = nk[i]
+        p1, t1 = nk[i + 1]
+        n0 = np.array([t0[2], 0.0, -t0[0]]) * yari
+        n1 = np.array([t1[2], 0.0, -t1[0]]) * yari
+        a, b = p0 - n0, p0 + n0
+        c, e = p1 + n1, p1 - n1
+        for q in (a, b, c, e):
+            q[1] = yuk
+        s.yuzey([a.tolist(), b.tolist(), c.tolist(), e.tolist()], renk,
+                katman=katman)
+
+
+def kare_cizgi3b(t):
+    """TEPEDEN gorus: ayni virajda iki cizgi, iki ayri yaricap."""
+    anahtar, faz_bas = cizgi_evre(t)
+    etiket, aciklama, teta, vurgu = CIZGI_NOKTA[anahtar]
+    gecen = max(0.0, t - faz_bas)
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), cim)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    orta = _cz_merkez_yol(teta)
+    apeks, Rp = _cz_apeks_yol(teta)
+    sapma = cizgi_sapma(teta)
+
+    # Yol yuzeyi ve kenar cizgileri
+    _cz_serit(s, orta, CIZGI_SERIT / 2 + 0.9, (116, 128, 104), katman=0)
+    _cz_serit(s, orta, CIZGI_SERIT / 2, asfalt, katman=1)
+    for yan in (-1, 1):
+        kenar = [(p + np.array([tg[2], 0.0, -tg[0]]) * yan
+                  * (CIZGI_SERIT / 2 - 0.07), tg) for p, tg in orta]
+        _cz_serit(s, kenar, 0.07, (205, 205, 200), katman=2)
+
+    # Iki aday cizgi. Vurgulanan parlak, oburu sonuk.
+    renkler = {"orta": ((120, 190, 240), (70, 92, 112)),
+               "apeks": ((86, 200, 120), (62, 96, 74))}
+    for ad, nk in (("orta", orta), ("apeks", apeks)):
+        parlak, sonuk = renkler[ad]
+        _cz_serit(s, nk, 0.16, parlak if vurgu in (ad, None) else sonuk,
+                  katman=3, yuk=0.01)
+
+    # Apeks noktasi: ic kenara degdigi yer
+    fim = math.pi - math.radians(teta) / 2.0
+    ap = _cz_nokta(fim, CIZGI_IC)
+    r = 0.55
+    s.yuzey([[ap[0] - r, 0.02, ap[2]], [ap[0], 0.02, ap[2] - r],
+             [ap[0] + r, 0.02, ap[2]], [ap[0], 0.02, ap[2] + r]],
+            (240, 210, 90), katman=4)
+
+    # Motosiklet: vurgulanan cizgi uzerinde ilerliyor
+    yol = apeks if vurgu != "orta" else orta
+    p = (gecen / 7.0) % 1.0
+    i = min(len(yol) - 2, int(p * (len(yol) - 1)))
+    nokta, teget = yol[i]
+    yon = math.atan2(teget[0], teget[2])
+    model, _, _ = motosiklet(0.0, (gecen * 6.0) % (2 * math.pi), 0.0)
+    s.ekle(model, R=donus([0, 1, 0], yon),
+           t=[float(nokta[0]), 0.02, float(nokta[2])])
+
+    # KADRAJ SAYIYLA: tepeden bakis, ekran-sag = +X, ekran-yukari = +Z.
+    #   ekran_x = 540 + (x - xh)*k     ekran_y = 960 - (z - zh)*k
+    # Icerik kutusu x -23,5..+6 ve z -6..+23,5 (29,5 m). k = 33 px/m ile
+    # 974 piksel: hem 1080 genislige hem 300-1300 bandina sigiyor.
+    # Icerigin merkezi ekranda 800'e gelsin diye hedef z, merkezden
+    # 160/33 = 4,85 m asagi aliniyor. OLCULDU: yol 313 ile 1287 arasinda.
+    CZ_K, CZ_H = 33.0, 60.0
+    xh, zh = -8.75, 8.75 - 160.0 / CZ_K
+    kamera = Kamera([xh, CZ_H, zh], [xh, 0.0, zh], G, Y,
+                    fov=2 * math.degrees(math.atan(960.0 / (CZ_K * CZ_H))),
+                    yukari=(0, 0, 1))
+    s.ciz(d, kamera, cim)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    Rorta = CIZGI_RC
+    pay_orta, pay_ap = cizgi_pay(Rorta), cizgi_pay(Rp)
+    ust_renk = KIRMIZI if anahtar == "butce" else (
+        YESIL if vurgu == "apeks" else TURUNCU)
+    fo = s2.font(40)
+    tw = d.textlength(etiket, font=fo)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 200), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    tw2 = d.textlength(aciklama, font=s2.font(28))
+    d.rounded_rectangle([(G - tw2) / 2 - 16, 400, (G + tw2) / 2 + 16, 444], 10,
+                        fill=(0, 0, 0, 170))
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (206, 212, 220), ortala=True)
+
+    # Kompakt kutu SAG ALTTA: viraj L biciminde, sol kenarda giris duzu
+    # ve ust sagda cikis duzu var; bos kalan tek yer sag alt.
+    kw, kh = 480, 330
+    kx, ky = G - 62 - kw, 940
+    d.rounded_rectangle([kx, ky, kx + kw, ky + kh], 16, fill=(10, 14, 20, 216),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (kx + 20, ky + 12), f"{teta:.0f}° VİRAJ · SAPMA "
+            + f"{sapma:.2f} m".replace(".", ","), 24, (150, 155, 162))
+    satirlar = (
+        ("ŞERİT ORTASI", f"{Rorta:.2f} m".replace(".", ","),
+         (120, 190, 240)),
+        ("APEKS ÇİZGİSİ",
+         ("düz sığar" if math.isinf(Rp) else f"{Rp:.2f} m".replace(".", ",")),
+         (86, 200, 120)),
+        (f"{CIZGI_V:.0f} km/h YATIŞ",
+         f"{cizgi_yatis(Rorta):.0f}° → "
+         + ("0°" if math.isinf(Rp) else f"{cizgi_yatis(Rp):.0f}°"), KREM),
+        ("TUTUŞ PAYI",
+         f"%{pay_orta * 100:.0f} → "
+         + ("%0" if math.isinf(Rp) else f"%{pay_ap * 100:.0f}"),
+         KIRMIZI if pay_orta > 1.0 else TURUNCU),
+    )
+    # Degerler SAGA DAYALI: sabit x ile "%108 → %55" kutudan 23 piksel
+    # tasiyordu (olctum).
+    for i, (ad, deger, renk) in enumerate(satirlar):
+        yy = ky + 54 + i * 66
+        s2.yazi(d, (kx + 20, yy + 8), ad, 22, (150, 155, 162))
+        s2.yazi(d, (kx + kw - 20 - d.textlength(deger, font=s2.font(32)), yy),
+                deger, 32, renk)
+    s2.yazi(d, (kx + 20, ky + 300),
+            f"varsayım: iç kenar {CIZGI_IC:.0f} m · şerit {CIZGI_SERIT} m",
+            18, (124, 132, 142))
+    return im
+
+
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
@@ -5295,7 +5622,7 @@ def main():
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
                              "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk",
-                             "tutus", "basinc", "kamber"),
+                             "tutus", "basinc", "kamber", "cizgi"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -5345,6 +5672,9 @@ def main():
     elif args.sahne == "kamber":
         kam_faz_ayarla(args.fazlar)
         cizer = kare_kamber3b
+    elif args.sahne == "cizgi":
+        cizgi_faz_ayarla(args.fazlar)
+        cizer = kare_cizgi3b
     elif args.sahne == "ruzgar":
         ruzgar_faz_ayarla(args.fazlar)
         cizer = kare_ruzgar3b
