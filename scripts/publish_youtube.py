@@ -60,28 +60,83 @@ def shorts_isaretle(baslik: str, aciklama: str) -> tuple:
     return baslik[:BASLIK_SINIR], aciklama
 
 
-def servis_kur():
+# "7 GUN TUZAGI": Google Cloud OAuth izin ekraninin "Publishing status"
+# degeri "Testing" kalirsa Google refresh token'i YEDI GUN sonra iptal
+# ediyor. O an yayin hatti sessizce olur; hata ancak gercek bir yukleme
+# denendiginde, "invalid_grant" diye cikar. Asagidaki jetonu_dogrula()
+# bu tuzagi ERKEN yakalamak icin var: refresh_token -> access_token takasi
+# YouTube'a hicbir sey yazmaz, ama jetonun yasayip yasamadigini soyler.
+# --kuru calistirma da artik bunu yapiyor, yani jeton olurse gercek
+# yayini beklemeden, ilk kuru testte goruluyor.
+JETON_OLDU = """YT_REFRESH_TOKEN GECERSIZ (invalid_grant) — jeton iptal edilmis.
+
+      EN OLASI SEBEP: Google Cloud'daki OAuth izin ekraninin
+      "Publishing status" degeri hala "Testing". Testing'de Google
+      refresh token'i 7 GUN sonra iptal ediyor.
+
+      COZUM (sirasiyla, ikisi de gerekli):
+        1) Google Cloud Console -> APIs & Services -> OAuth consent screen
+           -> PUBLISH APP -> durum "In production" olsun.
+        2) scripts/get_youtube_token.py ile jetonu YENIDEN al ve
+           YT_REFRESH_TOKEN secret'ini guncelle. Eski jeton geri gelmez.
+
+      Diger olasiliklar: Google hesabinda erisim elle kaldirildi, sifre
+      degisti, ya da client_secret yeniden olusturuldu."""
+
+
+def _kimlik():
+    """Secret'lari oku. Hepsi varsa Credentials, biri bile yoksa eksik liste.
+
+    EKSIK KONTROLU IMPORT'TAN ONCE: paketler kurulu olmasa bile "secret yok"
+    cevabi verilebilmeli. Tersi sirada, secret'i olmayan bir kuru calistirma
+    "Paketler yok" diye patliyordu."""
+    ham = {ad: os.getenv(ad) for ad in
+           ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")}
+    eksik = [ad for ad, deger in ham.items() if not deger]
+    if eksik:
+        return None, eksik
     try:
         from google.oauth2.credentials import Credentials
+    except ImportError:
+        die("Paketler yok. Kurun: pip install -r requirements-publish.txt")
+    return Credentials(
+        token=None,
+        refresh_token=ham["YT_REFRESH_TOKEN"],
+        client_id=ham["YT_CLIENT_ID"],
+        client_secret=ham["YT_CLIENT_SECRET"],
+        token_uri=TOKEN_URI,
+        scopes=SCOPES,
+    ), []
+
+
+def jetonu_dogrula(creds):
+    """refresh_token'i Google'a karsi SINAR. YouTube'a hicbir sey yazmaz."""
+    try:
+        from google.auth.exceptions import RefreshError
+        from google.auth.transport.requests import Request
+    except ImportError:
+        die("Paketler yok. Kurun: pip install -r requirements-publish.txt")
+    try:
+        creds.refresh(Request())
+    except RefreshError as exc:
+        if "invalid_grant" in str(exc):
+            die(JETON_OLDU + f"\n\n      Google'in yaniti: {exc}")
+        die(f"Jeton yenilenemedi: {exc}")
+    return creds
+
+
+def servis_kur():
+    try:
         from googleapiclient.discovery import build
     except ImportError:
         die("Paketler yok. Kurun: pip install -r requirements-publish.txt")
-
-    kimlik = {ad: os.getenv(ad) for ad in
-              ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")}
-    eksik = [ad for ad, deger in kimlik.items() if not deger]
+    creds, eksik = _kimlik()
     if eksik:
         die("Su secret'lar eksik: " + ", ".join(eksik) +
             "\n      README'deki 'YouTube kurulumu' bolumune bakin.")
-
-    creds = Credentials(
-        token=None,
-        refresh_token=kimlik["YT_REFRESH_TOKEN"],
-        client_id=kimlik["YT_CLIENT_ID"],
-        client_secret=kimlik["YT_CLIENT_SECRET"],
-        token_uri=TOKEN_URI,
-        scopes=SCOPES,
-    )
+    # Yuklemeden ONCE sina: boylece jeton olduyse hata 17 dakikalik
+    # yuklemenin sonunda degil, basinda ve ANLASILIR sekilde cikiyor.
+    jetonu_dogrula(creds)
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
@@ -167,7 +222,17 @@ def main() -> None:
     print(f">> Etiket   : {', '.join(govde['snippet']['tags']) or '(yok)'}")
 
     if args.kuru:
-        print("\n[kuru calistirma] YouTube'a istek GONDERILMEDI.")
+        print("\n[kuru calistirma] YouTube'a video GONDERILMEDI.")
+        # Jeton yine de SINANIR: tek istek refresh_token -> access_token
+        # takasi, YouTube'a hicbir sey yazmaz. 7 gun tuzagi boylece gercek
+        # yayini beklemeden yakalaniyor.
+        creds, eksik = _kimlik()
+        if eksik:
+            print("[kuru calistirma] Secret yok (" + ", ".join(eksik) +
+                  "), jeton sinanmadi.")
+            return
+        jetonu_dogrula(creds)
+        print("[kuru calistirma] Jeton GECERLI — Google access token verdi.")
         return
 
     if not os.path.isfile(video):

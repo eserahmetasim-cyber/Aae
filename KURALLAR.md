@@ -152,6 +152,17 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
   atlanmaz, yalnızca bir gün geriye düşer. Slot sabitlenmiştir; "ilk uygun
   slotu seç" mantığı iki çalışma birbirine yaklaşırsa aynı saate iki video
   koyabilirdi. Saatler tek yerde: `yayin_sirasi.GUNLUK_SAATLER`.
+- **7 GÜN TUZAĞI — hattın en kırılgan noktası.** Google Cloud'daki OAuth
+  izin ekranının "Publishing status" değeri **"Testing"** kalırsa Google
+  refresh token'ı **7 gün sonra iptal ediyor** ve yayın hattı sessizce
+  ölüyor. "In production" olmak zorunda. Erken yakalamak için
+  `publish_youtube.py` artık jetonu **sınıyor**: `--kuru` çalıştırma bile
+  `refresh_token → access_token` takası yapıyor (YouTube'a hiçbir şey
+  yazmaz) ve jeton ölmüşse `invalid_grant`'i yakalayıp ne yapılacağını
+  adım adım yazıyor. Gerçek yüklemede de bu sınama **yüklemeden önce**
+  koşuyor, yani hata 17 dakikalık render'ın sonunda değil başında çıkıyor.
+  Jeton yenilendiğinde `YT_REFRESH_TOKEN` secret'i de güncellenmeli;
+  eski jeton geri gelmez.
 - **Oturumlar arası koordinasyon `content/oturumlar.yml` üzerinden yürür.**
   Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyor — bu oturum
   `list_sessions`'ta altıdan yalnızca ikisini görebiliyor, yani oturum mesajı
