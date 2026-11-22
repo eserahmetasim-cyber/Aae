@@ -163,6 +163,14 @@ output/YYYY-MM-DD_ders<NN>_<slug>_v<N>.mp4
   koşuyor, yani hata 17 dakikalık render'ın sonunda değil başında çıkıyor.
   Jeton yenilendiğinde `YT_REFRESH_TOKEN` secret'i de güncellenmeli;
   eski jeton geri gelmez.
+- **Google Cloud'da YouTube Data API v3 ETKİN olmalı.** OAuth'un çalışması
+  yetmiyor: 21.11'de iki zamanlanmış çalışma da jeton geçerliyken, video
+  render edilmişken `accessNotConfigured` ile düştü — API projede açık
+  değildi. `publish_youtube.py` artık bunu **kuru çalıştırmada** yakalıyor
+  (`apiyi_dogrula`, tek ucuz okuma isteği) ve hatayı ham `HttpError`
+  yerine açılış bağlantısıyla birlikte yazıyor. Kuralın genel hâli:
+  **yayın hattının her ön koşulu kuru çalıştırmada sınanabilmeli**;
+  sınanamayan bir koşul, ilk gerçek yayında patlar.
 - **Oturumlar arası koordinasyon `content/oturumlar.yml` üzerinden yürür.**
   Altı oturum aynı kanala çalışıyor ve birbirlerini göremiyor — bu oturum
   `list_sessions`'ta altıdan yalnızca ikisini görebiliyor, yani oturum mesajı

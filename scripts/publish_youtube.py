@@ -30,6 +30,7 @@ KURALLAR.md: varsayilan gizlilik 'private'. Herkese acmak ayri, bilincli bir adi
 import argparse
 import datetime as dt
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -82,6 +83,52 @@ JETON_OLDU = """YT_REFRESH_TOKEN GECERSIZ (invalid_grant) — jeton iptal edilmi
 
       Diger olasiliklar: Google hesabinda erisim elle kaldirildi, sifre
       degisti, ya da client_secret yeniden olusturuldu."""
+
+
+# API KAPALI TUZAGI. 21.11'de iki zamanlanmis calisma da bu yuzden
+# basarisiz oldu: OAuth sagliydi, jeton gecerliydi, video render edilmisti
+# - ama Google Cloud projesinde YouTube Data API v3 ETKIN DEGILDI. Hata
+# ancak YUKLEME denendiginde, ham bir HttpError olarak goruldu; kuru test
+# bunu yakalamiyordu cunku hic API cagrisi yapmiyordu.
+# Artik yakaliyor: apiyi_dogrula() tek ve ucuz bir okuma istegi yapiyor.
+# API kapaliysa Google bu hatayi KAPSAMDAN ONCE donduruyor, yani dar
+# yukleme kapsamiyla da gorulebiliyor.
+def _api_kapali_mi(exc):
+    """accessNotConfigured ise anlatilir bir metin, degilse None."""
+    metin = str(exc)
+    if "accessNotConfigured" not in metin and "has not been used in project" not in metin:
+        return None
+    m = re.search(r"project (\d+)", metin)
+    proje = m.group(1) if m else "<proje>"
+    return (
+        "YouTube Data API v3 BU PROJEDE ETKIN DEGIL.\n\n"
+        "      OAuth tarafi saglam (jeton gecerli), eksik olan tek sey\n"
+        "      API'nin acilmasi. docs/secret-kurulumu.md'nin 2. adimi:\n"
+        "      APIs & Services -> Library -> YouTube Data API v3 -> Enable\n\n"
+        "      Tek tik:\n"
+        "      https://console.developers.google.com/apis/api/"
+        f"youtube.googleapis.com/overview?project={proje}\n"
+        "      -> ENABLE -> birkac dakika bekle (yayilmasi zaman aliyor).\n\n"
+        f"      Google'in yaniti: {metin}")
+
+
+def apiyi_dogrula(servis):
+    """YouTube Data API bu projede acik mi? Tek ucuz okuma istegi.
+
+    i18nLanguages.list ozel kapsam istemez ve kota maliyeti en dusuk
+    uclardan biri. API kapaliysa Google accessNotConfigured donduruyor;
+    acik ama kapsam dar ise BASKA bir hata geliyor - o da API'nin ACIK
+    oldugunu kanitlar, cunku kapsam kontrolu API kontrolunden sonra."""
+    from googleapiclient.errors import HttpError
+    try:
+        servis.i18nLanguages().list(part="snippet").execute()
+        return "API ACIK — YouTube Data API v3 yanit verdi."
+    except HttpError as exc:
+        kapali = _api_kapali_mi(exc)
+        if kapali:
+            die(kapali)
+        return ("API ACIK — okuma istegi baska bir sebeple reddedildi "
+                f"(kapsam dar olabilir), ama API kapali degil: {exc}")
 
 
 def _kimlik():
@@ -233,6 +280,10 @@ def main() -> None:
             return
         jetonu_dogrula(creds)
         print("[kuru calistirma] Jeton GECERLI — Google access token verdi.")
+        from googleapiclient.discovery import build
+        print("[kuru calistirma] "
+              + apiyi_dogrula(build("youtube", "v3", credentials=creds,
+                                    cache_discovery=False)))
         return
 
     if not os.path.isfile(video):
@@ -252,7 +303,8 @@ def main() -> None:
             if durum:
                 print(f"   ... %{int(durum.progress() * 100)}")
     except HttpError as exc:
-        die(f"YouTube API hatasi: {exc}")
+        kapali = _api_kapali_mi(exc)
+        die(kapali if kapali else f"YouTube API hatasi: {exc}")
 
     vid = yanit.get("id")
     if args.id_dosyasi:            # gunluk yayin is akisi id'yi buradan okur
