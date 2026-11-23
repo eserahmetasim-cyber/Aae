@@ -48,7 +48,7 @@
     "hesap": "eserahmetasim@gmail.com",
     "_yayinci_eski": "ca-pub-8433209614215281 (hesap ahmetasimeser008@gmail.com) — 14.11'de ARTIK KULLANILMIYOR, ayrintisi _adsense_hesap_degisikligi_14_11 bolumunde",
     "basvuru": "2026-08-28",
-    "durum": "SITE YENI HESABA TASINDI (14.11 olculdu). Reklamlar pub-7223494011776010 uzerinden. Profil EKSIK: odeme adresi + telefon dogrulama bekliyor.",
+    "durum": "SITE INCELEMESI OLUMSUZ (22.11). Site yeni hesaba tasindi ama AdSense yeni hesapta siteyi ONAYLAMADI, yani REKLAM GOSTERILMIYOR. Ayrintisi _ADSENSE_SITE_REDDEDILDI_22_11. Profil de eksik: odeme adresi + telefon dogrulama.",
     "auto_ads": true,
     "cmp_yayinda": false,
     "son_mail": "2026-11-13 14:59 — 'AdSense'e hos geldiniz' (adsense-noreply@google.com -> eserahmetasim@gmail.com), yayinci pub-7223494011776010, 'Sitenizi eklediniz'",
@@ -237,6 +237,13 @@
     "_eski_hesap": "KAPANDI. AAE 14.11'de teyit etti: 'eski hesabi kapatmistim zaten'. Yani pub-8433209614215281 artik acik degil, mukerrer AdSense hesabi sorunu YOK. Bu soru kapandi, tekrar sorulmayacak.",
     "_benim_kacirdigim": "07.11-13.11 gunluk kontrollerinde ads.txt icin yalnizca HTTP durumu (200) olculuyordu, ICERIGI okunmuyordu. Bu yuzden degisimin tam gunu bilinmiyor; 07.11 ile 13.11 arasinda bir gun. 15.11'den itibaren gunluk kontrol ads.txt icerigini ve ana sayfadaki ca-pub- degerini de olcuyor.",
     "_yan_bulgu": "Sayfa HTML'i degistigine gore site bu arada YENIDEN DAGITILDI — ama Yol Okulu karti eklenmedi (yol_okulu 0, ikon 404). Yani reklam degisikligi icin dagitim yapildi, hazir yama uygulanmadi."
+  },
+  "_ADSENSE_SITE_REDDEDILDI_22_11": {
+    "mail": "22.11.2026 19:32 UTC, adsense-noreply@google.com, yayinci pub-7223494011776010: 'saemuhendislik.com'u incelemeye gonderdiginiz icin tesekkurler... Maalesef siteniz su anda reklam gostermeye hazir degil. Sitenizde reklam gosterilebilmesi icin duzeltilmesi gereken bazi sorunlar var.' SEBEPLER MAILDE YOK; 'hesabinizdaki Siteler sayfasini inceleyin' diyor.",
+    "ANLAMI": "Site su an REKLAM GOSTERMIYOR. Reklam kodu sayfalarda ve ads.txt yeni yayinciyi gosteriyor, ama yeni hesap siteyi onaylamadigi icin gosterim olmuyor. Site eski hesapta (kapatilan pub-8433209614215281) 07.10'da onayliydi; AdMob hesabina tasinmak YENI BIR SITE INCELEMESI gerektirdi ve o inceleme olumsuz dondu. Yani 13-14.11 hesap degisikliginin bedeli: site tarafinda reklam geliri kesildi, bunu kimse ongormedi.",
+    "AAE_DEN_ISTENEN": "Panel -> Siteler -> saemuhendislik.com satirindaki GEREKCE. Tek satir ya da ekran goruntusu yeter. Gerekce gelmeden dogru seyi duzeltmek mumkun degil; gelince somut yama yazilacak (site kaynagi bu depoda olmadigi icin docs/ altina birebir yapistirilacak yama, Yol Okulu yamasindaki desen).",
+    "_elenen_sebepler": "Yaygin red sebeplerini olcup eledim, AAE bosa ugrasmasin: (1) AdSense tarayicisi engelli DEGIL — robots.txt'te Mediapartners-Google yok, User-agent: * Allow: / var. (2) Gizlilik politikasi var ve ERISILEBILIR — footer'da TR ve EN'de 'Gizlilik ve Cerez Politikasi' -> /cerez-politikasi, 200. (3) Politika metni yeterli — Google, AdSense, ucuncu taraf reklam, cerez, kisisellestirme, devre disi birakma hepsi geciyor (539 kelime). (4) Site erisilebilir — /, /en/, 87 sitemap adresi 200; navigasyon var, ana sayfada 36 ic link. (5) Sayfa sayisi zayif olasilik — 87 sayfa ve teknik icerik sayfalari var.",
+    "_kendi_duzeltmem": "Ilk okumamda 'gizlilik politikasi hicbir yerden linkli degil' diye not dusmustum, YANLISTI. /gizlilik ve /gizlilik-politikasi sayfalari UYGULAMALARIN (Play Store) politikalari ve siteden linkli olmamalari normal; sitenin kendi politikasi /cerez-politikasi ve footer'da linkli. Raporlamadan once icerigini okudum, hipotez elendi."
   },
   "_yayin_kanallari": {
     "_aae_karari_19_11": "Instagram yayincisi AAE'ye acikca soruldu, cevap: BUSINESS SUITE DEVAM ETSIN. Karar content/oturumlar.yml -> platformlar.instagram.aae_karari alaninda kayitli (19.11.2026). Yani IG_USER_ID / IG_ACCESS_TOKEN yasagi artik varsayim degil, AAE'nin acik karari.",
