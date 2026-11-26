@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-21T10:26:18+00:00",
+  "guncelleme": "2026-11-26T06:36:42+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -224,6 +224,15 @@
       "video": "library/approved/25-cizgi/25-cizgi.mp4",
       "meta": "library/approved/25-cizgi/meta.json",
       "onay_tarihi": "2026-11-21T10:26:18+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "26-gorus",
+      "ders_no": 26,
+      "baslik": "Kör Virajda Görüş",
+      "video": "library/approved/26-gorus/26-gorus.mp4",
+      "meta": "library/approved/26-gorus/meta.json",
+      "onay_tarihi": "2026-11-26T06:36:41+00:00",
       "durum": "onaylandi"
     }
   ]
