@@ -1,0 +1,199 @@
+# Ders 26 · Kör virajda görüş
+# Ders 25 "ne kadar geç apeks?" sorusuna RAKAM VERMEMİŞTİ, çünkü cevap
+# "görüşü NEYİN kapattığına bağlı" demişti. Bu ders o şartı koyuyor ve
+# soruyu cevaplıyor.
+#
+# DIŞ KAYNAK RAKAMI YOK. Varsayımlar ekranda: iç kenar 20 m (görüşü kapatan
+# şey tam orada), şerit 3,5 m, tepki 1 s, tutuş 40°'de biter (ders 23).
+#
+# 1) GEOMETRİ. Görüşü kapatan şey iç kenarda: a yarıçaplı bir daire.
+#    Sürücü r yarıçapında (a < r). Bakışı engel dairesine TEĞET gider;
+#    teğet çizgisi sürücünün yolunu yeniden kestiği yere kadar görür.
+#    Merkezde görülen açı 2·arccos(a/r), yani
+#        görüş mesafesi S = r · 2 · arccos(a/r)
+#
+# 2) DURMA. Ders 23'ün tek varsayımıyla tutarlı: tutuş 40°'de bitiyorsa
+#    azami yavaşlama a_fren = g·tan40 = 8,23 m/s². Tepki 1 s:
+#        durma = v·1 + v²/(2·8,23)
+#
+# 3) GÜVENLİ HIZ: durma = görüş olan hız.
+#        v² + 2·a_f·T·v − 2·a_f·S = 0
+#
+# İÇ KENAR 20 m, ŞERİT 3,5 m İÇİN (hesaplandı, yazılmadı):
+#     iç kenarda   r=20,50 → görüş  9,07 m → güvenli 23,4 km/h
+#     şerit ortası r=21,75 → görüş 17,57 m → güvenli 38,4 km/h
+#     dış kenarda  r=23,00 → görüş 23,76 m → güvenli 47,5 km/h
+#     50 km/h'in durma mesafesi 25,61 m → ÜÇÜNDE DE YETMİYOR
+#     görüş oranı ×2,62 · güvenli hız oranı ×2,03
+#
+# CAN ALICI YER: şerit içinde 2,5 metre yana kaymak görüşü 2,6 kat,
+# güvenli hızı 2 kat büyütüyor. Motor aynı, lastik aynı, viraj aynı.
+#
+# NE SÖYLENMİYOR: gerçek bir virajda engelin nerede durduğu ölçülmeden
+# bilinmez; "şu viraj şu kadar görüş verir" denmiyor. Hepsi verilen
+# varsayımla ve ORAN olarak. Tepki süresi de varsayım, ekranda yazılı.
+# Ayrıca ders 25'teki sınır burada da geçerli: kendi şeridinin içinde kal.
+
+ders_no: 26
+slug: gorus
+baslik: "Kör Virajda Görüş"
+alt_baslik: "Çizgi, görebildiğin yeri belirler"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""
+sahne: gorus
+boyut: 3
+kamera: tepeden
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:icerden, 12:ortadan, 20:disardan, 28:durma, 36:guvenli, 44:kural"
+
+kapanis: "Görüş yarıçaptan önce gelir"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · İç kenara yapışırsan 9 metre görüyorsun" }
+  - { t: 12, sure: 7, metin: "2 · Şerit ortasında 17,6 metre" }
+  - { t: 20, sure: 7, metin: "3 · Dış kenarda 23,8 metre — 2,6 katı" }
+  - { t: 28, sure: 7, metin: "4 · 50 km/h 25,6 metre ister: üçünde de yetmiyor" }
+  - { t: 36, sure: 7, metin: "5 · Güvenli hız 23'ten 48'e, 2,5 metre yana kaydın" }
+  - { t: 44, sure: 7, metin: "6 · Göremiyorsan dışarıda kal ve yavaş gir" }
+
+youtube:
+  baslik: "Kör Virajda Görüş: Çizgi Görebildiğin Yeri Belirler | Yol Okulu #26"
+  aciklama: |
+    Ders 25'te "ne kadar geç apeks?" diye sormuş ve rakam vermemiştim —
+    çünkü cevap görüşü neyin kapattığına bağlıydı. Şimdi o şartı koyalım
+    ve soruyu cevaplayalım.
+
+    0:04 İç kenara yapışık
+    0:12 Şerit ortası
+    0:20 Dış kenarda
+    0:28 50 km/h ne ister
+    0:36 Güvenli hız
+    0:44 Kural
+
+    HESAP: GÖREBİLDİĞİN MESAFE
+    Görüşü kapatan şey iç kenarda — yarma, duvar, çit, bariyer. Onu a
+    yarıçaplı bir daire sayalım. Sen r yarıçapında gidiyorsun. Bakışın o
+    daireye teğet gider ve teğet çizgisi yolunu yeniden kestiği yere
+    kadar görebilirsin. Merkezde görülen açı 2·arccos(a/r), yani:
+
+      görüş mesafesi S = r × 2 × arccos(a/r)
+
+    İç kenar 20 m, şerit 3,5 m için:
+
+      iç kenarda  (r=20,50)  →   9,07 m
+      şerit ortası (r=21,75) →  17,57 m
+      dış kenarda (r=23,00)  →  23,76 m
+
+    Şerit içinde 2,5 metre yana kaymak görüşü **2,6 katına** çıkarıyor.
+
+    HESAP: DURMA
+    Ders 23'ün varsayımıyla tutarlı kalalım: tutuş 40 derecede bitiyorsa
+    azami yavaşlama g×tan40 = 8,23 m/s². Tepki süresi 1 saniye varsayıldı.
+
+      durma = v×1 + v²/(2×8,23)
+      50 km/h için 25,61 metre
+
+    Dikkat et: 25,61 metre, üç çizginin ÜÇÜNDEN de fazla. Yani bu virajda
+    50 km/h, hangi çizgiyi seçersen seç, göremediğin bir şeye çarpacak
+    kadar hızlı.
+
+    HESAP: GÜVENLİ HIZ
+    Durma mesafesinin görüş mesafesine eşit olduğu hız:
+
+      v² + 2×8,23×1×v − 2×8,23×S = 0
+
+      iç kenarda   → 23,4 km/h
+      şerit ortası → 38,4 km/h
+      dış kenarda  → 47,5 km/h
+
+    Aynı viraj, aynı motosiklet, aynı lastik. Tek değişen, şerit içinde
+    nerede durduğun — ve güvenli hız **ikiye katlanıyor**.
+
+    NEDEN ÖNEMLİ
+    İç kenara yapışmak hızlı hissettirir: yarıçap küçülür, motosiklet
+    daha çok yatar, iş daha sportif görünür. Ama görüşün çöker. Dışarıda
+    kalmak hem yarıçabı büyütür (Ders 25) hem görüşü — ikisi aynı yöne
+    çeker, ve bu bir tesadüf değil: ikisi de aynı geometriden çıkıyor.
+
+    NE SÖYLEMİYORUM
+    Gerçek bir virajda engelin tam olarak nerede durduğunu ölçmeden
+    bilemezsin, o yüzden "şu viraj şu kadar görüş verir" demiyorum.
+    Buradaki her şey verilen varsayımla ve oran olarak. Tepki süresi de
+    varsayım; seninki farklıysa bütün rakamlar kayar.
+
+    SINIR — BUNU ATLAMA
+    Ders 25'teki sınır burada da geçerli: dışarıda kalmak demek KENDİ
+    şeridinin dışına çıkmak demek değil. Çift yönlü yolda karşı şerit
+    çizgi değildir.
+
+    KURAL
+    • Göremiyorsan dışarıda kal: görüş yarıçaptan önce gelir.
+    • Görüş mesafen durma mesafenden kısaysa YAVAŞSIN demektir —
+      hız göstergesine değil, gördüğün yere bak.
+    • Apeksi geciktir; erken apeks görüşü en çok öldüren şeydir.
+    • Viraj körse kör olduğunu kabul et: arkasında duran bir araç,
+      çakıl ya da hayvan olabilir.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "kör viraj"
+    - "görüş mesafesi"
+    - "viraj"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Ders 25'te "ne kadar geç apeks?" diye sorup rakam vermemiştim —
+    cevap görüşü neyin kapattığına bağlıydı. Şimdi o şartı koyalım.
+
+    GÖREBİLDİĞİN MESAFE
+    Görüşü kapatan şey iç kenarda, a yarıçaplı bir daire. Sen r
+    yarıçapındasın. Bakışın ona teğet gider:
+
+    S = r × 2 × arccos(a/r)
+
+    İç kenar 20 m, şerit 3,5 m 👇
+    iç kenarda (20,50 m) → 9,07 m
+    şerit ortası (21,75) → 17,57 m
+    dış kenarda (23,00) → 23,76 m
+
+    2,5 metre yana kaymak görüşü 2,6 KATINA çıkarıyor.
+
+    DURMA: tutuş 40°'de bitiyorsa yavaşlama g×tan40 = 8,23 m/s², tepki
+    1 s varsayıldı. 50 km/h → 25,61 m.
+
+    25,61 metre üç çizginin ÜÇÜNDEN de fazla. Bu virajda 50 km/h, hangi
+    çizgiyi seçersen seç, göremediğin bir şeye çarpacak kadar hızlı.
+
+    GÜVENLİ HIZ (durma = görüş)
+    iç kenarda → 23,4 km/h
+    şerit ortası → 38,4 km/h
+    dış kenarda → 47,5 km/h
+
+    Aynı viraj, aynı motor, aynı lastik. Tek değişen şerit içinde nerede
+    durduğun — güvenli hız İKİYE katlanıyor.
+
+    İç kenara yapışmak hızlı hissettirir ama görüşünü çökertir. Dışarıda
+    kalmak hem yarıçabı hem görüşü büyütür; tesadüf değil, ikisi de aynı
+    geometriden çıkıyor.
+
+    SINIR: dışarıda kalmak KENDİ şeridinin dışına çıkmak değildir.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #körviraj #görüşmesafesi #viraj #motosikleteğitimi #yolokulu #güvenlisürüş

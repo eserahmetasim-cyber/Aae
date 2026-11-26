@@ -5614,6 +5614,248 @@ def kare_cizgi3b(t):
     return im
 
 
+
+
+# ---------------------------------------------------------------------------
+#  KOR VIRAJDA GORUS: CIZGI, GOREBILDIGIN YERI BELIRLER
+# ---------------------------------------------------------------------------
+# DIS KAYNAK RAKAMI YOK. Ders 25 "ne kadar gec apeks?" sorusuna rakam
+# vermemisti, cunku cevap "gorusu NEYIN kapattigina bagli" demisti. Bu ders
+# o sarti koyuyor ve soruyu cevapliyor.
+#
+# GEOMETRI. Gorusu kapatan sey ic kenarda (yarma, duvar, cit): a yaricapli
+# bir daire. Surucu r yaricapinda (a < r). Bakisi engel dairesine TEGET
+# gidiyor; teget cizgisi surucunun yolunu yeniden kestigi yere kadar
+# gorebiliyor. Merkezde gorulen aci 2*arccos(a/r), yani:
+#       gorus mesafesi S = r * 2 * arccos(a/r)
+#
+# DURMA. Ders 23'un tek varsayimiyla tutarli: tutus 40 derecede bitiyorsa
+# azami yavaslama a_fren = g*tan(40) = 8,23 m/s2. Tepki 1 s varsayildi.
+#       durma = v*1 + v^2/(2*8,23)
+#
+# GUVENLI HIZ: durma = gorus olan hiz. v^2 + 2*a_f*T*v - 2*a_f*S = 0.
+#
+# IC KENAR 20 m, SERIT 3,5 m ICIN (hepsi hesaplandi, yazilmadi):
+#   ic kenarda   r=20,50  gorus  9,07 m  guvenli 23,4 km/h
+#   serit ortasi r=21,75  gorus 17,57 m  guvenli 38,4 km/h
+#   dis kenarda  r=23,00  gorus 23,76 m  guvenli 47,5 km/h
+#   50 km/h'in durma mesafesi 25,61 m -> UCUNDE DE YETMIYOR
+#   gorus orani x2,62 · guvenli hiz orani x2,03
+#
+# DERSIN CAN ALICI YERI: serit icinde 2,5 metre yana kaymak gorusu 2,6
+# kat, guvenli hizi 2 kat buyutuyor. Motor ayni, lastik ayni, viraj ayni.
+#
+# NE SOYLENMIYOR: gercek bir virajda engelin nerede durdugu olculmeden
+# bilinmez; "su viraj su kadar gorus verir" denmiyor. Hepsi verilen
+# varsayimla, ORAN olarak. Tepki suresi de varsayim ve ekranda yazili.
+GOR_IC = 20.0                     # m, ic kenar = engelin yaricapi
+GOR_SERIT = 3.5                   # m
+GOR_LIMIT = 40.0                  # derece (ders 23)
+GOR_TEPKI = 1.0                   # s (varsayim, ekranda)
+GOR_V = 50.0                      # km/h, karsilastirma hizi
+GOR_TETA = 90.0                   # derece, virajin donusu
+GOR_FI = math.pi - 0.35           # surucunun virajdaki yeri (giriseyakin)
+
+
+def gor_fren():
+    """Azami yavaslama, m/s2. Ders 23'un limitinden turev."""
+    return 9.81 * math.tan(math.radians(GOR_LIMIT))
+
+
+def gor_mesafe(r, engel=GOR_IC):
+    """Gorus mesafesi: S = r * 2 * arccos(a/r)."""
+    return r * 2.0 * math.acos(min(1.0, engel / r))
+
+
+def gor_durma(v_kmh):
+    v = v_kmh / 3.6
+    return GOR_TEPKI * v + v * v / (2.0 * gor_fren())
+
+
+def gor_guvenli(S):
+    """durma(v) = S olan hiz, km/h."""
+    af = gor_fren()
+    disk = (2 * af * GOR_TEPKI) ** 2 + 8 * af * S
+    return (-(2 * af * GOR_TEPKI) + math.sqrt(disk)) / 2 * 3.6
+
+
+GOR_NOKTA = {
+    # (etiket, aciklama, yaricap ya da None)
+    "icerden":  ("İÇ KENARA YAPIŞIK", "9 metre görüyorsun", GOR_IC + 0.5),
+    "ortadan":  ("ŞERİT ORTASI", "17,6 metre", GOR_IC + GOR_SERIT / 2),
+    "disardan": ("DIŞ KENARDA", "23,8 metre — 2,6 katı", GOR_IC + GOR_SERIT - 0.5),
+    "durma":    ("50 km/h 25,6 METRE İSTER", "üçünde de yetmiyor",
+                 GOR_IC + GOR_SERIT - 0.5),
+    "guvenli":  ("GÜVENLİ HIZ: 23 → 48", "2,5 metre yana kaydın", None),
+    "kural":    ("GÖRÜŞ YARIÇAPTAN ÖNCE GELİR", "göremiyorsan dışarıda kal",
+                 GOR_IC + GOR_SERIT - 0.5),
+}
+GOR_FAZ = [(4.0, "icerden")]
+
+
+def gor_faz_ayarla(metin):
+    global GOR_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in GOR_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen gorus noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    GOR_FAZ = sorted(f)
+
+
+def gor_evre(t):
+    ad, bas = GOR_FAZ[0][1], GOR_FAZ[0][0]
+    for z, a in GOR_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _gor_yaricap(anahtar, gecen):
+    sabit = GOR_NOKTA[anahtar][2]
+    if sabit is not None:
+        return sabit
+    # "guvenli": ic kenardan dis kenara suzulur, iki rakam da degisir
+    p = (gecen / 6.0) % 1.0
+    u = (1.0 - math.cos(2 * math.pi * p)) / 2.0
+    return (GOR_IC + 0.5) + (GOR_SERIT - 1.0) * u
+
+
+def kare_gorus3b(t):
+    """TEPEDEN: ic kenardaki engel, bakis tegeti ve gorulebilen yay."""
+    anahtar, faz_bas = gor_evre(t)
+    etiket, aciklama, _ = GOR_NOKTA[anahtar]
+    gecen = max(0.0, t - faz_bas)
+    r = _gor_yaricap(anahtar, gecen)
+    S = gor_mesafe(r)
+    guvenli = gor_guvenli(S)
+    durma50 = gor_durma(GOR_V)
+    yeter = S >= durma50
+    # RENK: "50 km/h icin yeter mi" diye baglarsam UCU DE kirmizi cikiyor
+    # (en iyisi 23,8 m, gereken 25,6 m) ve cizgiler arasindaki fark
+    # ekranda kayboluyor - oysa dersin anlattigi sey tam o fark. Renk
+    # guvenli hizin hedefe ORANINI gosteriyor; "50 yetmiyor" uyarisini
+    # ise DURMA satiri tasiyor, o her zaman dogruyu soyluyor.
+    oran = guvenli / GOR_V
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), cim)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    orta = _cz_merkez_yol(GOR_TETA)
+    _cz_serit(s, orta, GOR_SERIT / 2 + 0.9, (116, 128, 104), katman=0)
+    _cz_serit(s, orta, GOR_SERIT / 2, asfalt, katman=1)
+    for yan in (-1, 1):
+        kenar = [(p + np.array([tg[2], 0.0, -tg[0]]) * yan
+                  * (GOR_SERIT / 2 - 0.07), tg) for p, tg in orta]
+        _cz_serit(s, kenar, 0.07, (205, 205, 200), katman=2)
+
+    # GORUSU KAPATAN SEY: ic kenarda yarma/duvar. Yaricapi GOR_IC, yani
+    # gorus hesabindaki "a" ile birebir ayni - cizim ile hesap ayrismasin.
+    tta = math.radians(GOR_TETA)
+    n = 60
+    for i in range(n):
+        f0 = math.pi - tta * i / n
+        f1 = math.pi - tta * (i + 1) / n
+        ic = GOR_IC - 2.6
+        s.yuzey([[GOR_IC * math.cos(f0), 0.0, GOR_IC * math.sin(f0)],
+                 [ic * math.cos(f0), 0.0, ic * math.sin(f0)],
+                 [ic * math.cos(f1), 0.0, ic * math.sin(f1)],
+                 [GOR_IC * math.cos(f1), 0.0, GOR_IC * math.sin(f1)]],
+                (84, 74, 62), katman=3)
+
+    # Gorulebilen yay: surucuden 2*arccos(a/r) kadar ileri
+    delta = math.acos(min(1.0, GOR_IC / r))
+    gor_renk = (YESIL if oran >= 0.95 else
+                (TURUNCU if oran >= 0.6 else KIRMIZI))
+    m = 40
+    for i in range(m):
+        f0 = GOR_FI - 2 * delta * i / m
+        f1 = GOR_FI - 2 * delta * (i + 1) / m
+        for (ra, rb) in ((r - 0.18, r + 0.18),):
+            s.yuzey([[ra * math.cos(f0), 0.02, ra * math.sin(f0)],
+                     [rb * math.cos(f0), 0.02, rb * math.sin(f0)],
+                     [rb * math.cos(f1), 0.02, rb * math.sin(f1)],
+                     [ra * math.cos(f1), 0.02, ra * math.sin(f1)]],
+                    gor_renk, katman=4)
+
+    P = np.array([r * math.cos(GOR_FI), 0.0, r * math.sin(GOR_FI)])
+    teget = np.array([math.sin(GOR_FI), 0.0, -math.cos(GOR_FI)])
+    global _gor_tek
+    _gor_tek = (globals().get("_gor_tek", 0.0) + 0.22) % (2 * math.pi)
+    model, _, _ = motosiklet(0.0, _gor_tek, 0.0)
+    s.ekle(model, R=donus([0, 1, 0], math.atan2(teget[0], teget[2])),
+           t=[float(P[0]), 0.02, float(P[2])])
+
+    CZ_K, CZ_H = 33.0, 60.0
+    xh, zh = -8.75, 8.75 - 160.0 / CZ_K
+    kamera = Kamera([xh, CZ_H, zh], [xh, 0.0, zh], G, Y,
+                    fov=2 * math.degrees(math.atan(960.0 / (CZ_K * CZ_H))),
+                    yukari=(0, 0, 1))
+    s.ciz(d, kamera, cim)
+
+    # BAKIS TEGETI 2B cizilir: yerde bir serit olsaydi engelin ustune
+    # binerdi; oysa bu bir GORUS cizgisi, fiziksel bir sey degil.
+    Q = np.array([r * math.cos(GOR_FI - 2 * delta), 0.0,
+                  r * math.sin(GOR_FI - 2 * delta)])
+    ek = kamera.ekrana(kamera.kameraya(np.array([P + [0, 1.4, 0],
+                                                 Q + [0, 0.1, 0]])))
+    # Kesikli ve krem: bu bir YOL degil, bakis cizgisi. Duz ve renkliyken
+    # alttaki yayla karisiyordu.
+    x0, y0 = float(ek[0][0]), float(ek[0][1])
+    x1, y1 = float(ek[1][0]), float(ek[1][1])
+    boy = math.hypot(x1 - x0, y1 - y0)
+    adim = 16.0
+    say = max(2, int(boy / adim))
+    for i in range(0, say, 2):
+        a0, a1 = i / say, min(1.0, (i + 1) / say)
+        d.line([(x0 + (x1 - x0) * a0, y0 + (y1 - y0) * a0),
+                (x0 + (x1 - x0) * a1, y0 + (y1 - y0) * a1)],
+               fill=KREM, width=4)
+    d.ellipse([x1 - 14, y1 - 14, x1 + 14, y1 + 14], outline=KREM, width=5)
+    d.ellipse([x1 - 5, y1 - 5, x1 + 5, y1 + 5], fill=gor_renk)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = gor_renk if anahtar != "guvenli" else TURUNCU
+    fo = s2.font(40)
+    tw = d.textlength(etiket, font=fo)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 200), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    tw2 = d.textlength(aciklama, font=s2.font(28))
+    d.rounded_rectangle([(G - tw2) / 2 - 16, 400, (G + tw2) / 2 + 16, 444], 10,
+                        fill=(0, 0, 0, 170))
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (206, 212, 220), ortala=True)
+
+    kw, kh = 480, 330
+    kx, ky = G - 62 - kw, 940
+    d.rounded_rectangle([kx, ky, kx + kw, ky + kh], 16, fill=(10, 14, 20, 216),
+                        outline=(92, 102, 112), width=4)
+    s2.yazi(d, (kx + 20, ky + 12), "İÇ KENARDA GÖRÜŞ ENGELİ", 24,
+            (150, 155, 162))
+    satirlar = (
+        ("ÇİZGİ", f"iç kenar +{r - GOR_IC:.1f} m".replace(".", ","),
+         (206, 212, 220)),
+        ("GÖREBİLDİĞİN", f"{S:.1f} m".replace(".", ","), gor_renk),
+        (f"{GOR_V:.0f} km/h DURMA", f"{durma50:.1f} m".replace(".", ","),
+         KIRMIZI if not yeter else (206, 212, 220)),
+        ("GÜVENLİ HIZ", f"{guvenli:.0f} km/h", gor_renk),
+    )
+    for i, (ad, deger, renk) in enumerate(satirlar):
+        yy = ky + 54 + i * 66
+        s2.yazi(d, (kx + 20, yy + 8), ad, 22, (150, 155, 162))
+        s2.yazi(d, (kx + kw - 20 - d.textlength(deger, font=s2.font(32)), yy),
+                deger, 32, renk)
+    s2.yazi(d, (kx + 20, ky + 300),
+            f"varsayım: tepki {GOR_TEPKI:.0f} s · tutuş {GOR_LIMIT:.0f}°",
+            18, (124, 132, 142))
+    return im
+
+
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
@@ -5622,7 +5864,7 @@ def main():
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
                              "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk",
-                             "tutus", "basinc", "kamber", "cizgi"),
+                             "tutus", "basinc", "kamber", "cizgi", "gorus"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -5675,6 +5917,9 @@ def main():
     elif args.sahne == "cizgi":
         cizgi_faz_ayarla(args.fazlar)
         cizer = kare_cizgi3b
+    elif args.sahne == "gorus":
+        gor_faz_ayarla(args.fazlar)
+        cizer = kare_gorus3b
     elif args.sahne == "ruzgar":
         ruzgar_faz_ayarla(args.fazlar)
         cizer = kare_ruzgar3b
