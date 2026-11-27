@@ -5856,6 +5856,204 @@ def kare_gorus3b(t):
     return im
 
 
+
+
+# ---------------------------------------------------------------------------
+#  GRUPTA KAYDIRILMIS DUZEN
+# ---------------------------------------------------------------------------
+# DIS KAYNAK RAKAMI YOK. Varsayimlar ekranda: hiz 50 km/h, 8 surucu,
+# sollayan arac +20 km/h, onde ve arkada 50'ser metre pay.
+#
+# TEMEL: takip mesafesi SANIYE ile olculur (ders 13). Kaydirilmis duzende
+# iki surucu arasindaki BOYLAMASINA aralik 1 saniye, ama kendi IZINDEKI
+# surucu bir sonraki degil BIR SONRAKININ SONRAKISI, yani aralik yine
+# 2 saniye. Yani guvenlik ayni kaliyor, grup YARIYA iniyor.
+#
+# 50 km/h = 13,89 m/s icin:
+#     1 saniye 13,89 m · 2 saniye 27,78 m
+#     tek sira      grup boyu (8-1)*27,78 = 194,4 m
+#     kaydirilmis   grup boyu (8-1)*13,89 =  97,2 m     TAM YARISI
+#     AYNI IZ boslugu ikisinde de 27,8 m = 2,0 saniye
+#
+# SOLLAMA. +20 km/h farkla, grup boyu + 100 m pay kapatilacak:
+#     tek sira    : 53 s · gereken bos yol 1031 m
+#     kaydirilmis : 36 s · gereken bos yol  690 m
+# Ders 15 tek motosiklet icin "yarim kilometre bos yol" diyordu; sekiz
+# kisilik tek sira bir grubu sollamak bir kilometreyi asiyor.
+#
+# DURUST OLALIM: kaydirilmis duzen bedava degil. CAPRAZINDAKI surucu
+# yalnizca 1 saniye onunde. Yanal kayma bunu kabul edilebilir kiliyor
+# (onun izinde degilsin), ama o dusup yana savrulursa payin 1 saniye.
+# Bu yuzden duzen DUZ ve ACIK yol icindir; virajli yolda tek sira,
+# cunku orada herkesin kendi cizgisi ve gorusu icin SERIDIN TAMAMI
+# gerekiyor (ders 25 ve 26).
+GRUP_V = 50.0 / 3.6               # m/s
+GRUP_N = 8                        # surucu sayisi
+GRUP_FARK = 20.0 / 3.6            # sollayan aracin hiz farki
+GRUP_PAY = 100.0                  # m, onde + arkada toplam pay
+GRUP_YAN = 0.8                    # m, kaydirilmis duzende yanal kayma
+
+
+def grup_boy(kaydirilmis):
+    """Grubun bastan sona uzunlugu, m."""
+    return (GRUP_N - 1) * GRUP_V * (1.0 if kaydirilmis else 2.0)
+
+
+def grup_sollama(kaydirilmis):
+    """(sure s, gereken bos yol m)."""
+    t = (grup_boy(kaydirilmis) + GRUP_PAY) / GRUP_FARK
+    return t, (GRUP_V + GRUP_FARK) * t
+
+
+GRUP_NOKTA = {
+    # (etiket, aciklama, kaydirilmis mi)
+    "tek":    ("TEK SIRA · 2 SANİYE", "8 kişi 194 metre", False),
+    "kaydir": ("KAYDIRILMIŞ DÜZEN", "aralık 1 saniye oldu", True),
+    "ayni":   ("KENDİ İZİNDE YİNE 2 SANİYE", "önündeki değil, onun önündeki", True),
+    "boy":    ("GRUP YARIYA İNDİ", "194 metre → 97 metre", True),
+    "sollama": ("SENİ SOLLAYAN ARAÇ", "1031 m yerine 690 m yol ister", True),
+    "viraj":  ("VİRAJDA TEK SIRA", "herkesin kendi çizgisi lazım", False),
+}
+GRUP_FAZ = [(4.0, "tek")]
+
+
+def grup_faz_ayarla(metin):
+    global GRUP_FAZ
+    if not metin:
+        return
+    f = []
+    for parca in metin.split(","):
+        t_str, _, ad = parca.strip().partition(":")
+        ad = ad.strip()
+        if ad not in GRUP_NOKTA:
+            raise SystemExit(f"HATA: bilinmeyen grup noktasi '{ad}'")
+        f.append((float(t_str), ad))
+    GRUP_FAZ = sorted(f)
+
+
+def grup_evre(t):
+    ad, bas = GRUP_FAZ[0][1], GRUP_FAZ[0][0]
+    for z, a in GRUP_FAZ:
+        if t >= z:
+            ad, bas = a, z
+    return ad, bas
+
+
+def _grup_sema(d, px, py, pw, vurgu):
+    """Iki duzenin PLAN semasi, AYNI olcekte, ayni x'ten baslayarak.
+
+    Ikisi ayni yerden baslamazsa boy farki okunmuyor; asil anlatilan sey
+    o fark oldugu icin hizalama onemli."""
+    tek, kay = grup_boy(False), grup_boy(True)
+    olcek = (pw - 150) / tek                       # px/m, uzun olana gore
+    for sira, (ad, L, kaydirilmis) in enumerate(
+            (("TEK SIRA", tek, False), ("KAYDIRILMIŞ", kay, True))):
+        yy = py + 96 + sira * 116
+        secili = (vurgu == kaydirilmis)
+        renk = (TURUNCU if not kaydirilmis else YESIL) if secili else (84, 92, 102)
+        s2.yazi(d, (px + 24, yy - 42), f"{ad} · {GRUP_N} kişi · {L:.0f} m", 24,
+                renk if secili else (120, 128, 138))
+        x0 = px + 24
+        d.line([(x0, yy + 34), (x0 + L * olcek, yy + 34)], fill=renk, width=4)
+        for i in range(GRUP_N):
+            ax = x0 + (L / (GRUP_N - 1)) * i * olcek
+            ay = yy + (GRUP_YAN * 14 if kaydirilmis and i % 2 else 0) \
+                - (GRUP_YAN * 14 if kaydirilmis and not i % 2 else 0)
+            d.ellipse([ax - 9, ay - 9, ax + 9, ay + 9], fill=renk)
+        # Boy koseli parantezi
+        d.line([(x0, yy + 44), (x0, yy + 56)], fill=renk, width=3)
+        d.line([(x0 + L * olcek, yy + 44), (x0 + L * olcek, yy + 56)],
+               fill=renk, width=3)
+
+
+def kare_grup3b(t):
+    """Arkadan: onundeki iki surucu, duzene gore yerlesiyor."""
+    anahtar, faz_bas = grup_evre(t)
+    etiket, aciklama, kaydirilmis = GRUP_NOKTA[anahtar]
+    gok, cim, asfalt = _palet()
+    im = Image.new("RGB", (G, Y), gok)
+    d = ImageDraw.Draw(im, "RGBA")
+    s = Sahne()
+
+    global _grup_s, _grup_tek
+    _grup_s = (globals().get("_grup_s", 0.0) + GRUP_V / FPS) % 8.0
+    _grup_tek = (globals().get("_grup_tek", 0.0)
+                 + GRUP_V / (FPS * adv_motor.ON_R)) % (2 * math.pi)
+
+    z = -20.0
+    while z < 160:
+        z2 = z + (6.0 if z < 60 else 20.0)
+        s.yuzey([[-95, 0, z], [95, 0, z], [95, 0, z2], [-95, 0, z2]], cim,
+                katman=0)
+        s.yuzey([[-4.2, 0.01, z], [4.2, 0.01, z], [4.2, 0.01, z2],
+                 [-4.2, 0.01, z2]], asfalt, katman=1)
+        z = z2
+    for yan in (-1, 1):
+        zz = -20.0
+        while zz < 120:
+            z2 = zz + 4.0
+            s.yuzey([[yan * 4.0, 0.02, zz], [yan * 3.86, 0.02, zz],
+                     [yan * 3.86, 0.02, z2], [yan * 4.0, 0.02, z2]],
+                    (205, 205, 200), katman=2)
+            zz = z2
+    for i in range(-2, 18):
+        zc = i * 8.0 - _grup_s
+        s.yuzey([[-0.11, 0.02, zc], [0.11, 0.02, zc], [0.11, 0.02, zc + 3.6],
+                 [-0.11, 0.02, zc + 3.6]], (210, 210, 205), katman=2)
+
+    x0 = FREN_SERIT
+    # Model BIR KEZ uretilip uc kez yerlestiriliyor: her surucu icin
+    # yeniden uretmek kareyi uc katina cikariyordu.
+    model, _, _ = motosiklet(0.0, _grup_tek, 0.0)
+    aralik = GRUP_V * (1.0 if kaydirilmis else 2.0)
+    s.ekle(model, t=[x0, 0.0, 0.0])
+    for i in (1, 2):
+        yan = (GRUP_YAN if i % 2 else -GRUP_YAN) if kaydirilmis else 0.0
+        s.ekle(model, t=[x0 + yan, 0.0, aralik * i])
+
+    # KADRAJ SAYIYLA: yatay eksen, goz 1,36 m, D=12 m.
+    #   goz*F/D = 1280-960 = 320   ve   (1,83-goz)*F/D = 960-850 = 110
+    #   -> F/D = 430/1,83 = 234,97 -> goz 1,362 m, F = 2820, fov 37,6 deg
+    GRP_D = 12.0
+    _fd = 430.0 / 1.83
+    GRP_GOZ = 320.0 / _fd
+    # Kamera serit icinde 0,9 m yana kaydirildi. Tam arkadan bakinca tek
+    # sira duzeninde ondeki iki surucu kendi motorumuzun TAM arkasinda
+    # kaliyor ve hic gorunmuyordu. Yan kayma onlari ortaya cikariyor -
+    # ve ortaya cikardigi sey dersin kendisi: kaydirilmis duzende
+    # ondekileri GORURSUN, tek sirada ondeki seni kapatir.
+    kamera = Kamera([x0 + 0.90, GRP_GOZ, -GRP_D], [x0 + 0.10, GRP_GOZ, 40.0],
+                    G, Y, fov=2 * math.degrees(math.atan(960.0 / (_fd * GRP_D))))
+    s.ciz(d, kamera, gok)
+
+    # --- 2B gostergeler -----------------------------------------------------
+    ust_renk = YESIL if kaydirilmis else TURUNCU
+    fo = s2.font(40)
+    tw = d.textlength(etiket, font=fo)
+    d.rounded_rectangle([(G - tw) / 2 - 28, 318, (G + tw) / 2 + 28, 396], 16,
+                        fill=(0, 0, 0, 190), outline=ust_renk, width=5)
+    s2.yazi(d, (G / 2, 330), etiket, 40, ust_renk, ortala=True)
+    s2.yazi(d, (G / 2, 404), aciklama, 28, (176, 182, 190), ortala=True)
+
+    px, py, pw, ph = 62, 450, G - 124, 360
+    d.rounded_rectangle([px, py, px + pw, py + ph], 16, fill=(16, 20, 26, 212),
+                        outline=(92, 102, 112), width=4)
+    # Baslik kisa: OLCTUM, "8 SÜRÜCÜ · PLAN · AYNI ÖLÇEK" 384 px, varsayim
+    # 575 px, panel ici 908 px - ikisi 959 edip ust uste biniyordu. Surucu
+    # sayisi satir etiketlerine tasindi.
+    s2.yazi(d, (px + 24, py + 14), "PLAN · AYNI ÖLÇEK", 22, (150, 155, 162))
+    varsayim = f"varsayım: {GRUP_V * 3.6:.0f} km/h · sollayan +20 km/h · 50+50 m pay"
+    s2.yazi(d, (px + pw - 24 - d.textlength(varsayim, font=s2.font(19)),
+                py + 16), varsayim, 19, (124, 132, 142))
+    _grup_sema(d, px, py, pw, kaydirilmis)
+
+    sure, yol = grup_sollama(kaydirilmis)
+    alt = (f"aynı iz boşluğu {GRUP_V * 2:.1f} m = 2,0 sn".replace(".", ",")
+           + f"   ·   seni sollamak {yol:.0f} m boş yol ister")
+    s2.yazi(d, (px + 24, py + 318), alt, 22, (176, 182, 190))
+    return im
+
+
 # ---------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser(description="AAE 3 boyutlu sahne uretici")
@@ -5864,7 +6062,7 @@ def main():
                              "kornokta", "manevra", "gece", "kontrol",
                              "kacinma", "yolcu", "kavsak", "takip", "konum",
                              "sollama", "zemin", "hizli", "durma", "bakis", "egim", "ruzgar", "yuk",
-                             "tutus", "basinc", "kamber", "cizgi", "gorus"),
+                             "tutus", "basinc", "kamber", "cizgi", "gorus", "grup"),
                     required=True)
     ap.add_argument("--sure", type=float, default=60.0)
     ap.add_argument("--fazlar", default="")
@@ -5920,6 +6118,9 @@ def main():
     elif args.sahne == "gorus":
         gor_faz_ayarla(args.fazlar)
         cizer = kare_gorus3b
+    elif args.sahne == "grup":
+        grup_faz_ayarla(args.fazlar)
+        cizer = kare_grup3b
     elif args.sahne == "ruzgar":
         ruzgar_faz_ayarla(args.fazlar)
         cizer = kare_ruzgar3b

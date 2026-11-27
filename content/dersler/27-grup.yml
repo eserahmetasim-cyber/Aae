@@ -1,0 +1,174 @@
+# Ders 27 · Grupta kaydırılmış düzen
+# DIŞ KAYNAK RAKAMI YOK. Varsayımlar ekranda: hız 50 km/h, 8 sürücü,
+# sollayan araç +20 km/h, önde ve arkada 50'şer metre pay.
+#
+# TEMEL: takip mesafesi SANİYE ile ölçülür (ders 13). Kaydırılmış düzende
+# iki sürücü arasındaki BOYLAMASINA aralık 1 saniye, ama KENDİ İZİNDEKİ
+# sürücü bir sonraki değil onun sonrakisi — yani aralık yine 2 saniye.
+# Güvenlik aynı kalıyor, grup yarıya iniyor.
+#
+# 50 km/h = 13,89 m/s için:
+#     1 saniye 13,89 m · 2 saniye 27,78 m
+#     tek sıra    grup boyu (8−1)×27,78 = 194,4 m
+#     kaydırılmış grup boyu (8−1)×13,89 =  97,2 m     TAM YARISI
+#     AYNI İZ boşluğu ikisinde de 27,8 m = 2,0 saniye
+#
+# SOLLAMA. +20 km/h farkla, grup boyu + 100 m pay kapatılacak:
+#     tek sıra    : 53 s · gereken boş yol 1031 m
+#     kaydırılmış : 36 s · gereken boş yol  690 m
+# Ders 15 tek motosiklet için "yarım kilometre boş yol" diyordu; sekiz
+# kişilik tek sıra bir grubu sollamak bir kilometreyi aşıyor.
+#
+# DÜRÜST OLALIM: kaydırılmış düzen bedava değil. ÇAPRAZINDAKİ sürücü
+# yalnızca 1 saniye önünde. Yanal kayma bunu kabul edilebilir kılıyor
+# (onun izinde değilsin), ama o düşüp yana savrulursa payın 1 saniye.
+# Bu yüzden düzen DÜZ ve AÇIK yol içindir; virajlı yolda tek sıra, çünkü
+# orada herkesin kendi çizgisi ve görüşü için ŞERİDİN TAMAMI gerekiyor
+# (ders 25 ve 26).
+#
+# SAHNEDEN ÇIKAN GÖZLEM: kamerayı şerit içinde 0,9 m yana kaydırmak
+# gerekti, çünkü tam arkadan bakınca tek sıra düzeninde öndeki sürücüler
+# kendi motorumuzun arkasında kalıp hiç görünmüyordu. Bu bir çizim
+# sorunu değil, düzenin kendisi: tek sırada öndeki seni kapatır.
+
+ders_no: 27
+slug: grup
+baslik: "Grupta Kaydırılmış Düzen"
+alt_baslik: "Aynı güvenlik, yarı boy"
+seri: "MOTOSİKLET YOL OKULU"
+surum: 1
+
+kaynak: ""
+sahne: grup
+boyut: 3
+kamera: yan
+gunduz: true
+baslangic: 0
+sure: 55
+kaynak_ses: 0.035
+muzik: "assets/muzik/aae_okul.mp3"
+muzik_ses: 0.36
+
+sahne_fazlari: "4:tek, 12:kaydir, 20:ayni, 28:boy, 36:sollama, 44:viraj"
+
+kapanis: "Aynı güvenlik, yarı boy"
+
+adimlar:
+  - { t: 4,  sure: 6, metin: "1 · Tek sırada 8 kişi 194 metre eder" }
+  - { t: 12, sure: 7, metin: "2 · Kaydırılmış düzende aralık 1 saniye" }
+  - { t: 20, sure: 7, metin: "3 · Kendi izinde yine 2 saniye: onun önündeki" }
+  - { t: 28, sure: 7, metin: "4 · Grup yarıya indi: 194 metre → 97 metre" }
+  - { t: 36, sure: 7, metin: "5 · Seni sollayan araç 1031 yerine 690 m ister" }
+  - { t: 44, sure: 7, metin: "6 · Virajda tek sıra: herkesin kendi çizgisi lazım" }
+
+youtube:
+  baslik: "Grupta Kaydırılmış Düzen: Aynı Güvenlik, Yarı Boy | Yol Okulu #27"
+  aciklama: |
+    Sekiz kişi yola çıktınız. Tek sıra gitmekle kaydırılmış gitmek
+    arasındaki fark, güvenliği hiç bozmadan grubu yarıya indiriyor.
+
+    0:04 Tek sıra
+    0:12 Kaydırılmış düzen
+    0:20 Kendi izinde yine 2 saniye
+    0:28 Grup yarıya indi
+    0:36 Seni sollayan araç
+    0:44 Virajda tek sıra
+
+    HESAP
+    Takip mesafesi saniye ile ölçülür (Ders 13). Kaydırılmış düzende iki
+    sürücü arasındaki boylamasına aralık 1 saniye — ama kendi izindeki
+    sürücü bir sonraki değil, ONUN sonrakisi. Yani kendi izinde aralık
+    yine 2 saniye. Güvenlik aynı, boy yarı.
+
+    50 km/h = 13,89 m/s için:
+
+      1 saniye  = 13,89 m
+      2 saniye  = 27,78 m
+      tek sıra    → (8−1) × 27,78 = 194,4 metre
+      kaydırılmış → (8−1) × 13,89 =  97,2 metre
+      aynı iz boşluğu ikisinde de 27,8 m = 2,0 saniye
+
+    SENİ SOLLAYAN ARAÇ
+    +20 km/h farkla gelen bir araç, grup boyunu artı önde ve arkada
+    50'şer metre payı kapatacak:
+
+      tek sıra    → 53 saniye · 1031 metre boş yol
+      kaydırılmış → 36 saniye ·  690 metre boş yol
+
+    Ders 15'te tek motosiklet için "yarım kilometre boş yol ister"
+    demiştik. Sekiz kişilik tek sıra bir grubu sollamak bir kilometreyi
+    aşıyor. Arkandaki sürücü o yolu bulamazsa ne yapar? Yarısını bulup
+    girer. Grubu kısaltmak sadece sizin işiniz değil.
+
+    BEDAVA DEĞİL — BUNU ATLAMA
+    Kaydırılmış düzende çaprazındaki sürücü yalnızca 1 saniye önünde.
+    Yanal kayma bunu kabul edilebilir kılıyor, çünkü onun izinde
+    değilsin. Ama o düşüp yana savrulursa payın bir saniye. Bu yüzden:
+
+    • Kaydırılmış düzen DÜZ ve AÇIK yol içindir.
+    • Virajlı yolda TEK SIRA. Orada herkesin kendi çizgisi (Ders 25) ve
+      kendi görüşü (Ders 26) için şeridin tamamı gerekiyor; kaydırılmış
+      düzen ikisini birden elinden alır.
+    • Sollarken, dar yolda, kötü görüşte, ıslakta tek sıra.
+
+    BİR GÖZLEM
+    Bu videoyu çizerken kamerayı şerit içinde 0,9 metre yana kaydırmak
+    zorunda kaldım: tam arkadan bakınca tek sıra düzeninde öndeki
+    sürücüler kendi motosikletimin arkasında kalıp hiç görünmüyordu.
+    Bu bir çizim sorunu değil, düzenin kendisi — tek sırada öndeki seni
+    kapatır. Kaydırılmış düzende öndekileri görürsün.
+
+    KURAL
+    • Düzeni grup başlarken konuşun; yolda anlaşılmaz.
+    • En deneyimsiz sürücü ikinci sırada: hem görünür hem korunur.
+    • Düzen bozulursa herkes tek sıraya döner, sonra yeniden kurulur.
+    • Kimse kimseyi beklemek için yavaşlamasın; buluşma noktası konuşulur.
+
+    Bu video genel bilgilendirmedir, birebir eğitim yerine geçmez.
+
+    @aae_motorcycle
+  etiketler:
+    - "motosiklet"
+    - "sürüş eğitimi"
+    - "grup sürüşü"
+    - "kaydırılmış düzen"
+    - "takip mesafesi"
+    - "motosiklet eğitimi"
+    - "yol okulu"
+    - "güvenli sürüş"
+  kategori: "2"
+  gizlilik: "private"
+
+instagram:
+  caption: |
+    Sekiz kişi yola çıktınız. Tek sıra mı, kaydırılmış mı? Fark,
+    güvenliği hiç bozmadan grubu YARIYA indiriyor.
+
+    Takip mesafesi saniyeyle ölçülür (Ders 13). Kaydırılmış düzende
+    boylamasına aralık 1 saniye — ama kendi izindeki sürücü bir sonraki
+    değil, ONUN sonrakisi. Yani kendi izinde yine 2 saniye.
+
+    50 km/h İÇİN 👇
+    1 sn = 13,89 m · 2 sn = 27,78 m
+    tek sıra → (8−1) × 27,78 = 194,4 m
+    kaydırılmış → (8−1) × 13,89 = 97,2 m
+    aynı iz boşluğu ikisinde de 2,0 saniye
+
+    SENİ SOLLAYAN ARAÇ (+20 km/h, önde+arkada 50'şer m pay)
+    tek sıra → 53 sn · 1031 m boş yol
+    kaydırılmış → 36 sn · 690 m boş yol
+
+    Ders 15 tek motosiklet için "yarım kilometre" demişti. Sekiz kişilik
+    tek sırayı sollamak bir kilometreyi aşıyor. Arkandaki o yolu
+    bulamazsa yarısını bulup girer. Grubu kısaltmak sadece sizin işiniz
+    değil.
+
+    BEDAVA DEĞİL: çaprazındaki sürücü yalnız 1 saniye önünde. Onun
+    izinde değilsin, ama düşüp yana savrulursa payın bir saniye.
+
+    O YÜZDEN: kaydırılmış düzen DÜZ ve AÇIK yol içindir. Virajlı yolda
+    TEK SIRA — orada herkesin kendi çizgisi (Ders 25) ve kendi görüşü
+    (Ders 26) için şeridin tamamı gerekir.
+
+    @aae_motorcycle
+    #motosiklet #sürüşeğitimi #grupsürüşü #takipmesafesi #motosikleteğitimi #yolokulu #güvenlisürüş
