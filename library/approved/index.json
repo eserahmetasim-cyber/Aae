@@ -1,5 +1,5 @@
 {
-  "guncelleme": "2026-11-26T06:36:42+00:00",
+  "guncelleme": "2026-11-27T06:41:47+00:00",
   "dersler": [
     {
       "klasor": "01-acil-fren",
@@ -233,6 +233,15 @@
       "video": "library/approved/26-gorus/26-gorus.mp4",
       "meta": "library/approved/26-gorus/meta.json",
       "onay_tarihi": "2026-11-26T06:36:41+00:00",
+      "durum": "onaylandi"
+    },
+    {
+      "klasor": "27-grup",
+      "ders_no": 27,
+      "baslik": "Grupta Kaydırılmış Düzen",
+      "video": "library/approved/27-grup/27-grup.mp4",
+      "meta": "library/approved/27-grup/meta.json",
+      "onay_tarihi": "2026-11-27T06:41:47+00:00",
       "durum": "onaylandi"
     }
   ]
